@@ -2,7 +2,7 @@
 
 > **هذا الملف هو المرجع الحي للمشروع.** يُحدَّث بعد إنجاز كل مهمة: الخطة التفصيلية + جدول التقدّم + سجل القرارات + سجل التغييرات.
 
-**الإنجاز الإجمالي: 5%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
+**الإنجاز الإجمالي: 7%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
 
 الرموز: `[ ]` لم يبدأ · `[~]` قيد التنفيذ · `[x]` مكتمل (مع التاريخ)
 
@@ -30,8 +30,9 @@
 - [x] جمع المتطلبات وحسم القرارات (Multi-tenant، Flutter، أونلاين فقط، ar/en) — 2026-10-24
 - [x] كتابة الخطة التقنية — 2026-10-24
 - [x] إنشاء `docs/PROJECT_PLAN.md` — 2026-10-24
-- [x] إعداد البيئة (PHP 8.4.27 + Composer 2.10 + MariaDB عبر XAMPP على المنفذ 3307) و`.env` — 2026-10-24
-- [ ] تثبيت الحزم الأساسية (Sanctum, permission, activitylog, medialibrary, scramble)
+- [x] إعداد البيئة (PHP 8.4.27 + Composer 2.10 + MySQL 8.4.13 + phpMyAdmin عبر XAMPP على المنفذ 3307) و`.env` — 2026-10-24
+- [x] استبدال MariaDB 10.4 بـ MySQL 8.4.13 داخل XAMPP + Laravel Boost (guidelines/skills/MCP) — 2026-10-24
+- [x] تثبيت الحزم الأساسية (Sanctum, permission+Teams, activitylog, medialibrary, scramble) + UUID للمستخدمين + اختبارات على MySQL (`carwash_testing`) — 2026-10-24
 - [ ] Multi-tenancy: `BelongsToTenant` + `tenants` + `branches` + اختبارات العزل
 - [ ] نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية + Policies
 - [ ] API الأدوار: `/permissions` `/roles` `/users/{id}/roles` `/me`
@@ -77,14 +78,14 @@
 - [ ] ANPR وتكاملات محاسبية
 
 ## (B) ما التالي؟
-1. تثبيت الحزم الأساسية (Sanctum, permission, activitylog, medialibrary, scramble) وإعداد Pint/PHPUnit.
-2. تنفيذ `BelongsToTenant` + `tenants`/`branches` + اختبارات عزل الـ tenant.
+1. تنفيذ `BelongsToTenant` + `tenants`/`branches` + اختبارات عزل الـ tenant (وربط `setPermissionsTeamId` بـ tenant المستخدم المصادَق).
+2. نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية + Policies.
 
 ---
 
 ## 0) السياق والقرارات المعتمدة
 
-**الحالة الحالية:** المجلد `carwash` يحتوي هيكل Laravel 13 فارغاً (PHP ≥ 8.3، `laravel/boost` موجود في composer.json، لا Models ولا Migrations سوى users/cache/jobs). PHP/Composer/Flutter غير متاحة في PowerShell، لذا كل أوامر artisan/composer تُشغَّل داخل WSL، ويُثبَّت Flutter SDK عند بدء التطبيق.
+**الحالة الحالية:** Laravel 13 على Windows/XAMPP مباشرة (بدون WSL — انظر «بيئة التطوير الحالية»)، مع Boost والحزم الأساسية مثبّتة. يُثبَّت Flutter SDK عند بدء التطبيق.
 
 | البند | القرار |
 |---|---|
@@ -295,9 +296,10 @@
 ## بيئة التطوير الحالية
 - **مسار المشروع:** `C:\xampp\htdocs\carwash` (نُسخ من WSL؛ نسخة WSL القديمة لم تعد مرجعاً).
 - **PHP:** `C:\xampp\php84\php.exe` (8.4.27، بجانب PHP 8.2 الخاص بـ XAMPP). **Composer:** `C:\xampp\php84\composer.phar`. الأوامر: `php artisan ...` (المسار مضاف لـ PATH، يعمل في طرفية جديدة).
-- **قاعدة البيانات:** MariaDB 10.4.32 الخاصة بـ XAMPP على `127.0.0.1:3307` (نُقلت من 3306 لتفادي تعارض مع MySQL في WSL)، قاعدة `carwash`، المستخدم `admin` (كلمة السر في `.env`).
+- **قاعدة البيانات:** **MySQL 8.4.13 LTS** في `C:\xampp\mysql` (حلّت محل MariaDB الخاصة بـ XAMPP، والنسخة القديمة محفوظة في `C:\xampp\mysql_mariadb104`) على `127.0.0.1:3307`، الإعداد في `C:\xampp\mysql\bin\my.ini` (utf8mb4، mysqlx معطّل). تُشغَّل من زر MySQL في لوحة XAMPP. قاعدة `carwash` + `carwash_testing` للاختبارات، المستخدم `admin` (كلمة السر في `.env`)، و`root` بدون كلمة سر محلياً. الإدارة عبر **phpMyAdmin** على http://localhost/phpmyadmin.
 - **التشغيل:** `php artisan serve` على http://localhost:8000. Git for Windows 2.56 مثبّت ومضبوط (user: Ali، الفرع الافتراضي `main`، مستودع مهيّأ في `C:\xampp\htdocs\carwash` بدون commits بعد؛ `.env` و`vendor` مستثنيان في `.gitignore`).
-- **ملاحظة:** MariaDB 10.4 قديمة نسبياً؛ إن ظهرت مشاكل توافق مع Laravel 13 تُرقّى إلى MariaDB 10.11+ أو MySQL 8.
+- **الاختبارات:** `php artisan test` على MySQL (`carwash_testing`) لأن PHP 8.4 هنا بدون `pdo_sqlite`، ولتطابق بيئة الإنتاج.
+- **ملاحظة:** إن لم يُعرف `php` أو `git` في طرفية VS Code، أعد تشغيل VS Code (أُضيفت للـ PATH بعد فتحه).
 
 ## (C) سجل القرارات (ADR)
 | التاريخ | القرار | السبب |
@@ -307,9 +309,14 @@
 | 2026-10-24 | أونلاين فقط (بدون أوفلاين) | تقليل التعقيد؛ قرار المالك |
 | 2026-10-24 | RBAC بـ spatie/permission مع Teams وأدوار مخصّصة | تحكم المالك بالصلاحيات دون مطوّر |
 | 2026-10-24 | MySQL 8 (عبر XAMPP) بدل PostgreSQL، والـ queue/cache على DB بدل Redis | بيئة المالك؛ أبسط للتطوير. الانتقال لـ Redis لاحقاً بتغيير `.env` فقط |
+| 2026-10-24 | MySQL 8.4.13 LTS حقيقية بدل MariaDB 10.4 المرفقة مع XAMPP، مع phpMyAdmin | طلب المالك؛ تطابق الإنتاج ودعم UUID/JSON الحديث |
+| 2026-10-24 | المفاتيح UUID (v7 عبر `HasUuids`) للمستخدمين وكل الجداول التشغيلية، وأعمدة morph في Sanctum/permission/activitylog/media بصيغة UUID | تطبيق القسم 4 قبل وجود بيانات؛ لا يمكن تغييره لاحقاً بسهولة |
+| 2026-10-24 | spatie/permission Teams بمفتاح `tenant_id` (UUID) | عزل الأدوار لكل مغسلة |
+| 2026-10-24 | الاختبارات على قاعدة MySQL مستقلة `carwash_testing` بدل SQLite | لا يوجد `pdo_sqlite`، وسلوك MySQL (فهارس، أقفال) يجب أن يُختبر فعلياً |
 
 ## (D) سجل التغييرات (Changelog)
 - **2026-10-24:** إنشاء الخطة الأولية، إضافة نظام الأدوار والصلاحيات، حذف الأوفلاين، إنشاء هذا الملف، اعتماد MySQL بدل PostgreSQL.
+- **2026-10-24:** تثبيت MySQL 8.4.13 مكان MariaDB في XAMPP؛ تثبيت Laravel Boost؛ تثبيت Sanctum (`install:api`) وspatie/permission (Teams=`tenant_id`) وactivitylog وmedialibrary وscramble؛ تحويل `users` إلى UUID؛ نقل الاختبارات إلى `carwash_testing`؛ إضافة `UserIdentityTest` (UUID، توكن Sanctum، عزل الأدوار بين tenants).
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).
