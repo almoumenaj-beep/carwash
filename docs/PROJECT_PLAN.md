@@ -2,7 +2,7 @@
 
 > **هذا الملف هو المرجع الحي للمشروع.** يُحدَّث بعد إنجاز كل مهمة: الخطة التفصيلية + جدول التقدّم + سجل القرارات + سجل التغييرات.
 
-**الإنجاز الإجمالي: 9%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
+**الإنجاز الإجمالي: 11%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
 
 الرموز: `[ ]` لم يبدأ · `[~]` قيد التنفيذ · `[x]` مكتمل (مع التاريخ)
 
@@ -34,7 +34,7 @@
 - [x] استبدال MariaDB 10.4 بـ MySQL 8.4.13 داخل XAMPP + Laravel Boost (guidelines/skills/MCP) — 2026-10-24
 - [x] تثبيت الحزم الأساسية (Sanctum, permission+Teams, activitylog, medialibrary, scramble) + UUID للمستخدمين + اختبارات على MySQL (`carwash_testing`) — 2026-10-24
 - [x] Multi-tenancy: `BelongsToTenant` + `TenantScope` + `TenantContext` + middleware `SetTenantContext` + `tenants` + `branches` + `users.tenant_id` + اختبارات العزل (نموذج + API) — 2026-10-24
-- [ ] نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية + Policies
+- [x] نظام الأدوار والصلاحيات: Permission Catalog (35 صلاحية) + `PermissionSeeder` + 7 أدوار افتراضية تُنسخ لكل tenant + نطاق الفروع (`branch_user` + `all_branches`) + Policies (Role/User/Branch) + اختبار مصفوفة الصلاحيات — 2026-10-24
 - [ ] API الأدوار: `/permissions` `/roles` `/users/{id}/roles` `/me`
 - [ ] Auth: Sanctum + PIN سريع + الأجهزة
 - [ ] تثبيت Flutter SDK وإنشاء المشروع + l10n (ar/en) + Riverpod + Dio
@@ -46,7 +46,7 @@
 - [ ] كتالوج الخدمات والأسعار حسب حجم السيارة والإضافات
 - [ ] العملاء والسيارات
 - [ ] أوامر العمل + الحالات + لوحة الطابور (Reverb)
-- [ ] POS نقدي + الخصومات + الضريبة
+- [ ] POS نقدي + الخصومات + الضريبة + حدود الخصم لكل دور (`role_limits`، مؤجّلة من المرحلة 0)
 - [ ] الإيصال الحراري/PDF
 - [ ] إقفال الوردية وجرد الصندوق
 - [ ] تقرير المبيعات اليومي
@@ -78,8 +78,8 @@
 - [ ] ANPR وتكاملات محاسبية
 
 ## (B) ما التالي؟
-1. نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية (تُنسخ لكل tenant) + `branch_user` لنطاق الفروع + Policies.
-2. API الأدوار: `/permissions` `/roles` `/users/{id}/roles` `/me`.
+1. API الأدوار: `/permissions` (مجمّعة حسب الوحدة + ترجمة ar/en) `/roles` `/roles/{id}/permissions` `/users/{id}/roles` `/me` — مع قواعد: لا منح لصلاحية لا يملكها المانح، وبقاء Owner واحد على الأقل، وتسجيل التغييرات في Audit Log.
+2. Auth: Sanctum + PIN سريع + الأجهزة.
 
 ---
 
@@ -316,12 +316,18 @@
 | 2026-10-24 | الـ tenant الحالي يُضبط من المستخدم المصادَق في middleware ضمن مجموعة `api`، بأولوية بعد المصادقة وقبل Route Model Binding؛ ويضبط معه `setPermissionsTeamId` | لا يُقبل tenant من الطلب أبداً؛ والـ binding لا يجد سجلات tenant آخر (404 وليس 403) |
 | 2026-10-24 | `users` غير مُقيَّد بـ Global Scope (له `tenant_id` nullable لمشغّلي المنصة) | المصادقة تحتاج إيجاد المستخدم قبل معرفة الـ tenant؛ استعلامات قوائم المستخدمين تُقيَّد صراحةً |
 | 2026-10-24 | كود المنصة في `app/Domain/Platform/{Models,Enums,Tenancy}` والمصانع في `database/factories` عبر `#[UseFactory]` | تطبيق بنية القسم 6 |
+| 2026-10-24 | كتالوج الصلاحيات والأدوار الافتراضية كـ Enums في `app/Domain/Identity` (`Permission`, `DefaultRole`)؛ الدور الافتراضي يُعرَّف بعمود `roles.key` لا بالاسم | مصدر واحد للحقيقة؛ المالك يستطيع إعادة تسمية الأدوار دون كسر حماية Owner |
+| 2026-10-24 | Owner يملك كل صلاحيات الكتالوج عبر `Gate::before` (محصور في صلاحيات الكتالوج)، ولا تُخزَّن له صلاحيات | يبقى كاملاً عند إضافة صلاحيات جديدة؛ وقيود الـ Policies (مثل منع تعديل دور Owner) تبقى سارية عليه |
+| 2026-10-24 | الأدوار على مستوى المغسلة كلها، ونطاق الفروع لكل مستخدم (`all_branches` أو `branch_user`) بدل دور مختلف لكل فرع | يحقق «مدير فرع A يرى فرعه فقط» ببساطة؛ دور لكل فرع يُضاف لاحقاً إن احتجناه |
+| 2026-10-24 | الأدوار الافتراضية تُنشأ صراحةً بـ `ProvisionDefaultRoles` (في الـ Onboarding/Seeder) وليس بحدث على Tenant؛ وإعادة التشغيل لا تمسّ تعديلات المالك | وضوح وسهولة اختبار؛ آمن للتشغيل المتكرر |
+| 2026-10-24 | حدود الخصم (`role_limits`) تُؤجَّل إلى مهمة POS | لا تُستخدم قبل وجود الخصم |
 | 2026-10-24 | الاختبارات على قاعدة MySQL مستقلة `carwash_testing` بدل SQLite | لا يوجد `pdo_sqlite`، وسلوك MySQL (فهارس، أقفال) يجب أن يُختبر فعلياً |
 
 ## (D) سجل التغييرات (Changelog)
 - **2026-10-24:** إنشاء الخطة الأولية، إضافة نظام الأدوار والصلاحيات، حذف الأوفلاين، إنشاء هذا الملف، اعتماد MySQL بدل PostgreSQL.
 - **2026-10-24:** تثبيت MySQL 8.4.13 مكان MariaDB في XAMPP؛ تثبيت Laravel Boost؛ تثبيت Sanctum (`install:api`) وspatie/permission (Teams=`tenant_id`) وactivitylog وmedialibrary وscramble؛ تحويل `users` إلى UUID؛ نقل الاختبارات إلى `carwash_testing`؛ إضافة `UserIdentityTest` (UUID، توكن Sanctum، عزل الأدوار بين tenants).
 - **2026-10-24:** Multi-tenancy: جداول `tenants` (الحالة، اللغة، العملة، المنطقة الزمنية) و`branches` و`users.tenant_id` وربط جداول الصلاحيات بـ `tenants`؛ `BelongsToTenant` يملأ `tenant_id` تلقائياً ويمنع الكتابة لـ tenant آخر أو نقل السجل؛ رفض مستخدمي المغاسل الموقوفة والمستخدمين بلا tenant بـ 403؛ Seeder لمغسلة تجريبية؛ 15 اختباراً جديداً (`TenantIsolationTest` و`TenantApiIsolationTest`).
+- **2026-10-24:** RBAC: Enum `Permission` (35 صلاحية بصيغة `module.action`) و`DefaultRole` (7 أدوار مع مصفوفتها)؛ `SyncPermissionCatalog` + `PermissionSeeder` (يُشغَّل في كل نشر)؛ `ProvisionDefaultRoles`؛ نموذج `Role` مخصّص بعمود `key`؛ جدول `branch_user` و`users.all_branches`؛ Policies: `RolePolicy` (منع تعديل/حذف دور Owner، عزل الـ tenant) و`UserPolicy` (نطاق الفروع، لا يدير Owner إلا Owner، لا حذف للنفس) و`BranchPolicy`؛ Seeder يجعل `test@example.com` مالك المغسلة التجريبية؛ 31 اختباراً جديداً (المجموع 51).
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).

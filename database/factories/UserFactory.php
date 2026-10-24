@@ -53,4 +53,14 @@ class UserFactory extends Factory
             'tenant_id' => $tenant ?? Tenant::factory(),
         ]);
     }
+
+    /**
+     * Indicate that the user works in every branch of their tenant.
+     */
+    public function withAllBranches(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'all_branches' => true,
+        ]);
+    }
 }

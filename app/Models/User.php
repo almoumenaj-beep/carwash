@@ -3,13 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Identity\Policies\UserPolicy;
+use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -17,6 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
+#[UsePolicy(UserPolicy::class)]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -32,6 +38,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'all_branches' => 'boolean',
         ];
     }
 
@@ -44,5 +51,37 @@ class User extends Authenticatable
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    /**
+     * The branches this user works in, when not granted all branches.
+     *
+     * @return BelongsToMany<Branch, $this>
+     */
+    public function branches(): BelongsToMany
+    {
+        return $this->belongsToMany(Branch::class)->withTimestamps();
+    }
+
+    /**
+     * Whether the user holds the owner role in the current tenant.
+     */
+    public function isOwner(): bool
+    {
+        return $this->roles->contains(fn ($role) => $role->key === DefaultRole::Owner->value);
+    }
+
+    public function hasAllBranchAccess(): bool
+    {
+        return $this->all_branches || $this->isOwner();
+    }
+
+    public function canAccessBranch(Branch $branch): bool
+    {
+        if ($branch->tenant_id !== $this->tenant_id) {
+            return false;
+        }
+
+        return $this->hasAllBranchAccess() || $this->branches()->whereKey($branch->getKey())->exists();
     }
 }
