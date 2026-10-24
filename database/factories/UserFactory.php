@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Domain\Platform\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -40,6 +41,16 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user works for the given tenant, or a new one.
+     */
+    public function forTenant(?Tenant $tenant = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'tenant_id' => $tenant ?? Tenant::factory(),
         ]);
     }
 }

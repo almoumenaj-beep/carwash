@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Platform\Models\Branch;
+use App\Domain\Platform\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,9 +17,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $tenant = Tenant::factory()->create(['name' => 'Demo Car Wash', 'slug' => 'demo']);
 
-        User::factory()->create([
+        Branch::factory()->for($tenant)->create(['name' => 'Main Branch', 'code' => 'MAIN']);
+
+        User::factory()->forTenant($tenant)->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);

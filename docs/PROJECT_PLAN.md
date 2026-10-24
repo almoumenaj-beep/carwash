@@ -2,7 +2,7 @@
 
 > **هذا الملف هو المرجع الحي للمشروع.** يُحدَّث بعد إنجاز كل مهمة: الخطة التفصيلية + جدول التقدّم + سجل القرارات + سجل التغييرات.
 
-**الإنجاز الإجمالي: 7%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
+**الإنجاز الإجمالي: 9%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
 
 الرموز: `[ ]` لم يبدأ · `[~]` قيد التنفيذ · `[x]` مكتمل (مع التاريخ)
 
@@ -33,7 +33,7 @@
 - [x] إعداد البيئة (PHP 8.4.27 + Composer 2.10 + MySQL 8.4.13 + phpMyAdmin عبر XAMPP على المنفذ 3307) و`.env` — 2026-10-24
 - [x] استبدال MariaDB 10.4 بـ MySQL 8.4.13 داخل XAMPP + Laravel Boost (guidelines/skills/MCP) — 2026-10-24
 - [x] تثبيت الحزم الأساسية (Sanctum, permission+Teams, activitylog, medialibrary, scramble) + UUID للمستخدمين + اختبارات على MySQL (`carwash_testing`) — 2026-10-24
-- [ ] Multi-tenancy: `BelongsToTenant` + `tenants` + `branches` + اختبارات العزل
+- [x] Multi-tenancy: `BelongsToTenant` + `TenantScope` + `TenantContext` + middleware `SetTenantContext` + `tenants` + `branches` + `users.tenant_id` + اختبارات العزل (نموذج + API) — 2026-10-24
 - [ ] نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية + Policies
 - [ ] API الأدوار: `/permissions` `/roles` `/users/{id}/roles` `/me`
 - [ ] Auth: Sanctum + PIN سريع + الأجهزة
@@ -78,8 +78,8 @@
 - [ ] ANPR وتكاملات محاسبية
 
 ## (B) ما التالي؟
-1. تنفيذ `BelongsToTenant` + `tenants`/`branches` + اختبارات عزل الـ tenant (وربط `setPermissionsTeamId` بـ tenant المستخدم المصادَق).
-2. نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية + Policies.
+1. نظام الأدوار والصلاحيات: Permission Catalog + Seeder + الأدوار الافتراضية (تُنسخ لكل tenant) + `branch_user` لنطاق الفروع + Policies.
+2. API الأدوار: `/permissions` `/roles` `/users/{id}/roles` `/me`.
 
 ---
 
@@ -312,11 +312,16 @@
 | 2026-10-24 | MySQL 8.4.13 LTS حقيقية بدل MariaDB 10.4 المرفقة مع XAMPP، مع phpMyAdmin | طلب المالك؛ تطابق الإنتاج ودعم UUID/JSON الحديث |
 | 2026-10-24 | المفاتيح UUID (v7 عبر `HasUuids`) للمستخدمين وكل الجداول التشغيلية، وأعمدة morph في Sanctum/permission/activitylog/media بصيغة UUID | تطبيق القسم 4 قبل وجود بيانات؛ لا يمكن تغييره لاحقاً بسهولة |
 | 2026-10-24 | spatie/permission Teams بمفتاح `tenant_id` (UUID) | عزل الأدوار لكل مغسلة |
+| 2026-10-24 | `TenantScope` يفشل بإغلاق (Fail-closed): أي استعلام على بيانات tenant بدون tenant حالي يرمي `TenancyException` بدل إرجاع كل البيانات؛ والتجاوز صريح فقط (`withoutGlobalScope`) | منع تسريب البيانات بالخطأ في الـ jobs والأوامر والمسارات العامة |
+| 2026-10-24 | الـ tenant الحالي يُضبط من المستخدم المصادَق في middleware ضمن مجموعة `api`، بأولوية بعد المصادقة وقبل Route Model Binding؛ ويضبط معه `setPermissionsTeamId` | لا يُقبل tenant من الطلب أبداً؛ والـ binding لا يجد سجلات tenant آخر (404 وليس 403) |
+| 2026-10-24 | `users` غير مُقيَّد بـ Global Scope (له `tenant_id` nullable لمشغّلي المنصة) | المصادقة تحتاج إيجاد المستخدم قبل معرفة الـ tenant؛ استعلامات قوائم المستخدمين تُقيَّد صراحةً |
+| 2026-10-24 | كود المنصة في `app/Domain/Platform/{Models,Enums,Tenancy}` والمصانع في `database/factories` عبر `#[UseFactory]` | تطبيق بنية القسم 6 |
 | 2026-10-24 | الاختبارات على قاعدة MySQL مستقلة `carwash_testing` بدل SQLite | لا يوجد `pdo_sqlite`، وسلوك MySQL (فهارس، أقفال) يجب أن يُختبر فعلياً |
 
 ## (D) سجل التغييرات (Changelog)
 - **2026-10-24:** إنشاء الخطة الأولية، إضافة نظام الأدوار والصلاحيات، حذف الأوفلاين، إنشاء هذا الملف، اعتماد MySQL بدل PostgreSQL.
 - **2026-10-24:** تثبيت MySQL 8.4.13 مكان MariaDB في XAMPP؛ تثبيت Laravel Boost؛ تثبيت Sanctum (`install:api`) وspatie/permission (Teams=`tenant_id`) وactivitylog وmedialibrary وscramble؛ تحويل `users` إلى UUID؛ نقل الاختبارات إلى `carwash_testing`؛ إضافة `UserIdentityTest` (UUID، توكن Sanctum، عزل الأدوار بين tenants).
+- **2026-10-24:** Multi-tenancy: جداول `tenants` (الحالة، اللغة، العملة، المنطقة الزمنية) و`branches` و`users.tenant_id` وربط جداول الصلاحيات بـ `tenants`؛ `BelongsToTenant` يملأ `tenant_id` تلقائياً ويمنع الكتابة لـ tenant آخر أو نقل السجل؛ رفض مستخدمي المغاسل الموقوفة والمستخدمين بلا tenant بـ 403؛ Seeder لمغسلة تجريبية؛ 15 اختباراً جديداً (`TenantIsolationTest` و`TenantApiIsolationTest`).
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).

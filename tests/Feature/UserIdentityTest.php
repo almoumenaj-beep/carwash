@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Domain\Platform\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
@@ -21,7 +22,7 @@ class UserIdentityTest extends TestCase
 
     public function test_api_token_authenticates_a_uuid_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->forTenant()->create();
         $token = $user->createToken('device')->plainTextToken;
 
         $this->withToken($token)
@@ -32,8 +33,8 @@ class UserIdentityTest extends TestCase
 
     public function test_roles_are_scoped_to_the_current_tenant(): void
     {
-        $tenantA = (string) Str::uuid7();
-        $tenantB = (string) Str::uuid7();
+        $tenantA = Tenant::factory()->create()->id;
+        $tenantB = Tenant::factory()->create()->id;
         $user = User::factory()->create();
 
         setPermissionsTeamId($tenantA);
