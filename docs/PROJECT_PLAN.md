@@ -295,9 +295,9 @@
 
 ## بيئة التطوير الحالية
 - **مسار المشروع:** `C:\xampp\htdocs\carwash` (نُسخ من WSL؛ نسخة WSL القديمة لم تعد مرجعاً).
-- **PHP:** `C:\xampp\php84\php.exe` (8.4.27، بجانب PHP 8.2 الخاص بـ XAMPP). **Composer:** `C:\xampp\php84\composer.phar`. الأوامر: `php artisan ...` (المسار مضاف لـ PATH، يعمل في طرفية جديدة).
+- **PHP:** **8.4.27 هو PHP الأساسي في XAMPP** في `C:\xampp\php` (للطرفية وXAMPP Shell وApache معاً)؛ PHP 8.2 الأصلي محفوظ في `C:\xampp\php82` للرجوع فقط. **Composer:** `C:\xampp\php\composer.phar` (أو `composer.bat`). الأوامر: `php artisan ...` في أي طرفية جديدة.
 - **قاعدة البيانات:** **MySQL 8.4.13 LTS** في `C:\xampp\mysql` (حلّت محل MariaDB الخاصة بـ XAMPP، والنسخة القديمة محفوظة في `C:\xampp\mysql_mariadb104`) على `127.0.0.1:3307`، الإعداد في `C:\xampp\mysql\bin\my.ini` (utf8mb4، mysqlx معطّل). تُشغَّل من زر MySQL في لوحة XAMPP. قاعدة `carwash` + `carwash_testing` للاختبارات، المستخدم `admin` (كلمة السر في `.env`)، و`root` بدون كلمة سر محلياً. الإدارة عبر **phpMyAdmin** على http://localhost/phpmyadmin.
-- **التشغيل:** `php artisan serve` على http://localhost:8000. Git for Windows 2.56 مثبّت ومضبوط (user: Ali، الفرع الافتراضي `main`، مستودع مهيّأ في `C:\xampp\htdocs\carwash` بدون commits بعد؛ `.env` و`vendor` مستثنيان في `.gitignore`).
+- **التشغيل:** `php artisan serve` على http://localhost:8000، أو عبر Apache على http://localhost/carwash/public. Git for Windows 2.56 مثبّت ومضبوط (user: Ali، الفرع الافتراضي `main`، المستودع على GitHub: `almoumenaj-beep/carwash`؛ `.env` و`vendor` مستثنيان في `.gitignore`).
 - **الاختبارات:** `php artisan test` على MySQL (`carwash_testing`) لأن PHP 8.4 هنا بدون `pdo_sqlite`، ولتطابق بيئة الإنتاج.
 - **ملاحظة:** إن لم يُعرف `php` أو `git` في طرفية VS Code، أعد تشغيل VS Code (أُضيفت للـ PATH بعد فتحه).
 
@@ -321,6 +321,7 @@
 | 2026-10-24 | الأدوار على مستوى المغسلة كلها، ونطاق الفروع لكل مستخدم (`all_branches` أو `branch_user`) بدل دور مختلف لكل فرع | يحقق «مدير فرع A يرى فرعه فقط» ببساطة؛ دور لكل فرع يُضاف لاحقاً إن احتجناه |
 | 2026-10-24 | الأدوار الافتراضية تُنشأ صراحةً بـ `ProvisionDefaultRoles` (في الـ Onboarding/Seeder) وليس بحدث على Tenant؛ وإعادة التشغيل لا تمسّ تعديلات المالك | وضوح وسهولة اختبار؛ آمن للتشغيل المتكرر |
 | 2026-10-24 | حدود الخصم (`role_limits`) تُؤجَّل إلى مهمة POS | لا تُستخدم قبل وجود الخصم |
+| 2026-10-24 | PHP 8.4 يحل محل PHP 8.2 كـ PHP أساسي في XAMPP (`C:\xampp\php`، والقديم في `php82`) | XAMPP Shell وApache كانا يشغّلان 8.2 فيفشل Composer (يتطلب ≥ 8.4.1)؛ لا يوجد مشروع آخر يحتاج 8.2 |
 | 2026-10-24 | الاختبارات على قاعدة MySQL مستقلة `carwash_testing` بدل SQLite | لا يوجد `pdo_sqlite`، وسلوك MySQL (فهارس، أقفال) يجب أن يُختبر فعلياً |
 
 ## (D) سجل التغييرات (Changelog)
