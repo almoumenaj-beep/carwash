@@ -26,8 +26,8 @@ class TenantFactory extends Factory
             'slug' => Str::slug($name).'-'.Str::lower(Str::random(4)),
             'status' => TenantStatus::Active,
             'locale' => 'ar',
-            'currency' => 'SAR',
-            'timezone' => 'Asia/Riyadh',
+            'currency' => 'BHD',
+            'timezone' => 'Asia/Bahrain',
         ];
     }
 

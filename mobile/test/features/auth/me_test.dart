@@ -7,7 +7,7 @@ void main() {
       'id': '0199a1b2-0000-7000-8000-000000000001',
       'name': 'Demo Cashier',
       'email': 'cashier@example.com',
-      'tenant': {'id': 't1', 'name': 'Demo Car Wash', 'locale': 'ar', 'currency': 'SAR', 'timezone': 'Asia/Riyadh'},
+      'tenant': {'id': 't1', 'name': 'Demo Car Wash', 'locale': 'ar', 'currency': 'BHD', 'timezone': 'Asia/Bahrain'},
       'is_owner': false,
       'all_branches': false,
       'roles': [
