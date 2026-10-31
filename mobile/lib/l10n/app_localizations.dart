@@ -493,6 +493,246 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Revoked'**
   String get revoked;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Car wash settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, VAT, language and time zone'**
+  String get settingsSubtitle;
+
+  /// No description provided for @carWashName.
+  ///
+  /// In en, this message translates to:
+  /// **'Car wash name'**
+  String get carWashName;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @currencyLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Set when the account was opened; it cannot be changed'**
+  String get currencyLocked;
+
+  /// No description provided for @currencyDecimals.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no decimals} =1{1 decimal place} other{{count} decimal places}}'**
+  String currencyDecimals(int count);
+
+  /// No description provided for @vatSection.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT'**
+  String get vatSection;
+
+  /// No description provided for @vatRate.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT rate'**
+  String get vatRate;
+
+  /// No description provided for @vatRateInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a rate between 0 and 100'**
+  String get vatRateInvalid;
+
+  /// No description provided for @pricesIncludeVat.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices include VAT'**
+  String get pricesIncludeVat;
+
+  /// No description provided for @vatNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT registration number'**
+  String get vatNumber;
+
+  /// No description provided for @languageField.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageField;
+
+  /// No description provided for @timezoneField.
+  ///
+  /// In en, this message translates to:
+  /// **'Time zone'**
+  String get timezoneField;
+
+  /// No description provided for @arabicLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
+  String get arabicLanguage;
+
+  /// No description provided for @englishLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get englishLanguage;
+
+  /// No description provided for @branchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches'**
+  String get branchesTitle;
+
+  /// No description provided for @branchesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Branches, opening hours and bays'**
+  String get branchesSubtitle;
+
+  /// No description provided for @newBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'New branch'**
+  String get newBranch;
+
+  /// No description provided for @branchName.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch name'**
+  String get branchName;
+
+  /// No description provided for @branchCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch code'**
+  String get branchCode;
+
+  /// No description provided for @branchCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A short code, e.g. MAIN or RIF-1'**
+  String get branchCodeHint;
+
+  /// No description provided for @addressField.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get addressField;
+
+  /// No description provided for @branchActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch is open for business'**
+  String get branchActive;
+
+  /// No description provided for @branchClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get branchClosed;
+
+  /// No description provided for @openingHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening hours'**
+  String get openingHours;
+
+  /// No description provided for @closedDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get closedDay;
+
+  /// No description provided for @opensAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens'**
+  String get opensAt;
+
+  /// No description provided for @closesAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes'**
+  String get closesAt;
+
+  /// No description provided for @baysSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Bays'**
+  String get baysSection;
+
+  /// No description provided for @addBay.
+  ///
+  /// In en, this message translates to:
+  /// **'Add bay'**
+  String get addBay;
+
+  /// No description provided for @bayName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bay name'**
+  String get bayName;
+
+  /// No description provided for @noBays.
+  ///
+  /// In en, this message translates to:
+  /// **'No bays yet. Add the wash bays or stations of this branch.'**
+  String get noBays;
+
+  /// No description provided for @bayOutOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of service'**
+  String get bayOutOfService;
+
+  /// No description provided for @daySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get daySat;
+
+  /// No description provided for @daySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get daySun;
+
+  /// No description provided for @dayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get dayMon;
+
+  /// No description provided for @dayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get dayTue;
+
+  /// No description provided for @dayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get dayWed;
+
+  /// No description provided for @dayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get dayThu;
+
+  /// No description provided for @dayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get dayFri;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -4,6 +4,7 @@ import '../../features/auth/domain/me.dart';
 abstract final class Permissions {
   static const rolesManage = 'roles.manage';
   static const usersManage = 'users.manage';
+  static const settingsManage = 'settings.manage';
 }
 
 /// Which permissions open each section; holding any one of them is enough.
@@ -11,6 +12,8 @@ const routePermissions = <String, List<String>>{
   '/roles': [Permissions.rolesManage, Permissions.usersManage],
   '/staff': [Permissions.usersManage],
   '/devices': [Permissions.usersManage],
+  '/settings': [Permissions.settingsManage],
+  '/branches': [Permissions.settingsManage],
 };
 
 /// Whether [me] may open [location] (a path such as `/staff/42`).

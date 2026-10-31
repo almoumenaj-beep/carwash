@@ -108,5 +108,52 @@
       }
     }
   },
-  "revoked": "Revoked"
+  "revoked": "Revoked",
+  "settingsTitle": "Car wash settings",
+  "settingsSubtitle": "Name, VAT, language and time zone",
+  "carWashName": "Car wash name",
+  "currency": "Currency",
+  "currencyLocked": "Set when the account was opened; it cannot be changed",
+  "currencyDecimals": "{count, plural, =0{no decimals} =1{1 decimal place} other{{count} decimal places}}",
+  "@currencyDecimals": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "vatSection": "VAT",
+  "vatRate": "VAT rate",
+  "vatRateInvalid": "Enter a rate between 0 and 100",
+  "pricesIncludeVat": "Prices include VAT",
+  "vatNumber": "VAT registration number",
+  "languageField": "Language",
+  "timezoneField": "Time zone",
+  "arabicLanguage": "العربية",
+  "englishLanguage": "English",
+  "branchesTitle": "Branches",
+  "branchesSubtitle": "Branches, opening hours and bays",
+  "newBranch": "New branch",
+  "branchName": "Branch name",
+  "branchCode": "Branch code",
+  "branchCodeHint": "A short code, e.g. MAIN or RIF-1",
+  "addressField": "Address",
+  "branchActive": "Branch is open for business",
+  "branchClosed": "Closed",
+  "openingHours": "Opening hours",
+  "closedDay": "Closed",
+  "opensAt": "Opens",
+  "closesAt": "Closes",
+  "baysSection": "Bays",
+  "addBay": "Add bay",
+  "bayName": "Bay name",
+  "noBays": "No bays yet. Add the wash bays or stations of this branch.",
+  "bayOutOfService": "Out of service",
+  "daySat": "Saturday",
+  "daySun": "Sunday",
+  "dayMon": "Monday",
+  "dayTue": "Tuesday",
+  "dayWed": "Wednesday",
+  "dayThu": "Thursday",
+  "dayFri": "Friday"
 }

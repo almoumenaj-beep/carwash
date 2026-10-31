@@ -37,6 +37,12 @@ void main() {
     expect(canOpen('/roles', meWith({'orders.view'})), isFalse);
   });
 
+  test('settings and branches need settings.manage', () {
+    expect(canOpen('/settings', meWith({'users.manage'})), isFalse);
+    expect(canOpen('/branches/b1', meWith({'orders.view'})), isFalse);
+    expect(canOpen('/branches/new', meWith({'settings.manage'})), isTrue);
+  });
+
   test('a prefix only matches whole path segments', () {
     expect(canOpen('/staffroom', meWith({})), isTrue);
   });

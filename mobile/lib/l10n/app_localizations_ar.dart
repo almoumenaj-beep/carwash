@@ -242,4 +242,135 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get revoked => 'ملغى';
+
+  @override
+  String get settingsTitle => 'إعدادات المغسلة';
+
+  @override
+  String get settingsSubtitle => 'الاسم والضريبة واللغة والمنطقة الزمنية';
+
+  @override
+  String get carWashName => 'اسم المغسلة';
+
+  @override
+  String get currency => 'العملة';
+
+  @override
+  String get currencyLocked => 'تُحدَّد عند فتح الحساب ولا يمكن تغييرها';
+
+  @override
+  String currencyDecimals(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count منزلة عشرية',
+      few: '$count منازل عشرية',
+      two: 'منزلتان عشريتان',
+      one: 'منزلة عشرية واحدة',
+      zero: 'بدون كسور',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vatSection => 'ضريبة القيمة المضافة';
+
+  @override
+  String get vatRate => 'نسبة الضريبة';
+
+  @override
+  String get vatRateInvalid => 'أدخل نسبة بين 0 و100';
+
+  @override
+  String get pricesIncludeVat => 'الأسعار شاملة الضريبة';
+
+  @override
+  String get vatNumber => 'الرقم الضريبي';
+
+  @override
+  String get languageField => 'اللغة';
+
+  @override
+  String get timezoneField => 'المنطقة الزمنية';
+
+  @override
+  String get arabicLanguage => 'العربية';
+
+  @override
+  String get englishLanguage => 'English';
+
+  @override
+  String get branchesTitle => 'الفروع';
+
+  @override
+  String get branchesSubtitle => 'الفروع وساعات العمل والأرصفة';
+
+  @override
+  String get newBranch => 'فرع جديد';
+
+  @override
+  String get branchName => 'اسم الفرع';
+
+  @override
+  String get branchCode => 'رمز الفرع';
+
+  @override
+  String get branchCodeHint => 'رمز قصير بالإنجليزية، مثل MAIN أو RIF-1';
+
+  @override
+  String get addressField => 'العنوان';
+
+  @override
+  String get branchActive => 'الفرع يعمل';
+
+  @override
+  String get branchClosed => 'متوقف';
+
+  @override
+  String get openingHours => 'ساعات العمل';
+
+  @override
+  String get closedDay => 'مغلق';
+
+  @override
+  String get opensAt => 'يفتح';
+
+  @override
+  String get closesAt => 'يغلق';
+
+  @override
+  String get baysSection => 'الأرصفة';
+
+  @override
+  String get addBay => 'إضافة رصيف';
+
+  @override
+  String get bayName => 'اسم الرصيف';
+
+  @override
+  String get noBays => 'لا توجد أرصفة بعد. أضف أماكن الغسيل في هذا الفرع.';
+
+  @override
+  String get bayOutOfService => 'خارج الخدمة';
+
+  @override
+  String get daySat => 'السبت';
+
+  @override
+  String get daySun => 'الأحد';
+
+  @override
+  String get dayMon => 'الاثنين';
+
+  @override
+  String get dayTue => 'الثلاثاء';
+
+  @override
+  String get dayWed => 'الأربعاء';
+
+  @override
+  String get dayThu => 'الخميس';
+
+  @override
+  String get dayFri => 'الجمعة';
 }

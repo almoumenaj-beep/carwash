@@ -236,4 +236,133 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get revoked => 'Revoked';
+
+  @override
+  String get settingsTitle => 'Car wash settings';
+
+  @override
+  String get settingsSubtitle => 'Name, VAT, language and time zone';
+
+  @override
+  String get carWashName => 'Car wash name';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get currencyLocked => 'Set when the account was opened; it cannot be changed';
+
+  @override
+  String currencyDecimals(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count decimal places',
+      one: '1 decimal place',
+      zero: 'no decimals',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get vatSection => 'VAT';
+
+  @override
+  String get vatRate => 'VAT rate';
+
+  @override
+  String get vatRateInvalid => 'Enter a rate between 0 and 100';
+
+  @override
+  String get pricesIncludeVat => 'Prices include VAT';
+
+  @override
+  String get vatNumber => 'VAT registration number';
+
+  @override
+  String get languageField => 'Language';
+
+  @override
+  String get timezoneField => 'Time zone';
+
+  @override
+  String get arabicLanguage => 'العربية';
+
+  @override
+  String get englishLanguage => 'English';
+
+  @override
+  String get branchesTitle => 'Branches';
+
+  @override
+  String get branchesSubtitle => 'Branches, opening hours and bays';
+
+  @override
+  String get newBranch => 'New branch';
+
+  @override
+  String get branchName => 'Branch name';
+
+  @override
+  String get branchCode => 'Branch code';
+
+  @override
+  String get branchCodeHint => 'A short code, e.g. MAIN or RIF-1';
+
+  @override
+  String get addressField => 'Address';
+
+  @override
+  String get branchActive => 'Branch is open for business';
+
+  @override
+  String get branchClosed => 'Closed';
+
+  @override
+  String get openingHours => 'Opening hours';
+
+  @override
+  String get closedDay => 'Closed';
+
+  @override
+  String get opensAt => 'Opens';
+
+  @override
+  String get closesAt => 'Closes';
+
+  @override
+  String get baysSection => 'Bays';
+
+  @override
+  String get addBay => 'Add bay';
+
+  @override
+  String get bayName => 'Bay name';
+
+  @override
+  String get noBays => 'No bays yet. Add the wash bays or stations of this branch.';
+
+  @override
+  String get bayOutOfService => 'Out of service';
+
+  @override
+  String get daySat => 'Saturday';
+
+  @override
+  String get daySun => 'Sunday';
+
+  @override
+  String get dayMon => 'Monday';
+
+  @override
+  String get dayTue => 'Tuesday';
+
+  @override
+  String get dayWed => 'Wednesday';
+
+  @override
+  String get dayThu => 'Thursday';
+
+  @override
+  String get dayFri => 'Friday';
 }

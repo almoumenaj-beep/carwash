@@ -102,6 +102,8 @@ class _ManagementMenu extends ConsumerWidget {
       (path: '/staff', icon: Icons.groups_outlined, title: l10n.staffTitle, subtitle: l10n.staffSubtitle),
       (path: '/roles', icon: Icons.admin_panel_settings_outlined, title: l10n.rolesTitle, subtitle: l10n.rolesSubtitle),
       (path: '/devices', icon: Icons.devices_other_outlined, title: l10n.devicesTitle, subtitle: l10n.devicesSubtitle),
+      (path: '/branches', icon: Icons.store_outlined, title: l10n.branchesTitle, subtitle: l10n.branchesSubtitle),
+      (path: '/settings', icon: Icons.settings_outlined, title: l10n.settingsTitle, subtitle: l10n.settingsSubtitle),
     ].where((entry) => me != null && canOpen(entry.path, me)).toList();
 
     if (entries.isEmpty) {
