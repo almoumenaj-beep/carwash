@@ -17,12 +17,12 @@ class ApiProblem implements Exception {
 
   /// The connection failed or timed out, so the server never answered.
   const ApiProblem.network()
-      : type = networkType,
-        title = '',
-        status = 0,
-        detail = '',
-        errors = const {},
-        retryAfter = null;
+    : type = networkType,
+      title = '',
+      status = 0,
+      detail = '',
+      errors = const {},
+      retryAfter = null;
 
   factory ApiProblem.fromJson(Map<String, dynamic> json, {int? status}) {
     final errors = <String, List<String>>{};

@@ -124,9 +124,116 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
-  String get networkError =>
-      'Cannot reach the server. Check your connection and try again.';
+  String get networkError => 'Cannot reach the server. Check your connection and try again.';
 
   @override
   String get unexpectedError => 'Something went wrong. Please try again.';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get listSeparator => ', ';
+
+  @override
+  String get rolesTitle => 'Roles';
+
+  @override
+  String get rolesSubtitle => 'Roles and their permissions';
+
+  @override
+  String get staffTitle => 'Staff';
+
+  @override
+  String get staffSubtitle => 'Accounts, roles and branches';
+
+  @override
+  String get devicesTitle => 'Devices';
+
+  @override
+  String get devicesSubtitle => 'Phones and tablets signed in';
+
+  @override
+  String get newRole => 'New role';
+
+  @override
+  String get roleName => 'Role name';
+
+  @override
+  String get allPermissions => 'All permissions';
+
+  @override
+  String get ownerRoleLocked => 'The owner role always has every permission and cannot be changed.';
+
+  @override
+  String get readOnlyRole => 'You can view roles but not change them.';
+
+  @override
+  String staffCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count staff',
+      one: '1 staff member',
+      zero: 'No staff',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteRole => 'Delete role';
+
+  @override
+  String deleteRoleConfirm(String name) {
+    return 'Delete the role “$name”?';
+  }
+
+  @override
+  String get newStaff => 'Add staff';
+
+  @override
+  String get staffName => 'Name';
+
+  @override
+  String get emailField => 'Email';
+
+  @override
+  String get phoneField => 'Phone';
+
+  @override
+  String get emailOrPhoneRequired => 'Enter an email or a phone number';
+
+  @override
+  String get passwordKeepHint => 'Leave empty to keep the current password';
+
+  @override
+  String get allBranchesSwitch => 'Works in all branches';
+
+  @override
+  String get activeSwitch => 'Account active';
+
+  @override
+  String get inactive => 'Deactivated';
+
+  @override
+  String get noDevices => 'No devices have signed in yet';
+
+  @override
+  String get revokeDevice => 'Revoke';
+
+  @override
+  String revokeDeviceConfirm(String name) {
+    return 'Sign out “$name” and stop PIN switching on it?';
+  }
+
+  @override
+  String lastSignIn(String date) {
+    return 'Last sign-in: $date';
+  }
+
+  @override
+  String get revoked => 'Revoked';
 }

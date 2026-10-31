@@ -3,9 +3,7 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final sessionStorageProvider = Provider<SessionStorage>(
-  (ref) => SessionStorage(const FlutterSecureStorage()),
-);
+final sessionStorageProvider = Provider<SessionStorage>((ref) => SessionStorage(const FlutterSecureStorage()));
 
 /// Keeps the API token and this device's identity in the platform's secure storage.
 ///

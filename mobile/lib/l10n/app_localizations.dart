@@ -62,8 +62,7 @@ import 'app_localizations_en.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale)
-    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -71,8 +70,7 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate =
-      _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -84,19 +82,15 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
-        delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('ar'),
-    Locale('en'),
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('ar'), Locale('en')];
 
   /// No description provided for @appTitle.
   ///
@@ -313,10 +307,195 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get unexpectedError;
+
+  /// No description provided for @saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get saved;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @listSeparator.
+  ///
+  /// In en, this message translates to:
+  /// **', '**
+  String get listSeparator;
+
+  /// No description provided for @rolesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles'**
+  String get rolesTitle;
+
+  /// No description provided for @rolesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Roles and their permissions'**
+  String get rolesSubtitle;
+
+  /// No description provided for @staffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get staffTitle;
+
+  /// No description provided for @staffSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts, roles and branches'**
+  String get staffSubtitle;
+
+  /// No description provided for @devicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Devices'**
+  String get devicesTitle;
+
+  /// No description provided for @devicesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Phones and tablets signed in'**
+  String get devicesSubtitle;
+
+  /// No description provided for @newRole.
+  ///
+  /// In en, this message translates to:
+  /// **'New role'**
+  String get newRole;
+
+  /// No description provided for @roleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Role name'**
+  String get roleName;
+
+  /// No description provided for @allPermissions.
+  ///
+  /// In en, this message translates to:
+  /// **'All permissions'**
+  String get allPermissions;
+
+  /// No description provided for @ownerRoleLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The owner role always has every permission and cannot be changed.'**
+  String get ownerRoleLocked;
+
+  /// No description provided for @readOnlyRole.
+  ///
+  /// In en, this message translates to:
+  /// **'You can view roles but not change them.'**
+  String get readOnlyRole;
+
+  /// No description provided for @staffCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No staff} =1{1 staff member} other{{count} staff}}'**
+  String staffCount(int count);
+
+  /// No description provided for @deleteRole.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete role'**
+  String get deleteRole;
+
+  /// No description provided for @deleteRoleConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the role “{name}”?'**
+  String deleteRoleConfirm(String name);
+
+  /// No description provided for @newStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff'**
+  String get newStaff;
+
+  /// No description provided for @staffName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get staffName;
+
+  /// No description provided for @emailField.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailField;
+
+  /// No description provided for @phoneField.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phoneField;
+
+  /// No description provided for @emailOrPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an email or a phone number'**
+  String get emailOrPhoneRequired;
+
+  /// No description provided for @passwordKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to keep the current password'**
+  String get passwordKeepHint;
+
+  /// No description provided for @allBranchesSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Works in all branches'**
+  String get allBranchesSwitch;
+
+  /// No description provided for @activeSwitch.
+  ///
+  /// In en, this message translates to:
+  /// **'Account active'**
+  String get activeSwitch;
+
+  /// No description provided for @inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivated'**
+  String get inactive;
+
+  /// No description provided for @noDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'No devices have signed in yet'**
+  String get noDevices;
+
+  /// No description provided for @revokeDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get revokeDevice;
+
+  /// No description provided for @revokeDeviceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out “{name}” and stop PIN switching on it?'**
+  String revokeDeviceConfirm(String name);
+
+  /// No description provided for @lastSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Last sign-in: {date}'**
+  String lastSignIn(String date);
+
+  /// No description provided for @revoked.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoked'**
+  String get revoked;
 }
 
-class _AppLocalizationsDelegate
-    extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -325,8 +504,7 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['ar', 'en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;

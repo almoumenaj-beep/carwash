@@ -12,7 +12,8 @@ void main() {
       retry: (retryCount, error) => null,
       overrides: [
         unauthorizedHandlerProvider.overrideWith(
-          (ref) => () => ref.read(sessionProvider.notifier).expire(),
+          (ref) =>
+              () => ref.read(sessionProvider.notifier).expire(),
         ),
       ],
       child: const CarWashApp(),

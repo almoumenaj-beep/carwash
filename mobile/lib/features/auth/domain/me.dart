@@ -22,13 +22,9 @@ class Me {
       carWashName: tenant['name'] as String,
       isOwner: json['is_owner'] as bool,
       allBranches: json['all_branches'] as bool,
-      roles: [
-        for (final role in json['roles'] as List) RoleSummary.fromJson(role as Map<String, dynamic>),
-      ],
+      roles: [for (final role in json['roles'] as List) RoleSummary.fromJson(role as Map<String, dynamic>)],
       permissions: {for (final permission in json['permissions'] as List) permission as String},
-      branches: [
-        for (final branch in json['branches'] as List) BranchSummary.fromJson(branch as Map<String, dynamic>),
-      ],
+      branches: [for (final branch in json['branches'] as List) BranchSummary.fromJson(branch as Map<String, dynamic>)],
     );
   }
 
@@ -49,11 +45,8 @@ class Me {
 class RoleSummary {
   const RoleSummary({required this.id, required this.key, required this.label});
 
-  factory RoleSummary.fromJson(Map<String, dynamic> json) => RoleSummary(
-        id: json['id'] as int,
-        key: json['key'] as String?,
-        label: json['label'] as String,
-      );
+  factory RoleSummary.fromJson(Map<String, dynamic> json) =>
+      RoleSummary(id: json['id'] as int, key: json['key'] as String?, label: json['label'] as String);
 
   final int id;
   final String? key;
@@ -63,11 +56,8 @@ class RoleSummary {
 class BranchSummary {
   const BranchSummary({required this.id, required this.name, required this.code});
 
-  factory BranchSummary.fromJson(Map<String, dynamic> json) => BranchSummary(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        code: json['code'] as String,
-      );
+  factory BranchSummary.fromJson(Map<String, dynamic> json) =>
+      BranchSummary(id: json['id'] as String, name: json['name'] as String, code: json['code'] as String);
 
   final String id;
   final String name;
@@ -78,10 +68,8 @@ class BranchSummary {
 class DeviceStaff {
   const DeviceStaff({required this.id, required this.name});
 
-  factory DeviceStaff.fromJson(Map<String, dynamic> json) => DeviceStaff(
-        id: json['id'] as String,
-        name: json['name'] as String,
-      );
+  factory DeviceStaff.fromJson(Map<String, dynamic> json) =>
+      DeviceStaff(id: json['id'] as String, name: json['name'] as String);
 
   final String id;
   final String name;

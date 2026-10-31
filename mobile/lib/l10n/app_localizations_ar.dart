@@ -127,9 +127,119 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'إعادة المحاولة';
 
   @override
-  String get networkError =>
-      'تعذّر الاتصال بالخادم. تحقّق من الاتصال وحاول مرة أخرى.';
+  String get networkError => 'تعذّر الاتصال بالخادم. تحقّق من الاتصال وحاول مرة أخرى.';
 
   @override
   String get unexpectedError => 'حدث خطأ. حاول مرة أخرى.';
+
+  @override
+  String get saved => 'تم الحفظ';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get listSeparator => '، ';
+
+  @override
+  String get rolesTitle => 'الأدوار';
+
+  @override
+  String get rolesSubtitle => 'الأدوار وصلاحياتها';
+
+  @override
+  String get staffTitle => 'الموظفون';
+
+  @override
+  String get staffSubtitle => 'الحسابات والأدوار والفروع';
+
+  @override
+  String get devicesTitle => 'الأجهزة';
+
+  @override
+  String get devicesSubtitle => 'الجوالات والأجهزة اللوحية المسجّلة';
+
+  @override
+  String get newRole => 'دور جديد';
+
+  @override
+  String get roleName => 'اسم الدور';
+
+  @override
+  String get allPermissions => 'كل الصلاحيات';
+
+  @override
+  String get ownerRoleLocked => 'دور المالك يملك كل الصلاحيات دائماً ولا يمكن تعديله.';
+
+  @override
+  String get readOnlyRole => 'يمكنك عرض الأدوار فقط دون تعديلها.';
+
+  @override
+  String staffCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count موظف',
+      many: '$count موظفاً',
+      few: '$count موظفين',
+      two: 'موظفان',
+      one: 'موظف واحد',
+      zero: 'لا يوجد موظفون',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteRole => 'حذف الدور';
+
+  @override
+  String deleteRoleConfirm(String name) {
+    return 'حذف الدور «$name»؟';
+  }
+
+  @override
+  String get newStaff => 'إضافة موظف';
+
+  @override
+  String get staffName => 'الاسم';
+
+  @override
+  String get emailField => 'البريد الإلكتروني';
+
+  @override
+  String get phoneField => 'رقم الجوال';
+
+  @override
+  String get emailOrPhoneRequired => 'أدخل البريد الإلكتروني أو رقم الجوال';
+
+  @override
+  String get passwordKeepHint => 'اتركه فارغاً لإبقاء كلمة المرور الحالية';
+
+  @override
+  String get allBranchesSwitch => 'يعمل في كل الفروع';
+
+  @override
+  String get activeSwitch => 'الحساب مفعّل';
+
+  @override
+  String get inactive => 'موقوف';
+
+  @override
+  String get noDevices => 'لم يسجّل أي جهاز الدخول بعد';
+
+  @override
+  String get revokeDevice => 'إلغاء';
+
+  @override
+  String revokeDeviceConfirm(String name) {
+    return 'تسجيل خروج «$name» ومنع تبديل المستخدم عليه؟';
+  }
+
+  @override
+  String lastSignIn(String date) {
+    return 'آخر دخول: $date';
+  }
+
+  @override
+  String get revoked => 'ملغى';
 }

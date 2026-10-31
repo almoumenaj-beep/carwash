@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_problem.dart';
+import '../../../core/network/api_request.dart';
 import '../../../core/storage/session_storage.dart';
 import '../domain/me.dart';
 
@@ -37,17 +38,19 @@ class AuthRepository {
   }
 
   Future<Me> signIn({required String login, required String password}) async {
-    final response = await _send(() async => _dio.post<Map<String, dynamic>>(
-          '/auth/login',
-          data: {
-            'login': login,
-            'password': password,
-            'device_identifier': await _storage.deviceIdentifier(),
-            'device_name': _deviceName,
-            'platform': _platform,
-          },
-          options: _unauthenticated,
-        ));
+    final response = await _send(
+      () async => _dio.post<Map<String, dynamic>>(
+        '/auth/login',
+        data: {
+          'login': login,
+          'password': password,
+          'device_identifier': await _storage.deviceIdentifier(),
+          'device_name': _deviceName,
+          'platform': _platform,
+        },
+        options: _unauthenticated,
+      ),
+    );
 
     final data = response.data!['data'] as Map<String, dynamic>;
     await _storage.saveToken(data['token'] as String);
@@ -60,23 +63,25 @@ class AuthRepository {
   Future<bool> isTrustedDevice() async => await _storage.deviceSecret() != null;
 
   Future<List<DeviceStaff>> deviceStaff() async {
-    final response = await _send(() async => _dio.post<Map<String, dynamic>>(
-          '/auth/device-staff',
-          data: await _deviceCredentials(),
-          options: _unauthenticated,
-        ));
+    final response = await _send(
+      () async => _dio.post<Map<String, dynamic>>(
+        '/auth/device-staff',
+        data: await _deviceCredentials(),
+        options: _unauthenticated,
+      ),
+    );
 
-    return [
-      for (final staff in response.data!['data'] as List) DeviceStaff.fromJson(staff as Map<String, dynamic>),
-    ];
+    return [for (final staff in response.data!['data'] as List) DeviceStaff.fromJson(staff as Map<String, dynamic>)];
   }
 
   Future<Me> pinSignIn({required String userId, required String pin}) async {
-    final response = await _send(() async => _dio.post<Map<String, dynamic>>(
-          '/auth/pin-login',
-          data: {...await _deviceCredentials(), 'user_id': userId, 'pin': pin},
-          options: _unauthenticated,
-        ));
+    final response = await _send(
+      () async => _dio.post<Map<String, dynamic>>(
+        '/auth/pin-login',
+        data: {...await _deviceCredentials(), 'user_id': userId, 'pin': pin},
+        options: _unauthenticated,
+      ),
+    );
 
     final data = response.data!['data'] as Map<String, dynamic>;
     await _storage.saveToken(data['token'] as String);
@@ -85,11 +90,9 @@ class AuthRepository {
   }
 
   Future<void> setPin({required String currentPassword, required String pin}) async {
-    await _send(() => _dio.put<void>('/me/pin', data: {
-          'current_password': currentPassword,
-          'pin': pin,
-          'pin_confirmation': pin,
-        }));
+    await _send(
+      () => _dio.put<void>('/me/pin', data: {'current_password': currentPassword, 'pin': pin, 'pin_confirmation': pin}),
+    );
   }
 
   /// Ends the session on the server when reachable; the device stays trusted for PIN switching.
@@ -107,27 +110,21 @@ class AuthRepository {
   static final _unauthenticated = Options(extra: {skipAuth: true});
 
   Future<Map<String, String>> _deviceCredentials() async => {
-        'device_identifier': await _storage.deviceIdentifier(),
-        'device_secret': await _storage.deviceSecret() ?? '',
-      };
+    'device_identifier': await _storage.deviceIdentifier(),
+    'device_secret': await _storage.deviceSecret() ?? '',
+  };
 
-  Future<Response<T>> _send<T>(Future<Response<T>> Function() request) async {
-    try {
-      return await request();
-    } on DioException catch (exception) {
-      throw ApiProblem.fromDioException(exception);
-    }
-  }
+  Future<Response<T>> _send<T>(Future<Response<T>> Function() request) => sendRequest(request);
 
   static String get _platform => switch (kIsWeb ? null : defaultTargetPlatform) {
-        TargetPlatform.android => 'android',
-        TargetPlatform.iOS => 'ios',
-        _ => 'web',
-      };
+    TargetPlatform.android => 'android',
+    TargetPlatform.iOS => 'ios',
+    _ => 'web',
+  };
 
   static String get _deviceName => switch (_platform) {
-        'android' => 'Android device',
-        'ios' => 'iPhone / iPad',
-        _ => 'Web browser',
-      };
+    'android' => 'Android device',
+    'ios' => 'iPhone / iPad',
+    _ => 'Web browser',
+  };
 }

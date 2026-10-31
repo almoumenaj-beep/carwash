@@ -6,19 +6,25 @@ void main() {
   final request = RequestOptions(path: '/auth/login');
 
   test('reads a validation problem with its field errors', () {
-    final problem = ApiProblem.fromDioException(DioException(
-      requestOptions: request,
-      response: Response(requestOptions: request, statusCode: 422, data: {
-        'type': 'urn:carwash:problem:validation-failed',
-        'title': 'البيانات المرسلة غير صالحة',
-        'status': 422,
-        'detail': 'حقل كلمة المرور مطلوب.',
-        'instance': '/api/v1/auth/login',
-        'errors': {
-          'password': ['حقل كلمة المرور مطلوب.'],
-        },
-      }),
-    ));
+    final problem = ApiProblem.fromDioException(
+      DioException(
+        requestOptions: request,
+        response: Response(
+          requestOptions: request,
+          statusCode: 422,
+          data: {
+            'type': 'urn:carwash:problem:validation-failed',
+            'title': 'البيانات المرسلة غير صالحة',
+            'status': 422,
+            'detail': 'حقل كلمة المرور مطلوب.',
+            'instance': '/api/v1/auth/login',
+            'errors': {
+              'password': ['حقل كلمة المرور مطلوب.'],
+            },
+          },
+        ),
+      ),
+    );
 
     expect(problem.isValidation, isTrue);
     expect(problem.status, 422);
@@ -27,14 +33,16 @@ void main() {
   });
 
   test('reads a problem sent as a JSON string', () {
-    final problem = ApiProblem.fromDioException(DioException(
-      requestOptions: request,
-      response: Response(
+    final problem = ApiProblem.fromDioException(
+      DioException(
         requestOptions: request,
-        statusCode: 429,
-        data: '{"type":"urn:carwash:problem:too-many-requests","title":"Too many requests","status":429,"detail":"Too Many Attempts.","retry_after":42}',
+        response: Response(
+          requestOptions: request,
+          statusCode: 429,
+          data: '{"type":"urn:carwash:problem:too-many-requests","title":"Too many requests","status":429,"detail":"Too Many Attempts.","retry_after":42}',
+        ),
       ),
-    ));
+    );
 
     expect(problem.type, 'urn:carwash:problem:too-many-requests');
     expect(problem.retryAfter, 42);
@@ -49,10 +57,12 @@ void main() {
   });
 
   test('keeps the status of a non-JSON error response', () {
-    final problem = ApiProblem.fromDioException(DioException(
-      requestOptions: request,
-      response: Response(requestOptions: request, statusCode: 502, statusMessage: 'Bad Gateway', data: '<html>'),
-    ));
+    final problem = ApiProblem.fromDioException(
+      DioException(
+        requestOptions: request,
+        response: Response(requestOptions: request, statusCode: 502, statusMessage: 'Bad Gateway', data: '<html>'),
+      ),
+    );
 
     expect(problem.type, 'about:blank');
     expect(problem.status, 502);

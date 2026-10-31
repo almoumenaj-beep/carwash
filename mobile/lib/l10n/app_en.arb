@@ -49,5 +49,64 @@
   "cancel": "Cancel",
   "retry": "Retry",
   "networkError": "Cannot reach the server. Check your connection and try again.",
-  "unexpectedError": "Something went wrong. Please try again."
+  "unexpectedError": "Something went wrong. Please try again.",
+  "saved": "Saved",
+  "delete": "Delete",
+  "listSeparator": ", ",
+  "rolesTitle": "Roles",
+  "rolesSubtitle": "Roles and their permissions",
+  "staffTitle": "Staff",
+  "staffSubtitle": "Accounts, roles and branches",
+  "devicesTitle": "Devices",
+  "devicesSubtitle": "Phones and tablets signed in",
+  "newRole": "New role",
+  "roleName": "Role name",
+  "allPermissions": "All permissions",
+  "ownerRoleLocked": "The owner role always has every permission and cannot be changed.",
+  "readOnlyRole": "You can view roles but not change them.",
+  "staffCount": "{count, plural, =0{No staff} =1{1 staff member} other{{count} staff}}",
+  "@staffCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteRole": "Delete role",
+  "deleteRoleConfirm": "Delete the role “{name}”?",
+  "@deleteRoleConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "newStaff": "Add staff",
+  "staffName": "Name",
+  "emailField": "Email",
+  "phoneField": "Phone",
+  "emailOrPhoneRequired": "Enter an email or a phone number",
+  "passwordKeepHint": "Leave empty to keep the current password",
+  "allBranchesSwitch": "Works in all branches",
+  "activeSwitch": "Account active",
+  "inactive": "Deactivated",
+  "noDevices": "No devices have signed in yet",
+  "revokeDevice": "Revoke",
+  "revokeDeviceConfirm": "Sign out “{name}” and stop PIN switching on it?",
+  "@revokeDeviceConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "lastSignIn": "Last sign-in: {date}",
+  "@lastSignIn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "revoked": "Revoked"
 }
