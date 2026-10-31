@@ -10,9 +10,12 @@ use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
+use App\Http\Controllers\Api\V1\ServiceCategoryController;
+use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\StaffController;
 use App\Http\Controllers\Api\V1\UserRoleController;
+use App\Http\Controllers\Api\V1\VehicleSizeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('v1.')->group(function () {
@@ -40,6 +43,10 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         Route::apiResource('branches', BranchController::class);
         Route::apiResource('branches.bays', BayController::class)->shallow()->only(['index', 'store', 'update']);
+
+        Route::apiResource('vehicle-sizes', VehicleSizeController::class)->except('show');
+        Route::apiResource('service-categories', ServiceCategoryController::class)->except('show');
+        Route::apiResource('services', ServiceController::class);
 
         Route::apiResource('devices', DeviceController::class)->only(['index', 'destroy']);
     });

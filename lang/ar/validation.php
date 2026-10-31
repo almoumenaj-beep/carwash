@@ -215,6 +215,14 @@ return [
         'prices_include_vat' => 'الأسعار شاملة الضريبة',
         'vat_number' => 'الرقم الضريبي',
         'sort_order' => 'الترتيب',
+        'service_category_id' => 'التصنيف',
+        'description' => 'الوصف',
+        'duration_minutes' => 'المدة بالدقائق',
+        'is_addon' => 'إضافة',
+        'prices' => 'الأسعار',
+        'prices.*.price' => 'السعر',
+        'prices.*.vehicle_size_id' => 'حجم السيارة',
+        'prices.*.branch_id' => 'الفرع',
     ],
 
 ];

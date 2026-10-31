@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
             $cashier->assignRole($this->defaultRole($tenant, DefaultRole::Cashier));
             $cashier->branches()->attach($mainBranch);
         });
+
+        $this->call(DemoCatalogSeeder::class);
     }
 
     private function defaultRole(Tenant $tenant, DefaultRole $defaultRole): Role
