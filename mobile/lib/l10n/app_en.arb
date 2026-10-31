@@ -149,6 +149,16 @@
   "bayName": "Bay name",
   "noBays": "No bays yet. Add the wash bays or stations of this branch.",
   "bayOutOfService": "Out of service",
+  "deleteBranch": "Delete branch",
+  "deleteBranchConfirm": "Delete “{name}” permanently? This is only possible for a branch that was never used; otherwise, close it instead.",
+  "@deleteBranchConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "branchDeleted": "Branch deleted",
   "daySat": "Saturday",
   "daySun": "Sunday",
   "dayMon": "Monday",

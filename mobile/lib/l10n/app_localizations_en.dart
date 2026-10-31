@@ -346,6 +346,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bayOutOfService => 'Out of service';
 
   @override
+  String get deleteBranch => 'Delete branch';
+
+  @override
+  String deleteBranchConfirm(String name) {
+    return 'Delete “$name” permanently? This is only possible for a branch that was never used; otherwise, close it instead.';
+  }
+
+  @override
+  String get branchDeleted => 'Branch deleted';
+
+  @override
   String get daySat => 'Saturday';
 
   @override

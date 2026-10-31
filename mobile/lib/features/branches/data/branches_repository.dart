@@ -40,6 +40,11 @@ class BranchesRepository {
     return Branch.fromJson(unwrapData(response));
   }
 
+  /// Deletes a never-used branch; the server refuses (422) for branches in use or the last one.
+  Future<void> delete(String id) async {
+    await sendRequest(() => _dio.delete<void>('/branches/$id'));
+  }
+
   Future<Bay> addBay(String branchId, String name) async {
     final response = await sendRequest(
       () => _dio.post<Map<String, dynamic>>('/branches/$branchId/bays', data: {'name': name}),

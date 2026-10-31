@@ -354,6 +354,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bayOutOfService => 'خارج الخدمة';
 
   @override
+  String get deleteBranch => 'حذف الفرع';
+
+  @override
+  String deleteBranchConfirm(String name) {
+    return 'حذف «$name» نهائياً؟ يُسمح بذلك فقط لفرع لم يُستخدم بعد، وإلا فأوقفه بدلاً من حذفه.';
+  }
+
+  @override
+  String get branchDeleted => 'تم حذف الفرع';
+
+  @override
   String get daySat => 'السبت';
 
   @override

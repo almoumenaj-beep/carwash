@@ -38,7 +38,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('settings', [SettingsController::class, 'show'])->name('settings.show');
         Route::patch('settings', [SettingsController::class, 'update'])->name('settings.update');
 
-        Route::apiResource('branches', BranchController::class)->except('destroy');
+        Route::apiResource('branches', BranchController::class);
         Route::apiResource('branches.bays', BayController::class)->shallow()->only(['index', 'store', 'update']);
 
         Route::apiResource('devices', DeviceController::class)->only(['index', 'destroy']);

@@ -123,6 +123,54 @@ class BranchApiTest extends TestCase
         $this->getJson("/api/v1/branches/{$otherBranch->id}")->assertForbidden();
     }
 
+    public function test_an_unused_branch_is_deleted_with_its_bays_and_its_code_can_be_reused(): void
+    {
+        Branch::factory()->for($this->tenant)->create(['code' => 'MAIN']);
+        $mistake = Branch::factory()->for($this->tenant)->create(['code' => 'RIF-1']);
+        $bay = Bay::factory()->for($mistake)->create();
+        Sanctum::actingAs($this->owner);
+
+        $this->deleteJson("/api/v1/branches/{$mistake->id}")->assertNoContent();
+
+        $this->assertDatabaseMissing('branches', ['id' => $mistake->id]);
+        $this->assertDatabaseMissing('bays', ['id' => $bay->id]);
+        $this->assertDatabaseHas('activity_log', ['event' => 'branch.deleted', 'subject_id' => $mistake->id]);
+        $this->postJson('/api/v1/branches', ['name' => 'Riffa', 'code' => 'RIF-1'])->assertCreated();
+    }
+
+    public function test_a_branch_with_staff_can_only_be_closed(): void
+    {
+        Branch::factory()->for($this->tenant)->create();
+        $branch = Branch::factory()->for($this->tenant)->create();
+        $this->createStaff($this->tenant, DefaultRole::Cashier, [$branch]);
+        Sanctum::actingAs($this->owner);
+
+        $this->deleteJson("/api/v1/branches/{$branch->id}")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['branch' => 'This branch is in use (staff are assigned to it). Close it instead of deleting it.']);
+        $this->assertModelExists($branch);
+    }
+
+    public function test_the_last_branch_cannot_be_deleted(): void
+    {
+        $onlyBranch = Branch::factory()->for($this->tenant)->create();
+        Sanctum::actingAs($this->owner);
+
+        $this->deleteJson("/api/v1/branches/{$onlyBranch->id}")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['branch' => 'A car wash needs at least one branch.']);
+    }
+
+    public function test_staff_without_settings_permission_cannot_delete_branches(): void
+    {
+        Branch::factory()->for($this->tenant)->create();
+        $branch = Branch::factory()->for($this->tenant)->create();
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::BranchManager, allBranches: true));
+
+        $this->deleteJson("/api/v1/branches/{$branch->id}")->assertForbidden();
+        $this->assertModelExists($branch);
+    }
+
     public function test_branch_of_another_car_wash_is_not_found(): void
     {
         $foreignBranch = Branch::factory()->for(Tenant::factory())->create();
@@ -130,5 +178,6 @@ class BranchApiTest extends TestCase
 
         $this->getJson("/api/v1/branches/{$foreignBranch->id}")->assertNotFound();
         $this->patchJson("/api/v1/branches/{$foreignBranch->id}", ['name' => 'Hijacked'])->assertNotFound();
+        $this->deleteJson("/api/v1/branches/{$foreignBranch->id}")->assertNotFound();
     }
 }

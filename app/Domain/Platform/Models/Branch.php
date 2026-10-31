@@ -4,6 +4,7 @@ namespace App\Domain\Platform\Models;
 
 use App\Domain\Platform\Policies\BranchPolicy;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
+use App\Models\User;
 use Database\Factories\BranchFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -82,5 +84,24 @@ class Branch extends Model
     public function bays(): HasMany
     {
         return $this->hasMany(Bay::class);
+    }
+
+    /**
+     * Staff assigned to this branch specifically (all-branch staff are not listed).
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function staff(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    /**
+     * Whether anything depends on the branch, so it may only be closed, not deleted.
+     * Work orders, payments and shifts join this check as those modules arrive.
+     */
+    public function isInUse(): bool
+    {
+        return $this->staff()->exists();
     }
 }

@@ -692,6 +692,24 @@ abstract class AppLocalizations {
   /// **'Out of service'**
   String get bayOutOfService;
 
+  /// No description provided for @deleteBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete branch'**
+  String get deleteBranch;
+
+  /// No description provided for @deleteBranchConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}” permanently? This is only possible for a branch that was never used; otherwise, close it instead.'**
+  String deleteBranchConfirm(String name);
+
+  /// No description provided for @branchDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch deleted'**
+  String get branchDeleted;
+
   /// No description provided for @daySat.
   ///
   /// In en, this message translates to:

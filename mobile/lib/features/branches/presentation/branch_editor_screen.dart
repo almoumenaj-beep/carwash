@@ -121,6 +121,41 @@ class _BranchFormState extends ConsumerState<_BranchForm> {
     }
   }
 
+  /// Only never-used branches can be deleted; otherwise the server explains why and the branch can be closed.
+  Future<void> _delete() async {
+    final l10n = AppLocalizations.of(context);
+    final branch = widget.branch!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteBranch),
+        content: Text(l10n.deleteBranchConfirm(branch.name)),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(l10n.cancel)),
+          FilledButton(onPressed: () => Navigator.of(context).pop(true), child: Text(l10n.delete)),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    try {
+      await ref.read(branchesRepositoryProvider).delete(branch.id);
+      ref.invalidate(branchListProvider);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.branchDeleted)));
+        context.pop();
+      }
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
+      if (mounted) {
+        final message = problem.fieldError('branch') ?? problemMessage(context, problem);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      }
+    }
+  }
+
   Future<void> _pickTime(String day, {required bool opening}) async {
     final current = _hours[day]!;
     final [hour, minute] = (opening ? current.opens : current.closes).split(':').map(int.parse).toList();
@@ -146,7 +181,13 @@ class _BranchFormState extends ConsumerState<_BranchForm> {
     final generalError = _problem != null && !hasKnownError ? problemMessage(context, _problem!) : null;
 
     return Scaffold(
-      appBar: AppBar(title: Text(_isNew ? l10n.newBranch : widget.branch!.name)),
+      appBar: AppBar(
+        title: Text(_isNew ? l10n.newBranch : widget.branch!.name),
+        actions: [
+          if (!_isNew)
+            IconButton(tooltip: l10n.deleteBranch, icon: const Icon(Icons.delete_outline), onPressed: _delete),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _saving ? null : _save,
         icon: const Icon(Icons.check),

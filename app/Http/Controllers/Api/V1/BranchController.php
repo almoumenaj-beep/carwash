@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Platform\Actions\CreateBranch;
+use App\Domain\Platform\Actions\DeleteBranch;
 use App\Domain\Platform\Actions\UpdateBranch;
 use App\Domain\Platform\Models\Branch;
 use App\Http\Controllers\Controller;
@@ -16,7 +17,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 /**
- * Branches of the car wash. Closed with is_active=false rather than deleted.
+ * Branches of the car wash. Closed with is_active=false; only never-used branches can be deleted.
  */
 class BranchController extends Controller
 {
@@ -52,6 +53,18 @@ class BranchController extends Controller
     public function update(UpdateBranchRequest $request, Branch $branch, UpdateBranch $updateBranch): BranchResource
     {
         return BranchResource::make($this->withBays($updateBranch->handle($request->user(), $branch, $request->validated())));
+    }
+
+    /**
+     * Delete a branch that was never used; branches in use are closed with is_active=false instead.
+     */
+    public function destroy(Request $request, Branch $branch, DeleteBranch $deleteBranch): Response
+    {
+        Gate::authorize('delete', $branch);
+
+        $deleteBranch->handle($request->user(), $branch);
+
+        return response()->noContent();
     }
 
     private function withBays(Branch $branch): Branch
