@@ -24,7 +24,9 @@ class BranchResource extends JsonResource
             'code' => $this->code,
             'phone' => $this->phone,
             'address' => $this->address,
+            'opening_hours' => $this->weeklyHours(),
             'is_active' => $this->is_active,
+            'bays' => BayResource::collection($this->whenLoaded('bays')),
         ];
     }
 }

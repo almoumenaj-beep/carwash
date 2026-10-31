@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BayController;
 use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
+use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\StaffController;
 use App\Http\Controllers\Api\V1\UserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +35,11 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('users', StaffController::class)->except('destroy');
         Route::put('users/{user}/roles', [UserRoleController::class, 'update'])->name('users.roles.update');
 
-        Route::get('branches', [BranchController::class, 'index'])->name('branches.index');
+        Route::get('settings', [SettingsController::class, 'show'])->name('settings.show');
+        Route::patch('settings', [SettingsController::class, 'update'])->name('settings.update');
+
+        Route::apiResource('branches', BranchController::class)->except('destroy');
+        Route::apiResource('branches.bays', BayController::class)->shallow()->only(['index', 'store', 'update']);
 
         Route::apiResource('devices', DeviceController::class)->only(['index', 'destroy']);
     });

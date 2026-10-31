@@ -21,6 +21,8 @@
     "The PIN is incorrect.": "رمز PIN غير صحيح.",
     "You can only give access to branches you work in.": "يمكنك منح الوصول فقط للفروع التي تعمل فيها.",
     "You cannot deactivate your own account.": "لا يمكنك إيقاف حسابك بنفسك.",
+    "Each day must be closed or have an opening and closing time (HH:MM).": "يجب أن يكون كل يوم مغلقاً أو له وقت فتح وإغلاق بصيغة (HH:MM).",
+    "The opening and closing times must differ.": "يجب أن يختلف وقت الفتح عن وقت الإغلاق.",
     "Too Many Attempts.": "محاولات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.",
     "You cannot grant or revoke permissions you do not have: :permissions": "لا يمكنك منح أو سحب صلاحيات لا تملكها: :permissions",
     "Only an owner can grant or revoke the owner role.": "فقط المالك يستطيع منح دور المالك أو سحبه.",

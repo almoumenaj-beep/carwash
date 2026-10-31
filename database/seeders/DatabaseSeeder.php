@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Domain\Identity\Actions\ProvisionDefaultRoles;
 use App\Domain\Identity\Enums\DefaultRole;
 use App\Domain\Identity\Models\Role;
+use App\Domain\Platform\Models\Bay;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
 use App\Domain\Platform\Tenancy\TenantContext;
@@ -28,6 +29,10 @@ class DatabaseSeeder extends Seeder
         $provisionDefaultRoles->handle($tenant);
 
         $mainBranch = Branch::factory()->for($tenant)->create(['name' => 'Main Branch', 'code' => 'MAIN']);
+
+        foreach (['Bay 1', 'Bay 2', 'Detailing'] as $order => $bayName) {
+            Bay::factory()->for($mainBranch)->create(['name' => $bayName, 'sort_order' => $order]);
+        }
 
         $owner = User::factory()->forTenant($tenant)->withPin('1234')->create([
             'name' => 'Test User',

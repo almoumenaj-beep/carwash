@@ -25,6 +25,7 @@ class BranchFactory extends Factory
             'code' => fake()->unique()->bothify('BR-###??'),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->streetAddress(),
+            'opening_hours' => Branch::defaultOpeningHours(),
             'is_active' => true,
         ];
     }

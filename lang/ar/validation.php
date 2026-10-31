@@ -206,6 +206,15 @@ return [
         'all_branches' => 'كل الفروع',
         'branch_ids' => 'الفروع',
         'branch_ids.*' => 'الفرع',
+        'code' => 'رمز الفرع',
+        'address' => 'العنوان',
+        'opening_hours' => 'ساعات العمل',
+        'locale' => 'اللغة',
+        'timezone' => 'المنطقة الزمنية',
+        'vat_rate' => 'نسبة الضريبة',
+        'prices_include_vat' => 'الأسعار شاملة الضريبة',
+        'vat_number' => 'الرقم الضريبي',
+        'sort_order' => 'الترتيب',
     ],
 
 ];
