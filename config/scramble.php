@@ -60,7 +60,7 @@ return [
     ],
 
     'ui' => [
-        'title' => null,
+        'title' => 'CarWash API',
     ],
 
     /*

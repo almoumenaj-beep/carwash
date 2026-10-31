@@ -63,4 +63,24 @@ class UserFactory extends Factory
             'all_branches' => true,
         ]);
     }
+
+    /**
+     * Indicate that the user can switch in on a shared device with the given PIN.
+     */
+    public function withPin(string $pin = '1234'): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'pin_hash' => Hash::make($pin),
+        ]);
+    }
+
+    /**
+     * Indicate that the user's account is deactivated.
+     */
+    public function deactivated(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_active' => false,
+        ]);
+    }
 }

@@ -27,15 +27,29 @@ class DatabaseSeeder extends Seeder
 
         $provisionDefaultRoles->handle($tenant);
 
-        Branch::factory()->for($tenant)->create(['name' => 'Main Branch', 'code' => 'MAIN']);
+        $mainBranch = Branch::factory()->for($tenant)->create(['name' => 'Main Branch', 'code' => 'MAIN']);
 
-        $owner = User::factory()->forTenant($tenant)->create([
+        $owner = User::factory()->forTenant($tenant)->withPin('1234')->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'phone' => '0500000001',
         ]);
 
-        $tenantContext->run($tenant, fn () => $owner->assignRole(
-            Role::query()->where('tenant_id', $tenant->id)->where('key', DefaultRole::Owner->value)->firstOrFail(),
-        ));
+        $cashier = User::factory()->forTenant($tenant)->withPin('1111')->create([
+            'name' => 'Demo Cashier',
+            'email' => 'cashier@example.com',
+            'phone' => '0500000002',
+        ]);
+
+        $tenantContext->run($tenant, function () use ($tenant, $owner, $cashier, $mainBranch): void {
+            $owner->assignRole($this->defaultRole($tenant, DefaultRole::Owner));
+            $cashier->assignRole($this->defaultRole($tenant, DefaultRole::Cashier));
+            $cashier->branches()->attach($mainBranch);
+        });
+    }
+
+    private function defaultRole(Tenant $tenant, DefaultRole $defaultRole): Role
+    {
+        return Role::query()->ofTenant($tenant->id)->where('key', $defaultRole->value)->firstOrFail();
     }
 }

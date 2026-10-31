@@ -23,8 +23,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable(['name', 'email', 'phone', 'password'])]
+#[Hidden(['password', 'pin_hash', 'remember_token'])]
 #[UsePolicy(UserPolicy::class)]
 class User extends Authenticatable
 {
@@ -37,6 +37,16 @@ class User extends Authenticatable
     protected string $guard_name = Role::GUARD_NAME;
 
     /**
+     * Mirrors the database defaults so a freshly created user is usable before it is refreshed.
+     *
+     * @var array<string, bool>
+     */
+    protected $attributes = [
+        'all_branches' => false,
+        'is_active' => true,
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -47,7 +57,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'all_branches' => 'boolean',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function hasPin(): bool
+    {
+        return $this->pin_hash !== null;
     }
 
     /**

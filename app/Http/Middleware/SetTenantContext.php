@@ -2,19 +2,21 @@
 
 namespace App\Http\Middleware;
 
+use App\Domain\Identity\Support\SignInEligibility;
 use App\Domain\Platform\Tenancy\TenantContext;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Sets the current tenant from the authenticated user, never from request input.
+ * Sets the current tenant from the authenticated user, never from request input, and rejects
+ * users whose car wash is suspended or whose account is deactivated (403).
  *
  * Runs after authentication and before route model binding (see the middleware priority in bootstrap/app.php).
  */
 class SetTenantContext
 {
-    public function __construct(private TenantContext $tenantContext) {}
+    public function __construct(private TenantContext $tenantContext, private SignInEligibility $signInEligibility) {}
 
     /**
      * Handle an incoming request.
@@ -29,12 +31,9 @@ class SetTenantContext
             return $next($request);
         }
 
-        $tenant = $user->tenant;
+        $this->signInEligibility->ensure($user);
 
-        abort_if($tenant === null, Response::HTTP_FORBIDDEN, __('This account is not linked to a car wash.'));
-        abort_unless($tenant->isActive(), Response::HTTP_FORBIDDEN, __('This car wash account is suspended.'));
-
-        $this->tenantContext->set($tenant);
+        $this->tenantContext->set($user->tenant);
 
         return $next($request);
     }
