@@ -76,7 +76,7 @@ class PasswordLoginTest extends TestCase
 
         $this->postJson('/api/v1/auth/login', $this->credentials())
             ->assertForbidden()
-            ->assertJsonPath('message', 'This account is deactivated.');
+            ->assertJsonPath('detail', 'This account is deactivated.');
     }
 
     public function test_staff_of_a_suspended_car_wash_cannot_sign_in(): void
@@ -85,7 +85,7 @@ class PasswordLoginTest extends TestCase
 
         $this->postJson('/api/v1/auth/login', $this->credentials())
             ->assertForbidden()
-            ->assertJsonPath('message', 'This car wash account is suspended.');
+            ->assertJsonPath('detail', 'This car wash account is suspended.');
     }
 
     public function test_a_new_sign_in_on_the_device_ends_the_previous_session(): void

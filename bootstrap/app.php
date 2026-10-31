@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Exceptions\ProblemDetails;
 use App\Http\Middleware\SetRequestLocale;
 use App\Http\Middleware\SetTenantContext;
 use Illuminate\Foundation\Application;
@@ -7,6 +8,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,7 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->api(prepend: SetRequestLocale::class, append: SetTenantContext::class);
+        // Global so that errors raised before routing (e.g. unknown URLs) are translated too.
+        $middleware->append(SetRequestLocale::class);
+        $middleware->api(append: SetTenantContext::class);
 
         // The tenant must be known after authentication and before route model binding queries tenant data.
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: SetTenantContext::class);
@@ -25,4 +29,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->respond(fn (Response $response, Throwable $exception, Request $request) => $request->is('api/*')
+            ? ProblemDetails::from($response, $exception, $request)
+            : $response);
     })->create();

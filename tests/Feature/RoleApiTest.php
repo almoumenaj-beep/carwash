@@ -116,7 +116,7 @@ class RoleApiTest extends TestCase
 
         $this->postJson('/api/v1/roles', ['name' => 'Payroll Clerk', 'permissions' => [Permission::PayrollRun->value]])
             ->assertForbidden()
-            ->assertJsonPath('message', 'You cannot grant or revoke permissions you do not have: payroll.run');
+            ->assertJsonPath('detail', 'You cannot grant or revoke permissions you do not have: payroll.run');
         $this->assertDatabaseMissing('roles', ['name' => 'Payroll Clerk']);
 
         $this->postJson('/api/v1/roles', ['name' => 'Viewer', 'permissions' => [Permission::OrdersView->value]])

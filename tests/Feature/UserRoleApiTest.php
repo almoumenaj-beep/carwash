@@ -93,7 +93,7 @@ class UserRoleApiTest extends TestCase
 
         $this->putJson("/api/v1/users/{$staff->id}/roles", ['roles' => $this->roleIds(DefaultRole::Owner)])
             ->assertForbidden()
-            ->assertJsonPath('message', 'Only an owner can grant or revoke the owner role.');
+            ->assertJsonPath('detail', 'Only an owner can grant or revoke the owner role.');
     }
 
     public function test_branch_manager_cannot_change_roles_of_staff_in_another_branch(): void

@@ -2,7 +2,7 @@
 
 > **هذا الملف هو المرجع الحي للمشروع.** يُحدَّث بعد إنجاز كل مهمة: الخطة التفصيلية + جدول التقدّم + سجل القرارات + سجل التغييرات.
 
-**الإنجاز الإجمالي: 15%** · آخر تحديث: 2026-10-31 · المرحلة الحالية: 0 – الأساس
+**الإنجاز الإجمالي: 16%** · آخر تحديث: 2026-10-31 · المرحلة الحالية: 0 – الأساس
 
 الرموز: `[ ]` لم يبدأ · `[~]` قيد التنفيذ · `[x]` مكتمل (مع التاريخ)
 
@@ -37,6 +37,7 @@
 - [x] نظام الأدوار والصلاحيات: Permission Catalog (35 صلاحية) + `PermissionSeeder` + 7 أدوار افتراضية تُنسخ لكل tenant + نطاق الفروع (`branch_user` + `all_branches`) + Policies (Role/User/Branch) + اختبار مصفوفة الصلاحيات — 2026-10-24
 - [x] API الأدوار: `/me` `/permissions` `/roles` (CRUD) `/roles/{id}/permissions` `/users/{id}/roles` + ترجمة ar/en + Audit Log — 2026-10-31
 - [x] Auth: دخول بالبريد/الجوال + توكن Sanctum لكل جهاز + سر الجهاز + PIN سريع + إدارة الأجهزة وإلغاؤها + إيقاف الحساب + Throttling — 2026-10-31
+- [x] أخطاء API موحّدة (RFC 9457 Problem Details) + رسائل التحقق والأخطاء بالعربية — 2026-10-31
 - [ ] تثبيت Flutter SDK وإنشاء المشروع + l10n (ar/en) + Riverpod + Dio
 - [ ] شاشات Flutter: Login + PermissionGuard + إدارة الأدوار والموظفين
 - [ ] CI (اختبارات + Pint + Flutter analyze)
@@ -78,8 +79,8 @@
 - [ ] ANPR وتكاملات محاسبية
 
 ## (B) ما التالي؟
-1. توحيد صيغة الأخطاء (RFC 7807) + رسائل التحقق بالعربية (`lang/ar/validation.php`) — قبل بدء شاشات Flutter.
-2. تثبيت Flutter SDK وإنشاء المشروع `mobile/` + l10n (ar/en) + Riverpod + Dio، ثم شاشة الدخول (كلمة السر + PIN).
+1. تثبيت Flutter SDK وإنشاء المشروع `mobile/` + l10n (ar/en) + Riverpod + Dio + قراءة أخطاء Problem Details، ثم شاشة الدخول (كلمة السر + PIN).
+2. شاشات Flutter: PermissionGuard + إدارة الأدوار والموظفين.
 
 **للتجربة الآن:** افتح توثيق الـ API التفاعلي على http://localhost/carwash/public/docs/api (أو http://localhost:8000/docs/api مع `php artisan serve`)، نفّذ `POST /v1/auth/login` ببيانات المغسلة التجريبية (`test@example.com` / `password` للمالك، أو `cashier@example.com` / `password` للكاشير؛ PIN: 1234 و1111)، انسخ `token` وضعه في زر **Authorize**، ثم جرّب بقية المسارات. لإعادة البيانات التجريبية: `php artisan migrate:fresh --seed`.
 
@@ -328,6 +329,8 @@
 | 2026-10-31 | قواعد منع التصعيد في الـ Actions: لا منح/سحب لصلاحية لا يملكها المنفّذ (`PermissionGrantGuard`)، دور Owner يمنحه/يسحبه Owner فقط، ويبقى Owner واحد على الأقل؛ سجلات دور/مستخدم tenant آخر = 404 عبر Route binding مقيَّد بالـ tenant | أمن الصلاحيات حسب القسم 2.3 |
 | 2026-10-31 | جلسة واحدة لكل جهاز: أي دخول (كلمة سر أو PIN) يلغي توكن الجهاز السابق؛ والتوكن مربوط بـ `devices` عبر `personal_access_tokens.device_id` | الأجهزة مشتركة بين الكاشيرين؛ إلغاء جهاز مفقود يقطع جلسته فوراً |
 | 2026-10-31 | دخول PIN مسموح فقط من جهاز موثوق: معرّف الجهاز + سر عشوائي (48 حرفاً، يُخزَّن SHA-256 ويتجدد مع كل دخول بكلمة السر)، مع Throttling (5/دقيقة لكل جهاز+مستخدم+IP) | PIN قصير؛ السر يمنع التخمين من خارج أجهزة المغسلة |
+| 2026-10-31 | كل أخطاء `/api` بصيغة RFC 9457 (`application/problem+json`): `type` ثابت بصيغة `urn:carwash:problem:<slug>` يعتمد عليه التطبيق، و`title`/`detail` مترجمة، و`errors` للتحقق، و`retry_after` للـ 429؛ تُطبَّق مركزياً عبر `$exceptions->respond()` | صيغة واحدة يقرؤها Flutter؛ و404 لا يكشف اسم النموذج، و500 لا يكشف التفاصيل خارج وضع debug |
+| 2026-10-31 | `SetRequestLocale` صار middleware عاماً (global) | لترجمة الأخطاء التي تحدث قبل الوصول للمسار (مثل رابط غير موجود) |
 | 2026-10-31 | الأهلية للدخول (`SignInEligibility`: مرتبط بمغسلة نشطة + الحساب مفعّل) تُفحص عند الدخول وفي كل طلب | إيقاف حساب أو مغسلة يسري فوراً حتى على التوكنات الحالية |
 | 2026-10-31 | Audit Log عبر activitylog باسم سجل `audit` مع عمود `tenant_id`؛ واللغة من ترويسة `Accept-Language` (ar/en) | عرض سجل كل مغسلة لاحقاً؛ التطبيق يرسل لغة المستخدم |
 | 2026-10-24 | PHP 8.4 يحل محل PHP 8.2 كـ PHP أساسي في XAMPP (`C:\xampp\php`، والقديم في `php82`) | XAMPP Shell وApache كانا يشغّلان 8.2 فيفشل Composer (يتطلب ≥ 8.4.1)؛ لا يوجد مشروع آخر يحتاج 8.2 |
@@ -340,6 +343,7 @@
 - **2026-10-24:** RBAC: Enum `Permission` (35 صلاحية بصيغة `module.action`) و`DefaultRole` (7 أدوار مع مصفوفتها)؛ `SyncPermissionCatalog` + `PermissionSeeder` (يُشغَّل في كل نشر)؛ `ProvisionDefaultRoles`؛ نموذج `Role` مخصّص بعمود `key`؛ جدول `branch_user` و`users.all_branches`؛ Policies: `RolePolicy` (منع تعديل/حذف دور Owner، عزل الـ tenant) و`UserPolicy` (نطاق الفروع، لا يدير Owner إلا Owner، لا حذف للنفس) و`BranchPolicy`؛ Seeder يجعل `test@example.com` مالك المغسلة التجريبية؛ 31 اختباراً جديداً (المجموع 51).
 - **2026-10-31:** إصلاح Apache مع PHP 8.4 (`LoadFile` لـ libssh2/nghttp2 الخاصة بـ PHP). API v1 للأدوار: `GET /me` (المغسلة، الأدوار، الصلاحيات الفعلية، الفروع المسموحة)، `GET /permissions` (الكتالوج مجمّعاً ومترجماً)، `/roles` (عرض/إنشاء/إعادة تسمية/حذف)، `PUT /roles/{id}/permissions`، `PUT /users/{id}/roles`؛ Actions: `CreateRole` `RenameRole` `SyncRolePermissions` `DeleteRole` (يرفض حذف دور مُسنَد) `SyncUserRoles`؛ `PermissionGrantGuard`؛ `AuditTrail` + عمود `activity_log.tenant_id`؛ middleware `SetRequestLocale`؛ ملفات الترجمة `lang/{ar,en}/{permissions,roles}.php` و`lang/ar.json`؛ حذف مسار `/api/user` المؤقت؛ 30 اختباراً جديداً (المجموع 81).
 - **2026-10-31:** Auth: `POST /auth/login` (بريد أو جوال + كلمة سر، يسجّل الجهاز ويعيد سرّه)، `POST /auth/pin-login`، `POST /auth/device-staff` (موظفو الجهاز الذين لديهم PIN)، `POST /auth/logout`، `PUT /me/pin` (بكلمة السر الحالية)، `GET/DELETE /devices`؛ جدول `devices` و`personal_access_tokens.device_id` وأعمدة `users.phone/pin_hash/is_active`؛ Actions: `LoginWithPassword` `LoginWithPin` `ResolveTrustedDevice` `IssueDeviceToken` `RevokeDevice` `SetUserPin`؛ `SignInEligibility` يُستخدم في الدخول وفي `SetTenantContext`؛ Rate limiters `login` و`pin-login` و`device`؛ Audit لـ `auth.login` و`device.revoked` و`user.pin_changed`؛ توثيق Scramble مع Bearer على `/docs/api`؛ Seeder: كاشير تجريبي + أرقام جوال وPIN؛ 27 اختباراً جديداً (المجموع 108).
+- **2026-10-31:** أخطاء API بصيغة Problem Details (`App\Http\Exceptions\ProblemDetails`)؛ ملفات `lang/ar/validation.php` (كل القواعد + أسماء الحقول بالعربية) و`lang/ar/auth.php` ونشر ملفات `lang/en`؛ عناوين وتفاصيل الأخطاء مترجمة في `lang/ar.json`؛ اختبار يضمن أن كل سطر إنجليزي له مقابل عربي؛ 13 اختباراً جديداً (المجموع 121).
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).

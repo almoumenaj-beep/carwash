@@ -82,7 +82,7 @@ class TenantApiIsolationTest extends TestCase
 
         $this->getJson('/api/testing/branches')
             ->assertForbidden()
-            ->assertJsonPath('message', 'This car wash account is suspended.');
+            ->assertJsonPath('detail', 'This car wash account is suspended.');
     }
 
     public function test_users_without_a_tenant_are_forbidden(): void
@@ -91,7 +91,7 @@ class TenantApiIsolationTest extends TestCase
 
         $this->getJson('/api/testing/branches')
             ->assertForbidden()
-            ->assertJsonPath('message', 'This account is not linked to a car wash.');
+            ->assertJsonPath('detail', 'This account is not linked to a car wash.');
     }
 
     public function test_guests_are_unauthorized(): void
