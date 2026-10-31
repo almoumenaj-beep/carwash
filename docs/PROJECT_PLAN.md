@@ -2,7 +2,7 @@
 
 > **هذا الملف هو المرجع الحي للمشروع.** يُحدَّث بعد إنجاز كل مهمة: الخطة التفصيلية + جدول التقدّم + سجل القرارات + سجل التغييرات.
 
-**الإنجاز الإجمالي: 16%** · آخر تحديث: 2026-10-31 · المرحلة الحالية: 0 – الأساس
+**الإنجاز الإجمالي: 19%** · آخر تحديث: 2026-10-31 · المرحلة الحالية: 0 – الأساس
 
 الرموز: `[ ]` لم يبدأ · `[~]` قيد التنفيذ · `[x]` مكتمل (مع التاريخ)
 
@@ -38,8 +38,8 @@
 - [x] API الأدوار: `/me` `/permissions` `/roles` (CRUD) `/roles/{id}/permissions` `/users/{id}/roles` + ترجمة ar/en + Audit Log — 2026-10-31
 - [x] Auth: دخول بالبريد/الجوال + توكن Sanctum لكل جهاز + سر الجهاز + PIN سريع + إدارة الأجهزة وإلغاؤها + إيقاف الحساب + Throttling — 2026-10-31
 - [x] أخطاء API موحّدة (RFC 9457 Problem Details) + رسائل التحقق والأخطاء بالعربية — 2026-10-31
-- [ ] تثبيت Flutter SDK وإنشاء المشروع + l10n (ar/en) + Riverpod + Dio
-- [ ] شاشات Flutter: Login + PermissionGuard + إدارة الأدوار والموظفين
+- [x] تثبيت Flutter SDK + JDK 21 + Android SDK + Postman، وإنشاء المشروع `mobile/` + l10n (ar/en) + Riverpod + Dio + go_router — 2026-10-31
+- [~] شاشات Flutter: Login ✅ + تبديل المستخدم بالـ PIN ✅ + تعيين PIN ✅ + الرئيسية (الأدوار/الفروع/الصلاحيات) ✅ — باقي: PermissionGuard + إدارة الأدوار والموظفين
 - [ ] CI (اختبارات + Pint + Flutter analyze)
 
 ### المرحلة 1 – MVP تشغيلي (0%)
@@ -79,8 +79,16 @@
 - [ ] ANPR وتكاملات محاسبية
 
 ## (B) ما التالي؟
-1. تثبيت Flutter SDK وإنشاء المشروع `mobile/` + l10n (ar/en) + Riverpod + Dio + قراءة أخطاء Problem Details، ثم شاشة الدخول (كلمة السر + PIN).
-2. شاشات Flutter: PermissionGuard + إدارة الأدوار والموظفين.
+1. شاشات Flutter: `PermissionGuard` على المسارات + Widget `Can` + إدارة الأدوار (مصفوفة الصلاحيات) + إدارة الموظفين (يتطلب API موظفين: إنشاء/تعديل/إيقاف + تعيين الفروع).
+2. CI: اختبارات Laravel + Pint + `flutter analyze` + `flutter test`.
+
+**تشغيل التطبيق على الجوال (Honor، وضع المطوّر + تصحيح USB):**
+1. `php artisan serve` (في مجلد المشروع) — الخادم على المنفذ 8000.
+2. وصّل الجوال بالكابل (وضع نقل الملفات) ووافق على «السماح بتصحيح USB»، ثم تحقّق: `adb devices`.
+3. `adb reverse tcp:8000 tcp:8000` — يجعل `127.0.0.1:8000` داخل الجوال يشير إلى الكمبيوتر عبر الكابل (يُعاد بعد كل توصيل).
+4. `cd mobile` ثم `flutter run` — للويب: `flutter run -d chrome`. لعنوان خادم آخر: `--dart-define=API_BASE_URL=http://<host>/api/v1`.
+
+**Postman:** مثبّت (12.34). استورد الـ API عبر Import → Link: `http://localhost/carwash/public/docs/api.json`. ولتفعيل Postman MCP لـ Claude: أنشئ API Key من Postman (Settings → API keys) واحفظه في متغير البيئة `POSTMAN_API_KEY` (مُعدّ في `.mcp.json` دون حفظ المفتاح في Git).
 
 **للتجربة الآن:** افتح توثيق الـ API التفاعلي على http://localhost/carwash/public/docs/api (أو http://localhost:8000/docs/api مع `php artisan serve`)، نفّذ `POST /v1/auth/login` ببيانات المغسلة التجريبية (`test@example.com` / `password` للمالك، أو `cashier@example.com` / `password` للكاشير؛ PIN: 1234 و1111)، انسخ `token` وضعه في زر **Authorize**، ثم جرّب بقية المسارات. لإعادة البيانات التجريبية: `php artisan migrate:fresh --seed`.
 
@@ -301,7 +309,9 @@
 - **PHP:** **8.4.27 هو PHP الأساسي في XAMPP** في `C:\xampp\php` (للطرفية وXAMPP Shell وApache معاً)؛ PHP 8.2 الأصلي محفوظ في `C:\xampp\php82` للرجوع فقط. **Composer:** `C:\xampp\php\composer.phar` (أو `composer.bat`). الأوامر: `php artisan ...` في أي طرفية جديدة.
 - **قاعدة البيانات:** **MySQL 8.4.13 LTS** في `C:\xampp\mysql` (حلّت محل MariaDB الخاصة بـ XAMPP، والنسخة القديمة محفوظة في `C:\xampp\mysql_mariadb104`) على `127.0.0.1:3307`، الإعداد في `C:\xampp\mysql\bin\my.ini` (utf8mb4، mysqlx معطّل). تُشغَّل من زر MySQL في لوحة XAMPP. قاعدة `carwash` + `carwash_testing` للاختبارات، المستخدم `admin` (كلمة السر في `.env`)، و`root` بدون كلمة سر محلياً. الإدارة عبر **phpMyAdmin** على http://localhost/phpmyadmin.
 - **التشغيل:** `php artisan serve` على http://localhost:8000، أو عبر Apache على http://localhost/carwash/public (في `apache\conf\extra\httpd-xampp.conf` أُضيف `LoadFile` لـ `libssh2.dll` و`nghttp2.dll` من مجلد PHP، لأن نسخ `apache\bin` الأقدم تمنع تحميل curl في PHP 8.4). Git for Windows 2.56 مثبّت ومضبوط (user: Ali، الفرع الافتراضي `main`، المستودع على GitHub: `almoumenaj-beep/carwash`؛ `.env` و`vendor` مستثنيان في `.gitignore`).
-- **الاختبارات:** `php artisan test` على MySQL (`carwash_testing`) لأن PHP 8.4 هنا بدون `pdo_sqlite`، ولتطابق بيئة الإنتاج.
+- **الاختبارات:** `php artisan test` على MySQL (`carwash_testing`) لأن PHP 8.4 هنا بدون `pdo_sqlite`، ولتطابق بيئة الإنتاج. تطبيق Flutter: `cd mobile; flutter analyze; flutter test`.
+- **Flutter:** SDK 3.47.9 (Dart 3.13.7) في `C:\src\flutter`؛ **JDK** Temurin 21.0.13 في `C:\src\jdk-21` (`JAVA_HOME`)؛ **Android SDK** (بدون Android Studio) في `%LOCALAPPDATA%\Android\Sdk` (`ANDROID_HOME`): platform-tools 37 (`adb`)، platforms android-35/36، build-tools 36.1.0، NDK 28.2.13676358، CMake 3.22.1، Google USB driver. أول بناء `flutter build apk --debug` نجح (~6 دقائق). كل المسارات في PATH المستخدم. Visual Studio غير مثبّت (يلزم فقط لتطبيقات Windows desktop).
+- **Postman:** 12.34.4 في `%LOCALAPPDATA%\Postman`؛ Postman MCP البعيد (`https://mcp.postman.com/minimal`) مُعرّف في `.mcp.json` ويقرأ `POSTMAN_API_KEY` من البيئة.
 - **ملاحظة:** إن لم يُعرف `php` أو `git` في طرفية VS Code، أعد تشغيل VS Code (أُضيفت للـ PATH بعد فتحه).
 
 ## (C) سجل القرارات (ADR)
@@ -331,6 +341,10 @@
 | 2026-10-31 | دخول PIN مسموح فقط من جهاز موثوق: معرّف الجهاز + سر عشوائي (48 حرفاً، يُخزَّن SHA-256 ويتجدد مع كل دخول بكلمة السر)، مع Throttling (5/دقيقة لكل جهاز+مستخدم+IP) | PIN قصير؛ السر يمنع التخمين من خارج أجهزة المغسلة |
 | 2026-10-31 | كل أخطاء `/api` بصيغة RFC 9457 (`application/problem+json`): `type` ثابت بصيغة `urn:carwash:problem:<slug>` يعتمد عليه التطبيق، و`title`/`detail` مترجمة، و`errors` للتحقق، و`retry_after` للـ 429؛ تُطبَّق مركزياً عبر `$exceptions->respond()` | صيغة واحدة يقرؤها Flutter؛ و404 لا يكشف اسم النموذج، و500 لا يكشف التفاصيل خارج وضع debug |
 | 2026-10-31 | `SetRequestLocale` صار middleware عاماً (global) | لترجمة الأخطاء التي تحدث قبل الوصول للمسار (مثل رابط غير موجود) |
+| 2026-10-31 | Android SDK عبر cmdline-tools فقط (بدون Android Studio) + JDK Temurin 21 | أخف بكثير، بدون صلاحيات مدير؛ Android Studio يمكن إضافته لاحقاً للمحاكي |
+| 2026-10-31 | تطبيق Flutter: Riverpod 3 (Notifier/AsyncNotifier بدون توليد كود حالياً) + go_router (redirect حسب الجلسة) + Dio (interceptor يضيف التوكن واللغة ويحوّل الأخطاء إلى `ApiProblem`) + flutter_secure_storage (التوكن وهوية/سر الجهاز)؛ freezed/riverpod_generator تُضاف عند كبر النماذج | بداية بسيطة بدون build_runner؛ نفس البنية Feature-first في القسم 7 |
+| 2026-10-31 | اتصال الجوال بالخادم المحلي أثناء التطوير عبر `adb reverse tcp:8000 tcp:8000` و`usesCleartextTraffic` في نسخة debug فقط | لا حاجة لفتح الجدار الناري أو IP الشبكة؛ نسخة release تبقى HTTPS فقط |
+| 2026-10-31 | Postman MCP عبر الخادم البعيد الرسمي (HTTP) بدل حزمة npm | لا يتطلب Node.js؛ المفتاح من متغير بيئة وليس في Git |
 | 2026-10-31 | الأهلية للدخول (`SignInEligibility`: مرتبط بمغسلة نشطة + الحساب مفعّل) تُفحص عند الدخول وفي كل طلب | إيقاف حساب أو مغسلة يسري فوراً حتى على التوكنات الحالية |
 | 2026-10-31 | Audit Log عبر activitylog باسم سجل `audit` مع عمود `tenant_id`؛ واللغة من ترويسة `Accept-Language` (ar/en) | عرض سجل كل مغسلة لاحقاً؛ التطبيق يرسل لغة المستخدم |
 | 2026-10-24 | PHP 8.4 يحل محل PHP 8.2 كـ PHP أساسي في XAMPP (`C:\xampp\php`، والقديم في `php82`) | XAMPP Shell وApache كانا يشغّلان 8.2 فيفشل Composer (يتطلب ≥ 8.4.1)؛ لا يوجد مشروع آخر يحتاج 8.2 |
@@ -344,6 +358,7 @@
 - **2026-10-31:** إصلاح Apache مع PHP 8.4 (`LoadFile` لـ libssh2/nghttp2 الخاصة بـ PHP). API v1 للأدوار: `GET /me` (المغسلة، الأدوار، الصلاحيات الفعلية، الفروع المسموحة)، `GET /permissions` (الكتالوج مجمّعاً ومترجماً)، `/roles` (عرض/إنشاء/إعادة تسمية/حذف)، `PUT /roles/{id}/permissions`، `PUT /users/{id}/roles`؛ Actions: `CreateRole` `RenameRole` `SyncRolePermissions` `DeleteRole` (يرفض حذف دور مُسنَد) `SyncUserRoles`؛ `PermissionGrantGuard`؛ `AuditTrail` + عمود `activity_log.tenant_id`؛ middleware `SetRequestLocale`؛ ملفات الترجمة `lang/{ar,en}/{permissions,roles}.php` و`lang/ar.json`؛ حذف مسار `/api/user` المؤقت؛ 30 اختباراً جديداً (المجموع 81).
 - **2026-10-31:** Auth: `POST /auth/login` (بريد أو جوال + كلمة سر، يسجّل الجهاز ويعيد سرّه)، `POST /auth/pin-login`، `POST /auth/device-staff` (موظفو الجهاز الذين لديهم PIN)، `POST /auth/logout`، `PUT /me/pin` (بكلمة السر الحالية)، `GET/DELETE /devices`؛ جدول `devices` و`personal_access_tokens.device_id` وأعمدة `users.phone/pin_hash/is_active`؛ Actions: `LoginWithPassword` `LoginWithPin` `ResolveTrustedDevice` `IssueDeviceToken` `RevokeDevice` `SetUserPin`؛ `SignInEligibility` يُستخدم في الدخول وفي `SetTenantContext`؛ Rate limiters `login` و`pin-login` و`device`؛ Audit لـ `auth.login` و`device.revoked` و`user.pin_changed`؛ توثيق Scramble مع Bearer على `/docs/api`؛ Seeder: كاشير تجريبي + أرقام جوال وPIN؛ 27 اختباراً جديداً (المجموع 108).
 - **2026-10-31:** أخطاء API بصيغة Problem Details (`App\Http\Exceptions\ProblemDetails`)؛ ملفات `lang/ar/validation.php` (كل القواعد + أسماء الحقول بالعربية) و`lang/ar/auth.php` ونشر ملفات `lang/en`؛ عناوين وتفاصيل الأخطاء مترجمة في `lang/ar.json`؛ اختبار يضمن أن كل سطر إنجليزي له مقابل عربي؛ 13 اختباراً جديداً (المجموع 121).
+- **2026-10-31:** تثبيت Flutter 3.47.9 وJDK 21 وAndroid SDK (cmdline-tools 23، platform-tools 37، android-36، build-tools 36.1.0، USB driver) وPostman 12.34.4 (كلها بعد التحقق من البصمة/التوقيع) + إعداد Postman MCP. مشروع `mobile/` (Android/iOS/Web، `com.carwash.carwash_app`): الدخول بكلمة السر، تبديل المستخدم بالـ PIN، تعيين PIN، الشاشة الرئيسية (المغسلة، الأدوار، الفروع، الصلاحيات)، تبديل ar/en مع RTL، Material 3 فاتح/داكن، قراءة أخطاء Problem Details؛ 9 اختبارات Flutter.
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).

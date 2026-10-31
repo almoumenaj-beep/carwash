@@ -6,6 +6,13 @@
                 "artisan",
                 "boost:mcp"
             ]
+        },
+        "postman": {
+            "type": "http",
+            "url": "https://mcp.postman.com/minimal",
+            "headers": {
+                "Authorization": "Bearer ${POSTMAN_API_KEY}"
+            }
         }
     }
 }

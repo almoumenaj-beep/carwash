@@ -1,0 +1,53 @@
+{
+  "@@locale": "en",
+  "appTitle": "CarWash",
+  "signInTitle": "Sign in",
+  "signInSubtitle": "Sign in to your car wash",
+  "loginField": "Email or phone",
+  "passwordField": "Password",
+  "signInButton": "Sign in",
+  "fieldRequired": "This field is required",
+  "switchUserWithPin": "Switch user with PIN",
+  "signInWithPassword": "Sign in with password instead",
+  "pinTitle": "Who is working now?",
+  "pinField": "PIN",
+  "pinSignInButton": "Continue",
+  "noStaffWithPin": "Nobody on this device has a PIN yet. Sign in with a password and set one from your profile.",
+  "greeting": "Hello, {name}",
+  "@greeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "ownerBadge": "Owner",
+  "rolesSection": "Roles",
+  "branchesSection": "Branches",
+  "allBranches": "All branches",
+  "noBranches": "No branches assigned yet",
+  "permissionsSection": "Permissions",
+  "permissionsCount": "{count, plural, =0{No permissions} =1{1 permission} other{{count} permissions}}",
+  "@permissionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "switchUser": "Switch user",
+  "signOut": "Sign out",
+  "changeLanguage": "العربية",
+  "setPin": "Set PIN",
+  "currentPasswordField": "Current password",
+  "newPinField": "New PIN (4–6 digits)",
+  "confirmPinField": "Confirm PIN",
+  "pinMustBeDigits": "Use 4 to 6 digits",
+  "pinsDoNotMatch": "PINs do not match",
+  "pinSaved": "PIN saved",
+  "save": "Save",
+  "cancel": "Cancel",
+  "retry": "Retry",
+  "networkError": "Cannot reach the server. Check your connection and try again.",
+  "unexpectedError": "Something went wrong. Please try again."
+}
