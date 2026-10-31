@@ -115,7 +115,8 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).saved)));
         context.pop();
       }
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (mounted) {
         setState(() => _problem = problem);
       }
@@ -149,7 +150,8 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
       if (mounted) {
         context.pop();
       }
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(problemMessage(context, problem))));
       }

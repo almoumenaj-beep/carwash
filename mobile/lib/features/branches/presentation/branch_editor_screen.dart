@@ -109,7 +109,8 @@ class _BranchFormState extends ConsumerState<_BranchForm> {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).saved)));
         }
       }
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (mounted) {
         setState(() => _problem = problem);
       }
@@ -319,7 +320,8 @@ class _BaysSection extends ConsumerWidget {
     try {
       await change();
       ref.invalidate(branchProvider(branch.id));
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (context.mounted) {
         final message = problem.fieldError('name') ?? problemMessage(context, problem);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));

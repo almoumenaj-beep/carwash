@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 /// An API error in RFC 9457 problem-details form, as returned by every `/api` endpoint.
 ///
@@ -23,6 +24,27 @@ class ApiProblem implements Exception {
       detail = '',
       errors = const {},
       retryAfter = null;
+
+  /// The app itself failed, e.g. it could not read a response; shown as a generic error.
+  const ApiProblem.unexpected()
+    : type = unexpectedType,
+      title = '',
+      status = 0,
+      detail = '',
+      errors = const {},
+      retryAfter = null;
+
+  /// [error] as a problem to show. Anything that is not an [ApiProblem] is a bug in the app:
+  /// it is reported to the Flutter error log instead of vanishing, and shown as a generic error.
+  static ApiProblem from(Object error, [StackTrace? stackTrace]) {
+    if (error is ApiProblem) {
+      return error;
+    }
+
+    FlutterError.reportError(FlutterErrorDetails(exception: error, stack: stackTrace, library: 'carwash'));
+
+    return const ApiProblem.unexpected();
+  }
 
   factory ApiProblem.fromJson(Map<String, dynamic> json, {int? status}) {
     final errors = <String, List<String>>{};
@@ -72,6 +94,7 @@ class ApiProblem implements Exception {
 
   static const typePrefix = 'urn:carwash:problem:';
   static const networkType = '${typePrefix}network';
+  static const unexpectedType = '${typePrefix}client-error';
 
   final String type;
   final String title;

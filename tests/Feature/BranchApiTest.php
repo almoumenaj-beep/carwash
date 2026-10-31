@@ -37,6 +37,7 @@ class BranchApiTest extends TestCase
 
         $response->assertCreated()
             ->assertJsonPath('data.code', 'RIF-1')
+            ->assertJsonPath('data.is_active', true)
             ->assertJsonPath('data.opening_hours.sat', ['opens' => '08:00', 'closes' => '22:00'])
             ->assertJsonPath('data.bays', []);
         $this->assertDatabaseHas('branches', ['code' => 'RIF-1', 'tenant_id' => $this->tenant->id]);

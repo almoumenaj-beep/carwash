@@ -33,6 +33,15 @@ class Branch extends Model
     public const WEEK_DAYS = ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'];
 
     /**
+     * Mirrors the database defaults so a freshly created branch is complete before it is refreshed.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'is_active' => true,
+    ];
+
+    /**
      * Hours a new branch starts with: open every day from 08:00 to 22:00.
      *
      * @return array<string, array{opens: string, closes: string}>

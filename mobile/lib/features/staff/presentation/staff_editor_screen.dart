@@ -148,7 +148,8 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).saved)));
         context.pop();
       }
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (mounted) {
         setState(() => _problem = problem);
       }

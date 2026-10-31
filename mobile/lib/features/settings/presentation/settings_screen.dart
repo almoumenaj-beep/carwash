@@ -85,7 +85,8 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).saved)));
       }
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (mounted) {
         setState(() => _problem = problem);
       }

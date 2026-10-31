@@ -59,7 +59,8 @@ class _DeviceTile extends ConsumerWidget {
     try {
       await ref.read(devicesRepositoryProvider).revoke(device.id);
       ref.invalidate(devicesProvider);
-    } on ApiProblem catch (problem) {
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(problemMessage(context, problem))));
       }
