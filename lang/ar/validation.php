@@ -202,6 +202,10 @@ return [
         'roles' => 'الأدوار',
         'roles.*' => 'الدور',
         'role' => 'الدور',
+        'is_active' => 'حالة الحساب',
+        'all_branches' => 'كل الفروع',
+        'branch_ids' => 'الفروع',
+        'branch_ids.*' => 'الفرع',
     ],
 
 ];

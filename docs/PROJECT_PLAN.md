@@ -39,6 +39,7 @@
 - [x] Auth: دخول بالبريد/الجوال + توكن Sanctum لكل جهاز + سر الجهاز + PIN سريع + إدارة الأجهزة وإلغاؤها + إيقاف الحساب + Throttling — 2026-10-31
 - [x] أخطاء API موحّدة (RFC 9457 Problem Details) + رسائل التحقق والأخطاء بالعربية — 2026-10-31
 - [x] تثبيت Flutter SDK + JDK 21 + Android SDK + Postman، وإنشاء المشروع `mobile/` + l10n (ar/en) + Riverpod + Dio + go_router — 2026-10-31
+- [x] API الموظفين: `GET/POST /users`، `GET/PATCH /users/{id}` (الفروع، الإيقاف/التفعيل، كلمة السر)، `GET /branches` — 2026-10-31
 - [~] شاشات Flutter: Login ✅ + تبديل المستخدم بالـ PIN ✅ + تعيين PIN ✅ + الرئيسية (الأدوار/الفروع/الصلاحيات) ✅ — باقي: PermissionGuard + إدارة الأدوار والموظفين
 - [ ] CI (اختبارات + Pint + Flutter analyze)
 
@@ -341,6 +342,7 @@
 | 2026-10-31 | دخول PIN مسموح فقط من جهاز موثوق: معرّف الجهاز + سر عشوائي (48 حرفاً، يُخزَّن SHA-256 ويتجدد مع كل دخول بكلمة السر)، مع Throttling (5/دقيقة لكل جهاز+مستخدم+IP) | PIN قصير؛ السر يمنع التخمين من خارج أجهزة المغسلة |
 | 2026-10-31 | كل أخطاء `/api` بصيغة RFC 9457 (`application/problem+json`): `type` ثابت بصيغة `urn:carwash:problem:<slug>` يعتمد عليه التطبيق، و`title`/`detail` مترجمة، و`errors` للتحقق، و`retry_after` للـ 429؛ تُطبَّق مركزياً عبر `$exceptions->respond()` | صيغة واحدة يقرؤها Flutter؛ و404 لا يكشف اسم النموذج، و500 لا يكشف التفاصيل خارج وضع debug |
 | 2026-10-31 | `SetRequestLocale` صار middleware عاماً (global) | لترجمة الأخطاء التي تحدث قبل الوصول للمسار (مثل رابط غير موجود) |
+| 2026-10-31 | حسابات الموظفين تُوقَف ولا تُحذف (`is_active=false` يلغي كل توكناتهم فوراً)؛ لا أحد يوقف حسابه؛ ومنح الفروع مقيّد بفروع المنفّذ (`BranchAccessGuard`)، و«كل الفروع» لمن يملكها فقط؛ والموظف يحتاج بريداً أو جوالاً (`users.email` صار nullable) | حفظ السجل التاريخي؛ منع توسيع الصلاحيات عبر الفروع؛ العمال غالباً بلا بريد |
 | 2026-10-31 | Android SDK عبر cmdline-tools فقط (بدون Android Studio) + JDK Temurin 21 | أخف بكثير، بدون صلاحيات مدير؛ Android Studio يمكن إضافته لاحقاً للمحاكي |
 | 2026-10-31 | تطبيق Flutter: Riverpod 3 (Notifier/AsyncNotifier بدون توليد كود حالياً) + go_router (redirect حسب الجلسة) + Dio (interceptor يضيف التوكن واللغة ويحوّل الأخطاء إلى `ApiProblem`) + flutter_secure_storage (التوكن وهوية/سر الجهاز)؛ freezed/riverpod_generator تُضاف عند كبر النماذج | بداية بسيطة بدون build_runner؛ نفس البنية Feature-first في القسم 7 |
 | 2026-10-31 | اتصال الجوال بالخادم المحلي أثناء التطوير عبر `adb reverse tcp:8000 tcp:8000` و`usesCleartextTraffic` في نسخة debug فقط | لا حاجة لفتح الجدار الناري أو IP الشبكة؛ نسخة release تبقى HTTPS فقط |
@@ -359,6 +361,7 @@
 - **2026-10-31:** Auth: `POST /auth/login` (بريد أو جوال + كلمة سر، يسجّل الجهاز ويعيد سرّه)، `POST /auth/pin-login`، `POST /auth/device-staff` (موظفو الجهاز الذين لديهم PIN)، `POST /auth/logout`، `PUT /me/pin` (بكلمة السر الحالية)، `GET/DELETE /devices`؛ جدول `devices` و`personal_access_tokens.device_id` وأعمدة `users.phone/pin_hash/is_active`؛ Actions: `LoginWithPassword` `LoginWithPin` `ResolveTrustedDevice` `IssueDeviceToken` `RevokeDevice` `SetUserPin`؛ `SignInEligibility` يُستخدم في الدخول وفي `SetTenantContext`؛ Rate limiters `login` و`pin-login` و`device`؛ Audit لـ `auth.login` و`device.revoked` و`user.pin_changed`؛ توثيق Scramble مع Bearer على `/docs/api`؛ Seeder: كاشير تجريبي + أرقام جوال وPIN؛ 27 اختباراً جديداً (المجموع 108).
 - **2026-10-31:** أخطاء API بصيغة Problem Details (`App\Http\Exceptions\ProblemDetails`)؛ ملفات `lang/ar/validation.php` (كل القواعد + أسماء الحقول بالعربية) و`lang/ar/auth.php` ونشر ملفات `lang/en`؛ عناوين وتفاصيل الأخطاء مترجمة في `lang/ar.json`؛ اختبار يضمن أن كل سطر إنجليزي له مقابل عربي؛ 13 اختباراً جديداً (المجموع 121).
 - **2026-10-31:** تثبيت Flutter 3.47.9 وJDK 21 وAndroid SDK (cmdline-tools 23، platform-tools 37، android-36، build-tools 36.1.0، USB driver) وPostman 12.34.4 (كلها بعد التحقق من البصمة/التوقيع) + إعداد Postman MCP. مشروع `mobile/` (Android/iOS/Web، `com.carwash.carwash_app`): الدخول بكلمة السر، تبديل المستخدم بالـ PIN، تعيين PIN، الشاشة الرئيسية (المغسلة، الأدوار، الفروع، الصلاحيات)، تبديل ar/en مع RTL، Material 3 فاتح/داكن، قراءة أخطاء Problem Details؛ 9 اختبارات Flutter.
+- **2026-10-31:** API الموظفين: `StaffController` (قائمة Cursor مقيّدة بنطاق فروع المدير، إضافة، عرض، تعديل)، Actions `CreateStaffMember` (مع الأدوار والفروع في Transaction واحدة) و`UpdateStaffMember`، `BranchAccessGuard`، `GET /branches`؛ الـ Owner الذي يُحسب في «بقاء مالك واحد» يجب أن يكون نشطاً؛ 15 اختباراً جديداً (المجموع 136).
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).

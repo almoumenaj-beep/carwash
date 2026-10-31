@@ -65,10 +65,14 @@ class SyncUserRoles
         });
     }
 
+    /**
+     * Only an active owner counts: a deactivated one cannot sign in to manage the car wash.
+     */
     private function tenantHasAnotherOwner(User $staff): bool
     {
         return User::query()
             ->where('tenant_id', $staff->tenant_id)
+            ->where('is_active', true)
             ->whereKeyNot($staff->getKey())
             ->whereHas('roles', fn ($query) => $query->where('key', DefaultRole::Owner->value))
             ->exists();

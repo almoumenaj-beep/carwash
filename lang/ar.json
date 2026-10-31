@@ -19,6 +19,8 @@
     "This account is deactivated.": "هذا الحساب موقوف. تواصل مع مدير المغسلة.",
     "This device is not registered or was revoked. Sign in with your password.": "هذا الجهاز غير مسجّل أو تم إلغاؤه. سجّل الدخول بكلمة المرور.",
     "The PIN is incorrect.": "رمز PIN غير صحيح.",
+    "You can only give access to branches you work in.": "يمكنك منح الوصول فقط للفروع التي تعمل فيها.",
+    "You cannot deactivate your own account.": "لا يمكنك إيقاف حسابك بنفسك.",
     "Too Many Attempts.": "محاولات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.",
     "You cannot grant or revoke permissions you do not have: :permissions": "لا يمكنك منح أو سحب صلاحيات لا تملكها: :permissions",
     "Only an owner can grant or revoke the owner role.": "فقط المالك يستطيع منح دور المالك أو سحبه.",
