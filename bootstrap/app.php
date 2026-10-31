@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SetRequestLocale;
 use App\Http\Middleware\SetTenantContext;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->api(append: SetTenantContext::class);
+        $middleware->api(prepend: SetRequestLocale::class, append: SetTenantContext::class);
 
         // The tenant must be known after authentication and before route model binding queries tenant data.
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: SetTenantContext::class);

@@ -6,6 +6,7 @@ use App\Domain\Identity\Enums\Permission;
 use App\Domain\Identity\Models\Role;
 use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\TestWith;
 use Spatie\Permission\Models\Permission as PermissionModel;
 use Tests\TestCase;
 
@@ -38,6 +39,16 @@ class PermissionCatalogTest extends TestCase
 
         $this->assertDatabaseMissing('permissions', ['name' => 'legacy.feature']);
         $this->assertDatabaseMissing('role_has_permissions', ['role_id' => $role->id]);
+    }
+
+    #[TestWith(['ar'])]
+    #[TestWith(['en'])]
+    public function test_every_permission_and_module_is_translated(string $locale): void
+    {
+        foreach (Permission::cases() as $permission) {
+            $this->assertTrue(trans()->has("permissions.{$permission->value}", $locale, false), "{$locale}: {$permission->value}");
+            $this->assertTrue(trans()->has("permissions.modules.{$permission->module()}", $locale, false), "{$locale}: module {$permission->module()}");
+        }
     }
 
     public function test_every_permission_belongs_to_a_module(): void

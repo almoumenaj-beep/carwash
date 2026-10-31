@@ -65,6 +65,16 @@ enum Permission: string
         return Str::before($this->value, '.');
     }
 
+    public function label(): string
+    {
+        return __("permissions.{$this->value}");
+    }
+
+    public static function moduleLabel(string $module): string
+    {
+        return __("permissions.modules.{$module}");
+    }
+
     /**
      * @return list<string>
      */

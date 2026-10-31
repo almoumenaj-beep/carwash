@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Identity\Enums\Permission;
+use App\Domain\Identity\Models\Role;
 use App\Domain\Identity\Policies\UserPolicy;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
@@ -11,6 +13,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +30,11 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasRoles, HasUuids, Notifiable;
+
+    /**
+     * The guard spatie/permission checks roles against, also during Sanctum-authenticated requests.
+     */
+    protected string $guard_name = Role::GUARD_NAME;
 
     /**
      * Get the attributes that should be cast.
@@ -74,6 +82,32 @@ class User extends Authenticatable
     public function hasAllBranchAccess(): bool
     {
         return $this->all_branches || $this->isOwner();
+    }
+
+    /**
+     * Every permission the user holds in the current tenant; owners hold the whole catalog.
+     *
+     * @return list<string>
+     */
+    public function permissionNames(): array
+    {
+        if ($this->isOwner()) {
+            return Permission::values();
+        }
+
+        return $this->getAllPermissions()->pluck('name')->sort()->values()->all();
+    }
+
+    /**
+     * The branches the user may work in, ordered by name.
+     *
+     * @return Collection<int, Branch>
+     */
+    public function accessibleBranches(): Collection
+    {
+        $query = $this->hasAllBranchAccess() ? Branch::query() : $this->branches();
+
+        return $query->orderBy('name')->get();
     }
 
     public function canAccessBranch(Branch $branch): bool

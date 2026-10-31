@@ -20,7 +20,7 @@ class ProvisionDefaultRoles
             foreach (DefaultRole::cases() as $defaultRole) {
                 $role = Role::query()->firstOrCreate(
                     ['tenant_id' => $tenant->id, 'key' => $defaultRole->value],
-                    ['name' => $defaultRole->displayName(), 'guard_name' => config('auth.defaults.guard')],
+                    ['name' => $defaultRole->displayName(), 'guard_name' => Role::GUARD_NAME],
                 );
 
                 if ($role->wasRecentlyCreated) {

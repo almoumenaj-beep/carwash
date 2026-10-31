@@ -26,9 +26,9 @@ class UserIdentityTest extends TestCase
         $token = $user->createToken('device')->plainTextToken;
 
         $this->withToken($token)
-            ->getJson('/api/user')
+            ->getJson('/api/v1/me')
             ->assertOk()
-            ->assertJsonPath('id', $user->id);
+            ->assertJsonPath('data.id', $user->id);
     }
 
     public function test_roles_are_scoped_to_the_current_tenant(): void

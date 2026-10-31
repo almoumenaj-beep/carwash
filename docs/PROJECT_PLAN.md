@@ -2,7 +2,7 @@
 
 > **هذا الملف هو المرجع الحي للمشروع.** يُحدَّث بعد إنجاز كل مهمة: الخطة التفصيلية + جدول التقدّم + سجل القرارات + سجل التغييرات.
 
-**الإنجاز الإجمالي: 11%** · آخر تحديث: 2026-10-24 · المرحلة الحالية: 0 – الأساس
+**الإنجاز الإجمالي: 13%** · آخر تحديث: 2026-10-31 · المرحلة الحالية: 0 – الأساس
 
 الرموز: `[ ]` لم يبدأ · `[~]` قيد التنفيذ · `[x]` مكتمل (مع التاريخ)
 
@@ -35,7 +35,7 @@
 - [x] تثبيت الحزم الأساسية (Sanctum, permission+Teams, activitylog, medialibrary, scramble) + UUID للمستخدمين + اختبارات على MySQL (`carwash_testing`) — 2026-10-24
 - [x] Multi-tenancy: `BelongsToTenant` + `TenantScope` + `TenantContext` + middleware `SetTenantContext` + `tenants` + `branches` + `users.tenant_id` + اختبارات العزل (نموذج + API) — 2026-10-24
 - [x] نظام الأدوار والصلاحيات: Permission Catalog (35 صلاحية) + `PermissionSeeder` + 7 أدوار افتراضية تُنسخ لكل tenant + نطاق الفروع (`branch_user` + `all_branches`) + Policies (Role/User/Branch) + اختبار مصفوفة الصلاحيات — 2026-10-24
-- [ ] API الأدوار: `/permissions` `/roles` `/users/{id}/roles` `/me`
+- [x] API الأدوار: `/me` `/permissions` `/roles` (CRUD) `/roles/{id}/permissions` `/users/{id}/roles` + ترجمة ar/en + Audit Log — 2026-10-31
 - [ ] Auth: Sanctum + PIN سريع + الأجهزة
 - [ ] تثبيت Flutter SDK وإنشاء المشروع + l10n (ar/en) + Riverpod + Dio
 - [ ] شاشات Flutter: Login + PermissionGuard + إدارة الأدوار والموظفين
@@ -78,8 +78,8 @@
 - [ ] ANPR وتكاملات محاسبية
 
 ## (B) ما التالي؟
-1. API الأدوار: `/permissions` (مجمّعة حسب الوحدة + ترجمة ar/en) `/roles` `/roles/{id}/permissions` `/users/{id}/roles` `/me` — مع قواعد: لا منح لصلاحية لا يملكها المانح، وبقاء Owner واحد على الأقل، وتسجيل التغييرات في Audit Log.
-2. Auth: Sanctum + PIN سريع + الأجهزة.
+1. Auth: تسجيل الدخول بالبريد/الجوال وإصدار توكن Sanctum لكل جهاز + PIN سريع للكاشير + قائمة الأجهزة وإلغاؤها + تسجيل الخروج.
+2. توحيد صيغة الأخطاء (RFC 7807) + رسائل التحقق بالعربية (`lang/ar/validation.php`) — قبل بدء شاشات Flutter.
 
 ---
 
@@ -297,7 +297,7 @@
 - **مسار المشروع:** `C:\xampp\htdocs\carwash` (نُسخ من WSL؛ نسخة WSL القديمة لم تعد مرجعاً).
 - **PHP:** **8.4.27 هو PHP الأساسي في XAMPP** في `C:\xampp\php` (للطرفية وXAMPP Shell وApache معاً)؛ PHP 8.2 الأصلي محفوظ في `C:\xampp\php82` للرجوع فقط. **Composer:** `C:\xampp\php\composer.phar` (أو `composer.bat`). الأوامر: `php artisan ...` في أي طرفية جديدة.
 - **قاعدة البيانات:** **MySQL 8.4.13 LTS** في `C:\xampp\mysql` (حلّت محل MariaDB الخاصة بـ XAMPP، والنسخة القديمة محفوظة في `C:\xampp\mysql_mariadb104`) على `127.0.0.1:3307`، الإعداد في `C:\xampp\mysql\bin\my.ini` (utf8mb4، mysqlx معطّل). تُشغَّل من زر MySQL في لوحة XAMPP. قاعدة `carwash` + `carwash_testing` للاختبارات، المستخدم `admin` (كلمة السر في `.env`)، و`root` بدون كلمة سر محلياً. الإدارة عبر **phpMyAdmin** على http://localhost/phpmyadmin.
-- **التشغيل:** `php artisan serve` على http://localhost:8000، أو عبر Apache على http://localhost/carwash/public. Git for Windows 2.56 مثبّت ومضبوط (user: Ali، الفرع الافتراضي `main`، المستودع على GitHub: `almoumenaj-beep/carwash`؛ `.env` و`vendor` مستثنيان في `.gitignore`).
+- **التشغيل:** `php artisan serve` على http://localhost:8000، أو عبر Apache على http://localhost/carwash/public (في `apache\conf\extra\httpd-xampp.conf` أُضيف `LoadFile` لـ `libssh2.dll` و`nghttp2.dll` من مجلد PHP، لأن نسخ `apache\bin` الأقدم تمنع تحميل curl في PHP 8.4). Git for Windows 2.56 مثبّت ومضبوط (user: Ali، الفرع الافتراضي `main`، المستودع على GitHub: `almoumenaj-beep/carwash`؛ `.env` و`vendor` مستثنيان في `.gitignore`).
 - **الاختبارات:** `php artisan test` على MySQL (`carwash_testing`) لأن PHP 8.4 هنا بدون `pdo_sqlite`، ولتطابق بيئة الإنتاج.
 - **ملاحظة:** إن لم يُعرف `php` أو `git` في طرفية VS Code، أعد تشغيل VS Code (أُضيفت للـ PATH بعد فتحه).
 
@@ -321,6 +321,10 @@
 | 2026-10-24 | الأدوار على مستوى المغسلة كلها، ونطاق الفروع لكل مستخدم (`all_branches` أو `branch_user`) بدل دور مختلف لكل فرع | يحقق «مدير فرع A يرى فرعه فقط» ببساطة؛ دور لكل فرع يُضاف لاحقاً إن احتجناه |
 | 2026-10-24 | الأدوار الافتراضية تُنشأ صراحةً بـ `ProvisionDefaultRoles` (في الـ Onboarding/Seeder) وليس بحدث على Tenant؛ وإعادة التشغيل لا تمسّ تعديلات المالك | وضوح وسهولة اختبار؛ آمن للتشغيل المتكرر |
 | 2026-10-24 | حدود الخصم (`role_limits`) تُؤجَّل إلى مهمة POS | لا تُستخدم قبل وجود الخصم |
+| 2026-10-31 | الأدوار والصلاحيات مثبّتة على guard `web` (`Role::GUARD_NAME`) | `auth:sanctum` يغيّر الـ guard الافتراضي إلى `sanctum` الذي لا يملك user provider فتنكسر spatie |
+| 2026-10-31 | عرض قائمة الأدوار مسموح لمن يملك `roles.manage` أو `users.manage`؛ والتعديل لـ `roles.manage` فقط | مدير الفرع يحتاج القائمة ليُسند الأدوار لموظفيه |
+| 2026-10-31 | قواعد منع التصعيد في الـ Actions: لا منح/سحب لصلاحية لا يملكها المنفّذ (`PermissionGrantGuard`)، دور Owner يمنحه/يسحبه Owner فقط، ويبقى Owner واحد على الأقل؛ سجلات دور/مستخدم tenant آخر = 404 عبر Route binding مقيَّد بالـ tenant | أمن الصلاحيات حسب القسم 2.3 |
+| 2026-10-31 | Audit Log عبر activitylog باسم سجل `audit` مع عمود `tenant_id`؛ واللغة من ترويسة `Accept-Language` (ar/en) | عرض سجل كل مغسلة لاحقاً؛ التطبيق يرسل لغة المستخدم |
 | 2026-10-24 | PHP 8.4 يحل محل PHP 8.2 كـ PHP أساسي في XAMPP (`C:\xampp\php`، والقديم في `php82`) | XAMPP Shell وApache كانا يشغّلان 8.2 فيفشل Composer (يتطلب ≥ 8.4.1)؛ لا يوجد مشروع آخر يحتاج 8.2 |
 | 2026-10-24 | الاختبارات على قاعدة MySQL مستقلة `carwash_testing` بدل SQLite | لا يوجد `pdo_sqlite`، وسلوك MySQL (فهارس، أقفال) يجب أن يُختبر فعلياً |
 
@@ -329,6 +333,7 @@
 - **2026-10-24:** تثبيت MySQL 8.4.13 مكان MariaDB في XAMPP؛ تثبيت Laravel Boost؛ تثبيت Sanctum (`install:api`) وspatie/permission (Teams=`tenant_id`) وactivitylog وmedialibrary وscramble؛ تحويل `users` إلى UUID؛ نقل الاختبارات إلى `carwash_testing`؛ إضافة `UserIdentityTest` (UUID، توكن Sanctum، عزل الأدوار بين tenants).
 - **2026-10-24:** Multi-tenancy: جداول `tenants` (الحالة، اللغة، العملة، المنطقة الزمنية) و`branches` و`users.tenant_id` وربط جداول الصلاحيات بـ `tenants`؛ `BelongsToTenant` يملأ `tenant_id` تلقائياً ويمنع الكتابة لـ tenant آخر أو نقل السجل؛ رفض مستخدمي المغاسل الموقوفة والمستخدمين بلا tenant بـ 403؛ Seeder لمغسلة تجريبية؛ 15 اختباراً جديداً (`TenantIsolationTest` و`TenantApiIsolationTest`).
 - **2026-10-24:** RBAC: Enum `Permission` (35 صلاحية بصيغة `module.action`) و`DefaultRole` (7 أدوار مع مصفوفتها)؛ `SyncPermissionCatalog` + `PermissionSeeder` (يُشغَّل في كل نشر)؛ `ProvisionDefaultRoles`؛ نموذج `Role` مخصّص بعمود `key`؛ جدول `branch_user` و`users.all_branches`؛ Policies: `RolePolicy` (منع تعديل/حذف دور Owner، عزل الـ tenant) و`UserPolicy` (نطاق الفروع، لا يدير Owner إلا Owner، لا حذف للنفس) و`BranchPolicy`؛ Seeder يجعل `test@example.com` مالك المغسلة التجريبية؛ 31 اختباراً جديداً (المجموع 51).
+- **2026-10-31:** إصلاح Apache مع PHP 8.4 (`LoadFile` لـ libssh2/nghttp2 الخاصة بـ PHP). API v1 للأدوار: `GET /me` (المغسلة، الأدوار، الصلاحيات الفعلية، الفروع المسموحة)، `GET /permissions` (الكتالوج مجمّعاً ومترجماً)، `/roles` (عرض/إنشاء/إعادة تسمية/حذف)، `PUT /roles/{id}/permissions`، `PUT /users/{id}/roles`؛ Actions: `CreateRole` `RenameRole` `SyncRolePermissions` `DeleteRole` (يرفض حذف دور مُسنَد) `SyncUserRoles`؛ `PermissionGrantGuard`؛ `AuditTrail` + عمود `activity_log.tenant_id`؛ middleware `SetRequestLocale`؛ ملفات الترجمة `lang/{ar,en}/{permissions,roles}.php` و`lang/ar.json`؛ حذف مسار `/api/user` المؤقت؛ 30 اختباراً جديداً (المجموع 81).
 
 ## (E) المخاطر المفتوحة والأسئلة المعلّقة
 - [ ] تحديد البلد/العملة/الضريبة (يؤثر على بوابة الدفع والفاتورة الإلكترونية ومزود SMS/واتساب).

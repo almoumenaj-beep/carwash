@@ -44,13 +44,24 @@ class RolePolicyTest extends TestCase
         $this->assertFalse($owner->can('delete', $ownerRole));
     }
 
-    public function test_staff_without_roles_permission_cannot_manage_roles(): void
+    public function test_staff_managers_may_view_but_not_edit_roles(): void
     {
         $manager = $this->createStaff($this->tenant, DefaultRole::BranchManager);
         $this->enterTenant($this->tenant);
+        $cashierRole = $this->defaultRoleOf($this->tenant, DefaultRole::Cashier);
 
-        $this->assertFalse($manager->can('viewAny', Role::class));
-        $this->assertFalse($manager->can('update', $this->defaultRoleOf($this->tenant, DefaultRole::Cashier)));
+        $this->assertTrue($manager->can('viewAny', Role::class));
+        $this->assertTrue($manager->can('view', $cashierRole));
+        $this->assertFalse($manager->can('create', Role::class));
+        $this->assertFalse($manager->can('update', $cashierRole));
+    }
+
+    public function test_staff_without_roles_or_users_permission_cannot_see_roles(): void
+    {
+        $cashier = $this->createStaff($this->tenant, DefaultRole::Cashier);
+        $this->enterTenant($this->tenant);
+
+        $this->assertFalse($cashier->can('viewAny', Role::class));
     }
 
     public function test_roles_of_another_tenant_are_denied(): void

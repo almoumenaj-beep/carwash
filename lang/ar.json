@@ -1,0 +1,10 @@
+{
+    "Unauthenticated.": "يجب تسجيل الدخول أولاً.",
+    "This action is unauthorized.": "غير مصرّح لك بهذا الإجراء.",
+    "This account is not linked to a car wash.": "هذا الحساب غير مرتبط بأي مغسلة.",
+    "This car wash account is suspended.": "حساب هذه المغسلة موقوف.",
+    "You cannot grant or revoke permissions you do not have: :permissions": "لا يمكنك منح أو سحب صلاحيات لا تملكها: :permissions",
+    "Only an owner can grant or revoke the owner role.": "فقط المالك يستطيع منح دور المالك أو سحبه.",
+    "The car wash must keep at least one owner.": "يجب أن يبقى للمغسلة مالك واحد على الأقل.",
+    "This role is assigned to :count staff member. Reassign them first.|This role is assigned to :count staff members. Reassign them first.": "هذا الدور مُسنَد إلى :count من الموظفين. انقلهم إلى دور آخر أولاً."
+}

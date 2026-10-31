@@ -4,6 +4,7 @@ namespace Tests\Concerns;
 
 use App\Domain\Identity\Actions\ProvisionDefaultRoles;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Identity\Enums\Permission;
 use App\Domain\Identity\Models\Role;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
@@ -35,6 +36,23 @@ trait InteractsWithTenants
     protected function defaultRoleOf(Tenant $tenant, DefaultRole $defaultRole): Role
     {
         return Role::query()->where('tenant_id', $tenant->id)->where('key', $defaultRole->value)->firstOrFail();
+    }
+
+    /**
+     * Create a staff member holding a custom role with exactly the given permissions.
+     *
+     * @param  list<Permission>  $permissions
+     */
+    protected function createStaffWithPermissions(Tenant $tenant, array $permissions, bool $allBranches = true): User
+    {
+        $role = Role::create(['name' => 'Custom '.fake()->unique()->word(), 'tenant_id' => $tenant->id]);
+        $role->syncPermissions(array_map(fn (Permission $permission) => $permission->value, $permissions));
+
+        $user = User::factory()->forTenant($tenant)->create(['all_branches' => $allBranches]);
+
+        $this->app->make(TenantContext::class)->run($tenant, fn () => $user->assignRole($role));
+
+        return $user;
     }
 
     /**

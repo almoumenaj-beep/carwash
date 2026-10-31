@@ -3,6 +3,7 @@
 namespace App\Domain\Identity\Actions;
 
 use App\Domain\Identity\Enums\Permission;
+use App\Domain\Identity\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission as PermissionModel;
 use Spatie\Permission\PermissionRegistrar;
@@ -17,7 +18,7 @@ class SyncPermissionCatalog
 
     public function handle(): void
     {
-        $guardName = config('auth.defaults.guard');
+        $guardName = Role::GUARD_NAME;
 
         DB::transaction(function () use ($guardName): void {
             foreach (Permission::cases() as $permission) {
