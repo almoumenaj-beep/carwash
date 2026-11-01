@@ -365,6 +365,121 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchDeleted => 'تم حذف الفرع';
 
   @override
+  String get catalogTitle => 'الخدمات والأسعار';
+
+  @override
+  String get catalogSubtitle => 'الخدمات والإضافات وأحجام السيارات والأسعار';
+
+  @override
+  String get newService => 'خدمة جديدة';
+
+  @override
+  String get noServices => 'لا توجد خدمات بعد. أضف خدماتك وأسعارها.';
+
+  @override
+  String get serviceName => 'اسم الخدمة';
+
+  @override
+  String get categoryField => 'التصنيف';
+
+  @override
+  String get noCategory => 'بدون تصنيف';
+
+  @override
+  String get durationField => 'المدة (بالدقائق)';
+
+  @override
+  String get descriptionField => 'الوصف';
+
+  @override
+  String get isAddon => 'إضافة (تُباع مع خدمة أساسية)';
+
+  @override
+  String get serviceActive => 'متاحة للبيع';
+
+  @override
+  String get pricesSection => 'الأسعار';
+
+  @override
+  String get pricesIncludeVatHint => 'السعر الذي يدفعه العميل، شامل الضريبة';
+
+  @override
+  String get pricesExcludeVatHint => 'الأسعار قبل الضريبة';
+
+  @override
+  String get samePriceAllSizes => 'سعر واحد لكل أحجام السيارات';
+
+  @override
+  String get priceAllSizes => 'السعر (كل الأحجام)';
+
+  @override
+  String branchPricesFor(String branch) {
+    return 'الأسعار في $branch';
+  }
+
+  @override
+  String get branchPricesHint => 'اتركه فارغاً لاستخدام السعر العام';
+
+  @override
+  String amountInvalid(String example) {
+    return 'أدخل مبلغاً مثل $example';
+  }
+
+  @override
+  String get addonsSection => 'الإضافات';
+
+  @override
+  String fromPrice(String price) {
+    return 'من $price';
+  }
+
+  @override
+  String get unpriced => 'بدون سعر';
+
+  @override
+  String minutesShort(int count) {
+    return '$count دقيقة';
+  }
+
+  @override
+  String get inactiveLabel => 'غير مفعّلة';
+
+  @override
+  String get sizesTitle => 'أحجام السيارات';
+
+  @override
+  String get categoriesTitle => 'تصنيفات الخدمات';
+
+  @override
+  String get addSize => 'إضافة حجم';
+
+  @override
+  String get addCategory => 'إضافة تصنيف';
+
+  @override
+  String get nameField => 'الاسم';
+
+  @override
+  String servicesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count خدمة',
+      many: '$count خدمة',
+      few: '$count خدمات',
+      two: 'خدمتان',
+      one: 'خدمة واحدة',
+      zero: 'لا توجد خدمات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteEntryConfirm(String name) {
+    return 'حذف «$name»؟';
+  }
+
+  @override
   String get daySat => 'السبت';
 
   @override

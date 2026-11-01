@@ -710,6 +710,192 @@ abstract class AppLocalizations {
   /// **'Branch deleted'**
   String get branchDeleted;
 
+  /// No description provided for @catalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Services & prices'**
+  String get catalogTitle;
+
+  /// No description provided for @catalogSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Services, add-ons, vehicle sizes and prices'**
+  String get catalogSubtitle;
+
+  /// No description provided for @newService.
+  ///
+  /// In en, this message translates to:
+  /// **'New service'**
+  String get newService;
+
+  /// No description provided for @noServices.
+  ///
+  /// In en, this message translates to:
+  /// **'No services yet. Add your services and their prices.'**
+  String get noServices;
+
+  /// No description provided for @serviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Service name'**
+  String get serviceName;
+
+  /// No description provided for @categoryField.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get categoryField;
+
+  /// No description provided for @noCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncategorised'**
+  String get noCategory;
+
+  /// No description provided for @durationField.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (minutes)'**
+  String get durationField;
+
+  /// No description provided for @descriptionField.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get descriptionField;
+
+  /// No description provided for @isAddon.
+  ///
+  /// In en, this message translates to:
+  /// **'Add-on (sold with a main service)'**
+  String get isAddon;
+
+  /// No description provided for @serviceActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Available for sale'**
+  String get serviceActive;
+
+  /// No description provided for @pricesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices'**
+  String get pricesSection;
+
+  /// No description provided for @pricesIncludeVatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices charged to the customer, VAT included'**
+  String get pricesIncludeVatHint;
+
+  /// No description provided for @pricesExcludeVatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices before VAT'**
+  String get pricesExcludeVatHint;
+
+  /// No description provided for @samePriceAllSizes.
+  ///
+  /// In en, this message translates to:
+  /// **'Same price for every vehicle size'**
+  String get samePriceAllSizes;
+
+  /// No description provided for @priceAllSizes.
+  ///
+  /// In en, this message translates to:
+  /// **'Price (every size)'**
+  String get priceAllSizes;
+
+  /// No description provided for @branchPricesFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Prices at {branch}'**
+  String branchPricesFor(String branch);
+
+  /// No description provided for @branchPricesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to use the general price'**
+  String get branchPricesHint;
+
+  /// No description provided for @amountInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount like {example}'**
+  String amountInvalid(String example);
+
+  /// No description provided for @addonsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Add-ons'**
+  String get addonsSection;
+
+  /// No description provided for @fromPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'from {price}'**
+  String fromPrice(String price);
+
+  /// No description provided for @unpriced.
+  ///
+  /// In en, this message translates to:
+  /// **'No price'**
+  String get unpriced;
+
+  /// No description provided for @minutesShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String minutesShort(int count);
+
+  /// No description provided for @inactiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get inactiveLabel;
+
+  /// No description provided for @sizesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle sizes'**
+  String get sizesTitle;
+
+  /// No description provided for @categoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Service categories'**
+  String get categoriesTitle;
+
+  /// No description provided for @addSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Add size'**
+  String get addSize;
+
+  /// No description provided for @addCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get addCategory;
+
+  /// No description provided for @nameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get nameField;
+
+  /// No description provided for @servicesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No services} =1{1 service} other{{count} services}}'**
+  String servicesCount(int count);
+
+  /// No description provided for @deleteEntryConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”?'**
+  String deleteEntryConfirm(String name);
+
   /// No description provided for @daySat.
   ///
   /// In en, this message translates to:

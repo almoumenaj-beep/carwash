@@ -357,6 +357,118 @@ class AppLocalizationsEn extends AppLocalizations {
   String get branchDeleted => 'Branch deleted';
 
   @override
+  String get catalogTitle => 'Services & prices';
+
+  @override
+  String get catalogSubtitle => 'Services, add-ons, vehicle sizes and prices';
+
+  @override
+  String get newService => 'New service';
+
+  @override
+  String get noServices => 'No services yet. Add your services and their prices.';
+
+  @override
+  String get serviceName => 'Service name';
+
+  @override
+  String get categoryField => 'Category';
+
+  @override
+  String get noCategory => 'Uncategorised';
+
+  @override
+  String get durationField => 'Duration (minutes)';
+
+  @override
+  String get descriptionField => 'Description';
+
+  @override
+  String get isAddon => 'Add-on (sold with a main service)';
+
+  @override
+  String get serviceActive => 'Available for sale';
+
+  @override
+  String get pricesSection => 'Prices';
+
+  @override
+  String get pricesIncludeVatHint => 'Prices charged to the customer, VAT included';
+
+  @override
+  String get pricesExcludeVatHint => 'Prices before VAT';
+
+  @override
+  String get samePriceAllSizes => 'Same price for every vehicle size';
+
+  @override
+  String get priceAllSizes => 'Price (every size)';
+
+  @override
+  String branchPricesFor(String branch) {
+    return 'Prices at $branch';
+  }
+
+  @override
+  String get branchPricesHint => 'Leave empty to use the general price';
+
+  @override
+  String amountInvalid(String example) {
+    return 'Enter an amount like $example';
+  }
+
+  @override
+  String get addonsSection => 'Add-ons';
+
+  @override
+  String fromPrice(String price) {
+    return 'from $price';
+  }
+
+  @override
+  String get unpriced => 'No price';
+
+  @override
+  String minutesShort(int count) {
+    return '$count min';
+  }
+
+  @override
+  String get inactiveLabel => 'Inactive';
+
+  @override
+  String get sizesTitle => 'Vehicle sizes';
+
+  @override
+  String get categoriesTitle => 'Service categories';
+
+  @override
+  String get addSize => 'Add size';
+
+  @override
+  String get addCategory => 'Add category';
+
+  @override
+  String get nameField => 'Name';
+
+  @override
+  String servicesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count services',
+      one: '1 service',
+      zero: 'No services',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String deleteEntryConfirm(String name) {
+    return 'Delete “$name”?';
+  }
+
+  @override
   String get daySat => 'Saturday';
 
   @override

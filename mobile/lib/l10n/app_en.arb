@@ -159,6 +159,79 @@
     }
   },
   "branchDeleted": "Branch deleted",
+  "catalogTitle": "Services & prices",
+  "catalogSubtitle": "Services, add-ons, vehicle sizes and prices",
+  "newService": "New service",
+  "noServices": "No services yet. Add your services and their prices.",
+  "serviceName": "Service name",
+  "categoryField": "Category",
+  "noCategory": "Uncategorised",
+  "durationField": "Duration (minutes)",
+  "descriptionField": "Description",
+  "isAddon": "Add-on (sold with a main service)",
+  "serviceActive": "Available for sale",
+  "pricesSection": "Prices",
+  "pricesIncludeVatHint": "Prices charged to the customer, VAT included",
+  "pricesExcludeVatHint": "Prices before VAT",
+  "samePriceAllSizes": "Same price for every vehicle size",
+  "priceAllSizes": "Price (every size)",
+  "branchPricesFor": "Prices at {branch}",
+  "@branchPricesFor": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
+  "branchPricesHint": "Leave empty to use the general price",
+  "amountInvalid": "Enter an amount like {example}",
+  "@amountInvalid": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "addonsSection": "Add-ons",
+  "fromPrice": "from {price}",
+  "@fromPrice": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "unpriced": "No price",
+  "minutesShort": "{count} min",
+  "@minutesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "inactiveLabel": "Inactive",
+  "sizesTitle": "Vehicle sizes",
+  "categoriesTitle": "Service categories",
+  "addSize": "Add size",
+  "addCategory": "Add category",
+  "nameField": "Name",
+  "servicesCount": "{count, plural, =0{No services} =1{1 service} other{{count} services}}",
+  "@servicesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteEntryConfirm": "Delete “{name}”?",
+  "@deleteEntryConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "daySat": "Saturday",
   "daySun": "Sunday",
   "dayMon": "Monday",

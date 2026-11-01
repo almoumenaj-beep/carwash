@@ -5,6 +5,7 @@ abstract final class Permissions {
   static const rolesManage = 'roles.manage';
   static const usersManage = 'users.manage';
   static const settingsManage = 'settings.manage';
+  static const servicesManage = 'services.manage';
 }
 
 /// Which permissions open each section; holding any one of them is enough.
@@ -14,6 +15,7 @@ const routePermissions = <String, List<String>>{
   '/devices': [Permissions.usersManage],
   '/settings': [Permissions.settingsManage],
   '/branches': [Permissions.settingsManage],
+  '/catalog': [Permissions.servicesManage],
 };
 
 /// Whether [me] may open [location] (a path such as `/staff/42`).

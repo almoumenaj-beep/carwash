@@ -8,6 +8,10 @@ import '../../features/auth/presentation/pin_screen.dart';
 import '../../features/auth/presentation/splash_screen.dart';
 import '../../features/branches/presentation/branch_editor_screen.dart';
 import '../../features/branches/presentation/branches_screen.dart';
+import '../../features/catalog/data/catalog_repository.dart';
+import '../../features/catalog/presentation/catalog_entries_screen.dart';
+import '../../features/catalog/presentation/catalog_screen.dart';
+import '../../features/catalog/presentation/service_editor_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/roles/presentation/role_editor_screen.dart';
@@ -78,6 +82,25 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
+      GoRoute(
+        path: '/catalog',
+        builder: (_, _) => const CatalogScreen(),
+        routes: [
+          GoRoute(
+            path: 'sizes',
+            builder: (_, _) => const CatalogEntriesScreen(kind: CatalogEntryKind.vehicleSize),
+          ),
+          GoRoute(
+            path: 'categories',
+            builder: (_, _) => const CatalogEntriesScreen(kind: CatalogEntryKind.serviceCategory),
+          ),
+          GoRoute(path: 'services/new', builder: (_, _) => const ServiceEditorScreen()),
+          GoRoute(
+            path: 'services/:serviceId',
+            builder: (_, state) => ServiceEditorScreen(serviceId: state.pathParameters['serviceId']),
+          ),
+        ],
+      ),
       GoRoute(
         path: '/branches',
         builder: (_, _) => const BranchesScreen(),
