@@ -2,6 +2,7 @@
 
 namespace App\Domain\Catalog\Models;
 
+use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use Database\Factories\ServiceFactory;
@@ -95,11 +96,10 @@ class Service extends Model
     }
 
     /**
-     * Whether anything depends on the service, so it may only be deactivated, not deleted.
-     * Work orders join this check when they arrive.
+     * Whether the service has been sold, so it may only be deactivated, not deleted.
      */
     public function isInUse(): bool
     {
-        return false;
+        return OrderItem::query()->where('service_id', $this->id)->exists();
     }
 }

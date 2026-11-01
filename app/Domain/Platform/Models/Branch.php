@@ -2,6 +2,7 @@
 
 namespace App\Domain\Platform\Models;
 
+use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Policies\BranchPolicy;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use App\Models\User;
@@ -97,11 +98,11 @@ class Branch extends Model
     }
 
     /**
-     * Whether anything depends on the branch, so it may only be closed, not deleted.
-     * Work orders, payments and shifts join this check as those modules arrive.
+     * Whether anything depends on the branch (staff, work orders; later payments and shifts),
+     * so it may only be closed, not deleted.
      */
     public function isInUse(): bool
     {
-        return $this->staff()->exists();
+        return $this->staff()->exists() || Order::query()->where('branch_id', $this->id)->exists();
     }
 }

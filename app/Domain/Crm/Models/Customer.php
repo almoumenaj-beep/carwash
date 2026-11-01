@@ -4,6 +4,7 @@ namespace App\Domain\Crm\Models;
 
 use App\Domain\Crm\Support\PhoneNumber;
 use App\Domain\Crm\Support\PlateNumber;
+use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -67,12 +68,19 @@ class Customer extends Model
     }
 
     /**
-     * Whether anything depends on the customer (orders, wallet, loyalty), so they cannot be deleted.
-     * Those modules join this check when they arrive.
+     * @return HasMany<Order, $this>
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Whether the customer has history (work orders; later wallet and loyalty), so they cannot be deleted.
      */
     public function isInUse(): bool
     {
-        return false;
+        return $this->orders()->exists();
     }
 
     /**

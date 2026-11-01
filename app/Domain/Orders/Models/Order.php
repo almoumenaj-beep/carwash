@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Domain\Orders\Models;
+
+use App\Domain\Catalog\Models\VehicleSize;
+use App\Domain\Crm\Models\Customer;
+use App\Domain\Crm\Models\Vehicle;
+use App\Domain\Orders\Enums\OrderStatus;
+use App\Domain\Orders\Policies\OrderPolicy;
+use App\Domain\Platform\Models\Bay;
+use App\Domain\Platform\Models\Branch;
+use App\Domain\Platform\Tenancy\BelongsToTenant;
+use App\Models\User;
+use Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Attributes\UseFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+/**
+ * A work order: one car through the wash at a branch. Written only through the Orders actions,
+ * so nothing is mass assignable.
+ */
+#[UseFactory(OrderFactory::class)]
+#[UsePolicy(OrderPolicy::class)]
+class Order extends Model
+{
+    /** @use HasFactory<OrderFactory> */
+    use BelongsToTenant, HasFactory, HasUuids;
+
+    /**
+     * Mirrors the database defaults so a freshly created order is complete before it is refreshed.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'status' => 'waiting',
+        'subtotal' => 0,
+        'estimated_minutes' => 0,
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'status' => OrderStatus::class,
+            'number' => 'integer',
+            'subtotal' => 'integer',
+            'estimated_minutes' => 'integer',
+            'started_at' => 'datetime',
+            'qc_at' => 'datetime',
+            'ready_at' => 'datetime',
+            'delivered_at' => 'datetime',
+            'cancelled_at' => 'datetime',
+        ];
+    }
+
+    /**
+     * The number shown on screens and tickets, e.g. "MAIN-17".
+     */
+    public function reference(): string
+    {
+        return "{$this->branch->code}-{$this->number}";
+    }
+
+    /**
+     * @return BelongsTo<Branch, $this>
+     */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    /**
+     * @return BelongsTo<Customer, $this>
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * @return BelongsTo<Vehicle, $this>
+     */
+    public function vehicle(): BelongsTo
+    {
+        return $this->belongsTo(Vehicle::class);
+    }
+
+    /**
+     * @return BelongsTo<VehicleSize, $this>
+     */
+    public function vehicleSize(): BelongsTo
+    {
+        return $this->belongsTo(VehicleSize::class);
+    }
+
+    /**
+     * @return BelongsTo<Bay, $this>
+     */
+    public function bay(): BelongsTo
+    {
+        return $this->belongsTo(Bay::class);
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * @return HasMany<OrderItem, $this>
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return BelongsToMany<User, $this>
+     */
+    public function staff(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'order_staff')->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<OrderStatusChange, $this>
+     */
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(OrderStatusChange::class)->orderBy('created_at')->orderBy('id');
+    }
+}

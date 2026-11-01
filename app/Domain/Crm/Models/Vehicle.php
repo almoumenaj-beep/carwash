@@ -3,6 +3,7 @@
 namespace App\Domain\Crm\Models;
 
 use App\Domain\Catalog\Models\VehicleSize;
+use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use Database\Factories\VehicleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -39,10 +40,10 @@ class Vehicle extends Model
     }
 
     /**
-     * Whether anything depends on the vehicle (work orders), so it cannot be deleted.
+     * Whether the vehicle has been through the wash, so it cannot be deleted.
      */
     public function isInUse(): bool
     {
-        return false;
+        return Order::query()->where('vehicle_id', $this->id)->exists();
     }
 }

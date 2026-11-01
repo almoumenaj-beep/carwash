@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\MePinController;
+use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\OrderStatusController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
@@ -49,6 +51,9 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('vehicle-sizes', VehicleSizeController::class)->except('show');
         Route::apiResource('service-categories', ServiceCategoryController::class)->except('show');
         Route::apiResource('services', ServiceController::class);
+
+        Route::apiResource('orders', OrderController::class)->only(['index', 'store', 'show', 'update']);
+        Route::post('orders/{order}/status', [OrderStatusController::class, 'store'])->name('orders.status.store');
 
         Route::apiResource('customers', CustomerController::class);
         Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);

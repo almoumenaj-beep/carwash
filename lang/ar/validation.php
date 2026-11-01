@@ -234,6 +234,16 @@ return [
         'vehicles' => 'السيارات',
         'vehicles.*.plate_number' => 'رقم اللوحة',
         'vehicles.*.vehicle_size_id' => 'حجم السيارة',
+        'branch_id' => 'الفرع',
+        'vehicle_id' => 'السيارة',
+        'items' => 'الخدمات',
+        'items.*.service_id' => 'الخدمة',
+        'items.*.quantity' => 'الكمية',
+        'bay_id' => 'الرصيف',
+        'staff_ids' => 'الموظفون',
+        'staff_ids.*' => 'الموظف',
+        'status' => 'الحالة',
+        'reason' => 'السبب',
     ],
 
 ];
