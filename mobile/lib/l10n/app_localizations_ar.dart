@@ -650,6 +650,72 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
+  String get shiftTitle => 'ورديتي';
+
+  @override
+  String get shiftSubtitle => 'فتح الصندوق وجرده عند الإقفال';
+
+  @override
+  String get noOpenShift => 'ليس لديك وردية مفتوحة. عُدّ النقد في الدرج وافتح ورديتك.';
+
+  @override
+  String get openingFloatField => 'النقد في الدرج عند الفتح';
+
+  @override
+  String get openingFloatHint => 'اتركه فارغاً إذا كان الدرج فارغاً.';
+
+  @override
+  String get openShift => 'فتح الوردية';
+
+  @override
+  String shiftOpenSince(String time) {
+    return 'مفتوحة منذ $time';
+  }
+
+  @override
+  String get shiftInvoices => 'الفواتير';
+
+  @override
+  String get shiftCashTaken => 'النقد المستلم';
+
+  @override
+  String get shiftDiscounts => 'الخصومات';
+
+  @override
+  String get expectedCash => 'المتوقع في الدرج';
+
+  @override
+  String get closeShift => 'إقفال الوردية';
+
+  @override
+  String get countedCashField => 'النقد المعدود في الدرج';
+
+  @override
+  String get drawerMatches => 'الدرج مطابق';
+
+  @override
+  String drawerShort(String amount) {
+    return 'عجز $amount';
+  }
+
+  @override
+  String drawerOver(String amount) {
+    return 'زيادة $amount';
+  }
+
+  @override
+  String get varianceNoteField => 'ما سبب الفرق؟';
+
+  @override
+  String get varianceLabel => 'الفرق';
+
+  @override
+  String get shiftClosed => 'تم إقفال الوردية';
+
+  @override
+  String get openShiftFirst => 'افتح ورديتك لتستطيع التحصيل.';
+
+  @override
   String get checkoutTitle => 'التحصيل';
 
   @override

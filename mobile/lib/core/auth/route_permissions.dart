@@ -25,6 +25,7 @@ const routePermissions = <String, List<String>>{
   '/queue/new': [Permissions.ordersCreate],
   '/queue': [Permissions.ordersView],
   '/checkout': [Permissions.posCheckout],
+  '/shift': [Permissions.posCheckout],
   '/roles': [Permissions.rolesManage, Permissions.usersManage],
   '/staff': [Permissions.usersManage],
   '/devices': [Permissions.usersManage],

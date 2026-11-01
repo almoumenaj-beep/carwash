@@ -49,7 +49,9 @@ class SaveService
         $service->fill($data);
         $this->ensureValidPackage($service, $packageServiceIds);
 
-        if (! $service->is_package) {
+        if ($service->is_package) {
+            $service->service_category_id = null;
+        } else {
             $service->forceFill(['package_discount_type' => null, 'package_discount_value' => 0]);
         }
 

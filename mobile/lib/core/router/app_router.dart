@@ -24,6 +24,7 @@ import '../../features/orders/presentation/queue_screen.dart';
 import '../../features/roles/presentation/role_editor_screen.dart';
 import '../../features/roles/presentation/roles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/shifts/presentation/shift_screen.dart';
 import '../../features/staff/presentation/staff_editor_screen.dart';
 import '../../features/staff/presentation/staff_screen.dart';
 import '../auth/route_permissions.dart';
@@ -104,6 +105,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/checkout/:orderId',
         builder: (_, state) => CheckoutScreen(orderId: state.pathParameters['orderId']!),
+      ),
+      GoRoute(
+        path: '/shift',
+        builder: (_, state) => ShiftScreen(branchId: state.uri.queryParameters['branch']),
       ),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),

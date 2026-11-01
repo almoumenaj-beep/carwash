@@ -639,6 +639,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
+  String get shiftTitle => 'My shift';
+
+  @override
+  String get shiftSubtitle => 'Open the till, count the drawer at close';
+
+  @override
+  String get noOpenShift => 'You have no open shift. Count the cash in the drawer to open one.';
+
+  @override
+  String get openingFloatField => 'Cash in the drawer at opening';
+
+  @override
+  String get openingFloatHint => 'Leave empty if the drawer is empty.';
+
+  @override
+  String get openShift => 'Open shift';
+
+  @override
+  String shiftOpenSince(String time) {
+    return 'Open since $time';
+  }
+
+  @override
+  String get shiftInvoices => 'Invoices';
+
+  @override
+  String get shiftCashTaken => 'Cash taken';
+
+  @override
+  String get shiftDiscounts => 'Discounts given';
+
+  @override
+  String get expectedCash => 'Expected in the drawer';
+
+  @override
+  String get closeShift => 'Close shift';
+
+  @override
+  String get countedCashField => 'Cash counted in the drawer';
+
+  @override
+  String get drawerMatches => 'The drawer matches';
+
+  @override
+  String drawerShort(String amount) {
+    return 'Short by $amount';
+  }
+
+  @override
+  String drawerOver(String amount) {
+    return 'Over by $amount';
+  }
+
+  @override
+  String get varianceNoteField => 'Why does it not match?';
+
+  @override
+  String get varianceLabel => 'Difference';
+
+  @override
+  String get shiftClosed => 'Shift closed';
+
+  @override
+  String get openShiftFirst => 'Open your shift to take payment.';
+
+  @override
   String get checkoutTitle => 'Payment';
 
   @override

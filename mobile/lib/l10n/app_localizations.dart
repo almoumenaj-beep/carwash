@@ -1226,6 +1226,126 @@ abstract class AppLocalizations {
   /// **'Registered cars'**
   String get matchingCars;
 
+  /// No description provided for @shiftTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My shift'**
+  String get shiftTitle;
+
+  /// No description provided for @shiftSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the till, count the drawer at close'**
+  String get shiftSubtitle;
+
+  /// No description provided for @noOpenShift.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no open shift. Count the cash in the drawer to open one.'**
+  String get noOpenShift;
+
+  /// No description provided for @openingFloatField.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash in the drawer at opening'**
+  String get openingFloatField;
+
+  /// No description provided for @openingFloatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty if the drawer is empty.'**
+  String get openingFloatHint;
+
+  /// No description provided for @openShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Open shift'**
+  String get openShift;
+
+  /// No description provided for @shiftOpenSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Open since {time}'**
+  String shiftOpenSince(String time);
+
+  /// No description provided for @shiftInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Invoices'**
+  String get shiftInvoices;
+
+  /// No description provided for @shiftCashTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash taken'**
+  String get shiftCashTaken;
+
+  /// No description provided for @shiftDiscounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Discounts given'**
+  String get shiftDiscounts;
+
+  /// No description provided for @expectedCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected in the drawer'**
+  String get expectedCash;
+
+  /// No description provided for @closeShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Close shift'**
+  String get closeShift;
+
+  /// No description provided for @countedCashField.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash counted in the drawer'**
+  String get countedCashField;
+
+  /// No description provided for @drawerMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'The drawer matches'**
+  String get drawerMatches;
+
+  /// No description provided for @drawerShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Short by {amount}'**
+  String drawerShort(String amount);
+
+  /// No description provided for @drawerOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Over by {amount}'**
+  String drawerOver(String amount);
+
+  /// No description provided for @varianceNoteField.
+  ///
+  /// In en, this message translates to:
+  /// **'Why does it not match?'**
+  String get varianceNoteField;
+
+  /// No description provided for @varianceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Difference'**
+  String get varianceLabel;
+
+  /// No description provided for @shiftClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift closed'**
+  String get shiftClosed;
+
+  /// No description provided for @openShiftFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your shift to take payment.'**
+  String get openShiftFirst;
+
   /// No description provided for @checkoutTitle.
   ///
   /// In en, this message translates to:

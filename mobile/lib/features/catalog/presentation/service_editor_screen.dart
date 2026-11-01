@@ -194,7 +194,7 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
     final money = ref.read(moneyFormatProvider);
     final data = {
       'name': _name.text.trim(),
-      'service_category_id': _categoryId,
+      'service_category_id': _isPackage ? null : _categoryId,
       'description': _description.text.trim().isEmpty ? null : _description.text.trim(),
       'duration_minutes': int.tryParse(_duration.text.trim()) ?? 0,
       'is_addon': _isAddon && !_isPackage,
@@ -429,17 +429,20 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
               validator: (value) => (value == null || value.trim().isEmpty) ? l10n.fieldRequired : null,
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String?>(
-              initialValue: _categoryId,
-              decoration: InputDecoration(labelText: l10n.categoryField),
-              items: [
-                DropdownMenuItem(value: null, child: Text(l10n.noCategory)),
-                for (final category in widget.categories)
-                  DropdownMenuItem(value: category.id, child: Text(category.name)),
-              ],
-              onChanged: (value) => setState(() => _categoryId = value),
-            ),
-            const SizedBox(height: 12),
+            // Packages are listed in their own section, so they take no category.
+            if (!_isPackage) ...[
+              DropdownButtonFormField<String?>(
+                initialValue: _categoryId,
+                decoration: InputDecoration(labelText: l10n.categoryField),
+                items: [
+                  DropdownMenuItem(value: null, child: Text(l10n.noCategory)),
+                  for (final category in widget.categories)
+                    DropdownMenuItem(value: category.id, child: Text(category.name)),
+                ],
+                onChanged: (value) => setState(() => _categoryId = value),
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
               controller: _duration,
               keyboardType: TextInputType.number,

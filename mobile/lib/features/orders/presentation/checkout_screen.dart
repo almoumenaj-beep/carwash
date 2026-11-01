@@ -12,6 +12,7 @@ import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../settings/data/settings_repository.dart';
+import '../../shifts/data/shifts_repository.dart';
 import '../data/orders_repository.dart';
 import '../domain/checkout_totals.dart';
 import '../domain/order.dart';
@@ -159,7 +160,9 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     final tendered = _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
     final shortOfCash = tendered == null || tendered < totals.total;
     final canDeliver = order.status == OrderStatus.ready && canMoveTo(ref, OrderStatus.delivered);
-    final canPay = !_saving && !discountInvalid && !overLimit && !reasonMissing && !shortOfCash;
+    final shift = ref.watch(currentShiftProvider(order.branchId));
+    final hasShift = shift.value != null;
+    final canPay = hasShift && !_saving && !discountInvalid && !overLimit && !reasonMissing && !shortOfCash;
     final problem = _problem;
 
     Widget row(String label, String value, {TextStyle? style}) => Padding(
@@ -177,6 +180,21 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          if (shift.hasValue && !hasShift)
+            Card(
+              color: theme.colorScheme.errorContainer,
+              child: ListTile(
+                leading: const Icon(Icons.point_of_sale_outlined),
+                title: Text(l10n.openShiftFirst),
+                trailing: FilledButton(
+                  onPressed: () async {
+                    await context.push('/shift?branch=${order.branchId}');
+                    ref.invalidate(currentShiftProvider(order.branchId));
+                  },
+                  child: Text(l10n.openShift),
+                ),
+              ),
+            ),
           Text(order.plateNumber, textDirection: TextDirection.ltr, style: theme.textTheme.titleLarge),
           const SizedBox(height: 8),
           Card(

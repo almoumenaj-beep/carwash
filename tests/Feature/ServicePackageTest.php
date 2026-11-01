@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Domain\Catalog\Models\Service;
+use App\Domain\Catalog\Models\ServiceCategory;
 use App\Domain\Catalog\Models\ServicePrice;
 use App\Domain\Identity\Enums\DefaultRole;
 use App\Models\User;
@@ -64,6 +65,14 @@ class ServicePackageTest extends TestCase
             ->assertJsonPath('data.package_items.0.name', 'Exterior wash')
             ->assertJsonPath('data.package_items.1.name', 'Interior clean')
             ->assertJsonPath('data.prices', []);
+    }
+
+    public function test_packages_have_their_own_section_so_they_take_no_category(): void
+    {
+        $category = $this->inTenant(fn () => ServiceCategory::factory()->create());
+        $packageId = $this->createPackage(['service_category_id' => $category->id]);
+
+        $this->getJson("/api/v1/services/{$packageId}")->assertJsonPath('data.service_category_id', null);
     }
 
     public function test_a_package_needs_two_services_and_cannot_contain_packages(): void

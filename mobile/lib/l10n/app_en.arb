@@ -301,6 +301,47 @@
     }
   },
   "matchingCars": "Registered cars",
+  "shiftTitle": "My shift",
+  "shiftSubtitle": "Open the till, count the drawer at close",
+  "noOpenShift": "You have no open shift. Count the cash in the drawer to open one.",
+  "openingFloatField": "Cash in the drawer at opening",
+  "openingFloatHint": "Leave empty if the drawer is empty.",
+  "openShift": "Open shift",
+  "shiftOpenSince": "Open since {time}",
+  "@shiftOpenSince": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "shiftInvoices": "Invoices",
+  "shiftCashTaken": "Cash taken",
+  "shiftDiscounts": "Discounts given",
+  "expectedCash": "Expected in the drawer",
+  "closeShift": "Close shift",
+  "countedCashField": "Cash counted in the drawer",
+  "drawerMatches": "The drawer matches",
+  "drawerShort": "Short by {amount}",
+  "@drawerShort": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "drawerOver": "Over by {amount}",
+  "@drawerOver": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "varianceNoteField": "Why does it not match?",
+  "varianceLabel": "Difference",
+  "shiftClosed": "Shift closed",
+  "openShiftFirst": "Open your shift to take payment.",
   "checkoutTitle": "Payment",
   "collectPayment": "Collect payment",
   "payOnly": "Pay only",
