@@ -23,8 +23,6 @@ class OrderStatusController extends Controller
             $request->validated('reason'),
         );
 
-        return OrderResource::make($order->refresh()->load([
-            'branch', 'customer', 'bay', 'staff', 'items', 'creator', 'statusHistory.user',
-        ]));
+        return OrderResource::make($order->refresh()->load([...OrderController::RELATIONS, 'statusHistory.user']));
     }
 }

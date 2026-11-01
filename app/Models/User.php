@@ -126,6 +126,23 @@ class User extends Authenticatable
         return $query->orderBy('name')->get();
     }
 
+    /**
+     * The largest discount the user may give, in basis points: the owner has no limit, staff with
+     * pos.discount get the highest limit among their roles, everyone else none.
+     */
+    public function maxDiscountBps(): int
+    {
+        if ($this->isOwner()) {
+            return 10000;
+        }
+
+        if (! $this->can(Permission::PosDiscount->value)) {
+            return 0;
+        }
+
+        return (int) $this->roles->max('max_discount_bps');
+    }
+
     public function canAccessBranch(Branch $branch): bool
     {
         if ($branch->tenant_id !== $this->tenant_id) {

@@ -246,6 +246,13 @@ return [
         'reason' => 'السبب',
         'customer_phone' => 'جوال العميل',
         'customer_name' => 'اسم العميل',
+        'discount_amount' => 'الخصم',
+        'discount_percent_bps' => 'نسبة الخصم',
+        'discount_reason' => 'سبب الخصم',
+        'tendered' => 'المبلغ المستلم',
+        'method' => 'طريقة الدفع',
+        'deliver' => 'التسليم',
+        'max_discount_bps' => 'أقصى خصم',
     ],
 
 ];

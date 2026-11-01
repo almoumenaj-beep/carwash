@@ -31,6 +31,7 @@ class OrderQueueTest extends TestCase
         $first = $this->checkIn()->json('data.id');
         $second = $this->checkIn(['vehicle_id' => $this->newCar()->id])->json('data.id');
         $delivered = $this->checkIn(['vehicle_id' => $this->newCar()->id])->json('data.id');
+        $this->pay($delivered);
         foreach (['in_progress', 'ready', 'delivered'] as $status) {
             $this->moveTo($delivered, $status, $this->cashier);
         }

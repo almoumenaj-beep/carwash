@@ -10,6 +10,7 @@ use App\Domain\Orders\Policies\OrderPolicy;
 use App\Domain\Platform\Models\Bay;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
+use App\Domain\Sales\Models\Invoice;
 use App\Models\User;
 use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * A work order: one car through the wash at a branch. Written only through the Orders actions,
@@ -69,6 +71,31 @@ class Order extends Model
     public function reference(): string
     {
         return "{$this->branch->code}-{$this->number}";
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->invoice !== null;
+    }
+
+    /**
+     * The statuses this order may move to now: the status machine, except that a car is only handed
+     * over once paid, and a paid order is refunded rather than cancelled.
+     *
+     * @return list<OrderStatus>
+     */
+    public function allowedNext(): array
+    {
+        $paid = $this->isPaid();
+
+        return array_values(array_filter(
+            $this->status->allowedNext(),
+            fn (OrderStatus $next) => match ($next) {
+                OrderStatus::Delivered => $paid,
+                OrderStatus::Cancelled => ! $paid,
+                default => true,
+            },
+        ));
     }
 
     /**
@@ -141,5 +168,13 @@ class Order extends Model
     public function statusHistory(): HasMany
     {
         return $this->hasMany(OrderStatusChange::class)->orderBy('created_at')->orderBy('id');
+    }
+
+    /**
+     * @return HasOne<Invoice, $this>
+     */
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class);
     }
 }

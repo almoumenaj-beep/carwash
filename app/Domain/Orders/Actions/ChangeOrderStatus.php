@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 /**
  * Moves a car along the queue. Only allowed transitions are accepted, a bay is used by one car
  * at a time, every step is stamped and recorded, and delivery counts as the customer's visit.
+ * A car is handed over only once paid, and a paid order cannot be cancelled.
  */
 class ChangeOrderStatus
 {
@@ -23,6 +24,14 @@ class ChangeOrderStatus
     public function handle(User $actor, Order $order, OrderStatus $next, ?string $reason = null): Order
     {
         $current = $order->status;
+
+        if ($next === OrderStatus::Delivered && $current->canMoveTo($next) && ! $order->isPaid()) {
+            throw ValidationException::withMessages(['status' => __('Collect the payment before handing the car over.')]);
+        }
+
+        if ($next === OrderStatus::Cancelled && $order->isPaid()) {
+            throw ValidationException::withMessages(['status' => __('A paid order cannot be cancelled; refund it instead.')]);
+        }
 
         if (! $current->canMoveTo($next)) {
             throw ValidationException::withMessages(['status' => __('An order cannot move from :from to :to.', [

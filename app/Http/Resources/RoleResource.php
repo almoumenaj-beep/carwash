@@ -24,6 +24,7 @@ class RoleResource extends JsonResource
             'name' => $this->name,
             'label' => $this->label(),
             'is_owner_role' => $this->isOwnerRole(),
+            'max_discount_bps' => $this->isOwnerRole() ? 10000 : $this->max_discount_bps,
             'permissions' => $this->whenLoaded('permissions', fn () => $this->permissions->pluck('name')->sort()->values()),
             'users_count' => $this->whenCounted('users'),
         ];

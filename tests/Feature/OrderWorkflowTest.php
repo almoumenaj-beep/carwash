@@ -33,7 +33,7 @@ class OrderWorkflowTest extends TestCase
         $this->moveTo($orderId, 'qc', $this->washer)->assertOk();
         $response = $this->moveTo($orderId, 'ready', $this->washer)->assertOk();
 
-        $response->assertJsonPath('data.allowed_next', ['delivered', 'in_progress'])
+        $response->assertJsonPath('data.allowed_next', ['in_progress'])
             ->assertJsonCount(4, 'data.history')
             ->assertJsonPath('data.history.3.by', $this->washer->name);
         $this->assertNotNull($response->json('data.started_at'));
@@ -53,6 +53,7 @@ class OrderWorkflowTest extends TestCase
     public function test_delivery_closes_the_order_and_counts_as_the_customers_visit(): void
     {
         $orderId = $this->checkIn()->json('data.id');
+        $this->pay($orderId)->assertCreated();
         foreach (['in_progress', 'ready', 'delivered'] as $status) {
             $this->moveTo($orderId, $status, $this->cashier)->assertOk();
         }

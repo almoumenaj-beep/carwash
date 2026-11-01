@@ -36,6 +36,7 @@ class MeResource extends JsonResource
             'all_branches' => $this->hasAllBranchAccess(),
             'roles' => RoleResource::collection($this->roles),
             'permissions' => $this->permissionNames(),
+            'max_discount_bps' => $this->maxDiscountBps(),
             'branches' => BranchResource::collection($this->accessibleBranches()),
         ];
     }

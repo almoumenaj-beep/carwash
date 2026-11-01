@@ -105,6 +105,18 @@ trait BuildsCarWash
     }
 
     /**
+     * Takes cash for the order, as the cashier unless told otherwise.
+     *
+     * @param  array<string, mixed>  $extra
+     */
+    protected function pay(string $orderId, ?User $as = null, array $extra = []): TestResponse
+    {
+        Sanctum::actingAs($as ?? $this->cashier);
+
+        return $this->postJson("/api/v1/orders/{$orderId}/checkout", $extra);
+    }
+
+    /**
      * @param  array<string, mixed>  $extra
      */
     protected function moveTo(string $orderId, string $status, User $as, array $extra = []): TestResponse

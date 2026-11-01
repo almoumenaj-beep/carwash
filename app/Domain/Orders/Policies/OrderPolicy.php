@@ -53,4 +53,12 @@ class OrderPolicy
 
         return $user->can($permission->value) && $user->canAccessBranch($order->branch);
     }
+
+    /**
+     * Taking payment for the order at the till.
+     */
+    public function checkout(User $user, Order $order): bool
+    {
+        return $user->can(Permission::PosCheckout->value) && $user->canAccessBranch($order->branch);
+    }
 }

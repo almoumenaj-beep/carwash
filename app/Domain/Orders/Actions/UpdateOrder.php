@@ -36,6 +36,10 @@ class UpdateOrder
             throw ValidationException::withMessages(['items' => __('Services can only be changed before the car is ready.')]);
         }
 
+        if (isset($data['items']) && $order->isPaid()) {
+            throw ValidationException::withMessages(['items' => __('Services cannot be changed after payment.')]);
+        }
+
         $priced = isset($data['items']) ? $this->pricing->price($order->branch, $order->vehicleSize, $data['items']) : null;
 
         if (array_key_exists('bay_id', $data)) {

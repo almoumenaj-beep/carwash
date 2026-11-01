@@ -25,6 +25,27 @@ class Role extends SpatieRole
     public const GUARD_NAME = 'web';
 
     /**
+     * Mirrors the database defaults so a freshly created role is complete before it is refreshed.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'max_discount_bps' => 0,
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'max_discount_bps' => 'integer',
+        ];
+    }
+
+    /**
      * Staff holding this role. Overrides spatie's version, which resolves the model from the default guard.
      *
      * @return MorphToMany<User, $this>

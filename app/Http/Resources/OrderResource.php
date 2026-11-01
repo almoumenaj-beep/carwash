@@ -6,13 +6,15 @@ use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Orders\Models\OrderStatusChange;
+use App\Domain\Sales\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * A work order for the queue and its detail screen. Amounts are in minor units (BHD: fils).
- * `allowed_next` lists the statuses the order may move to, for the action buttons.
+ * `allowed_next` lists the statuses the order may move to, for the action buttons; `delivered`
+ * only appears once the order is paid (`invoice`).
  *
  * @mixin Order
  */
@@ -31,7 +33,25 @@ class OrderResource extends JsonResource
             'reference' => $this->reference(),
             'branch_id' => $this->branch_id,
             'status' => $this->status,
-            'allowed_next' => array_map(fn (OrderStatus $status) => $status->value, $this->status->allowedNext()),
+            'allowed_next' => array_map(fn (OrderStatus $status) => $status->value, $this->allowedNext()),
+            'is_paid' => $this->isPaid(),
+            'invoice' => $this->invoice === null ? null : [
+                'id' => $this->invoice->id,
+                'reference' => $this->invoice->reference(),
+                'subtotal' => $this->invoice->subtotal,
+                'discount_total' => $this->invoice->discount_total,
+                'discount_reason' => $this->invoice->discount_reason,
+                'total' => $this->invoice->total,
+                'vat_rate_bps' => $this->invoice->vat_rate_bps,
+                'vat_amount' => $this->invoice->vat_amount,
+                'issued_at' => $this->invoice->issued_at->toIso8601String(),
+                'payments' => $this->invoice->payments->map(fn (Payment $payment) => [
+                    'method' => $payment->method,
+                    'amount' => $payment->amount,
+                    'tendered' => $payment->tendered,
+                    'change_given' => $payment->change_given,
+                ])->values(),
+            ],
             'customer' => $this->customer === null ? null : [
                 'id' => $this->customer->id,
                 'name' => $this->customer->name,

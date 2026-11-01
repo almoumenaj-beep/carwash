@@ -30,6 +30,18 @@ enum DefaultRole: string
     }
 
     /**
+     * The largest discount the role starts with, in basis points (1000 = 10%). The owner has no limit.
+     */
+    public function maxDiscountBps(): int
+    {
+        return match ($this) {
+            self::BranchManager => 3000,
+            self::Cashier => 1000,
+            default => 0,
+        };
+    }
+
+    /**
      * The permissions the role starts with. The owner is granted everything by a gate check instead,
      * so it keeps full access when the catalog grows.
      *

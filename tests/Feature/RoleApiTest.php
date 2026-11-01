@@ -153,6 +153,47 @@ class RoleApiTest extends TestCase
             ->assertJsonPath('data.key', DefaultRole::Washer->value);
     }
 
+    public function test_default_roles_start_with_their_discount_limits(): void
+    {
+        Sanctum::actingAs($this->owner);
+
+        $this->getJson('/api/v1/roles/'.$this->defaultRoleOf($this->tenant, DefaultRole::Cashier)->id)
+            ->assertJsonPath('data.max_discount_bps', 1000);
+        $this->getJson('/api/v1/roles/'.$this->defaultRoleOf($this->tenant, DefaultRole::Owner)->id)
+            ->assertJsonPath('data.max_discount_bps', 10000);
+        $this->getJson('/api/v1/me')->assertJsonPath('data.max_discount_bps', 10000);
+    }
+
+    public function test_owner_changes_a_roles_discount_limit_and_the_change_is_audited(): void
+    {
+        Sanctum::actingAs($this->owner);
+        $cashierRole = $this->defaultRoleOf($this->tenant, DefaultRole::Cashier);
+
+        $this->patchJson("/api/v1/roles/{$cashierRole->id}", ['max_discount_bps' => 1500])
+            ->assertOk()
+            ->assertJsonPath('data.max_discount_bps', 1500)
+            ->assertJsonPath('data.name', $cashierRole->name);
+        $this->assertDatabaseHas('activity_log', ['event' => 'role.discount_limit_changed', 'subject_id' => $cashierRole->id]);
+
+        $this->patchJson("/api/v1/roles/{$cashierRole->id}", ['max_discount_bps' => 10001])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('max_discount_bps');
+    }
+
+    public function test_staff_cannot_allow_a_larger_discount_than_their_own(): void
+    {
+        $manager = $this->createStaff($this->tenant, DefaultRole::BranchManager, allBranches: true);
+        $this->defaultRoleOf($this->tenant, DefaultRole::BranchManager)->givePermissionTo(Permission::RolesManage->value);
+        Sanctum::actingAs($manager);
+        $cashierRole = $this->defaultRoleOf($this->tenant, DefaultRole::Cashier);
+
+        $this->getJson('/api/v1/me')->assertJsonPath('data.max_discount_bps', 3000);
+        $this->patchJson("/api/v1/roles/{$cashierRole->id}", ['max_discount_bps' => 3500])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['max_discount_bps' => 'You cannot allow a larger discount than your own (30%).']);
+        $this->patchJson("/api/v1/roles/{$cashierRole->id}", ['max_discount_bps' => 2500])->assertOk();
+    }
+
     public function test_owner_role_cannot_be_changed(): void
     {
         Sanctum::actingAs($this->owner);

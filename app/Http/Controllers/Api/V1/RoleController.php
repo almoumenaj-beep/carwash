@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Identity\Actions\CreateRole;
 use App\Domain\Identity\Actions\DeleteRole;
 use App\Domain\Identity\Actions\RenameRole;
+use App\Domain\Identity\Actions\SetRoleDiscountLimit;
 use App\Domain\Identity\Models\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRoleRequest;
@@ -14,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
@@ -48,9 +50,24 @@ class RoleController extends Controller
         return RoleResource::make($role->load('permissions')->loadCount('users'));
     }
 
-    public function update(UpdateRoleRequest $request, Role $role, RenameRole $renameRole): RoleResource
-    {
-        $renameRole->handle($request->user(), $role, $request->validated('name'));
+    /**
+     * Rename a role and/or change the largest discount it may give.
+     */
+    public function update(
+        UpdateRoleRequest $request,
+        Role $role,
+        RenameRole $renameRole,
+        SetRoleDiscountLimit $setRoleDiscountLimit,
+    ): RoleResource {
+        DB::transaction(function () use ($request, $role, $renameRole, $setRoleDiscountLimit): void {
+            if ($request->has('name')) {
+                $renameRole->handle($request->user(), $role, $request->validated('name'));
+            }
+
+            if ($request->has('max_discount_bps')) {
+                $setRoleDiscountLimit->handle($request->user(), $role, $request->integer('max_discount_bps'));
+            }
+        });
 
         return RoleResource::make($role->load('permissions')->loadCount('users'));
     }

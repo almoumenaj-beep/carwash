@@ -43,7 +43,18 @@
     "This vehicle has visits on record and cannot be deleted.": "لهذه السيارة زيارات مسجّلة ولا يمكن حذفها.",
     "Too Many Attempts.": "محاولات كثيرة. انتظر قليلاً ثم حاول مرة أخرى.",
     "You cannot grant or revoke permissions you do not have: :permissions": "لا يمكنك منح أو سحب صلاحيات لا تملكها: :permissions",
+    "You cannot allow a larger discount than your own (:limit%).": "لا يمكنك السماح بخصم أكبر من حدّك (:limit%).",
     "Only an owner can grant or revoke the owner role.": "فقط المالك يستطيع منح دور المالك أو سحبه.",
     "The car wash must keep at least one owner.": "يجب أن يبقى للمغسلة مالك واحد على الأقل.",
-    "This role is assigned to :count staff member. Reassign them first.|This role is assigned to :count staff members. Reassign them first.": "هذا الدور مُسنَد إلى :count من الموظفين. انقلهم إلى دور آخر أولاً."
+    "This role is assigned to :count staff member. Reassign them first.|This role is assigned to :count staff members. Reassign them first.": "هذا الدور مُسنَد إلى :count من الموظفين. انقلهم إلى دور آخر أولاً.",
+    "Collect the payment before handing the car over.": "حصّل المبلغ قبل تسليم السيارة.",
+    "A paid order cannot be cancelled; refund it instead.": "لا يمكن إلغاء طلب مدفوع؛ يُسترجع المبلغ بدلاً من ذلك.",
+    "Services cannot be changed after payment.": "لا يمكن تغيير الخدمات بعد الدفع.",
+    "The cash received is less than the total.": "المبلغ المستلم أقل من الإجمالي.",
+    "A cancelled order cannot be paid.": "لا يمكن دفع طلب ملغى.",
+    "This order is already paid.": "هذا الطلب مدفوع مسبقاً.",
+    "The discount cannot be more than the total.": "لا يمكن أن يتجاوز الخصم الإجمالي.",
+    "You are not allowed to give discounts.": "غير مسموح لك بإعطاء خصم.",
+    "Your discount limit is :limit%.": "حد الخصم المسموح لك :limit%.",
+    "Give a reason for the discount.": "اكتب سبب الخصم."
 }
