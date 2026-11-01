@@ -94,6 +94,11 @@
 3. `adb reverse tcp:8000 tcp:8000` — يجعل `127.0.0.1:8000` داخل الجوال يشير إلى الكمبيوتر عبر الكابل (يُعاد بعد كل توصيل).
 4. `cd mobile` ثم `flutter run` — للويب: `flutter run -d chrome`. لعنوان خادم آخر: `--dart-define=API_BASE_URL=http://<host>/api/v1`.
 
+**تشغيل التطبيق عبر الواي فاي (بدون كابل):** الجوال والكمبيوتر على نفس الشبكة.
+1. مرة واحدة، في PowerShell **كمسؤول (Run as administrator)**: `Set-NetConnectionProfile -InterfaceAlias "Wi-Fi" -NetworkCategory Private; New-NetFirewallRule -DisplayName "CarWash dev server (8000)" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow -Profile Private` — يجعل شبكة البيت «خاصة» ويفتح المنفذ 8000 عليها فقط (لا تفعل ذلك على شبكة عامة).
+2. شغّل الخادم للشبكة: `php artisan serve --host=0.0.0.0 --port=8000`.
+3. وصّل الجوال بالكابل مرة واحدة وشغّل `.mobileun-on-wifi` — يثبّت التطبيق بعنوان الكمبيوتر على الواي فاي (مثل `http://192.168.100.120:8000`)، وبعدها افصل الكابل. إذا تغيّر عنوان الكمبيوتر أعد الخطوة 3 (أو ثبّت العنوان من الراوتر).
+
 **Postman:** مثبّت (12.34). استورد الـ API عبر Import → Link: `http://localhost/carwash/public/docs/api.json`. ولتفعيل Postman MCP لـ Claude: أنشئ API Key من Postman (Settings → API keys) واحفظه في متغير البيئة `POSTMAN_API_KEY` (مُعدّ في `.mcp.json` دون حفظ المفتاح في Git).
 
 **للتجربة الآن:** افتح توثيق الـ API التفاعلي على http://localhost/carwash/public/docs/api (أو http://localhost:8000/docs/api مع `php artisan serve`)، نفّذ `POST /v1/auth/login` ببيانات المغسلة التجريبية (`test@example.com` / `password` للمالك، أو `cashier@example.com` / `password` للكاشير؛ PIN: 1234 و1111)، انسخ `token` وضعه في زر **Authorize**، ثم جرّب بقية المسارات. لإعادة البيانات التجريبية: `php artisan migrate:fresh --seed`.

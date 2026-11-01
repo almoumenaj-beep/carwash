@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Material 3 theme in light and dark, from one brand seed colour.
+/// Material 3 theme in light and dark, from one brand seed colour: a light teal (blue-green).
 abstract final class AppTheme {
-  static const _seed = Color(0xFF0277BD);
+  static const _seed = Color(0xFF26A69A);
 
   static ThemeData get light => _build(Brightness.light);
 
@@ -10,7 +10,12 @@ abstract final class AppTheme {
 
   static ThemeData _build(Brightness brightness) {
     return ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: _seed, brightness: brightness),
+      // Fidelity keeps the primary colour close to the seed instead of muting it.
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: _seed,
+        brightness: brightness,
+        dynamicSchemeVariant: DynamicSchemeVariant.fidelity,
+      ),
       inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
     );
   }
