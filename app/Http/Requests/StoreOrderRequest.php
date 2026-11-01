@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Domain\Crm\Support\PhoneNumber;
 use App\Domain\Crm\Support\PlateNumber;
+use App\Domain\Identity\Enums\Permission;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Models\Branch;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -10,15 +12,21 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Checks a car in: a registered vehicle_id, or a walk-in plate (with its size for pricing).
+ * Checks a car in: a registered vehicle_id, or a walk-in plate (with its size for pricing),
+ * optionally with the walk-in's phone and name to register them and their car.
  */
 class StoreOrderRequest extends FormRequest
 {
     /**
      * Allowed to check cars in at this branch; an unknown branch is reported by validation instead.
+     * Registering a walk-in (a phone number is given) also needs customers.create.
      */
     public function authorize(): bool
     {
+        if ($this->filled('customer_phone') && ! $this->user()->can(Permission::CustomersCreate->value)) {
+            return false;
+        }
+
         $branch = is_string($this->input('branch_id')) ? Branch::query()->find($this->input('branch_id')) : null;
 
         return $branch === null || $this->user()->can('create', [Order::class, $branch]);
@@ -28,6 +36,10 @@ class StoreOrderRequest extends FormRequest
     {
         if (is_string($this->input('plate_number')) && trim($this->input('plate_number')) !== '') {
             $this->merge(['plate_number' => PlateNumber::normalise($this->input('plate_number'))]);
+        }
+
+        if (is_string($this->input('customer_phone')) && trim($this->input('customer_phone')) !== '') {
+            $this->merge(['customer_phone' => PhoneNumber::normalise($this->input('customer_phone'))]);
         }
     }
 
@@ -53,6 +65,18 @@ class StoreOrderRequest extends FormRequest
             'staff_ids' => ['sometimes', 'array', 'max:10'],
             'staff_ids.*' => ['uuid', 'distinct'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'customer_phone' => ['nullable', 'string', 'regex:/^\+\d{8,15}$/'],
+            'customer_name' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'customer_phone.regex' => __('Enter a valid phone number.'),
         ];
     }
 }

@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Domain\Catalog\Models\ServicePrice;
+use App\Domain\Crm\Models\Customer;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Identity\Enums\Permission;
 use App\Domain\Platform\Models\Bay;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
@@ -56,6 +58,67 @@ class OrderCheckInTest extends TestCase
             ->assertJsonPath('data.customer', null)
             ->assertJsonPath('data.vehicle_id', null)
             ->assertJsonPath('data.subtotal', 2500);
+    }
+
+    public function test_a_walk_in_who_gives_a_phone_number_is_registered_with_their_car(): void
+    {
+        $response = $this->checkIn([
+            'vehicle_id' => null,
+            'plate_number' => '777',
+            'vehicle_size_id' => $this->suv->id,
+            'customer_phone' => '3911 2233',
+            'customer_name' => 'Hassan',
+        ]);
+
+        $response->assertCreated()->assertJsonPath('data.customer.name', 'Hassan');
+        $customer = $this->inTenant(fn () => Customer::query()->where('phone', '+97339112233')->sole());
+        $this->assertSame($customer->id, $response->json('data.customer.id'));
+        $this->assertDatabaseHas('vehicles', [
+            'id' => $response->json('data.vehicle_id'),
+            'customer_id' => $customer->id,
+            'plate_number' => '777',
+            'vehicle_size_id' => $this->suv->id,
+        ]);
+    }
+
+    public function test_a_new_car_of_a_known_phone_number_is_added_to_that_customer(): void
+    {
+        $this->checkIn([
+            'vehicle_id' => null,
+            'plate_number' => '888',
+            'vehicle_size_id' => $this->sedan->id,
+            'customer_phone' => $this->customer->phone,
+            'customer_name' => 'Someone else',
+        ])->assertCreated()->assertJsonPath('data.customer.id', $this->customer->id);
+
+        $this->assertSame(1, $this->inTenant(fn () => Customer::query()->count()));
+        $this->assertSame(2, $this->customer->vehicles()->count());
+        $this->assertNotSame('Someone else', $this->customer->fresh()->name);
+    }
+
+    public function test_a_registered_plate_keeps_its_owner_even_when_a_phone_is_given(): void
+    {
+        $this->checkIn(['vehicle_id' => null, 'plate_number' => '12345', 'customer_phone' => '39112233'])
+            ->assertCreated()
+            ->assertJsonPath('data.customer.id', $this->customer->id);
+
+        $this->assertSame(1, $this->inTenant(fn () => Customer::query()->count()));
+    }
+
+    public function test_registering_a_walk_in_needs_the_permission_to_add_customers(): void
+    {
+        $counter = $this->createStaffWithPermissions($this->tenant, [Permission::OrdersView, Permission::OrdersCreate]);
+        $walkIn = ['vehicle_id' => null, 'plate_number' => '777', 'vehicle_size_id' => $this->suv->id];
+
+        $this->checkIn([...$walkIn, 'customer_phone' => '39112233'], $counter)->assertForbidden();
+        $this->checkIn($walkIn, $counter)->assertCreated()->assertJsonPath('data.customer', null);
+    }
+
+    public function test_an_invalid_walk_in_phone_is_refused(): void
+    {
+        $this->checkIn(['vehicle_id' => null, 'plate_number' => '777', 'vehicle_size_id' => $this->suv->id, 'customer_phone' => '12'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['customer_phone' => 'Enter a valid phone number.']);
     }
 
     public function test_a_branch_price_overrides_the_general_price(): void

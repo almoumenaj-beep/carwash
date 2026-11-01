@@ -650,6 +650,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
+  String get registerWalkInHint => 'اختياري: يُحفظ العميل وسيارته تلقائياً';
+
+  @override
   String get servicesSection => 'الخدمات';
 
   @override

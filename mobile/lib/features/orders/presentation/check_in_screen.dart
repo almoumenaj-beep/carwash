@@ -70,6 +70,8 @@ class _CheckInForm extends ConsumerStatefulWidget {
 
 class _CheckInFormState extends ConsumerState<_CheckInForm> {
   final _plate = TextEditingController();
+  final _phone = TextEditingController();
+  final _name = TextEditingController();
   final _notes = TextEditingController();
   Timer? _debounce;
   String _term = '';
@@ -88,11 +90,16 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
   void dispose() {
     _debounce?.cancel();
     _plate.dispose();
+    _phone.dispose();
+    _name.dispose();
     _notes.dispose();
     super.dispose();
   }
 
   bool get _canSearchCustomers => ref.read(sessionProvider).value?.can(Permissions.customersView) ?? false;
+
+  /// A walk-in who gives a phone number is registered with their car as part of the check-in.
+  bool get _canRegisterCustomers => ref.read(sessionProvider).value?.can(Permissions.customersCreate) ?? false;
 
   void _onPlateChanged(String value) {
     if (_car != null) {
@@ -141,6 +148,8 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
     final chosen = _chosen..sort((a, b) => (a.isAddon ? 1 : 0) - (b.isAddon ? 1 : 0));
     final car = _car;
     final notes = _notes.text.trim();
+    final phone = _phone.text.trim();
+    final name = _name.text.trim();
 
     try {
       final order = await ref.read(ordersRepositoryProvider).checkIn({
@@ -153,6 +162,7 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
         'bay_id': _bayId,
         'staff_ids': _staffIds.toList(),
         if (notes.isNotEmpty) 'notes': notes,
+        if (car == null && phone.isNotEmpty) ...{'customer_phone': phone, if (name.isNotEmpty) 'customer_name': name},
       });
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -199,6 +209,25 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
           ),
           if (_car != null) _ChosenCar(car: _car!),
           if (_car == null && _term.length >= 2 && _canSearchCustomers) _KnownCars(term: _term, onPick: _pickCar),
+          if (_car == null && _canRegisterCustomers) ...[
+            const SizedBox(height: 12),
+            TextField(
+              controller: _phone,
+              keyboardType: TextInputType.phone,
+              textDirection: TextDirection.ltr,
+              decoration: InputDecoration(
+                labelText: l10n.phoneField,
+                helperText: l10n.registerWalkInHint,
+                prefixIcon: const Icon(Icons.phone_outlined),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _name,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(labelText: l10n.customerName, prefixIcon: const Icon(Icons.person_outline)),
+            ),
+          ],
           const SizedBox(height: 16),
           Text(l10n.vehicleSize, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),

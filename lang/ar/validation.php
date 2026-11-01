@@ -244,6 +244,8 @@ return [
         'staff_ids.*' => 'الموظف',
         'status' => 'الحالة',
         'reason' => 'السبب',
+        'customer_phone' => 'جوال العميل',
+        'customer_name' => 'اسم العميل',
     ],
 
 ];

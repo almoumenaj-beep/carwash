@@ -639,6 +639,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
+  String get registerWalkInHint => 'Optional: the customer and car are saved with it';
+
+  @override
   String get servicesSection => 'Services';
 
   @override

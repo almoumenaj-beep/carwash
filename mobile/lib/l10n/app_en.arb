@@ -301,6 +301,7 @@
     }
   },
   "matchingCars": "Registered cars",
+  "registerWalkInHint": "Optional: the customer and car are saved with it",
   "servicesSection": "Services",
   "chooseSizeForPrices": "Choose the car's size to see prices.",
   "chooseMainService": "Choose at least one main service.",

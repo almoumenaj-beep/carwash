@@ -1226,6 +1226,12 @@ abstract class AppLocalizations {
   /// **'Registered cars'**
   String get matchingCars;
 
+  /// No description provided for @registerWalkInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: the customer and car are saved with it'**
+  String get registerWalkInHint;
+
   /// No description provided for @servicesSection.
   ///
   /// In en, this message translates to:
