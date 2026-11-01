@@ -18,6 +18,7 @@ import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/orders/presentation/check_in_screen.dart';
+import '../../features/orders/presentation/checkout_screen.dart';
 import '../../features/orders/presentation/order_screen.dart';
 import '../../features/orders/presentation/queue_screen.dart';
 import '../../features/roles/presentation/role_editor_screen.dart';
@@ -99,6 +100,10 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => OrderScreen(orderId: state.pathParameters['orderId']!),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/checkout/:orderId',
+        builder: (_, state) => CheckoutScreen(orderId: state.pathParameters['orderId']!),
       ),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),

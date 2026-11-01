@@ -301,6 +301,58 @@
     }
   },
   "matchingCars": "Registered cars",
+  "checkoutTitle": "Payment",
+  "collectPayment": "Collect payment",
+  "payOnly": "Pay only",
+  "payAndDeliver": "Pay and hand over",
+  "subtotalLabel": "Services",
+  "discountLabel": "Discount",
+  "vatIncludedLabel": "Includes VAT {rate}%",
+  "@vatIncludedLabel": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "vatAddedLabel": "VAT {rate}%",
+  "@vatAddedLabel": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "discountLimitHint": "Your limit: {limit}%",
+  "@discountLimitHint": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "discountOverLimit": "Above your limit of {limit}%",
+  "@discountOverLimit": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "discountReasonField": "Reason for the discount",
+  "cashReceivedField": "Cash received",
+  "cashTooLittle": "Less than the total",
+  "changeDue": "Change: {amount}",
+  "@changeDue": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "paidTitle": "Paid",
+  "paidBadge": "Paid",
+  "done": "Done",
   "isPackage": "Package",
   "isPackageHint": "Bundles existing services at a discount",
   "packagesSection": "Packages",

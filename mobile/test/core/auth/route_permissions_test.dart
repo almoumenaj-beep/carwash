@@ -54,6 +54,11 @@ void main() {
     expect(canOpen('/queue', meWith({'customers.view'})), isFalse);
   });
 
+  test('taking payment needs pos.checkout', () {
+    expect(canOpen('/checkout/o1', meWith({'orders.view', 'orders.update_status'})), isFalse);
+    expect(canOpen('/checkout/o1', meWith({'orders.view', 'pos.checkout'})), isTrue);
+  });
+
   test('a prefix only matches whole path segments', () {
     expect(canOpen('/staffroom', meWith({})), isTrue);
   });

@@ -88,6 +88,48 @@ class OrderItem {
   final List<NamedRef> components;
 }
 
+/// The invoice of a paid order, with the cash received.
+class OrderInvoice {
+  const OrderInvoice({
+    required this.reference,
+    required this.subtotal,
+    required this.discountTotal,
+    required this.discountReason,
+    required this.total,
+    required this.vatRateBps,
+    required this.vatAmount,
+    required this.tendered,
+    required this.changeGiven,
+  });
+
+  factory OrderInvoice.fromJson(Map<String, dynamic> json) {
+    final payments = [for (final payment in json['payments'] as List) payment as Map<String, dynamic>];
+
+    return OrderInvoice(
+      reference: json['reference'] as String,
+      subtotal: json['subtotal'] as int,
+      discountTotal: json['discount_total'] as int,
+      discountReason: json['discount_reason'] as String?,
+      total: json['total'] as int,
+      vatRateBps: json['vat_rate_bps'] as int,
+      vatAmount: json['vat_amount'] as int,
+      tendered: payments.fold(0, (sum, payment) => sum + ((payment['tendered'] as int?) ?? (payment['amount'] as int))),
+      changeGiven: payments.fold(0, (sum, payment) => sum + (payment['change_given'] as int)),
+    );
+  }
+
+  /// E.g. "MAIN-INV-12".
+  final String reference;
+  final int subtotal;
+  final int discountTotal;
+  final String? discountReason;
+  final int total;
+  final int vatRateBps;
+  final int vatAmount;
+  final int tendered;
+  final int changeGiven;
+}
+
 /// One inspection at the quality check: whether each service on the order was done properly.
 class QualityCheck {
   const QualityCheck({required this.passed, required this.by, required this.at, required this.results});
@@ -151,6 +193,7 @@ class Order {
     required this.readyAt,
     required this.history,
     this.qualityChecks = const [],
+    this.invoice,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -184,6 +227,7 @@ class Order {
         for (final check in (json['quality_checks'] as List?) ?? const [])
           QualityCheck.fromJson(check as Map<String, dynamic>),
       ],
+      invoice: json['invoice'] == null ? null : OrderInvoice.fromJson(json['invoice'] as Map<String, dynamic>),
     );
   }
 
@@ -218,6 +262,11 @@ class Order {
 
   /// Inspections at the quality check, oldest first; only filled on the order's own page.
   final List<QualityCheck> qualityChecks;
+
+  /// Set once the order is paid; a car is only handed over after that.
+  final OrderInvoice? invoice;
+
+  bool get isPaid => invoice != null;
 
   /// The next step forward, which the queue offers as its main button.
   OrderStatus? get nextStep => allowedNext.where(status.isForwardTo).firstOrNull;

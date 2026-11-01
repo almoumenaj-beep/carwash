@@ -77,6 +77,32 @@ class OrdersRepository {
     return Order.fromJson(unwrapData(response));
   }
 
+  /// Takes cash for the order and issues its invoice. A discount is an amount in minor units or a percentage
+  /// in basis points (with a reason); [deliver] also hands a ready car over.
+  Future<Order> checkout(
+    String id, {
+    int? discountAmount,
+    int? discountPercentBps,
+    String? discountReason,
+    int? tendered,
+    bool deliver = false,
+  }) async {
+    final response = await sendRequest(
+      () => _dio.post<Map<String, dynamic>>(
+        '/orders/$id/checkout',
+        data: {
+          'method': 'cash',
+          'discount_amount': ?discountAmount,
+          'discount_percent_bps': ?discountPercentBps,
+          'discount_reason': ?discountReason,
+          'tendered': ?tendered,
+          'deliver': deliver,
+        },
+      ),
+    );
+    return Order.fromJson(unwrapData(response));
+  }
+
   Future<List<Bay>> bays(String branchId) async {
     final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/branches/$branchId/bays'));
     return [for (final bay in unwrapData<List>(response)) Bay.fromJson(bay as Map<String, dynamic>)]

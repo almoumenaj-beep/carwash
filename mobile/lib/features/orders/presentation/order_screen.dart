@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
+import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
@@ -198,6 +199,35 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                 ],
               ),
             ),
+            if (order.invoice case final invoice?)
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.receipt_long_outlined, color: theme.colorScheme.primary),
+                  title: Text('${l10n.paidBadge} · ${invoice.reference}'),
+                  subtitle: Text(
+                    [
+                      if (invoice.discountTotal > 0)
+                        '${l10n.discountLabel}: ${money.format(invoice.discountTotal)}'
+                            '${invoice.discountReason == null ? '' : ' (${invoice.discountReason})'}',
+                      '${l10n.vatAddedLabel(PercentFormat.format(invoice.vatRateBps))}: '
+                          '${money.format(invoice.vatAmount)}',
+                      if (invoice.changeGiven > 0) l10n.changeDue(money.format(invoice.changeGiven)),
+                    ].join('\n'),
+                  ),
+                  trailing: Text(money.format(invoice.total), style: theme.textTheme.titleMedium),
+                ),
+              )
+            else if (order.status.isActive && (me?.can(Permissions.posCheckout) ?? false)) ...[
+              const SizedBox(height: 8),
+              FilledButton.icon(
+                onPressed: () async {
+                  await context.push('/checkout/${order.id}');
+                  ref.invalidate(orderProvider(order.id));
+                },
+                icon: const Icon(Icons.payments_outlined),
+                label: Text(order.status == OrderStatus.ready ? l10n.payAndDeliver : l10n.collectPayment),
+              ),
+            ],
             if (actions.isNotEmpty) ...[
               const SizedBox(height: 8),
               Wrap(

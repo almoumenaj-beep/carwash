@@ -228,6 +228,7 @@ class _OrderCardState extends ConsumerState<_OrderCard> {
     final money = ref.watch(moneyFormatProvider);
     final order = widget.order;
     final next = order.nextStep;
+    final canPay = ref.watch(sessionProvider).value?.can(Permissions.posCheckout) ?? false;
     final customer = order.customer;
 
     return Card(
@@ -276,9 +277,32 @@ class _OrderCardState extends ConsumerState<_OrderCard> {
                       icon: Icons.person_outline,
                       text: order.staff.map((member) => member.name).join(l10n.listSeparator),
                     ),
-                  _Info(icon: Icons.payments_outlined, text: money.format(order.subtotal)),
+                  _Info(
+                    icon: order.isPaid ? Icons.check_circle_outline : Icons.payments_outlined,
+                    text: order.isPaid
+                        ? '${l10n.paidBadge} ${money.format(order.invoice!.total)}'
+                        : money.format(order.subtotal),
+                  ),
                 ],
               ),
+              if (!widget.showStatus &&
+                  next == null &&
+                  order.status == OrderStatus.ready &&
+                  !order.isPaid &&
+                  canPay) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () async {
+                      await context.push('/checkout/${order.id}');
+                      widget.onChanged();
+                    },
+                    icon: const Icon(Icons.payments_outlined),
+                    label: Text(l10n.payAndDeliver),
+                  ),
+                ),
+              ],
               if (!widget.showStatus && next != null && canMoveTo(ref, next)) ...[
                 const SizedBox(height: 8),
                 SizedBox(

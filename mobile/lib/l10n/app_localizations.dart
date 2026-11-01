@@ -1226,6 +1226,108 @@ abstract class AppLocalizations {
   /// **'Registered cars'**
   String get matchingCars;
 
+  /// No description provided for @checkoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment'**
+  String get checkoutTitle;
+
+  /// No description provided for @collectPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect payment'**
+  String get collectPayment;
+
+  /// No description provided for @payOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay only'**
+  String get payOnly;
+
+  /// No description provided for @payAndDeliver.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay and hand over'**
+  String get payAndDeliver;
+
+  /// No description provided for @subtotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get subtotalLabel;
+
+  /// No description provided for @discountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get discountLabel;
+
+  /// No description provided for @vatIncludedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes VAT {rate}%'**
+  String vatIncludedLabel(String rate);
+
+  /// No description provided for @vatAddedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT {rate}%'**
+  String vatAddedLabel(String rate);
+
+  /// No description provided for @discountLimitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your limit: {limit}%'**
+  String discountLimitHint(String limit);
+
+  /// No description provided for @discountOverLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Above your limit of {limit}%'**
+  String discountOverLimit(String limit);
+
+  /// No description provided for @discountReasonField.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for the discount'**
+  String get discountReasonField;
+
+  /// No description provided for @cashReceivedField.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash received'**
+  String get cashReceivedField;
+
+  /// No description provided for @cashTooLittle.
+  ///
+  /// In en, this message translates to:
+  /// **'Less than the total'**
+  String get cashTooLittle;
+
+  /// No description provided for @changeDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Change: {amount}'**
+  String changeDue(String amount);
+
+  /// No description provided for @paidTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paidTitle;
+
+  /// No description provided for @paidBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get paidBadge;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
   /// No description provided for @isPackage.
   ///
   /// In en, this message translates to:

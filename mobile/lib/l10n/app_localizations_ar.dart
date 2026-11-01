@@ -650,6 +650,67 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
+  String get checkoutTitle => 'التحصيل';
+
+  @override
+  String get collectPayment => 'تحصيل';
+
+  @override
+  String get payOnly => 'تحصيل فقط';
+
+  @override
+  String get payAndDeliver => 'تحصيل وتسليم';
+
+  @override
+  String get subtotalLabel => 'الخدمات';
+
+  @override
+  String get discountLabel => 'الخصم';
+
+  @override
+  String vatIncludedLabel(String rate) {
+    return 'شامل الضريبة $rate%';
+  }
+
+  @override
+  String vatAddedLabel(String rate) {
+    return 'الضريبة $rate%';
+  }
+
+  @override
+  String discountLimitHint(String limit) {
+    return 'حدّك: $limit%';
+  }
+
+  @override
+  String discountOverLimit(String limit) {
+    return 'أكبر من حدّك $limit%';
+  }
+
+  @override
+  String get discountReasonField => 'سبب الخصم';
+
+  @override
+  String get cashReceivedField => 'المبلغ المستلم';
+
+  @override
+  String get cashTooLittle => 'أقل من الإجمالي';
+
+  @override
+  String changeDue(String amount) {
+    return 'الباقي للعميل: $amount';
+  }
+
+  @override
+  String get paidTitle => 'تم الدفع';
+
+  @override
+  String get paidBadge => 'مدفوع';
+
+  @override
+  String get done => 'تم';
+
+  @override
   String get isPackage => 'باقة';
 
   @override

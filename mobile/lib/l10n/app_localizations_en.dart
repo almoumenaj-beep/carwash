@@ -639,6 +639,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
+  String get checkoutTitle => 'Payment';
+
+  @override
+  String get collectPayment => 'Collect payment';
+
+  @override
+  String get payOnly => 'Pay only';
+
+  @override
+  String get payAndDeliver => 'Pay and hand over';
+
+  @override
+  String get subtotalLabel => 'Services';
+
+  @override
+  String get discountLabel => 'Discount';
+
+  @override
+  String vatIncludedLabel(String rate) {
+    return 'Includes VAT $rate%';
+  }
+
+  @override
+  String vatAddedLabel(String rate) {
+    return 'VAT $rate%';
+  }
+
+  @override
+  String discountLimitHint(String limit) {
+    return 'Your limit: $limit%';
+  }
+
+  @override
+  String discountOverLimit(String limit) {
+    return 'Above your limit of $limit%';
+  }
+
+  @override
+  String get discountReasonField => 'Reason for the discount';
+
+  @override
+  String get cashReceivedField => 'Cash received';
+
+  @override
+  String get cashTooLittle => 'Less than the total';
+
+  @override
+  String changeDue(String amount) {
+    return 'Change: $amount';
+  }
+
+  @override
+  String get paidTitle => 'Paid';
+
+  @override
+  String get paidBadge => 'Paid';
+
+  @override
+  String get done => 'Done';
+
+  @override
   String get isPackage => 'Package';
 
   @override
