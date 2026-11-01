@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/locale_controller.dart';
+import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/presentation/set_pin_dialog.dart';
@@ -102,6 +104,14 @@ class AccountScreen extends ConsumerWidget {
               ),
               onTap: ref.read(localeProvider.notifier).toggle,
             ),
+            SwitchListTile(
+              secondary: const Icon(Icons.dark_mode_outlined),
+              title: Text(l10n.darkMode),
+              value: ref.watch(themeModeProvider) == ThemeMode.dark,
+              onChanged: ref.read(themeModeProvider.notifier).setDark,
+            ),
+            ListTile(leading: const Icon(Icons.palette_outlined), title: Text(l10n.appColor)),
+            const Padding(padding: EdgeInsets.fromLTRB(16, 0, 16, 16), child: _ColorPicker()),
             const Divider(height: 1),
             ListTile(
               leading: Icon(Icons.logout, color: theme.colorScheme.error),
@@ -151,6 +161,54 @@ class _PermissionsList extends StatelessWidget {
                 Text(module, style: Theme.of(context).textTheme.labelLarge),
                 for (final action in actions) Chip(label: Text(action), visualDensity: VisualDensity.compact),
               ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// The app colours as swatches; tapping one re-themes the whole app at once.
+class _ColorPicker extends ConsumerWidget {
+  const _ColorPicker();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final selected = ref.watch(brandColorProvider);
+    final names = {
+      'teal': l10n.colorTeal,
+      'turquoise': l10n.colorTurquoise,
+      'deep_teal': l10n.colorDeepTeal,
+      'sky': l10n.colorSky,
+      'navy': l10n.colorNavy,
+      'green': l10n.colorGreen,
+      'purple': l10n.colorPurple,
+      'orange': l10n.colorOrange,
+    };
+
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: [
+        for (final color in AppTheme.brandColors)
+          Tooltip(
+            message: names[color.key] ?? color.key,
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () => ref.read(brandColorProvider.notifier).select(color),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundColor: color.seed,
+                    child: color.key == selected.key ? const Icon(Icons.check, color: Colors.white) : null,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(names[color.key] ?? color.key, style: Theme.of(context).textTheme.labelSmall),
+                ],
+              ),
             ),
           ),
       ],

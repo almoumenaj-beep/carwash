@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/l10n/locale_controller.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_mode_controller.dart';
 import 'l10n/app_localizations.dart';
 
 class CarWashApp extends ConsumerWidget {
@@ -17,8 +18,9 @@ class CarWashApp extends ConsumerWidget {
       locale: ref.watch(localeProvider),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: AppTheme.light(ref.watch(brandColorProvider).seed),
+      darkTheme: AppTheme.dark(ref.watch(brandColorProvider).seed),
+      themeMode: ref.watch(themeModeProvider),
       routerConfig: ref.watch(routerProvider),
     );
   }

@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final sessionStorageProvider = Provider<SessionStorage>((ref) => SessionStorage(const FlutterSecureStorage()));
 
-/// Keeps the API token and this device's identity in the platform's secure storage.
+/// Keeps the API token, this device's identity and its display preferences in the platform's secure storage.
 ///
 /// The device identifier and secret survive sign-out so staff can keep switching in by PIN;
 /// only the token belongs to the current staff member.
@@ -15,6 +15,8 @@ class SessionStorage {
   static const _tokenKey = 'api_token';
   static const _deviceIdentifierKey = 'device_identifier';
   static const _deviceSecretKey = 'device_secret';
+  static const _themeModeKey = 'theme_mode';
+  static const _brandColorKey = 'brand_color';
 
   final FlutterSecureStorage _storage;
 
@@ -27,6 +29,16 @@ class SessionStorage {
   Future<String?> deviceSecret() => _storage.read(key: _deviceSecretKey);
 
   Future<void> saveDeviceSecret(String secret) => _storage.write(key: _deviceSecretKey, value: secret);
+
+  /// `light` or `dark`, as last chosen on this device; null before the first choice.
+  Future<String?> themeMode() => _storage.read(key: _themeModeKey);
+
+  Future<void> saveThemeMode(String mode) => _storage.write(key: _themeModeKey, value: mode);
+
+  /// The key of the app colour last chosen on this device; null before the first choice.
+  Future<String?> brandColor() => _storage.read(key: _brandColorKey);
+
+  Future<void> saveBrandColor(String key) => _storage.write(key: _brandColorKey, value: key);
 
   /// A random identifier created on first use and kept for the life of the installation.
   Future<String> deviceIdentifier() async {

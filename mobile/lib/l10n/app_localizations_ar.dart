@@ -777,6 +777,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get done => 'تم';
 
   @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get appColor => 'لون التطبيق';
+
+  @override
+  String get colorTeal => 'فيروزي فاتح';
+
+  @override
+  String get colorTurquoise => 'تركوازي';
+
+  @override
+  String get colorDeepTeal => 'أخضر مزرق غامق';
+
+  @override
+  String get colorSky => 'سماوي';
+
+  @override
+  String get colorNavy => 'كحلي';
+
+  @override
+  String get colorGreen => 'أخضر';
+
+  @override
+  String get colorPurple => 'بنفسجي';
+
+  @override
+  String get colorOrange => 'برتقالي';
+
+  @override
   String get isPackage => 'باقة';
 
   @override

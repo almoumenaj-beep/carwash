@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
+import '../../../core/theme/theme_mode_controller.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -26,6 +27,13 @@ class HomeScreen extends ConsumerWidget {
         title: Text(me.carWashName),
         actions: [
           const LanguageButton(),
+          IconButton(
+            tooltip: l10n.darkMode,
+            icon: Icon(
+              ref.watch(themeModeProvider) == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            ),
+            onPressed: ref.read(themeModeProvider.notifier).toggle,
+          ),
           IconButton(
             tooltip: l10n.switchUser,
             icon: const Icon(Icons.switch_account_outlined),
