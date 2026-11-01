@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/l10n/locale_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
-import '../../auth/domain/me.dart';
 import '../../auth/presentation/set_pin_dialog.dart';
 
-/// The signed-in staff member's own account: roles, branches, permissions, PIN and sign-out.
+/// The signed-in staff member's own account, kept to one line per item; the full
+/// permission list opens in a sheet on demand.
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
@@ -17,6 +19,21 @@ class AccountScreen extends ConsumerWidget {
     }
   }
 
+  void _showPermissions(BuildContext context, Set<String> permissions) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (context) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        builder: (context, scrollController) =>
+            _PermissionsList(permissions: permissions, controller: scrollController),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(sessionProvider).value;
@@ -25,127 +42,103 @@ class AccountScreen extends ConsumerWidget {
     }
 
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final branches = me.allBranches
+        ? l10n.allBranches
+        : (me.branches.isEmpty ? l10n.noBranches : me.branches.map((branch) => branch.name).join(l10n.listSeparator));
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.accountTitle)),
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(sessionProvider.future),
         child: ListView(
-          padding: const EdgeInsets.all(16),
           children: [
-            Card(
-              child: ListTile(
-                leading: CircleAvatar(child: Text(me.name.characters.first)),
-                title: Text(me.name),
-                subtitle: Text([if (me.email != null) me.email!, me.carWashName].join(' · ')),
-                trailing: me.isOwner ? Chip(label: Text(l10n.ownerBadge)) : null,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    child: Text(me.name.characters.first, style: theme.textTheme.headlineMedium),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(me.name, style: theme.textTheme.titleLarge),
+                  if (me.email != null) Text(me.email!, style: theme.textTheme.bodyMedium),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${me.roles.map((role) => role.label).join(l10n.listSeparator)} · ${me.carWashName}',
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
-            _Section(
-              title: l10n.rolesSection,
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [for (final role in me.roles) Chip(label: Text(role.label))],
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.store_outlined),
+              title: Text(l10n.branchesSection),
+              subtitle: Text(branches, maxLines: 2, overflow: TextOverflow.ellipsis),
+            ),
+            ListTile(
+              leading: const Icon(Icons.verified_user_outlined),
+              title: Text(l10n.permissionsSection),
+              subtitle: Text(l10n.permissionsCount(me.permissions.length)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => _showPermissions(context, me.permissions),
+            ),
+            const Divider(height: 1),
+            ListTile(leading: const Icon(Icons.pin_outlined), title: Text(l10n.setPin), onTap: () => _setPin(context)),
+            ListTile(
+              leading: const Icon(Icons.switch_account_outlined),
+              title: Text(l10n.switchUser),
+              onTap: () => context.push('/pin'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.translate),
+              title: Text(l10n.languageField),
+              subtitle: Text(
+                ref.watch(localeProvider).languageCode == 'ar' ? l10n.arabicLanguage : l10n.englishLanguage,
               ),
+              onTap: ref.read(localeProvider.notifier).toggle,
             ),
-            _Section(
-              title: l10n.branchesSection,
-              child: _Branches(me: me),
-            ),
-            _Section(
-              title: '${l10n.permissionsSection} · ${l10n.permissionsCount(me.permissions.length)}',
-              child: _Permissions(permissions: me.permissions),
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () => _setPin(context),
-              icon: const Icon(Icons.pin_outlined),
-              label: Text(l10n.setPin),
-            ),
-            const SizedBox(height: 8),
-            FilledButton.tonalIcon(
-              onPressed: () => ref.read(sessionProvider.notifier).signOut(),
-              icon: const Icon(Icons.logout),
-              label: Text(l10n.signOut),
+            const Divider(height: 1),
+            ListTile(
+              leading: Icon(Icons.logout, color: theme.colorScheme.error),
+              title: Text(l10n.signOut, style: TextStyle(color: theme.colorScheme.error)),
+              onTap: () => ref.read(sessionProvider.notifier).signOut(),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.child});
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 12),
-            child,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Branches extends StatelessWidget {
-  const _Branches({required this.me});
-
-  final Me me;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    if (me.branches.isEmpty) {
-      return Text(l10n.noBranches);
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (me.allBranches) Text(l10n.allBranches, style: Theme.of(context).textTheme.labelLarge),
-        for (final branch in me.branches)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(Icons.store_outlined),
-            title: Text(branch.name),
-            subtitle: Text(branch.code),
-          ),
-      ],
     );
   }
 }
 
 /// Permissions grouped by module ("orders.view" → orders: view).
-class _Permissions extends StatelessWidget {
-  const _Permissions({required this.permissions});
+class _PermissionsList extends StatelessWidget {
+  const _PermissionsList({required this.permissions, required this.controller});
 
   final Set<String> permissions;
+  final ScrollController controller;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final byModule = <String, List<String>>{};
     for (final permission in permissions) {
       final [module, action] = permission.split('.');
       byModule.putIfAbsent(module, () => []).add(action);
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
+      controller: controller,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
       children: [
+        Text(
+          '${l10n.permissionsSection} · ${l10n.permissionsCount(permissions.length)}',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 12),
         for (final MapEntry(key: module, value: actions) in byModule.entries)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
