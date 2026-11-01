@@ -97,7 +97,7 @@
 **تشغيل التطبيق عبر الواي فاي (بدون كابل):** الجوال والكمبيوتر على نفس الشبكة.
 1. مرة واحدة، في PowerShell **كمسؤول (Run as administrator)**: `Set-NetConnectionProfile -InterfaceAlias "Wi-Fi" -NetworkCategory Private; New-NetFirewallRule -DisplayName "CarWash dev server (8000)" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow -Profile Private` — يجعل شبكة البيت «خاصة» ويفتح المنفذ 8000 عليها فقط (لا تفعل ذلك على شبكة عامة).
 2. شغّل الخادم للشبكة: `php artisan serve --host=0.0.0.0 --port=8000`.
-3. وصّل الجوال بالكابل مرة واحدة وشغّل `.mobileun-on-wifi` — يثبّت التطبيق بعنوان الكمبيوتر على الواي فاي (مثل `http://192.168.100.120:8000`)، وبعدها افصل الكابل. إذا تغيّر عنوان الكمبيوتر أعد الخطوة 3 (أو ثبّت العنوان من الراوتر).
+3. وصّل الجوال بالكابل مرة واحدة وشغّل `.\mobile\run-on-wifi` — يثبّت التطبيق بعنوان الكمبيوتر على الواي فاي (مثل `http://192.168.100.120:8000`)، وبعدها افصل الكابل. إذا تغيّر عنوان الكمبيوتر أعد الخطوة 3 (أو ثبّت العنوان من الراوتر).
 
 **Postman:** مثبّت (12.34). استورد الـ API عبر Import → Link: `http://localhost/carwash/public/docs/api.json`. ولتفعيل Postman MCP لـ Claude: أنشئ API Key من Postman (Settings → API keys) واحفظه في متغير البيئة `POSTMAN_API_KEY` (مُعدّ في `.mcp.json` دون حفظ المفتاح في Git).
 
