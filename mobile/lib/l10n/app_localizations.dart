@@ -710,6 +710,132 @@ abstract class AppLocalizations {
   /// **'Branch deleted'**
   String get branchDeleted;
 
+  /// No description provided for @accountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My account'**
+  String get accountTitle;
+
+  /// No description provided for @noSectionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Your role has no sections yet. Ask the owner to give you the permissions you need.'**
+  String get noSectionsYet;
+
+  /// No description provided for @customersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get customersTitle;
+
+  /// No description provided for @customersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers and their cars'**
+  String get customersSubtitle;
+
+  /// No description provided for @newCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'New customer'**
+  String get newCustomer;
+
+  /// No description provided for @customerSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, phone or plate'**
+  String get customerSearchHint;
+
+  /// No description provided for @noCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers yet'**
+  String get noCustomers;
+
+  /// No description provided for @noCustomerMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No customer matches. Register them as a new customer.'**
+  String get noCustomerMatches;
+
+  /// No description provided for @customerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer name'**
+  String get customerName;
+
+  /// No description provided for @notesField.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notesField;
+
+  /// No description provided for @marketingConsent.
+  ///
+  /// In en, this message translates to:
+  /// **'Agrees to receive offers and messages'**
+  String get marketingConsent;
+
+  /// No description provided for @marketingConsentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the customer; marketing messages are sent only with their consent'**
+  String get marketingConsentHint;
+
+  /// No description provided for @vehiclesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Cars'**
+  String get vehiclesSection;
+
+  /// No description provided for @addVehicle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add car'**
+  String get addVehicle;
+
+  /// No description provided for @noVehicles.
+  ///
+  /// In en, this message translates to:
+  /// **'No cars yet'**
+  String get noVehicles;
+
+  /// No description provided for @plateNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Plate number'**
+  String get plateNumber;
+
+  /// No description provided for @vehicleSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle size'**
+  String get vehicleSize;
+
+  /// No description provided for @sizeUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Size not set'**
+  String get sizeUnknown;
+
+  /// No description provided for @vehicleMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make'**
+  String get vehicleMake;
+
+  /// No description provided for @vehicleModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Model'**
+  String get vehicleModel;
+
+  /// No description provided for @vehicleColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Colour'**
+  String get vehicleColor;
+
   /// No description provided for @catalogTitle.
   ///
   /// In en, this message translates to:

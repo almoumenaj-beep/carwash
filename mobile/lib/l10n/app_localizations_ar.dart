@@ -365,6 +365,69 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchDeleted => 'تم حذف الفرع';
 
   @override
+  String get accountTitle => 'حسابي';
+
+  @override
+  String get noSectionsYet => 'لا توجد أقسام لدورك بعد. اطلب من المالك منحك الصلاحيات التي تحتاجها.';
+
+  @override
+  String get customersTitle => 'العملاء';
+
+  @override
+  String get customersSubtitle => 'العملاء وسياراتهم';
+
+  @override
+  String get newCustomer => 'عميل جديد';
+
+  @override
+  String get customerSearchHint => 'ابحث بالاسم أو الجوال أو رقم اللوحة';
+
+  @override
+  String get noCustomers => 'لا يوجد عملاء بعد';
+
+  @override
+  String get noCustomerMatches => 'لا يوجد عميل مطابق. سجّله كعميل جديد.';
+
+  @override
+  String get customerName => 'اسم العميل';
+
+  @override
+  String get notesField => 'ملاحظات';
+
+  @override
+  String get marketingConsent => 'يوافق على استلام العروض والرسائل';
+
+  @override
+  String get marketingConsentHint => 'اسأل العميل؛ لا تُرسل الرسائل التسويقية إلا بموافقته';
+
+  @override
+  String get vehiclesSection => 'السيارات';
+
+  @override
+  String get addVehicle => 'إضافة سيارة';
+
+  @override
+  String get noVehicles => 'لا توجد سيارات بعد';
+
+  @override
+  String get plateNumber => 'رقم اللوحة';
+
+  @override
+  String get vehicleSize => 'حجم السيارة';
+
+  @override
+  String get sizeUnknown => 'الحجم غير محدد';
+
+  @override
+  String get vehicleMake => 'الشركة المصنّعة';
+
+  @override
+  String get vehicleModel => 'الطراز';
+
+  @override
+  String get vehicleColor => 'اللون';
+
+  @override
   String get catalogTitle => 'الخدمات والأسعار';
 
   @override

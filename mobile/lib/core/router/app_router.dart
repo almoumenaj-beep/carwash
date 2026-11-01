@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/account/presentation/account_screen.dart';
 import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/pin_screen.dart';
@@ -12,6 +13,8 @@ import '../../features/catalog/data/catalog_repository.dart';
 import '../../features/catalog/presentation/catalog_entries_screen.dart';
 import '../../features/catalog/presentation/catalog_screen.dart';
 import '../../features/catalog/presentation/service_editor_screen.dart';
+import '../../features/customers/presentation/customer_editor_screen.dart';
+import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/roles/presentation/role_editor_screen.dart';
@@ -82,6 +85,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
+      GoRoute(path: '/account', builder: (_, _) => const AccountScreen()),
+      GoRoute(
+        path: '/customers',
+        builder: (_, _) => const CustomersScreen(),
+        routes: [
+          GoRoute(path: 'new', builder: (_, _) => const CustomerEditorScreen()),
+          GoRoute(
+            path: ':customerId',
+            builder: (_, state) => CustomerEditorScreen(customerId: state.pathParameters['customerId']),
+          ),
+        ],
+      ),
       GoRoute(
         path: '/catalog',
         builder: (_, _) => const CatalogScreen(),

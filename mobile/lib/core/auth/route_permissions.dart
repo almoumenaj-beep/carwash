@@ -6,6 +6,10 @@ abstract final class Permissions {
   static const usersManage = 'users.manage';
   static const settingsManage = 'settings.manage';
   static const servicesManage = 'services.manage';
+  static const customersView = 'customers.view';
+  static const customersCreate = 'customers.create';
+  static const customersUpdate = 'customers.update';
+  static const customersDelete = 'customers.delete';
 }
 
 /// Which permissions open each section; holding any one of them is enough.
@@ -16,6 +20,7 @@ const routePermissions = <String, List<String>>{
   '/settings': [Permissions.settingsManage],
   '/branches': [Permissions.settingsManage],
   '/catalog': [Permissions.servicesManage],
+  '/customers': [Permissions.customersView],
 };
 
 /// Whether [me] may open [location] (a path such as `/staff/42`).

@@ -357,6 +357,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get branchDeleted => 'Branch deleted';
 
   @override
+  String get accountTitle => 'My account';
+
+  @override
+  String get noSectionsYet => 'Your role has no sections yet. Ask the owner to give you the permissions you need.';
+
+  @override
+  String get customersTitle => 'Customers';
+
+  @override
+  String get customersSubtitle => 'Customers and their cars';
+
+  @override
+  String get newCustomer => 'New customer';
+
+  @override
+  String get customerSearchHint => 'Search by name, phone or plate';
+
+  @override
+  String get noCustomers => 'No customers yet';
+
+  @override
+  String get noCustomerMatches => 'No customer matches. Register them as a new customer.';
+
+  @override
+  String get customerName => 'Customer name';
+
+  @override
+  String get notesField => 'Notes';
+
+  @override
+  String get marketingConsent => 'Agrees to receive offers and messages';
+
+  @override
+  String get marketingConsentHint => 'Ask the customer; marketing messages are sent only with their consent';
+
+  @override
+  String get vehiclesSection => 'Cars';
+
+  @override
+  String get addVehicle => 'Add car';
+
+  @override
+  String get noVehicles => 'No cars yet';
+
+  @override
+  String get plateNumber => 'Plate number';
+
+  @override
+  String get vehicleSize => 'Vehicle size';
+
+  @override
+  String get sizeUnknown => 'Size not set';
+
+  @override
+  String get vehicleMake => 'Make';
+
+  @override
+  String get vehicleModel => 'Model';
+
+  @override
+  String get vehicleColor => 'Colour';
+
+  @override
   String get catalogTitle => 'Services & prices';
 
   @override
