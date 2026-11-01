@@ -73,8 +73,24 @@ Future<Order?> moveOrder(BuildContext context, WidgetRef ref, Order order, Order
     }
   }
 
+  Map<String, bool>? checklist;
+  if (order.status == OrderStatus.qualityCheck && (next == OrderStatus.ready || next == OrderStatus.inProgress)) {
+    if (!context.mounted) {
+      return null;
+    }
+    checklist = await showModalBottomSheet<Map<String, bool>>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => _InspectionSheet(order: order, passing: next == OrderStatus.ready),
+    );
+    if (checklist == null) {
+      return null;
+    }
+  }
+
   try {
-    return await ref.read(ordersRepositoryProvider).changeStatus(order.id, next, reason: reason);
+    return await ref.read(ordersRepositoryProvider).changeStatus(order.id, next, reason: reason, checklist: checklist);
   } catch (error, stackTrace) {
     final problem = ApiProblem.from(error, stackTrace);
     if (context.mounted) {
@@ -82,6 +98,75 @@ Future<Order?> moveOrder(BuildContext context, WidgetRef ref, Order order, Order
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     }
     return null;
+  }
+}
+
+/// The quality check: one tick per service on the order, for "done properly". Passing the car ([passing])
+/// needs every service ticked; sending it back records the unticked ones as not done properly.
+/// Pops with the results (order item id → done properly), or null when closed.
+class _InspectionSheet extends StatefulWidget {
+  const _InspectionSheet({required this.order, required this.passing});
+
+  final Order order;
+  final bool passing;
+
+  @override
+  State<_InspectionSheet> createState() => _InspectionSheetState();
+}
+
+class _InspectionSheetState extends State<_InspectionSheet> {
+  late final Map<String, bool> _done = {for (final item in widget.order.items) item.id: false};
+
+  bool get _allDone => _done.values.every((done) => done);
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('${l10n.statusQualityCheck} · ${widget.order.plateNumber}', style: theme.textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(l10n.inspectionHint, style: theme.textTheme.bodySmall),
+            const SizedBox(height: 8),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final item in widget.order.items)
+                    CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      value: _done[item.id],
+                      title: Text(item.name),
+                      onChanged: (done) => setState(() => _done[item.id] = done ?? false),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (widget.passing)
+              FilledButton.icon(
+                onPressed: _allDone ? () => Navigator.of(context).pop(Map.of(_done)) : null,
+                icon: const Icon(Icons.verified_outlined),
+                label: Text(l10n.passInspection),
+              )
+            else
+              OutlinedButton.icon(
+                onPressed: () => Navigator.of(context).pop(Map.of(_done)),
+                icon: const Icon(Icons.replay),
+                label: Text(l10n.actionBackToWashing),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

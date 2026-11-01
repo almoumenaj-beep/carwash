@@ -212,6 +212,41 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                 ],
               ),
             ],
+            if (order.qualityChecks.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              Text(l10n.statusQualityCheck, style: theme.textTheme.titleSmall),
+              for (final check in order.qualityChecks.reversed)
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListTile(
+                          dense: true,
+                          leading: Icon(
+                            check.passed ? Icons.verified_outlined : Icons.replay,
+                            color: check.passed ? theme.colorScheme.primary : theme.colorScheme.error,
+                          ),
+                          title: Text(check.passed ? l10n.inspectionPassed : l10n.inspectionFailed),
+                          subtitle: Text([_time(check.at), ?check.by].join(' · ')),
+                        ),
+                        for (final result in check.results)
+                          ListTile(
+                            dense: true,
+                            visualDensity: VisualDensity.compact,
+                            leading: Icon(
+                              result.passed ? Icons.check_circle_outline : Icons.cancel_outlined,
+                              size: 20,
+                              color: result.passed ? theme.colorScheme.primary : theme.colorScheme.error,
+                            ),
+                            title: Text(result.name),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
             const SizedBox(height: 16),
             Text(l10n.historyTitle, style: theme.textTheme.titleSmall),
             for (final change in order.history.reversed)

@@ -48,6 +48,7 @@ class OrderCustomer {
 /// A service on an order, priced when the car was checked in.
 class OrderItem {
   const OrderItem({
+    required this.id,
     required this.serviceId,
     required this.name,
     required this.isAddon,
@@ -57,6 +58,7 @@ class OrderItem {
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
+    id: json['id'] as String,
     serviceId: json['service_id'] as String,
     name: json['name'] as String,
     isAddon: json['is_addon'] as bool,
@@ -65,12 +67,33 @@ class OrderItem {
     lineTotal: json['line_total'] as int,
   );
 
+  final String id;
   final String serviceId;
   final String name;
   final bool isAddon;
   final int quantity;
   final int unitPrice;
   final int lineTotal;
+}
+
+/// One inspection at the quality check: whether each service on the order was done properly.
+class QualityCheck {
+  const QualityCheck({required this.passed, required this.by, required this.at, required this.results});
+
+  factory QualityCheck.fromJson(Map<String, dynamic> json) => QualityCheck(
+    passed: json['passed'] as bool,
+    by: json['by'] as String?,
+    at: DateTime.parse(json['at'] as String),
+    results: [
+      for (final result in json['results'] as List)
+        (name: (result as Map<String, dynamic>)['name'] as String, passed: result['passed'] as bool),
+    ],
+  );
+
+  final bool passed;
+  final String? by;
+  final DateTime at;
+  final List<({String name, bool passed})> results;
 }
 
 /// One step in an order's history.
@@ -115,6 +138,7 @@ class Order {
     this.qcAt,
     required this.readyAt,
     required this.history,
+    this.qualityChecks = const [],
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -143,6 +167,10 @@ class Order {
       history: [
         for (final change in (json['history'] as List?) ?? const [])
           StatusChange.fromJson(change as Map<String, dynamic>),
+      ],
+      qualityChecks: [
+        for (final check in (json['quality_checks'] as List?) ?? const [])
+          QualityCheck.fromJson(check as Map<String, dynamic>),
       ],
     );
   }
@@ -175,6 +203,9 @@ class Order {
 
   /// Only filled on the order's own page.
   final List<StatusChange> history;
+
+  /// Inspections at the quality check, oldest first; only filled on the order's own page.
+  final List<QualityCheck> qualityChecks;
 
   /// The next step forward, which the queue offers as its main button.
   OrderStatus? get nextStep => allowedNext.where(status.isForwardTo).firstOrNull;

@@ -301,6 +301,10 @@
     }
   },
   "matchingCars": "Registered cars",
+  "inspectionHint": "Tick each service that was done properly",
+  "passInspection": "Passed – ready",
+  "inspectionPassed": "Passed the check",
+  "inspectionFailed": "Sent back for rework",
   "staffPinField": "PIN (4–6 digits)",
   "staffPinHint": "Lets them switch in on a shared device from “Switch user”",
   "staffPinKeepHint": "Has a PIN; leave empty to keep it",

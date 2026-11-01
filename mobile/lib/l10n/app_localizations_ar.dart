@@ -650,6 +650,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
+  String get inspectionHint => 'أشّر على كل خدمة تمت بشكل صحيح';
+
+  @override
+  String get passInspection => 'اجتازت الفحص – جاهزة';
+
+  @override
+  String get inspectionPassed => 'اجتازت الفحص';
+
+  @override
+  String get inspectionFailed => 'أُعيدت للغسيل';
+
+  @override
   String get staffPinField => 'الرمز السري PIN (4–6 أرقام)';
 
   @override

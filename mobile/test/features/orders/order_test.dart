@@ -56,6 +56,17 @@ Map<String, dynamic> orderJson({
   'history': [
     {'from': null, 'to': 'waiting', 'by': 'Sara', 'reason': null, 'at': '2026-11-01T09:00:00+00:00'},
   ],
+  'quality_checks': [
+    {
+      'passed': false,
+      'by': 'Ali',
+      'at': '2026-11-01T09:30:00+00:00',
+      'results': [
+        {'item_id': 'i1', 'name': 'Exterior wash', 'passed': true},
+        {'item_id': 'i2', 'name': 'Air freshener', 'passed': false},
+      ],
+    },
+  ],
 };
 
 void main() {
@@ -69,15 +80,16 @@ void main() {
     expect(order.servicesSummary, 'Exterior wash + Air freshener');
     expect(order.subtotal, 2500);
     expect(order.history.single.to, OrderStatus.waiting);
+    expect(order.items.first.id, 'i1');
+    expect(order.qualityChecks.single.passed, isFalse);
+    expect(order.qualityChecks.single.results.last, (name: 'Air freshener', passed: false));
     expect(order.stageStartedAt, DateTime.utc(2026, 11, 1, 9));
   });
 
   test('the next step is the first forward move, never cancelling or sending back', () {
     expect(Order.fromJson(orderJson()).nextStep, OrderStatus.inProgress);
 
-    final washing = Order.fromJson(
-      orderJson(status: 'in_progress', allowedNext: ['qc', 'ready', 'waiting', 'cancelled']),
-    );
+    final washing = Order.fromJson(orderJson(status: 'in_progress', allowedNext: ['qc', 'waiting', 'cancelled']));
     expect(washing.nextStep, OrderStatus.qualityCheck);
     expect(washing.stageStartedAt, DateTime.utc(2026, 11, 1, 9, 10));
 

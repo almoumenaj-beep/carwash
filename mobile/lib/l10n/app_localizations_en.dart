@@ -639,6 +639,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
+  String get inspectionHint => 'Tick each service that was done properly';
+
+  @override
+  String get passInspection => 'Passed – ready';
+
+  @override
+  String get inspectionPassed => 'Passed the check';
+
+  @override
+  String get inspectionFailed => 'Sent back for rework';
+
+  @override
   String get staffPinField => 'PIN (4–6 digits)';
 
   @override

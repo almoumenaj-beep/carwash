@@ -1226,6 +1226,30 @@ abstract class AppLocalizations {
   /// **'Registered cars'**
   String get matchingCars;
 
+  /// No description provided for @inspectionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick each service that was done properly'**
+  String get inspectionHint;
+
+  /// No description provided for @passInspection.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed – ready'**
+  String get passInspection;
+
+  /// No description provided for @inspectionPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed the check'**
+  String get inspectionPassed;
+
+  /// No description provided for @inspectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent back for rework'**
+  String get inspectionFailed;
+
   /// No description provided for @staffPinField.
   ///
   /// In en, this message translates to:

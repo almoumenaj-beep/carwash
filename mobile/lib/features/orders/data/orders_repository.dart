@@ -57,10 +57,22 @@ class OrdersRepository {
     return Order.fromJson(unwrapData(response));
   }
 
-  /// Moves the order on; [reason] is required when cancelling.
-  Future<Order> changeStatus(String id, OrderStatus status, {String? reason}) async {
+  /// Moves the order on; [reason] is required when cancelling, and [checklist] (order item id → done
+  /// properly) when leaving the quality check.
+  Future<Order> changeStatus(String id, OrderStatus status, {String? reason, Map<String, bool>? checklist}) async {
     final response = await sendRequest(
-      () => _dio.post<Map<String, dynamic>>('/orders/$id/status', data: {'status': status.apiValue, 'reason': ?reason}),
+      () => _dio.post<Map<String, dynamic>>(
+        '/orders/$id/status',
+        data: {
+          'status': status.apiValue,
+          'reason': ?reason,
+          if (checklist != null)
+            'checklist': [
+              for (final MapEntry(key: itemId, value: passed) in checklist.entries)
+                {'item_id': itemId, 'passed': passed},
+            ],
+        },
+      ),
     );
     return Order.fromJson(unwrapData(response));
   }
