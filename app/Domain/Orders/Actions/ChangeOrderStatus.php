@@ -91,8 +91,9 @@ class ChangeOrderStatus
     }
 
     /**
-     * Each service on the order with whether it was done properly, or null when nothing is recorded
-     * (a car sent back without results). Passing the car needs every service ticked.
+     * Each service on the order (a package's services one by one) with whether it was done properly,
+     * or null when nothing is recorded (a car sent back without results). Passing the car needs every
+     * service ticked.
      *
      * @param  list<array{item_id: string, passed: bool}>|null  $checklist
      * @return list<array{item_id: string, name: string, passed: bool}>|null
@@ -102,7 +103,7 @@ class ChangeOrderStatus
     private function inspection(Order $order, OrderStatus $next, ?array $checklist): ?array
     {
         $passed = collect($checklist ?? [])->mapWithKeys(fn (array $result) => [$result['item_id'] => (bool) $result['passed']]);
-        $results = $order->items->map(fn (OrderItem $item) => [
+        $results = $order->items->where('is_package', false)->map(fn (OrderItem $item) => [
             'item_id' => $item->id,
             'name' => $item->name,
             'passed' => $passed->get($item->id, false),

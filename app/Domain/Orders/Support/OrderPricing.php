@@ -9,19 +9,24 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Prices the services of a work order on the server, from the catalog: the price for the car's
- * size at this branch, frozen on the order. Add-ons are only sold with a main service.
+ * size at this branch, frozen on the order. Add-ons are only sold with a main service; a package
+ * (a main service) carries the services it includes as `components`.
  */
 class OrderPricing
 {
     /**
      * @param  list<array{service_id: string, quantity?: int}>  $items
-     * @return array{lines: list<array{service_id: string, name: string, is_addon: bool, quantity: int, unit_price: int, line_total: int, duration_minutes: int}>, subtotal: int, minutes: int}
+     * @return array{lines: list<array{service_id: string, name: string, is_addon: bool, is_package: bool, quantity: int, unit_price: int, line_total: int, duration_minutes: int, components: list<array{service_id: string, name: string}>}>, subtotal: int, minutes: int}
      *
      * @throws ValidationException
      */
     public function price(Branch $branch, ?VehicleSize $size, array $items): array
     {
-        $services = Service::query()->with('prices')->whereKey(array_column($items, 'service_id'))->get()->keyBy('id');
+        $services = Service::query()
+            ->with(['prices', 'packageItems.prices'])
+            ->whereKey(array_column($items, 'service_id'))
+            ->get()
+            ->keyBy('id');
         $lines = [];
         $errors = [];
 
@@ -43,14 +48,24 @@ class OrderPricing
             }
 
             $quantity = (int) ($item['quantity'] ?? 1);
+            $components = $service->is_package ? $service->packageItems : collect();
+            $minutes = $service->is_package && $service->duration_minutes === 0
+                ? $components->sum('duration_minutes')
+                : $service->duration_minutes;
+
             $lines[] = [
                 'service_id' => $service->id,
                 'name' => $service->name,
                 'is_addon' => $service->is_addon,
+                'is_package' => $service->is_package,
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
                 'line_total' => $unitPrice * $quantity,
-                'duration_minutes' => $service->duration_minutes * $quantity,
+                'duration_minutes' => $minutes * $quantity,
+                'components' => $components->map(fn (Service $component) => [
+                    'service_id' => $component->id,
+                    'name' => $component->name,
+                ])->values()->all(),
             ];
         }
 

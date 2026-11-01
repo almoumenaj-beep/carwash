@@ -60,7 +60,7 @@ class UpdateOrder
             }
             if ($priced !== null) {
                 $order->items()->delete();
-                $order->items()->createMany($priced['lines']);
+                $order->addItems($priced['lines']);
                 $order->forceFill(['subtotal' => $priced['subtotal'], 'estimated_minutes' => min($priced['minutes'], 65535)]);
             }
 

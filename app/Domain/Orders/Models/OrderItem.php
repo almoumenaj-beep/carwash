@@ -10,9 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * A service sold on a work order, with its name and price frozen at the time of sale.
+ * A service sold on a work order, with its name and price frozen at the time of sale. The services
+ * of a package sold on the order are its unpriced children (parent_id).
  */
-#[Fillable(['service_id', 'name', 'is_addon', 'quantity', 'unit_price', 'line_total', 'duration_minutes'])]
+#[Fillable(['parent_id', 'service_id', 'name', 'is_addon', 'is_package', 'quantity', 'unit_price', 'line_total', 'duration_minutes'])]
 class OrderItem extends Model
 {
     use BelongsToTenant, HasUuids;
@@ -26,6 +27,7 @@ class OrderItem extends Model
     {
         return [
             'is_addon' => 'boolean',
+            'is_package' => 'boolean',
             'quantity' => 'integer',
             'unit_price' => 'integer',
             'line_total' => 'integer',

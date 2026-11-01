@@ -23,25 +23,25 @@ class ServiceController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return ServiceResource::collection(
-            Service::query()->with('prices')->orderBy('is_addon')->orderBy('sort_order')->orderBy('name')->get(),
+            Service::query()->with(['prices', 'packageItems.prices'])->orderByDesc('is_package')->orderBy('is_addon')->orderBy('sort_order')->orderBy('name')->get(),
         );
     }
 
     public function store(SaveServiceRequest $request, SaveService $saveService): JsonResponse
     {
-        return ServiceResource::make($saveService->create($request->user(), $request->validated())->load('prices'))
+        return ServiceResource::make($saveService->create($request->user(), $request->validated())->load(['prices', 'packageItems.prices']))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Service $service): ServiceResource
     {
-        return ServiceResource::make($service->load('prices'));
+        return ServiceResource::make($service->load(['prices', 'packageItems.prices']));
     }
 
     public function update(SaveServiceRequest $request, Service $service, SaveService $saveService): ServiceResource
     {
-        return ServiceResource::make($saveService->update($request->user(), $service, $request->validated())->load('prices'));
+        return ServiceResource::make($saveService->update($request->user(), $service, $request->validated())->load(['prices', 'packageItems.prices']));
     }
 
     /**

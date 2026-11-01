@@ -64,7 +64,7 @@ class CheckoutOrder
                 'issued_at' => now(),
             ])->save();
 
-            $invoice->lines()->createMany($order->items->map(fn (OrderItem $item) => [
+            $invoice->lines()->createMany($order->items->whereNull('parent_id')->map(fn (OrderItem $item) => [
                 'service_id' => $item->service_id,
                 'name' => $item->name,
                 'quantity' => $item->quantity,

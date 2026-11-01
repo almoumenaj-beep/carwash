@@ -29,6 +29,10 @@ class DeleteCatalogEntry
             throw ValidationException::withMessages(['vehicle_size' => __('A car wash needs at least one vehicle size.')]);
         }
 
+        if ($entry instanceof Service && $entry->isInAPackage()) {
+            throw ValidationException::withMessages(['service' => __('This service is part of a package. Remove it from the package first.')]);
+        }
+
         if ($entry instanceof Service && $entry->isInUse()) {
             throw ValidationException::withMessages(['service' => __('This service has been sold. Deactivate it instead of deleting it.')]);
         }

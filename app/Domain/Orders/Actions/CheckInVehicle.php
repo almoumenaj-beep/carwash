@@ -75,7 +75,7 @@ class CheckInVehicle
                 'created_by' => $actor->id,
             ])->save();
 
-            $order->items()->createMany($priced['lines']);
+            $order->addItems($priced['lines']);
             $order->staff()->sync($staffIds);
             $order->statusHistory()->create([
                 'from_status' => null,

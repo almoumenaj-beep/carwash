@@ -34,6 +34,19 @@ class ServiceFactory extends Factory
     /**
      * Indicate that the service is an add-on sold with a main service.
      */
+    /**
+     * A package priced from its services less the given discount; attach the services with
+     * `packageItems()` after creating it.
+     */
+    public function package(string $discountType = 'percent', int $discountValue = 0): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_package' => true,
+            'package_discount_type' => $discountType,
+            'package_discount_value' => $discountValue,
+        ]);
+    }
+
     public function addon(): static
     {
         return $this->state(fn (array $attributes) => [

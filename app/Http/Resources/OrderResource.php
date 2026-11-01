@@ -14,6 +14,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * A work order for the queue and its detail screen. Amounts are in minor units (BHD: fils).
+ * A package in `items` lists the services it includes in `components` (unpriced; inspected one by one).
  * `allowed_next` lists the statuses the order may move to, for the action buttons; `delivered`
  * only appears once the order is paid (`invoice`).
  *
@@ -63,15 +64,21 @@ class OrderResource extends JsonResource
             'vehicle_size_id' => $this->vehicle_size_id,
             'bay' => $this->bay === null ? null : ['id' => $this->bay->id, 'name' => $this->bay->name],
             'staff' => $this->staff->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name])->values(),
-            'items' => $this->items->map(fn (OrderItem $item) => [
+            'items' => $this->items->whereNull('parent_id')->map(fn (OrderItem $item) => [
                 'id' => $item->id,
                 'service_id' => $item->service_id,
                 'name' => $item->name,
                 'is_addon' => $item->is_addon,
+                'is_package' => $item->is_package,
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
                 'line_total' => $item->line_total,
                 'duration_minutes' => $item->duration_minutes,
+                'components' => $this->items->where('parent_id', $item->id)->map(fn (OrderItem $component) => [
+                    'id' => $component->id,
+                    'service_id' => $component->service_id,
+                    'name' => $component->name,
+                ])->values(),
             ])->values(),
             'subtotal' => $this->subtotal,
             'estimated_minutes' => $this->estimated_minutes,

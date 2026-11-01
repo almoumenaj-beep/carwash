@@ -73,6 +73,35 @@ class Order extends Model
         return "{$this->branch->code}-{$this->number}";
     }
 
+    /**
+     * Writes priced lines (from OrderPricing) as the order's items; a package's services become its
+     * unpriced child items.
+     *
+     * @param  list<array{service_id: string, name: string, is_addon: bool, is_package: bool, quantity: int, unit_price: int, line_total: int, duration_minutes: int, components: list<array{service_id: string, name: string}>}>  $lines
+     */
+    public function addItems(array $lines): void
+    {
+        foreach ($lines as $line) {
+            $components = $line['components'];
+            unset($line['components']);
+
+            $item = $this->items()->create($line);
+
+            foreach ($components as $component) {
+                $this->items()->create([
+                    ...$component,
+                    'parent_id' => $item->id,
+                    'is_addon' => false,
+                    'is_package' => false,
+                    'quantity' => 1,
+                    'unit_price' => 0,
+                    'line_total' => 0,
+                    'duration_minutes' => 0,
+                ]);
+            }
+        }
+    }
+
     public function isPaid(): bool
     {
         return $this->invoice !== null;

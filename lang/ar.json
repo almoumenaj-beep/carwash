@@ -57,5 +57,8 @@
     "You are not allowed to give discounts.": "غير مسموح لك بإعطاء خصم.",
     "Your discount limit is :limit%.": "حد الخصم المسموح لك :limit%.",
     "Give a reason for the discount.": "اكتب سبب الخصم.",
-    "Tick every service on the order to pass the car.": "أشّر على كل خدمات الطلب لاعتماد السيارة."
+    "Tick every service on the order to pass the car.": "أشّر على كل خدمات الطلب لاعتماد السيارة.",
+    "A package cannot be an add-on.": "الباقة لا تكون إضافة.",
+    "A package includes at least two services, and no other packages.": "الباقة تضم خدمتين على الأقل، ولا تضم باقات أخرى.",
+    "This service is part of a package. Remove it from the package first.": "هذه الخدمة ضمن باقة. احذفها من الباقة أولاً."
 }

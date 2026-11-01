@@ -29,6 +29,13 @@ class ServiceResource extends JsonResource
             'description' => $this->description,
             'duration_minutes' => $this->duration_minutes,
             'is_addon' => $this->is_addon,
+            'is_package' => $this->is_package,
+            'package_discount_type' => $this->package_discount_type,
+            'package_discount_value' => $this->package_discount_value,
+            'package_items' => $this->whenLoaded('packageItems', fn () => $this->packageItems->map(fn (Service $service) => [
+                'id' => $service->id,
+                'name' => $service->name,
+            ])->values()),
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
             'prices' => $this->whenLoaded('prices', fn () => $this->prices->map(fn (ServicePrice $price) => [
