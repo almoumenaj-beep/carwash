@@ -34,6 +34,7 @@ class CheckInScreen extends ConsumerWidget {
       (AsyncData(value: final services), AsyncData(value: final sizes)) => _CheckInForm(
         branchId: branchId,
         services: services.where((service) => service.isActive).toList(),
+        catalog: {for (final service in services) service.id: service},
         sizes: sizes.where((size) => size.isActive).toList(),
       ),
       (AsyncError(:final error), _) || (_, AsyncError(:final error)) => Scaffold(
@@ -58,10 +59,15 @@ class CheckInScreen extends ConsumerWidget {
 typedef _KnownCar = ({Customer customer, Vehicle vehicle});
 
 class _CheckInForm extends ConsumerStatefulWidget {
-  const _CheckInForm({required this.branchId, required this.services, required this.sizes});
+  const _CheckInForm({required this.branchId, required this.services, required this.catalog, required this.sizes});
 
   final String branchId;
+
+  /// The active services that can be sold.
   final List<CatalogService> services;
+
+  /// Every service by id (inactive ones too), to price packages from what they include.
+  final Map<String, CatalogService> catalog;
   final List<VehicleSize> sizes;
 
   @override
@@ -126,7 +132,12 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
     });
   }
 
-  int? _price(CatalogService service) => service.priceFor(_sizeId, widget.branchId);
+  int? _price(CatalogService service) => service.priceIn(widget.catalog, _sizeId, widget.branchId);
+
+  /// A package takes its own time, or else the time of the services it includes.
+  int _minutes(CatalogService service) => service.isPackage && service.durationMinutes == 0
+      ? service.packageItemIds.fold(0, (sum, id) => sum + (widget.catalog[id]?.durationMinutes ?? 0))
+      : service.durationMinutes;
 
   /// A different size can leave a chosen service without a price; it cannot be sold then.
   void _dropUnpriced() {
@@ -188,7 +199,7 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
     final money = ref.watch(moneyFormatProvider);
     final chosen = _chosen;
     final total = chosen.fold<int>(0, (sum, service) => sum + (_price(service) ?? 0));
-    final minutes = chosen.fold<int>(0, (sum, service) => sum + service.durationMinutes);
+    final minutes = chosen.fold<int>(0, (sum, service) => sum + _minutes(service));
     final problem = _problem;
     final canSubmit = !_saving && _plate.text.trim().isNotEmpty && _hasMainService;
 
@@ -240,17 +251,31 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
             ],
           ),
           const SizedBox(height: 16),
-          for (final (title, addons) in [(l10n.servicesSection, false), (l10n.addonsSection, true)]) ...[
-            Text(title, style: theme.textTheme.titleSmall),
-            for (final service in widget.services.where((service) => service.isAddon == addons))
-              _ServiceTile(
-                service: service,
-                price: _price(service),
-                chosen: _serviceIds.contains(service.id),
-                onChanged: (on) => setState(() => on ? _serviceIds.add(service.id) : _serviceIds.remove(service.id)),
-              ),
-            const SizedBox(height: 8),
-          ],
+          for (final (title, shown) in [
+            (l10n.packagesSection, widget.services.where((service) => service.isPackage)),
+            (l10n.servicesSection, widget.services.where((service) => !service.isPackage && !service.isAddon)),
+            (l10n.addonsSection, widget.services.where((service) => service.isAddon)),
+          ])
+            if (shown.isNotEmpty) ...[
+              Text(title, style: theme.textTheme.titleSmall),
+              for (final service in shown)
+                _ServiceTile(
+                  service: service,
+                  price: _price(service),
+                  minutes: _minutes(service),
+                  details: service.isPackage
+                      ? [
+                          service.packageItemIds.map((id) => widget.catalog[id]?.name).whereType<String>().join(' + '),
+                          if (service.separatePriceIn(widget.catalog, _sizeId, widget.branchId) case final separate?
+                              when _price(service) != null && separate > _price(service)!)
+                            l10n.packageSaves(money.format(separate - _price(service)!)),
+                        ]
+                      : const [],
+                  chosen: _serviceIds.contains(service.id),
+                  onChanged: (on) => setState(() => on ? _serviceIds.add(service.id) : _serviceIds.remove(service.id)),
+                ),
+              const SizedBox(height: 8),
+            ],
           if (_sizeId == null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -397,12 +422,23 @@ class _KnownCars extends ConsumerWidget {
 }
 
 class _ServiceTile extends ConsumerWidget {
-  const _ServiceTile({required this.service, required this.price, required this.chosen, required this.onChanged});
+  const _ServiceTile({
+    required this.service,
+    required this.price,
+    required this.minutes,
+    required this.details,
+    required this.chosen,
+    required this.onChanged,
+  });
 
   final CatalogService service;
 
   /// Null when the service has no price for the chosen size, so it cannot be sold.
   final int? price;
+  final int minutes;
+
+  /// Extra lines under the name, e.g. what a package includes and what it saves.
+  final List<String> details;
   final bool chosen;
   final ValueChanged<bool> onChanged;
 
@@ -417,7 +453,8 @@ class _ServiceTile extends ConsumerWidget {
       value: chosen,
       onChanged: price == null ? null : (on) => onChanged(on ?? false),
       title: Text(service.name),
-      subtitle: Text(l10n.minutesShort(service.durationMinutes)),
+      subtitle: Text([...details, l10n.minutesShort(minutes)].join('\n')),
+      isThreeLine: details.isNotEmpty,
       secondary: Text(
         price == null ? l10n.unpriced : ref.watch(moneyFormatProvider).format(price),
         style: Theme.of(context).textTheme.titleSmall,

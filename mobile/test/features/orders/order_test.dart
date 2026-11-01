@@ -104,11 +104,81 @@ void main() {
     expect(inspecting.stageStartedAt, DateTime.utc(2026, 11, 1, 9, 25));
   });
 
+  test('a package is inspected service by service', () {
+    final order = Order.fromJson({
+      ...orderJson(),
+      'items': [
+        {
+          'id': 'p1',
+          'service_id': 'vip',
+          'name': 'VIP',
+          'is_addon': false,
+          'is_package': true,
+          'quantity': 1,
+          'unit_price': 4400,
+          'line_total': 4400,
+          'duration_minutes': 37,
+          'components': [
+            {'id': 'c1', 'service_id': 'wash', 'name': 'Exterior wash'},
+            {'id': 'c2', 'service_id': 'inside', 'name': 'Interior clean'},
+          ],
+        },
+        {
+          'id': 'i2',
+          'service_id': 'fresh',
+          'name': 'Air freshener',
+          'is_addon': true,
+          'quantity': 1,
+          'unit_price': 500,
+          'line_total': 500,
+          'duration_minutes': 2,
+        },
+      ],
+    });
+
+    expect(order.servicesSummary, 'VIP + Air freshener');
+    expect(order.inspectionPoints.map((point) => point.id), ['c1', 'c2', 'i2']);
+  });
+
   test('a walk-in has no customer', () {
     final order = Order.fromJson({...orderJson(), 'customer': null, 'bay': null});
 
     expect(order.customer, isNull);
     expect(order.bay, isNull);
+  });
+
+  test('a package costs its services for the size less its discount', () {
+    CatalogService priced(String id, int price) => CatalogService(
+      id: id,
+      categoryId: null,
+      name: id,
+      description: null,
+      durationMinutes: 10,
+      isAddon: false,
+      isActive: true,
+      prices: [ServicePrice(vehicleSizeId: null, branchId: null, price: price)],
+    );
+    final catalog = {'wash': priced('wash', 2000), 'inside': priced('inside', 3000)};
+    CatalogService package(String type, int value) => CatalogService(
+      id: 'vip',
+      categoryId: null,
+      name: 'VIP',
+      description: null,
+      durationMinutes: 0,
+      isAddon: false,
+      isActive: true,
+      prices: const [],
+      isPackage: true,
+      packageDiscountType: type,
+      packageDiscountValue: value,
+      packageItemIds: const ['wash', 'inside'],
+    );
+
+    expect(package('percent', 2000).separatePriceIn(catalog, 'sedan', null), 5000);
+    expect(package('percent', 2000).priceIn(catalog, 'sedan', null), 4000);
+    expect(package('amount', 1500).priceIn(catalog, 'sedan', null), 3500);
+    expect(package('amount', 9000).priceIn(catalog, 'sedan', null), 0);
+    expect(package('percent', 1000).priceIn({'wash': priced('wash', 2000)}, 'sedan', null), isNull);
   });
 
   test('prices resolve like the server: size and branch, size, branch, then every size', () {

@@ -650,6 +650,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
+  String get isPackage => 'باقة';
+
+  @override
+  String get isPackageHint => 'تجمع خدمات موجودة بسعر مخفّض';
+
+  @override
+  String get packagesSection => 'الباقات';
+
+  @override
+  String get packageServicesSection => 'خدمات الباقة';
+
+  @override
+  String get packageNeedsTwoServices => 'اختر خدمتين على الأقل';
+
+  @override
+  String get packageDiscountSection => 'خصم الباقة';
+
+  @override
+  String get discountPercent => 'نسبة';
+
+  @override
+  String get packageDiscountField => 'الخصم';
+
+  @override
+  String get packagePricesSection => 'السعر حسب الحجم';
+
+  @override
+  String discountOff(String discount) {
+    return 'خصم $discount';
+  }
+
+  @override
+  String packageSaves(String amount) {
+    return 'وفّرت $amount';
+  }
+
+  @override
   String get inspectionHint => 'أشّر على كل خدمة تمت بشكل صحيح';
 
   @override

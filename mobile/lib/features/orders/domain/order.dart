@@ -55,6 +55,8 @@ class OrderItem {
     required this.quantity,
     required this.unitPrice,
     required this.lineTotal,
+    this.isPackage = false,
+    this.components = const [],
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
@@ -65,6 +67,11 @@ class OrderItem {
     quantity: json['quantity'] as int,
     unitPrice: json['unit_price'] as int,
     lineTotal: json['line_total'] as int,
+    isPackage: json['is_package'] as bool? ?? false,
+    components: [
+      for (final component in (json['components'] as List?) ?? const [])
+        NamedRef.fromJson(component as Map<String, dynamic>),
+    ],
   );
 
   final String id;
@@ -74,6 +81,11 @@ class OrderItem {
   final int quantity;
   final int unitPrice;
   final int lineTotal;
+
+  final bool isPackage;
+
+  /// The services a package includes (unpriced order items of their own, inspected one by one).
+  final List<NamedRef> components;
 }
 
 /// One inspection at the quality check: whether each service on the order was done properly.
@@ -221,4 +233,10 @@ class Order {
 
   /// "Exterior wash + Air freshener".
   String get servicesSummary => items.map((item) => item.name).join(' + ');
+
+  /// What the quality check goes through: every service, a package's services one by one.
+  List<NamedRef> get inspectionPoints => [
+    for (final item in items)
+      if (item.isPackage) ...item.components else NamedRef(id: item.id, name: item.name),
+  ];
 }

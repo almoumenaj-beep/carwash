@@ -1226,6 +1226,72 @@ abstract class AppLocalizations {
   /// **'Registered cars'**
   String get matchingCars;
 
+  /// No description provided for @isPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Package'**
+  String get isPackage;
+
+  /// No description provided for @isPackageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Bundles existing services at a discount'**
+  String get isPackageHint;
+
+  /// No description provided for @packagesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Packages'**
+  String get packagesSection;
+
+  /// No description provided for @packageServicesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Services in the package'**
+  String get packageServicesSection;
+
+  /// No description provided for @packageNeedsTwoServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least two services'**
+  String get packageNeedsTwoServices;
+
+  /// No description provided for @packageDiscountSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Package discount'**
+  String get packageDiscountSection;
+
+  /// No description provided for @discountPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentage'**
+  String get discountPercent;
+
+  /// No description provided for @packageDiscountField.
+  ///
+  /// In en, this message translates to:
+  /// **'Discount'**
+  String get packageDiscountField;
+
+  /// No description provided for @packagePricesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per size'**
+  String get packagePricesSection;
+
+  /// No description provided for @discountOff.
+  ///
+  /// In en, this message translates to:
+  /// **'{discount} off'**
+  String discountOff(String discount);
+
+  /// No description provided for @packageSaves.
+  ///
+  /// In en, this message translates to:
+  /// **'Saves {amount}'**
+  String packageSaves(String amount);
+
   /// No description provided for @inspectionHint.
   ///
   /// In en, this message translates to:

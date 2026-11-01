@@ -72,6 +72,10 @@ class CatalogService {
     required this.isAddon,
     required this.isActive,
     required this.prices,
+    this.isPackage = false,
+    this.packageDiscountType,
+    this.packageDiscountValue = 0,
+    this.packageItemIds = const [],
   });
 
   factory CatalogService.fromJson(Map<String, dynamic> json) => CatalogService(
@@ -85,6 +89,12 @@ class CatalogService {
     prices: [
       for (final price in (json['prices'] as List?) ?? const []) ServicePrice.fromJson(price as Map<String, dynamic>),
     ],
+    isPackage: json['is_package'] as bool? ?? false,
+    packageDiscountType: json['package_discount_type'] as String?,
+    packageDiscountValue: json['package_discount_value'] as int? ?? 0,
+    packageItemIds: [
+      for (final item in (json['package_items'] as List?) ?? const []) (item as Map<String, dynamic>)['id'] as String,
+    ],
   );
 
   final String id;
@@ -95,6 +105,13 @@ class CatalogService {
   final bool isAddon;
   final bool isActive;
   final List<ServicePrice> prices;
+
+  /// A package bundles [packageItemIds] and costs their prices less its discount: [packageDiscountValue] in minor
+  /// units when [packageDiscountType] is `amount`, or in basis points (1500 = 15%) when it is `percent`.
+  final bool isPackage;
+  final String? packageDiscountType;
+  final int packageDiscountValue;
+  final List<String> packageItemIds;
 
   /// The general price for [sizeId] (or for every size when null), ignoring branch prices.
   int? generalPrice(String? sizeId) =>
@@ -110,6 +127,40 @@ class CatalogService {
       }
     }
     return null;
+  }
+
+  /// What a package's services cost separately for [sizeId] at [branchId], looked up in [catalog] (services by
+  /// id); null when one of them has no price.
+  int? separatePriceIn(Map<String, CatalogService> catalog, String? sizeId, String? branchId) {
+    var total = 0;
+    for (final id in packageItemIds) {
+      final price = catalog[id]?.priceFor(sizeId, branchId);
+      if (price == null) {
+        return null;
+      }
+      total += price;
+    }
+    return total;
+  }
+
+  /// The price charged for [sizeId] at [branchId], packages included: a package costs its services' prices
+  /// less its discount, like on the server.
+  int? priceIn(Map<String, CatalogService> catalog, String? sizeId, String? branchId) {
+    if (!isPackage) {
+      return priceFor(sizeId, branchId);
+    }
+
+    final full = separatePriceIn(catalog, sizeId, branchId);
+    if (full == null || packageItemIds.isEmpty) {
+      return null;
+    }
+
+    final discount = switch (packageDiscountType) {
+      'amount' => packageDiscountValue,
+      'percent' => (2 * full * packageDiscountValue + 10000) ~/ 20000,
+      _ => 0,
+    };
+    return full - (discount > full ? full : discount);
   }
 
   /// The lowest general price, for "from ..." on the menu.

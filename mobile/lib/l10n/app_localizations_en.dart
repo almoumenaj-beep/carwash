@@ -639,6 +639,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
+  String get isPackage => 'Package';
+
+  @override
+  String get isPackageHint => 'Bundles existing services at a discount';
+
+  @override
+  String get packagesSection => 'Packages';
+
+  @override
+  String get packageServicesSection => 'Services in the package';
+
+  @override
+  String get packageNeedsTwoServices => 'Choose at least two services';
+
+  @override
+  String get packageDiscountSection => 'Package discount';
+
+  @override
+  String get discountPercent => 'Percentage';
+
+  @override
+  String get packageDiscountField => 'Discount';
+
+  @override
+  String get packagePricesSection => 'Price per size';
+
+  @override
+  String discountOff(String discount) {
+    return '$discount off';
+  }
+
+  @override
+  String packageSaves(String amount) {
+    return 'Saves $amount';
+  }
+
+  @override
   String get inspectionHint => 'Tick each service that was done properly';
 
   @override

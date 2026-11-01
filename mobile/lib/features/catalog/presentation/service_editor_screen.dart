@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/money/money_format.dart';
+import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
@@ -96,6 +97,13 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
   late bool _isActive = widget.service?.isActive ?? true;
   late bool _samePriceForAllSizes;
 
+  /// A package is priced from [_packageItemIds] less its discount, so it has no price fields.
+  late bool _isPackage = widget.service?.isPackage ?? false;
+  late String _discountType = widget.service?.packageDiscountType ?? 'percent';
+  final _discount = TextEditingController();
+  late final List<String> _packageItemIds = [...?widget.service?.packageItemIds];
+  bool _packageTooSmall = false;
+
   /// Price fields keyed by size id ([_allSizes] for every size); [_branchPrices] per branch id.
   final Map<String, TextEditingController> _generalPrices = {};
   final Map<String, Map<String, TextEditingController>> _branchPrices = {};
@@ -123,6 +131,9 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
       field?.text = money.toInput(price.price);
     }
 
+    final discount = widget.service?.packageDiscountValue ?? 0;
+    _discount.text = _discountType == 'amount' ? money.toInput(discount) : PercentFormat.format(discount);
+
     final hasPerSizePrices = widget.service?.prices.any((price) => price.vehicleSizeId != null) ?? false;
     _samePriceForAllSizes = !hasPerSizePrices && (widget.service?.generalPrice(null) != null || _isAddon);
   }
@@ -132,6 +143,7 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
     _name.dispose();
     _description.dispose();
     _duration.dispose();
+    _discount.dispose();
     for (final field in [..._generalPrices.values, for (final prices in _branchPrices.values) ...prices.values]) {
       field.dispose();
     }
@@ -159,8 +171,18 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
           ).toJson(),
   ];
 
+  /// The package discount as the server stores it: minor units for an amount, basis points for a percentage.
+  int? _discountValue(MoneyFormat money) {
+    final text = _discount.text.trim();
+    if (text.isEmpty) {
+      return 0;
+    }
+    return _discountType == 'amount' ? money.parse(text) : PercentFormat.parse(text);
+  }
+
   Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) {
+    setState(() => _packageTooSmall = _isPackage && _packageItemIds.length < 2);
+    if (!_formKey.currentState!.validate() || _packageTooSmall) {
       return;
     }
 
@@ -169,14 +191,21 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
       _problem = null;
     });
 
+    final money = ref.read(moneyFormatProvider);
     final data = {
       'name': _name.text.trim(),
       'service_category_id': _categoryId,
       'description': _description.text.trim().isEmpty ? null : _description.text.trim(),
       'duration_minutes': int.tryParse(_duration.text.trim()) ?? 0,
-      'is_addon': _isAddon,
+      'is_addon': _isAddon && !_isPackage,
+      'is_package': _isPackage,
       'is_active': _isActive,
-      'prices': _collectPrices(ref.read(moneyFormatProvider)),
+      if (_isPackage) ...{
+        'package_discount_type': _discountType,
+        'package_discount_value': _discountValue(money),
+        'package_service_ids': _packageItemIds,
+      } else
+        'prices': _collectPrices(money),
     };
 
     final repository = ref.read(catalogRepositoryProvider);
@@ -237,6 +266,113 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
       }
     }
+  }
+
+  /// The discount, the services included, and what the package costs per size against its services separately.
+  List<Widget> _packageFields(BuildContext context, MoneyFormat money, String? Function(String?) validateAmount) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final services = ref.watch(servicesProvider).value ?? const <CatalogService>[];
+    final catalog = {for (final service in services) service.id: service};
+    final choices = services.where(
+      (service) =>
+          !service.isPackage &&
+          service.id != widget.service?.id &&
+          (service.isActive || _packageItemIds.contains(service.id)),
+    );
+    final draft = CatalogService(
+      id: widget.service?.id ?? '',
+      categoryId: null,
+      name: '',
+      description: null,
+      durationMinutes: 0,
+      isAddon: false,
+      isActive: true,
+      prices: const [],
+      isPackage: true,
+      packageDiscountType: _discountType,
+      packageDiscountValue: _discountValue(money) ?? 0,
+      packageItemIds: _packageItemIds,
+    );
+    final error = _packageTooSmall ? l10n.packageNeedsTwoServices : _problem?.fieldError('package_service_ids');
+
+    return [
+      Text(l10n.packageServicesSection, style: theme.textTheme.titleMedium),
+      const SizedBox(height: 8),
+      Wrap(
+        spacing: 8,
+        runSpacing: 4,
+        children: [
+          for (final service in choices)
+            FilterChip(
+              label: Text(service.name),
+              selected: _packageItemIds.contains(service.id),
+              onSelected: (on) =>
+                  setState(() => on ? _packageItemIds.add(service.id) : _packageItemIds.remove(service.id)),
+            ),
+        ],
+      ),
+      if (error != null)
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(error, style: TextStyle(color: theme.colorScheme.error)),
+        ),
+      const SizedBox(height: 16),
+      Text(l10n.packageDiscountSection, style: theme.textTheme.titleMedium),
+      const SizedBox(height: 8),
+      SegmentedButton<String>(
+        segments: [
+          ButtonSegment(value: 'percent', label: Text(l10n.discountPercent), icon: const Icon(Icons.percent)),
+          ButtonSegment(value: 'amount', label: Text(money.currency), icon: const Icon(Icons.payments_outlined)),
+        ],
+        selected: {_discountType},
+        onSelectionChanged: (selection) => setState(() {
+          _discountType = selection.single;
+          _discount.clear();
+        }),
+      ),
+      const SizedBox(height: 12),
+      TextFormField(
+        controller: _discount,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        decoration: InputDecoration(
+          labelText: l10n.packageDiscountField,
+          suffixText: _discountType == 'percent' ? '%' : money.currency,
+          errorText: _problem?.fieldError('package_discount_value'),
+        ),
+        validator: _discountType == 'percent'
+            ? (value) => value == null || value.trim().isEmpty || PercentFormat.parse(value) != null
+                  ? null
+                  : l10n.percentInvalid
+            : validateAmount,
+        onChanged: (_) => setState(() {}),
+      ),
+      if (_packageItemIds.length >= 2) ...[
+        const SizedBox(height: 16),
+        Text(l10n.packagePricesSection, style: theme.textTheme.titleSmall),
+        for (final size in widget.sizes.where((size) => size.isActive))
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.zero,
+            title: Text(size.name),
+            trailing: switch ((draft.separatePriceIn(catalog, size.id, null), draft.priceIn(catalog, size.id, null))) {
+              (final int separate, final int price) => Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: money.format(separate),
+                      style: const TextStyle(decoration: TextDecoration.lineThrough),
+                    ),
+                    const TextSpan(text: '  '),
+                    TextSpan(text: money.format(price), style: theme.textTheme.titleSmall),
+                  ],
+                ),
+              ),
+              _ => Text(l10n.unpriced),
+            },
+          ),
+      ],
+    ];
   }
 
   @override
@@ -321,10 +457,18 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(l10n.isAddon),
-              value: _isAddon,
-              onChanged: (value) => setState(() => _isAddon = value),
+              title: Text(l10n.isPackage),
+              subtitle: Text(l10n.isPackageHint),
+              value: _isPackage,
+              onChanged: (value) => setState(() => _isPackage = value),
             ),
+            if (!_isPackage)
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.isAddon),
+                value: _isAddon,
+                onChanged: (value) => setState(() => _isAddon = value),
+              ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(l10n.serviceActive),
@@ -332,42 +476,49 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
               onChanged: (value) => setState(() => _isActive = value),
             ),
             const Divider(height: 32),
-            Text(l10n.pricesSection, style: theme.textTheme.titleMedium),
-            Text(includesVat ? l10n.pricesIncludeVatHint : l10n.pricesExcludeVatHint, style: theme.textTheme.bodySmall),
-            if (pricesError != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(pricesError.value.first, style: TextStyle(color: theme.colorScheme.error)),
+            if (_isPackage)
+              ..._packageFields(context, money, validateAmount)
+            else ...[
+              Text(l10n.pricesSection, style: theme.textTheme.titleMedium),
+              Text(
+                includesVat ? l10n.pricesIncludeVatHint : l10n.pricesExcludeVatHint,
+                style: theme.textTheme.bodySmall,
               ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.samePriceAllSizes),
-              value: _samePriceForAllSizes,
-              onChanged: (value) => setState(() => _samePriceForAllSizes = value),
-            ),
-            for (final key in _priceKeys) ...[
-              priceField(_generalPrices[key]!, sizeLabel(key)),
-              const SizedBox(height: 12),
-            ],
-            if (widget.branches.length > 1 ||
-                _branchPrices.values.any((fields) => fields.values.any((f) => f.text.isNotEmpty)))
-              for (final branch in widget.branches)
-                ExpansionTile(
-                  tilePadding: EdgeInsets.zero,
-                  title: Text(l10n.branchPricesFor(branch.name)),
-                  subtitle: Text(l10n.branchPricesHint),
-                  initiallyExpanded: _branchPrices[branch.id]!.values.any((field) => field.text.isNotEmpty),
-                  children: [
-                    for (final key in _priceKeys) ...[
-                      priceField(
-                        _branchPrices[branch.id]![key]!,
-                        sizeLabel(key),
-                        hint: _generalPrices[key]!.text.isEmpty ? null : _generalPrices[key]!.text,
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                  ],
+              if (pricesError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(pricesError.value.first, style: TextStyle(color: theme.colorScheme.error)),
                 ),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.samePriceAllSizes),
+                value: _samePriceForAllSizes,
+                onChanged: (value) => setState(() => _samePriceForAllSizes = value),
+              ),
+              for (final key in _priceKeys) ...[
+                priceField(_generalPrices[key]!, sizeLabel(key)),
+                const SizedBox(height: 12),
+              ],
+              if (widget.branches.length > 1 ||
+                  _branchPrices.values.any((fields) => fields.values.any((f) => f.text.isNotEmpty)))
+                for (final branch in widget.branches)
+                  ExpansionTile(
+                    tilePadding: EdgeInsets.zero,
+                    title: Text(l10n.branchPricesFor(branch.name)),
+                    subtitle: Text(l10n.branchPricesHint),
+                    initiallyExpanded: _branchPrices[branch.id]!.values.any((field) => field.text.isNotEmpty),
+                    children: [
+                      for (final key in _priceKeys) ...[
+                        priceField(
+                          _branchPrices[branch.id]![key]!,
+                          sizeLabel(key),
+                          hint: _generalPrices[key]!.text.isEmpty ? null : _generalPrices[key]!.text,
+                        ),
+                        const SizedBox(height: 12),
+                      ],
+                    ],
+                  ),
+            ],
             if (generalError != null) ...[
               const SizedBox(height: 12),
               Text(generalError, style: TextStyle(color: theme.colorScheme.error)),

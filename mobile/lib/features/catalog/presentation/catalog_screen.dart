@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/money/money_format.dart';
+import '../../../core/money/percent_format.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/catalog_repository.dart';
@@ -70,10 +71,13 @@ class _Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final catalog = {for (final service in services) service.id: service};
     final l10n = AppLocalizations.of(context);
-    final mainServices = services.where((service) => !service.isAddon).toList();
+    final packages = services.where((service) => service.isPackage).toList();
+    final mainServices = services.where((service) => !service.isAddon && !service.isPackage).toList();
     final addons = services.where((service) => service.isAddon).toList();
     final sections = <(String, List<CatalogService>)>[
+      (l10n.packagesSection, packages),
       for (final category in categories)
         (category.name, mainServices.where((service) => service.categoryId == category.id).toList()),
       (l10n.noCategory, mainServices.where((service) => service.categoryId == null).toList()),
@@ -88,7 +92,7 @@ class _Menu extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
             child: Text(title, style: Theme.of(context).textTheme.titleMedium),
           ),
-          for (final service in items) _ServiceTile(service: service),
+          for (final service in items) _ServiceTile(service: service, catalog: catalog),
         ],
       ],
     );
@@ -96,29 +100,46 @@ class _Menu extends StatelessWidget {
 }
 
 class _ServiceTile extends ConsumerWidget {
-  const _ServiceTile({required this.service});
+  const _ServiceTile({required this.service, required this.catalog});
 
   final CatalogService service;
+
+  /// Every service by id, to price packages from their services.
+  final Map<String, CatalogService> catalog;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final money = ref.watch(moneyFormatProvider);
-    final lowest = service.lowestPrice;
+    final lowest = service.isPackage ? null : service.lowestPrice;
     final details = [
+      if (service.isPackage) service.packageItemIds.map((id) => catalog[id]?.name).whereType<String>().join(' + '),
       if (service.durationMinutes > 0) l10n.minutesShort(service.durationMinutes),
       if (!service.isActive) l10n.inactiveLabel,
     ];
 
     return ListTile(
-      leading: Icon(service.isAddon ? Icons.add_circle_outline : Icons.local_car_wash_outlined),
+      leading: Icon(
+        service.isPackage
+            ? Icons.redeem_outlined
+            : (service.isAddon ? Icons.add_circle_outline : Icons.local_car_wash_outlined),
+      ),
       title: Text(service.name),
       subtitle: details.isEmpty ? null : Text(details.join(' · ')),
       trailing: Text(
-        lowest == null ? l10n.unpriced : l10n.fromPrice(money.format(lowest)),
+        service.isPackage
+            ? packageDiscountLabel(l10n, money, service)
+            : (lowest == null ? l10n.unpriced : l10n.fromPrice(money.format(lowest))),
         style: Theme.of(context).textTheme.labelLarge,
       ),
       onTap: () => context.push('/catalog/services/${service.id}'),
     );
   }
 }
+
+/// "15% off" or "1.000 BHD off" for a package.
+String packageDiscountLabel(AppLocalizations l10n, MoneyFormat money, CatalogService package) => l10n.discountOff(
+  package.packageDiscountType == 'amount'
+      ? money.format(package.packageDiscountValue)
+      : '${PercentFormat.format(package.packageDiscountValue)}%',
+);

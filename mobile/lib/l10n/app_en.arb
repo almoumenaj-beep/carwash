@@ -301,6 +301,31 @@
     }
   },
   "matchingCars": "Registered cars",
+  "isPackage": "Package",
+  "isPackageHint": "Bundles existing services at a discount",
+  "packagesSection": "Packages",
+  "packageServicesSection": "Services in the package",
+  "packageNeedsTwoServices": "Choose at least two services",
+  "packageDiscountSection": "Package discount",
+  "discountPercent": "Percentage",
+  "packageDiscountField": "Discount",
+  "packagePricesSection": "Price per size",
+  "discountOff": "{discount} off",
+  "@discountOff": {
+    "placeholders": {
+      "discount": {
+        "type": "String"
+      }
+    }
+  },
+  "packageSaves": "Saves {amount}",
+  "@packageSaves": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "inspectionHint": "Tick each service that was done properly",
   "passInspection": "Passed – ready",
   "inspectionPassed": "Passed the check",

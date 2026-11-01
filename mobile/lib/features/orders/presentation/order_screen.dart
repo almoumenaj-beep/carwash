@@ -146,13 +146,25 @@ class _OrderViewState extends ConsumerState<_OrderView> {
             Card(
               child: Column(
                 children: [
-                  for (final item in order.items)
+                  for (final item in order.items) ...[
                     ListTile(
                       dense: true,
-                      leading: Icon(item.isAddon ? Icons.add_circle_outline : Icons.local_car_wash_outlined),
+                      leading: Icon(
+                        item.isPackage
+                            ? Icons.redeem_outlined
+                            : (item.isAddon ? Icons.add_circle_outline : Icons.local_car_wash_outlined),
+                      ),
                       title: Text(item.quantity > 1 ? '${item.name} × ${item.quantity}' : item.name),
                       trailing: Text(money.format(item.lineTotal)),
                     ),
+                    for (final component in item.components)
+                      ListTile(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        contentPadding: const EdgeInsetsDirectional.only(start: 56, end: 16),
+                        title: Text(component.name, style: theme.textTheme.bodySmall),
+                      ),
+                  ],
                   const Divider(height: 1),
                   ListTile(
                     title: Text(l10n.orderTotal, style: theme.textTheme.titleMedium),

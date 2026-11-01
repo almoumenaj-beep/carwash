@@ -115,7 +115,7 @@ class _InspectionSheet extends StatefulWidget {
 }
 
 class _InspectionSheetState extends State<_InspectionSheet> {
-  late final Map<String, bool> _done = {for (final item in widget.order.items) item.id: false};
+  late final Map<String, bool> _done = {for (final point in widget.order.inspectionPoints) point.id: false};
 
   bool get _allDone => _done.values.every((done) => done);
 
@@ -139,13 +139,13 @@ class _InspectionSheetState extends State<_InspectionSheet> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  for (final item in widget.order.items)
+                  for (final point in widget.order.inspectionPoints)
                     CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
                       controlAffinity: ListTileControlAffinity.leading,
-                      value: _done[item.id],
-                      title: Text(item.name),
-                      onChanged: (done) => setState(() => _done[item.id] = done ?? false),
+                      value: _done[point.id],
+                      title: Text(point.name),
+                      onChanged: (done) => setState(() => _done[point.id] = done ?? false),
                     ),
                 ],
               ),
