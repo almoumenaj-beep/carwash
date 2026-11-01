@@ -49,7 +49,7 @@ Map<String, dynamic> orderJson({
   'created_by': {'id': 'u2', 'name': 'Sara'},
   'created_at': '2026-11-01T09:00:00+00:00',
   'started_at': status == 'waiting' ? null : '2026-11-01T09:10:00+00:00',
-  'qc_at': null,
+  'qc_at': status == 'qc' ? '2026-11-01T09:25:00+00:00' : null,
   'ready_at': null,
   'delivered_at': null,
   'cancelled_at': null,
@@ -86,6 +86,10 @@ void main() {
     expect(ready.status.isForwardTo(OrderStatus.inProgress), isFalse);
 
     expect(Order.fromJson(orderJson(status: 'delivered', allowedNext: [])).nextStep, isNull);
+
+    final inspecting = Order.fromJson(orderJson(status: 'qc', allowedNext: ['ready', 'in_progress', 'cancelled']));
+    expect(inspecting.nextStep, OrderStatus.ready);
+    expect(inspecting.stageStartedAt, DateTime.utc(2026, 11, 1, 9, 25));
   });
 
   test('a walk-in has no customer', () {

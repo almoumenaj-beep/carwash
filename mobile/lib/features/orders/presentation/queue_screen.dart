@@ -15,7 +15,8 @@ import '../data/orders_repository.dart';
 import '../domain/order.dart';
 import 'order_widgets.dart';
 
-/// The live queue of a branch: cars waiting, being washed and ready, plus everything checked in today.
+/// The live queue of a branch: cars waiting, being washed, in quality check and ready, plus everything checked in
+/// today.
 /// Refreshes on its own every few seconds so several devices stay in step.
 class QueueScreen extends ConsumerStatefulWidget {
   const QueueScreen({super.key});
@@ -70,7 +71,8 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
     final active = ref.watch(branchOrdersProvider((branchId: branch.id, scope: QueueScope.active)));
     final orders = active.value ?? const <Order>[];
     final waiting = orders.where((order) => order.status == OrderStatus.waiting).toList();
-    final washing = orders.where((order) => order.status.isWashing).toList();
+    final washing = orders.where((order) => order.status == OrderStatus.inProgress).toList();
+    final inQualityCheck = orders.where((order) => order.status == OrderStatus.qualityCheck).toList();
     final ready = orders.where((order) => order.status == OrderStatus.ready).toList();
 
     Widget activeList(List<Order> shown) => _OrderList(
@@ -80,7 +82,7 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
     );
 
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         appBar: AppBar(
           title: Text(branches.length > 1 ? '${l10n.queueTitle} · ${branch.name}' : l10n.queueTitle),
@@ -101,6 +103,7 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
             tabs: [
               Tab(text: '${l10n.statusWaiting} (${waiting.length})'),
               Tab(text: '${l10n.queueTabWashing} (${washing.length})'),
+              Tab(text: '${l10n.statusQualityCheck} (${inQualityCheck.length})'),
               Tab(text: '${l10n.statusReady} (${ready.length})'),
               Tab(text: l10n.queueTabToday),
             ],
@@ -121,6 +124,7 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
           children: [
             activeList(waiting),
             activeList(washing),
+            activeList(inQualityCheck),
             activeList(ready),
             _TodayList(branchId: branch.id, onReload: _reload),
           ],

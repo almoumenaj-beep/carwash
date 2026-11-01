@@ -112,6 +112,7 @@ class Order {
     required this.createdBy,
     required this.createdAt,
     required this.startedAt,
+    this.qcAt,
     required this.readyAt,
     required this.history,
   });
@@ -137,6 +138,7 @@ class Order {
       createdBy: NamedRef.fromJson(json['created_by'] as Map<String, dynamic>),
       createdAt: time('created_at')!,
       startedAt: time('started_at'),
+      qcAt: time('qc_at'),
       readyAt: time('ready_at'),
       history: [
         for (final change in (json['history'] as List?) ?? const [])
@@ -168,6 +170,7 @@ class Order {
   final NamedRef createdBy;
   final DateTime createdAt;
   final DateTime? startedAt;
+  final DateTime? qcAt;
   final DateTime? readyAt;
 
   /// Only filled on the order's own page.
@@ -176,10 +179,12 @@ class Order {
   /// The next step forward, which the queue offers as its main button.
   OrderStatus? get nextStep => allowedNext.where(status.isForwardTo).firstOrNull;
 
-  /// When the current stage began: check-in while waiting, the start of washing, or when it became ready.
+  /// When the current stage began: check-in while waiting, the start of washing, the start of the quality check,
+  /// or when it became ready.
   DateTime get stageStartedAt => switch (status) {
     OrderStatus.waiting => createdAt,
-    OrderStatus.inProgress || OrderStatus.qualityCheck => startedAt ?? createdAt,
+    OrderStatus.inProgress => startedAt ?? createdAt,
+    OrderStatus.qualityCheck => qcAt ?? startedAt ?? createdAt,
     _ => readyAt ?? createdAt,
   };
 

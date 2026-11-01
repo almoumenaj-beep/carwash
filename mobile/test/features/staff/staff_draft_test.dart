@@ -2,18 +2,19 @@ import 'package:carwash_app/features/staff/domain/staff_member.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  StaffDraft draft({bool includeBranches = true, String? password, String? pin, bool allBranches = false}) => StaffDraft(
-    name: 'Washer',
-    email: null,
-    phone: '0555',
-    password: password,
-    pin: pin,
-    roleIds: {4},
-    allBranches: allBranches,
-    branchIds: {'b1'},
-    includeBranches: includeBranches,
-    isActive: true,
-  );
+  StaffDraft draft({bool includeBranches = true, String? password, String? pin, bool allBranches = false}) =>
+      StaffDraft(
+        name: 'Washer',
+        email: null,
+        phone: '0555',
+        password: password,
+        pin: pin,
+        roleIds: {4},
+        allBranches: allBranches,
+        branchIds: {'b1'},
+        includeBranches: includeBranches,
+        isActive: true,
+      );
 
   test('omits branch access when it did not change', () {
     final json = draft(includeBranches: false).toJson();
