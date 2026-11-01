@@ -43,6 +43,17 @@ void main() {
     expect(canOpen('/branches/new', meWith({'settings.manage'})), isTrue);
   });
 
+  test('the queue needs orders.view, and checking a car in needs orders.create', () {
+    final washer = meWith({'orders.view', 'orders.update_status'});
+    final cashier = meWith({'orders.view', 'orders.create'});
+
+    expect(canOpen('/queue', washer), isTrue);
+    expect(canOpen('/queue/o1', washer), isTrue);
+    expect(canOpen('/queue/new', washer), isFalse);
+    expect(canOpen('/queue/new', cashier), isTrue);
+    expect(canOpen('/queue', meWith({'customers.view'})), isFalse);
+  });
+
   test('a prefix only matches whole path segments', () {
     expect(canOpen('/staffroom', meWith({})), isTrue);
   });

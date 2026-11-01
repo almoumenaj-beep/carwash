@@ -551,4 +551,132 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dayFri => 'Friday';
+
+  @override
+  String get queueTitle => 'Queue';
+
+  @override
+  String get queueSubtitle => 'Check cars in and follow them through the wash';
+
+  @override
+  String get queueTabWashing => 'Washing';
+
+  @override
+  String get queueTabToday => 'Today';
+
+  @override
+  String get queueEmpty => 'No cars here.';
+
+  @override
+  String get noBranchAssigned => 'You are not assigned to a branch yet.';
+
+  @override
+  String get statusWaiting => 'Waiting';
+
+  @override
+  String get statusInProgress => 'Washing';
+
+  @override
+  String get statusQualityCheck => 'Quality check';
+
+  @override
+  String get statusReady => 'Ready';
+
+  @override
+  String get statusDelivered => 'Delivered';
+
+  @override
+  String get statusCancelled => 'Cancelled';
+
+  @override
+  String get actionStart => 'Start washing';
+
+  @override
+  String get actionQualityCheck => 'To quality check';
+
+  @override
+  String get actionReady => 'Mark ready';
+
+  @override
+  String get actionDeliver => 'Hand over';
+
+  @override
+  String get actionBackToWaiting => 'Back to waiting';
+
+  @override
+  String get actionBackToWashing => 'Wash again';
+
+  @override
+  String get cancelOrder => 'Cancel order';
+
+  @override
+  String get cancelReasonField => 'Reason for cancelling';
+
+  @override
+  String get keepOrder => 'Keep';
+
+  @override
+  String elapsedMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count min', zero: 'just now');
+    return '$_temp0';
+  }
+
+  @override
+  String get walkIn => 'Walk-in';
+
+  @override
+  String get checkInTitle => 'Check in a car';
+
+  @override
+  String get checkIn => 'Check in';
+
+  @override
+  String checkedIn(String reference) {
+    return '$reference checked in';
+  }
+
+  @override
+  String get matchingCars => 'Registered cars';
+
+  @override
+  String get servicesSection => 'Services';
+
+  @override
+  String get chooseSizeForPrices => 'Choose the car\'s size to see prices.';
+
+  @override
+  String get chooseMainService => 'Choose at least one main service.';
+
+  @override
+  String get bayField => 'Bay';
+
+  @override
+  String get noBayYet => 'Not yet';
+
+  @override
+  String get washersSection => 'Washers';
+
+  @override
+  String get orderTotal => 'Total';
+
+  @override
+  String aboutMinutes(int count) {
+    return 'about $count min';
+  }
+
+  @override
+  String checkedInBy(String name) {
+    return 'Checked in by $name';
+  }
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get assignmentTitle => 'Bay, washers and notes';
+
+  @override
+  String cancelledBecause(String reason) {
+    return 'Cancelled: $reason';
+  }
 }

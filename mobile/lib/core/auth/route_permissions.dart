@@ -10,10 +10,18 @@ abstract final class Permissions {
   static const customersCreate = 'customers.create';
   static const customersUpdate = 'customers.update';
   static const customersDelete = 'customers.delete';
+  static const ordersView = 'orders.view';
+  static const ordersCreate = 'orders.create';
+  static const ordersUpdate = 'orders.update';
+  static const ordersUpdateStatus = 'orders.update_status';
+  static const ordersCancel = 'orders.cancel';
 }
 
 /// Which permissions open each section; holding any one of them is enough.
+/// The first matching prefix wins, so a nested rule must come before its parent.
 const routePermissions = <String, List<String>>{
+  '/queue/new': [Permissions.ordersCreate],
+  '/queue': [Permissions.ordersView],
   '/roles': [Permissions.rolesManage, Permissions.usersManage],
   '/staff': [Permissions.usersManage],
   '/devices': [Permissions.usersManage],

@@ -100,6 +100,18 @@ class CatalogService {
   int? generalPrice(String? sizeId) =>
       prices.where((price) => price.branchId == null && price.vehicleSizeId == sizeId).firstOrNull?.price;
 
+  /// The price charged for [sizeId] at [branchId], resolved like the server: size and branch,
+  /// then size, then branch, then the price for every size. Null when the service has no price.
+  int? priceFor(String? sizeId, String? branchId) {
+    for (final (size, branch) in [(sizeId, branchId), (sizeId, null), (null, branchId), (null, null)]) {
+      final match = prices.where((price) => price.vehicleSizeId == size && price.branchId == branch).firstOrNull;
+      if (match != null) {
+        return match.price;
+      }
+    }
+    return null;
+  }
+
   /// The lowest general price, for "from ..." on the menu.
   int? get lowestPrice {
     final general = prices.where((price) => price.branchId == null).map((price) => price.price);

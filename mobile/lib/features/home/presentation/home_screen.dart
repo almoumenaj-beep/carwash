@@ -69,6 +69,7 @@ class _SectionsMenu extends ConsumerWidget {
     final me = ref.watch(sessionProvider).value;
     final l10n = AppLocalizations.of(context);
     final entries = [
+      (path: '/queue', icon: Icons.local_car_wash_outlined, title: l10n.queueTitle, subtitle: l10n.queueSubtitle),
       (
         path: '/customers',
         icon: Icons.people_alt_outlined,

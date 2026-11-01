@@ -1063,6 +1063,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Friday'**
   String get dayFri;
+
+  /// No description provided for @queueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Queue'**
+  String get queueTitle;
+
+  /// No description provided for @queueSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check cars in and follow them through the wash'**
+  String get queueSubtitle;
+
+  /// No description provided for @queueTabWashing.
+  ///
+  /// In en, this message translates to:
+  /// **'Washing'**
+  String get queueTabWashing;
+
+  /// No description provided for @queueTabToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get queueTabToday;
+
+  /// No description provided for @queueEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No cars here.'**
+  String get queueEmpty;
+
+  /// No description provided for @noBranchAssigned.
+  ///
+  /// In en, this message translates to:
+  /// **'You are not assigned to a branch yet.'**
+  String get noBranchAssigned;
+
+  /// No description provided for @statusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get statusWaiting;
+
+  /// No description provided for @statusInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Washing'**
+  String get statusInProgress;
+
+  /// No description provided for @statusQualityCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Quality check'**
+  String get statusQualityCheck;
+
+  /// No description provided for @statusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get statusReady;
+
+  /// No description provided for @statusDelivered.
+  ///
+  /// In en, this message translates to:
+  /// **'Delivered'**
+  String get statusDelivered;
+
+  /// No description provided for @statusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get statusCancelled;
+
+  /// No description provided for @actionStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start washing'**
+  String get actionStart;
+
+  /// No description provided for @actionQualityCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'To quality check'**
+  String get actionQualityCheck;
+
+  /// No description provided for @actionReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark ready'**
+  String get actionReady;
+
+  /// No description provided for @actionDeliver.
+  ///
+  /// In en, this message translates to:
+  /// **'Hand over'**
+  String get actionDeliver;
+
+  /// No description provided for @actionBackToWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to waiting'**
+  String get actionBackToWaiting;
+
+  /// No description provided for @actionBackToWashing.
+  ///
+  /// In en, this message translates to:
+  /// **'Wash again'**
+  String get actionBackToWashing;
+
+  /// No description provided for @cancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel order'**
+  String get cancelOrder;
+
+  /// No description provided for @cancelReasonField.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for cancelling'**
+  String get cancelReasonField;
+
+  /// No description provided for @keepOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get keepOrder;
+
+  /// No description provided for @elapsedMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{just now} other{{count} min}}'**
+  String elapsedMinutes(int count);
+
+  /// No description provided for @walkIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk-in'**
+  String get walkIn;
+
+  /// No description provided for @checkInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in a car'**
+  String get checkInTitle;
+
+  /// No description provided for @checkIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in'**
+  String get checkIn;
+
+  /// No description provided for @checkedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{reference} checked in'**
+  String checkedIn(String reference);
+
+  /// No description provided for @matchingCars.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered cars'**
+  String get matchingCars;
+
+  /// No description provided for @servicesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Services'**
+  String get servicesSection;
+
+  /// No description provided for @chooseSizeForPrices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the car\'s size to see prices.'**
+  String get chooseSizeForPrices;
+
+  /// No description provided for @chooseMainService.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one main service.'**
+  String get chooseMainService;
+
+  /// No description provided for @bayField.
+  ///
+  /// In en, this message translates to:
+  /// **'Bay'**
+  String get bayField;
+
+  /// No description provided for @noBayYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet'**
+  String get noBayYet;
+
+  /// No description provided for @washersSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Washers'**
+  String get washersSection;
+
+  /// No description provided for @orderTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get orderTotal;
+
+  /// No description provided for @aboutMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'about {count} min'**
+  String aboutMinutes(int count);
+
+  /// No description provided for @checkedInBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in by {name}'**
+  String checkedInBy(String name);
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get historyTitle;
+
+  /// No description provided for @assignmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bay, washers and notes'**
+  String get assignmentTitle;
+
+  /// No description provided for @cancelledBecause.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled: {reason}'**
+  String cancelledBecause(String reason);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

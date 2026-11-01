@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BayController;
 use App\Http\Controllers\Api\V1\BranchController;
+use App\Http\Controllers\Api\V1\BranchStaffController;
 use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
@@ -47,6 +48,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         Route::apiResource('branches', BranchController::class);
         Route::apiResource('branches.bays', BayController::class)->shallow()->only(['index', 'store', 'update']);
+        Route::get('branches/{branch}/staff', BranchStaffController::class)->name('branches.staff.index');
 
         Route::apiResource('vehicle-sizes', VehicleSizeController::class)->except('show');
         Route::apiResource('service-categories', ServiceCategoryController::class)->except('show');

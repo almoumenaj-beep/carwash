@@ -259,5 +259,79 @@
   "dayTue": "Tuesday",
   "dayWed": "Wednesday",
   "dayThu": "Thursday",
-  "dayFri": "Friday"
+  "dayFri": "Friday",
+  "queueTitle": "Queue",
+  "queueSubtitle": "Check cars in and follow them through the wash",
+  "queueTabWashing": "Washing",
+  "queueTabToday": "Today",
+  "queueEmpty": "No cars here.",
+  "noBranchAssigned": "You are not assigned to a branch yet.",
+  "statusWaiting": "Waiting",
+  "statusInProgress": "Washing",
+  "statusQualityCheck": "Quality check",
+  "statusReady": "Ready",
+  "statusDelivered": "Delivered",
+  "statusCancelled": "Cancelled",
+  "actionStart": "Start washing",
+  "actionQualityCheck": "To quality check",
+  "actionReady": "Mark ready",
+  "actionDeliver": "Hand over",
+  "actionBackToWaiting": "Back to waiting",
+  "actionBackToWashing": "Wash again",
+  "cancelOrder": "Cancel order",
+  "cancelReasonField": "Reason for cancelling",
+  "keepOrder": "Keep",
+  "elapsedMinutes": "{count, plural, =0{just now} other{{count} min}}",
+  "@elapsedMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walkIn": "Walk-in",
+  "checkInTitle": "Check in a car",
+  "checkIn": "Check in",
+  "checkedIn": "{reference} checked in",
+  "@checkedIn": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "matchingCars": "Registered cars",
+  "servicesSection": "Services",
+  "chooseSizeForPrices": "Choose the car's size to see prices.",
+  "chooseMainService": "Choose at least one main service.",
+  "bayField": "Bay",
+  "noBayYet": "Not yet",
+  "washersSection": "Washers",
+  "orderTotal": "Total",
+  "aboutMinutes": "about {count} min",
+  "@aboutMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "checkedInBy": "Checked in by {name}",
+  "@checkedInBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "historyTitle": "History",
+  "assignmentTitle": "Bay, washers and notes",
+  "cancelledBecause": "Cancelled: {reason}",
+  "@cancelledBecause": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
 }

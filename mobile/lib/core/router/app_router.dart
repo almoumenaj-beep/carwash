@@ -17,6 +17,9 @@ import '../../features/customers/presentation/customer_editor_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/orders/presentation/check_in_screen.dart';
+import '../../features/orders/presentation/order_screen.dart';
+import '../../features/orders/presentation/queue_screen.dart';
 import '../../features/roles/presentation/role_editor_screen.dart';
 import '../../features/roles/presentation/roles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -80,6 +83,20 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: ':staffId',
             builder: (_, state) => StaffEditorScreen(staffId: state.pathParameters['staffId']),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/queue',
+        builder: (_, _) => const QueueScreen(),
+        routes: [
+          GoRoute(
+            path: 'new',
+            builder: (_, state) => CheckInScreen(branchId: state.uri.queryParameters['branch']!),
+          ),
+          GoRoute(
+            path: ':orderId',
+            builder: (_, state) => OrderScreen(orderId: state.pathParameters['orderId']!),
           ),
         ],
       ),

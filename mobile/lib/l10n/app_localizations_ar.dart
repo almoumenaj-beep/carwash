@@ -562,4 +562,132 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dayFri => 'الجمعة';
+
+  @override
+  String get queueTitle => 'الطابور';
+
+  @override
+  String get queueSubtitle => 'استقبال السيارات ومتابعتها حتى التسليم';
+
+  @override
+  String get queueTabWashing => 'قيد الغسيل';
+
+  @override
+  String get queueTabToday => 'اليوم';
+
+  @override
+  String get queueEmpty => 'لا توجد سيارات هنا.';
+
+  @override
+  String get noBranchAssigned => 'لم يتم تعيينك على فرع بعد.';
+
+  @override
+  String get statusWaiting => 'في الانتظار';
+
+  @override
+  String get statusInProgress => 'قيد الغسيل';
+
+  @override
+  String get statusQualityCheck => 'فحص الجودة';
+
+  @override
+  String get statusReady => 'جاهزة';
+
+  @override
+  String get statusDelivered => 'تم التسليم';
+
+  @override
+  String get statusCancelled => 'ملغاة';
+
+  @override
+  String get actionStart => 'ابدأ الغسيل';
+
+  @override
+  String get actionQualityCheck => 'إلى فحص الجودة';
+
+  @override
+  String get actionReady => 'جاهزة للتسليم';
+
+  @override
+  String get actionDeliver => 'تسليم للعميل';
+
+  @override
+  String get actionBackToWaiting => 'إرجاع للانتظار';
+
+  @override
+  String get actionBackToWashing => 'إعادة الغسيل';
+
+  @override
+  String get cancelOrder => 'إلغاء الطلب';
+
+  @override
+  String get cancelReasonField => 'سبب الإلغاء';
+
+  @override
+  String get keepOrder => 'تراجع';
+
+  @override
+  String elapsedMinutes(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count د', zero: 'الآن');
+    return '$_temp0';
+  }
+
+  @override
+  String get walkIn => 'عميل غير مسجل';
+
+  @override
+  String get checkInTitle => 'استقبال سيارة';
+
+  @override
+  String get checkIn => 'استقبال';
+
+  @override
+  String checkedIn(String reference) {
+    return 'تم استقبال $reference';
+  }
+
+  @override
+  String get matchingCars => 'سيارات مسجلة';
+
+  @override
+  String get servicesSection => 'الخدمات';
+
+  @override
+  String get chooseSizeForPrices => 'اختر حجم السيارة لتظهر الأسعار.';
+
+  @override
+  String get chooseMainService => 'اختر خدمة أساسية واحدة على الأقل.';
+
+  @override
+  String get bayField => 'الرصيف';
+
+  @override
+  String get noBayYet => 'لاحقًا';
+
+  @override
+  String get washersSection => 'العمال';
+
+  @override
+  String get orderTotal => 'الإجمالي';
+
+  @override
+  String aboutMinutes(int count) {
+    return 'حوالي $count د';
+  }
+
+  @override
+  String checkedInBy(String name) {
+    return 'استقبلها $name';
+  }
+
+  @override
+  String get historyTitle => 'السجل';
+
+  @override
+  String get assignmentTitle => 'الرصيف والعمال والملاحظات';
+
+  @override
+  String cancelledBecause(String reason) {
+    return 'أُلغي: $reason';
+  }
 }
