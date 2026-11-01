@@ -43,9 +43,10 @@ class AccountScreen extends ConsumerWidget {
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final branches = me.allBranches
-        ? l10n.allBranches
-        : (me.branches.isEmpty ? l10n.noBranches : me.branches.map((branch) => branch.name).join(l10n.listSeparator));
+    final branchNames = me.branches.map((branch) => branch.name).join(l10n.listSeparator);
+    final branches = me.branches.isEmpty
+        ? l10n.noBranches
+        : (me.allBranches ? '${l10n.allBranches}: $branchNames' : branchNames);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.accountTitle)),
@@ -77,7 +78,7 @@ class AccountScreen extends ConsumerWidget {
             ListTile(
               leading: const Icon(Icons.store_outlined),
               title: Text(l10n.branchesSection),
-              subtitle: Text(branches, maxLines: 2, overflow: TextOverflow.ellipsis),
+              subtitle: Text(branches),
             ),
             ListTile(
               leading: const Icon(Icons.verified_user_outlined),
