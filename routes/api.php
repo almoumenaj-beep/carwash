@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BayController;
 use App\Http\Controllers\Api\V1\BranchController;
+use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
 use App\Http\Controllers\Api\V1\MeController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\StaffController;
 use App\Http\Controllers\Api\V1\UserRoleController;
+use App\Http\Controllers\Api\V1\VehicleController;
 use App\Http\Controllers\Api\V1\VehicleSizeController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +49,9 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('vehicle-sizes', VehicleSizeController::class)->except('show');
         Route::apiResource('service-categories', ServiceCategoryController::class)->except('show');
         Route::apiResource('services', ServiceController::class);
+
+        Route::apiResource('customers', CustomerController::class);
+        Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);
 
         Route::apiResource('devices', DeviceController::class)->only(['index', 'destroy']);
     });

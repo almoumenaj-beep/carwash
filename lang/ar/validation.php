@@ -223,6 +223,17 @@ return [
         'prices.*.price' => 'السعر',
         'prices.*.vehicle_size_id' => 'حجم السيارة',
         'prices.*.branch_id' => 'الفرع',
+        'notes' => 'الملاحظات',
+        'marketing_consent' => 'الموافقة على الرسائل التسويقية',
+        'customer_id' => 'العميل',
+        'plate_number' => 'رقم اللوحة',
+        'vehicle_size_id' => 'حجم السيارة',
+        'make' => 'الشركة المصنّعة',
+        'model' => 'الطراز',
+        'color' => 'اللون',
+        'vehicles' => 'السيارات',
+        'vehicles.*.plate_number' => 'رقم اللوحة',
+        'vehicles.*.vehicle_size_id' => 'حجم السيارة',
     ],
 
 ];
