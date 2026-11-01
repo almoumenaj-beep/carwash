@@ -58,6 +58,10 @@
     "Your discount limit is :limit%.": "حد الخصم المسموح لك :limit%.",
     "Give a reason for the discount.": "اكتب سبب الخصم.",
     "Tick every service on the order to pass the car.": "أشّر على كل خدمات الطلب لاعتماد السيارة.",
+    "Open your shift before taking payment.": "افتح ورديتك قبل التحصيل.",
+    "You already have an open shift at this branch.": "لديك وردية مفتوحة في هذا الفرع.",
+    "This shift is already closed.": "هذه الوردية مُقفلة.",
+    "The drawer does not match; explain the difference.": "النقد في الدرج لا يطابق المتوقع؛ اكتب سبب الفرق.",
     "A package cannot be an add-on.": "الباقة لا تكون إضافة.",
     "A package includes at least two services, and no other packages.": "الباقة تضم خدمتين على الأقل، ولا تضم باقات أخرى.",
     "This service is part of a package. Remove it from the package first.": "هذه الخدمة ضمن باقة. احذفها من الباقة أولاً."

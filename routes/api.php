@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BayController;
 use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\BranchStaffController;
+use App\Http\Controllers\Api\V1\CashShiftController;
 use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
@@ -58,6 +59,11 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('orders', OrderController::class)->only(['index', 'store', 'show', 'update']);
         Route::post('orders/{order}/status', [OrderStatusController::class, 'store'])->name('orders.status.store');
         Route::post('orders/{order}/checkout', [OrderCheckoutController::class, 'store'])->name('orders.checkout.store');
+
+        Route::get('shifts', [CashShiftController::class, 'index'])->name('shifts.index');
+        Route::get('shifts/current', [CashShiftController::class, 'current'])->name('shifts.current');
+        Route::post('shifts', [CashShiftController::class, 'store'])->name('shifts.store');
+        Route::post('shifts/{shift}/close', [CashShiftController::class, 'close'])->name('shifts.close');
 
         Route::apiResource('customers', CustomerController::class);
         Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);

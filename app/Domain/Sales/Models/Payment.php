@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Money received for an invoice; `amount` is what stays in the till.
  */
-#[Fillable(['branch_id', 'method', 'amount', 'tendered', 'change_given', 'received_by', 'received_at'])]
+#[Fillable(['branch_id', 'cash_shift_id', 'method', 'amount', 'tendered', 'change_given', 'received_by', 'received_at'])]
 class Payment extends Model
 {
     use BelongsToTenant, HasUuids;

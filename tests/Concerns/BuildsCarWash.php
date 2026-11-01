@@ -8,11 +8,13 @@ use App\Domain\Catalog\Models\VehicleSize;
 use App\Domain\Crm\Models\Customer;
 use App\Domain\Crm\Models\Vehicle;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Platform\Models\Bay;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
 use App\Domain\Platform\Tenancy\TenantContext;
+use App\Domain\Sales\Models\CashShift;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
@@ -129,13 +131,22 @@ trait BuildsCarWash
     }
 
     /**
-     * Takes cash for the order, as the cashier unless told otherwise.
+     * Takes cash for the order, as the cashier unless told otherwise, opening their shift at the
+     * order's branch first when they have none.
      *
      * @param  array<string, mixed>  $extra
      */
     protected function pay(string $orderId, ?User $as = null, array $extra = []): TestResponse
     {
-        Sanctum::actingAs($as ?? $this->cashier);
+        $as ??= $this->cashier;
+        $branchId = $this->inTenant(fn () => Order::query()->whereKey($orderId)->value('branch_id'));
+
+        if ($branchId !== null && ! $this->inTenant(fn () => CashShift::query()->whereNull('closed_at')->where('opened_by', $as->id)->where('branch_id', $branchId)->exists())) {
+            Sanctum::actingAs($as);
+            $this->postJson('/api/v1/shifts', ['branch_id' => $branchId, 'opening_float' => 0]);
+        }
+
+        Sanctum::actingAs($as);
 
         return $this->postJson("/api/v1/orders/{$orderId}/checkout", $extra);
     }

@@ -9,6 +9,7 @@ use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Platform\Audit\AuditTrail;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Sales\Enums\PaymentMethod;
+use App\Domain\Sales\Models\CashShift;
 use App\Domain\Sales\Models\Invoice;
 use App\Domain\Sales\Support\Vat;
 use App\Models\User;
@@ -18,7 +19,8 @@ use Illuminate\Validation\ValidationException;
 /**
  * Takes payment for an order at the till: applies a discount within the cashier's limit, works out
  * the VAT from the car wash's settings, issues the invoice with the branch's next number and records
- * the cash received. With `deliver`, a ready car is handed over in the same step.
+ * the cash received on the cashier's open shift at the branch. With `deliver`, a ready car is handed
+ * over in the same step.
  */
 class CheckoutOrder
 {
@@ -45,7 +47,9 @@ class CheckoutOrder
                 throw ValidationException::withMessages(['tendered' => __('The cash received is less than the total.')]);
             }
 
-            Branch::query()->whereKey($order->branch_id)->lockForUpdate()->first();
+            $branch = Branch::query()->whereKey($order->branch_id)->lockForUpdate()->firstOrFail();
+            $shift = CashShift::openFor($actor, $branch)
+                ?? throw ValidationException::withMessages(['shift' => __('Open your shift before taking payment.')]);
 
             $invoice = new Invoice;
             $invoice->forceFill([
@@ -74,6 +78,7 @@ class CheckoutOrder
 
             $invoice->payments()->create([
                 'branch_id' => $order->branch_id,
+                'cash_shift_id' => $shift->id,
                 'method' => PaymentMethod::tryFrom($data['method'] ?? '') ?? PaymentMethod::Cash,
                 'amount' => $vat['total'],
                 'tendered' => $tendered,
