@@ -21,8 +21,9 @@ class OrderStatusController extends Controller
             $order,
             OrderStatus::from($request->validated('status')),
             $request->validated('reason'),
+            $request->validated('checklist'),
         );
 
-        return OrderResource::make($order->refresh()->load([...OrderController::RELATIONS, 'statusHistory.user']));
+        return OrderResource::make($order->refresh()->load([...OrderController::RELATIONS, 'statusHistory.user', 'qualityChecks.checker']));
     }
 }

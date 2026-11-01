@@ -4,7 +4,7 @@ namespace App\Domain\Orders\Enums;
 
 /**
  * Where a car is in the wash. Moves forward through the queue, can step back for rework,
- * and ends delivered or cancelled.
+ * and ends delivered or cancelled. Every car passes the quality check on its way to ready.
  */
 enum OrderStatus: string
 {
@@ -22,7 +22,7 @@ enum OrderStatus: string
     {
         return match ($this) {
             self::Waiting => [self::InProgress, self::Cancelled],
-            self::InProgress => [self::QualityCheck, self::Ready, self::Waiting, self::Cancelled],
+            self::InProgress => [self::QualityCheck, self::Waiting, self::Cancelled],
             self::QualityCheck => [self::Ready, self::InProgress, self::Cancelled],
             self::Ready => [self::Delivered, self::InProgress],
             self::Delivered, self::Cancelled => [],

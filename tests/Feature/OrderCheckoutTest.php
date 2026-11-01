@@ -109,8 +109,7 @@ class OrderCheckoutTest extends TestCase
     public function test_a_car_is_handed_over_only_once_paid(): void
     {
         $orderId = $this->checkIn()->json('data.id');
-        $this->moveTo($orderId, 'in_progress', $this->washer);
-        $this->moveTo($orderId, 'ready', $this->washer)->assertJsonPath('data.allowed_next', ['in_progress']);
+        $this->washAndPass($orderId, $this->washer)->assertJsonPath('data.allowed_next', ['in_progress']);
 
         $this->moveTo($orderId, 'delivered', $this->cashier)
             ->assertUnprocessable()

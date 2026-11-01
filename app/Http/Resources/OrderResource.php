@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderItem;
+use App\Domain\Orders\Models\OrderQualityCheck;
 use App\Domain\Orders\Models\OrderStatusChange;
 use App\Domain\Sales\Models\Payment;
 use App\Models\User;
@@ -83,6 +84,12 @@ class OrderResource extends JsonResource
             'ready_at' => $this->ready_at?->toIso8601String(),
             'delivered_at' => $this->delivered_at?->toIso8601String(),
             'cancelled_at' => $this->cancelled_at?->toIso8601String(),
+            'quality_checks' => $this->whenLoaded('qualityChecks', fn () => $this->qualityChecks->map(fn (OrderQualityCheck $check) => [
+                'passed' => $check->passed,
+                'by' => $check->checker?->name,
+                'at' => $check->created_at?->toIso8601String(),
+                'results' => $check->results,
+            ])->values()),
             'history' => $this->whenLoaded('statusHistory', fn () => $this->statusHistory->map(fn (OrderStatusChange $change) => [
                 'from' => $change->from_status?->value,
                 'to' => $change->to_status->value,

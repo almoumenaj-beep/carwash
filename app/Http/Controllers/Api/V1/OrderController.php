@@ -77,13 +77,13 @@ class OrderController extends Controller
     {
         Gate::authorize('view', $order);
 
-        return OrderResource::make($order->load([...self::RELATIONS, 'statusHistory.user']));
+        return OrderResource::make($order->load([...self::RELATIONS, 'statusHistory.user', 'qualityChecks.checker']));
     }
 
     public function update(UpdateOrderRequest $request, Order $order, UpdateOrder $updateOrder): OrderResource
     {
         $updateOrder->handle($request->user(), $order, $request->validated());
 
-        return OrderResource::make($order->refresh()->load([...self::RELATIONS, 'statusHistory.user']));
+        return OrderResource::make($order->refresh()->load([...self::RELATIONS, 'statusHistory.user', 'qualityChecks.checker']));
     }
 }

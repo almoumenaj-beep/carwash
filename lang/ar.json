@@ -56,5 +56,6 @@
     "The discount cannot be more than the total.": "لا يمكن أن يتجاوز الخصم الإجمالي.",
     "You are not allowed to give discounts.": "غير مسموح لك بإعطاء خصم.",
     "Your discount limit is :limit%.": "حد الخصم المسموح لك :limit%.",
-    "Give a reason for the discount.": "اكتب سبب الخصم."
+    "Give a reason for the discount.": "اكتب سبب الخصم.",
+    "Tick every service on the order to pass the car.": "أشّر على كل خدمات الطلب لاعتماد السيارة."
 }

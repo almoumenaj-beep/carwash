@@ -31,7 +31,7 @@ class OrderWorkflowTest extends TestCase
 
         $this->moveTo($orderId, 'in_progress', $this->washer)->assertOk()->assertJsonPath('data.status', 'in_progress');
         $this->moveTo($orderId, 'qc', $this->washer)->assertOk();
-        $response = $this->moveTo($orderId, 'ready', $this->washer)->assertOk();
+        $response = $this->passInspection($orderId, $this->washer)->assertOk();
 
         $response->assertJsonPath('data.allowed_next', ['in_progress'])
             ->assertJsonCount(4, 'data.history')
@@ -54,9 +54,8 @@ class OrderWorkflowTest extends TestCase
     {
         $orderId = $this->checkIn()->json('data.id');
         $this->pay($orderId)->assertCreated();
-        foreach (['in_progress', 'ready', 'delivered'] as $status) {
-            $this->moveTo($orderId, $status, $this->cashier)->assertOk();
-        }
+        $this->washAndPass($orderId, $this->cashier);
+        $this->moveTo($orderId, 'delivered', $this->cashier)->assertOk();
 
         $this->getJson("/api/v1/orders/{$orderId}")->assertJsonPath('data.allowed_next', []);
         $this->assertNotNull($this->customer->fresh()->last_visit_at);
@@ -86,7 +85,8 @@ class OrderWorkflowTest extends TestCase
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['bay_id' => 'This bay is busy with another car.']);
 
-        $this->moveTo($firstId, 'ready', $this->washer)->assertOk();
+        $this->moveTo($firstId, 'qc', $this->washer)->assertOk();
+        $this->passInspection($firstId, $this->washer)->assertOk();
         $this->moveTo($secondId, 'in_progress', $this->washer)->assertOk();
     }
 
@@ -99,8 +99,7 @@ class OrderWorkflowTest extends TestCase
             ->assertJsonPath('data.subtotal', 2500)
             ->assertJsonCount(2, 'data.items');
 
-        $this->moveTo($orderId, 'in_progress', $this->cashier);
-        $this->moveTo($orderId, 'ready', $this->cashier);
+        $this->washAndPass($orderId, $this->cashier);
 
         Sanctum::actingAs($this->cashier);
         $this->patchJson("/api/v1/orders/{$orderId}", ['items' => [['service_id' => $this->wash->id]]])

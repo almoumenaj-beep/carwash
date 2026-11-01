@@ -30,6 +30,9 @@ class ChangeOrderStatusRequest extends FormRequest
         return [
             'status' => ['required', Rule::enum(OrderStatus::class)],
             'reason' => ['required_if:status,'.OrderStatus::Cancelled->value, 'nullable', 'string', 'max:255'],
+            'checklist' => ['sometimes', 'array'],
+            'checklist.*.item_id' => ['required', 'uuid', 'distinct'],
+            'checklist.*.passed' => ['required', 'boolean'],
         ];
     }
 }

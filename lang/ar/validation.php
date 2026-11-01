@@ -253,6 +253,9 @@ return [
         'method' => 'طريقة الدفع',
         'deliver' => 'التسليم',
         'max_discount_bps' => 'أقصى خصم',
+        'checklist' => 'قائمة الفحص',
+        'checklist.*.item_id' => 'بند الفحص',
+        'checklist.*.passed' => 'نتيجة البند',
     ],
 
 ];

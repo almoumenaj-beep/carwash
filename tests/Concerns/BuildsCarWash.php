@@ -8,6 +8,7 @@ use App\Domain\Catalog\Models\VehicleSize;
 use App\Domain\Crm\Models\Customer;
 use App\Domain\Crm\Models\Vehicle;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Platform\Models\Bay;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
@@ -102,6 +103,29 @@ trait BuildsCarWash
             'items' => [['service_id' => $this->wash->id]],
             ...$overrides,
         ]);
+    }
+
+    /**
+     * Passes the car at the quality check (every service ticked), moving it to ready.
+     */
+    protected function passInspection(string $orderId, User $as): TestResponse
+    {
+        $itemIds = $this->inTenant(fn () => OrderItem::query()->where('order_id', $orderId)->pluck('id')->all());
+
+        return $this->moveTo($orderId, 'ready', $as, [
+            'checklist' => array_map(fn (string $id) => ['item_id' => $id, 'passed' => true], $itemIds),
+        ]);
+    }
+
+    /**
+     * Washes a waiting car and passes it at the quality check, so it is ready.
+     */
+    protected function washAndPass(string $orderId, User $as): TestResponse
+    {
+        $this->moveTo($orderId, 'in_progress', $as)->assertOk();
+        $this->moveTo($orderId, 'qc', $as)->assertOk();
+
+        return $this->passInspection($orderId, $as)->assertOk();
     }
 
     /**

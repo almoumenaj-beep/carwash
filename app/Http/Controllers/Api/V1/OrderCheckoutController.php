@@ -20,7 +20,7 @@ class OrderCheckoutController extends Controller
     {
         $order = $checkoutOrder->handle($request->user(), $order, $request->validated());
 
-        return OrderResource::make($order->refresh()->load([...OrderController::RELATIONS, 'statusHistory.user']))
+        return OrderResource::make($order->refresh()->load([...OrderController::RELATIONS, 'statusHistory.user', 'qualityChecks.checker']))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }

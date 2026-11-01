@@ -32,9 +32,8 @@ class OrderQueueTest extends TestCase
         $second = $this->checkIn(['vehicle_id' => $this->newCar()->id])->json('data.id');
         $delivered = $this->checkIn(['vehicle_id' => $this->newCar()->id])->json('data.id');
         $this->pay($delivered);
-        foreach (['in_progress', 'ready', 'delivered'] as $status) {
-            $this->moveTo($delivered, $status, $this->cashier);
-        }
+        $this->washAndPass($delivered, $this->cashier);
+        $this->moveTo($delivered, 'delivered', $this->cashier)->assertOk();
 
         Sanctum::actingAs($this->washer);
         $this->getJson("/api/v1/orders?branch_id={$this->branch->id}")

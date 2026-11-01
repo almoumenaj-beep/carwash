@@ -171,6 +171,14 @@ class Order extends Model
     }
 
     /**
+     * @return HasMany<OrderQualityCheck, $this>
+     */
+    public function qualityChecks(): HasMany
+    {
+        return $this->hasMany(OrderQualityCheck::class)->orderBy('created_at')->orderBy('id');
+    }
+
+    /**
      * @return HasOne<Invoice, $this>
      */
     public function invoice(): HasOne
