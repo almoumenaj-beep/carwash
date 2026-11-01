@@ -152,6 +152,36 @@ class StaffApiTest extends TestCase
             ->assertJsonPath('data.branches.0.id', $this->branchB->id);
     }
 
+    public function test_a_manager_sets_a_staff_members_pin_so_they_can_switch_in_on_the_till(): void
+    {
+        $washer = $this->createStaff($this->tenant, DefaultRole::Washer, [$this->branchA]);
+        Sanctum::actingAs($this->owner);
+
+        $this->patchJson("/api/v1/users/{$washer->id}", ['pin' => '12'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('pin');
+        $this->patchJson("/api/v1/users/{$washer->id}", ['pin' => '4321'])
+            ->assertOk()
+            ->assertJsonPath('data.has_pin', true);
+
+        $this->assertTrue(Hash::check('4321', $washer->fresh()->pin_hash));
+        $this->assertDatabaseHas('activity_log', ['event' => 'user.updated', 'subject_id' => $washer->id]);
+    }
+
+    public function test_a_staff_member_can_be_added_with_a_pin(): void
+    {
+        Sanctum::actingAs($this->owner);
+
+        $this->postJson('/api/v1/users', [
+            'name' => 'Mahmood',
+            'phone' => '+97333112233',
+            'password' => 'secret-password-1',
+            'pin' => '2468',
+            'roles' => [$this->defaultRoleOf($this->tenant, DefaultRole::Washer)->id],
+            'branch_ids' => [$this->branchA->id],
+        ])->assertCreated()->assertJsonPath('data.has_pin', true);
+    }
+
     public function test_deactivating_a_staff_member_ends_their_sessions(): void
     {
         $cashier = $this->createStaff($this->tenant, DefaultRole::Cashier, [$this->branchA]);

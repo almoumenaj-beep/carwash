@@ -650,6 +650,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
+  String get staffPinField => 'الرمز السري PIN (4–6 أرقام)';
+
+  @override
+  String get staffPinHint => 'ليظهر في «تبديل المستخدم» على الأجهزة المشتركة';
+
+  @override
+  String get staffPinKeepHint => 'لديه رمز؛ اتركه فارغاً للإبقاء عليه';
+
+  @override
+  String get maxDiscountField => 'أقصى خصم';
+
+  @override
+  String maxDiscountHint(String limit) {
+    return 'حتى $limit% (حدّك أنت)';
+  }
+
+  @override
+  String get percentInvalid => 'اكتب نسبة من 0 إلى 100';
+
+  @override
   String get registerWalkInHint => 'اختياري: يُحفظ العميل وسيارته تلقائياً';
 
   @override

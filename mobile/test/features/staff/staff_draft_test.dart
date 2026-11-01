@@ -2,11 +2,12 @@ import 'package:carwash_app/features/staff/domain/staff_member.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  StaffDraft draft({bool includeBranches = true, String? password, bool allBranches = false}) => StaffDraft(
+  StaffDraft draft({bool includeBranches = true, String? password, String? pin, bool allBranches = false}) => StaffDraft(
     name: 'Washer',
     email: null,
     phone: '0555',
     password: password,
+    pin: pin,
     roleIds: {4},
     allBranches: allBranches,
     branchIds: {'b1'},
@@ -28,5 +29,10 @@ void main() {
   test('keeps the current password unless a new one is typed', () {
     expect(draft(password: '').toJson().containsKey('password'), isFalse);
     expect(draft(password: 'new-secret').toJson()['password'], 'new-secret');
+  });
+
+  test('keeps the current PIN unless a new one is typed', () {
+    expect(draft(pin: '').toJson().containsKey('pin'), isFalse);
+    expect(draft(pin: '2468').toJson()['pin'], '2468');
   });
 }

@@ -1226,6 +1226,42 @@ abstract class AppLocalizations {
   /// **'Registered cars'**
   String get matchingCars;
 
+  /// No description provided for @staffPinField.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN (4–6 digits)'**
+  String get staffPinField;
+
+  /// No description provided for @staffPinHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Lets them switch in on a shared device from “Switch user”'**
+  String get staffPinHint;
+
+  /// No description provided for @staffPinKeepHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Has a PIN; leave empty to keep it'**
+  String get staffPinKeepHint;
+
+  /// No description provided for @maxDiscountField.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest discount'**
+  String get maxDiscountField;
+
+  /// No description provided for @maxDiscountHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {limit}% (your own limit)'**
+  String maxDiscountHint(String limit);
+
+  /// No description provided for @percentInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a percentage from 0 to 100'**
+  String get percentInvalid;
+
   /// No description provided for @registerWalkInHint.
   ///
   /// In en, this message translates to:

@@ -301,6 +301,19 @@
     }
   },
   "matchingCars": "Registered cars",
+  "staffPinField": "PIN (4–6 digits)",
+  "staffPinHint": "Lets them switch in on a shared device from “Switch user”",
+  "staffPinKeepHint": "Has a PIN; leave empty to keep it",
+  "maxDiscountField": "Largest discount",
+  "maxDiscountHint": "Up to {limit}% (your own limit)",
+  "@maxDiscountHint": {
+    "placeholders": {
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "percentInvalid": "Enter a percentage from 0 to 100",
   "registerWalkInHint": "Optional: the customer and car are saved with it",
   "servicesSection": "Services",
   "chooseSizeForPrices": "Choose the car's size to see prices.",

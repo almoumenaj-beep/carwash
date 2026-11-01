@@ -7,6 +7,7 @@ use App\Domain\Platform\Audit\AuditTrail;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -21,7 +22,7 @@ class CreateStaffMember
     ) {}
 
     /**
-     * @param  array{name: string, email?: ?string, phone?: ?string, password: string, roles: list<int>, all_branches?: bool, branch_ids?: list<string>}  $data
+     * @param  array{name: string, email?: ?string, phone?: ?string, password: string, pin?: ?string, roles: list<int>, all_branches?: bool, branch_ids?: list<string>}  $data
      *
      * @throws AuthorizationException
      * @throws ValidationException
@@ -40,7 +41,11 @@ class CreateStaffMember
                 'phone' => $data['phone'] ?? null,
                 'password' => $data['password'],
             ]);
-            $staff->forceFill(['tenant_id' => $actor->tenant_id, 'all_branches' => $allBranches])->save();
+            $staff->forceFill([
+                'tenant_id' => $actor->tenant_id,
+                'all_branches' => $allBranches,
+                'pin_hash' => empty($data['pin']) ? null : Hash::make($data['pin']),
+            ])->save();
             $staff->branches()->sync($branchIds);
 
             $this->syncUserRoles->handle($actor, $staff, $data['roles']);
@@ -49,6 +54,7 @@ class CreateStaffMember
                 'name' => $staff->name,
                 'all_branches' => $allBranches,
                 'branch_ids' => $branchIds,
+                'has_pin' => $staff->hasPin(),
             ]);
 
             return $staff;

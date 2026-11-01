@@ -7,10 +7,11 @@ use App\Domain\Platform\Audit\AuditTrail;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Edits a staff account: profile, password, branch access and activation.
+ * Edits a staff account: profile, password, PIN, branch access and activation.
  * Deactivating ends all of the staff member's sessions at once.
  */
 class UpdateStaffMember
@@ -18,7 +19,7 @@ class UpdateStaffMember
     public function __construct(private BranchAccessGuard $branchAccessGuard, private AuditTrail $auditTrail) {}
 
     /**
-     * @param  array{name?: string, email?: ?string, phone?: ?string, password?: ?string, is_active?: bool, all_branches?: bool, branch_ids?: list<string>}  $data
+     * @param  array{name?: string, email?: ?string, phone?: ?string, password?: ?string, pin?: ?string, is_active?: bool, all_branches?: bool, branch_ids?: list<string>}  $data
      *
      * @throws AuthorizationException
      * @throws ValidationException
@@ -46,6 +47,10 @@ class UpdateStaffMember
                 $staff->password = $data['password'];
             }
 
+            if (! empty($data['pin'])) {
+                $staff->forceFill(['pin_hash' => Hash::make($data['pin'])]);
+            }
+
             if (array_key_exists('is_active', $data)) {
                 $staff->forceFill(['is_active' => $data['is_active']]);
             }
@@ -63,8 +68,9 @@ class UpdateStaffMember
             }
 
             $this->auditTrail->record('user.updated', $staff, $actor, 'Staff member updated', [
-                'changed' => array_values(array_diff($changed, ['password', 'updated_at'])),
+                'changed' => array_values(array_diff($changed, ['password', 'pin_hash', 'updated_at'])),
                 'password_changed' => in_array('password', $changed, true),
+                'pin_changed' => in_array('pin_hash', $changed, true),
                 'branches_changed' => $changesBranches,
             ]);
 

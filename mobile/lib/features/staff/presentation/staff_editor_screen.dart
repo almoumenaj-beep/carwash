@@ -70,6 +70,7 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
   late final _email = TextEditingController(text: widget.staff?.email);
   late final _phone = TextEditingController(text: widget.staff?.phone);
   final _password = TextEditingController();
+  final _pin = TextEditingController();
   late final Set<int> _roleIds = {for (final role in widget.staff?.roles ?? const <RoleSummary>[]) role.id};
   late final Set<String> _branchIds = {
     for (final branch in widget.staff?.branches ?? const <BranchSummary>[]) branch.id,
@@ -98,6 +99,7 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
     _email.dispose();
     _phone.dispose();
     _password.dispose();
+    _pin.dispose();
     super.dispose();
   }
 
@@ -121,6 +123,7 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
       email: _optional(_email),
       phone: _optional(_phone),
       password: _password.text,
+      pin: _pin.text.trim(),
       roleIds: _roleIds,
       allBranches: _allBranches,
       branchIds: _branchIds,
@@ -164,7 +167,7 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final fieldErrors = {'name', 'email', 'phone', 'password', 'is_active'};
+    final fieldErrors = {'name', 'email', 'phone', 'password', 'pin', 'is_active'};
     final hasFieldError = _problem != null && _problem!.errors.keys.any(fieldErrors.contains);
     final generalError = _problem != null && !hasFieldError ? problemMessage(context, _problem!) : null;
     final activeError = _problem?.fieldError('is_active');
@@ -213,6 +216,20 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
                 errorText: _problem?.fieldError('password'),
               ),
               validator: (value) => _isNew && (value == null || value.isEmpty) ? l10n.fieldRequired : null,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _pin,
+              obscureText: true,
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              decoration: InputDecoration(
+                labelText: l10n.staffPinField,
+                helperText: !_isNew && widget.staff!.hasPin ? l10n.staffPinKeepHint : l10n.staffPinHint,
+                errorText: _problem?.fieldError('pin'),
+              ),
+              validator: (value) =>
+                  value == null || value.isEmpty || RegExp(r'^\d{4,6}$').hasMatch(value) ? null : l10n.pinMustBeDigits,
             ),
             const SizedBox(height: 24),
             Text(l10n.rolesSection, style: theme.textTheme.titleMedium),

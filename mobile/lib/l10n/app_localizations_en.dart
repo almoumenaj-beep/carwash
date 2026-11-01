@@ -639,6 +639,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
+  String get staffPinField => 'PIN (4–6 digits)';
+
+  @override
+  String get staffPinHint => 'Lets them switch in on a shared device from “Switch user”';
+
+  @override
+  String get staffPinKeepHint => 'Has a PIN; leave empty to keep it';
+
+  @override
+  String get maxDiscountField => 'Largest discount';
+
+  @override
+  String maxDiscountHint(String limit) {
+    return 'Up to $limit% (your own limit)';
+  }
+
+  @override
+  String get percentInvalid => 'Enter a percentage from 0 to 100';
+
+  @override
   String get registerWalkInHint => 'Optional: the customer and car are saved with it';
 
   @override

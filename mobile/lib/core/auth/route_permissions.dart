@@ -15,6 +15,8 @@ abstract final class Permissions {
   static const ordersUpdate = 'orders.update';
   static const ordersUpdateStatus = 'orders.update_status';
   static const ordersCancel = 'orders.cancel';
+  static const posCheckout = 'pos.checkout';
+  static const posDiscount = 'pos.discount';
 }
 
 /// Which permissions open each section; holding any one of them is enough.

@@ -32,6 +32,7 @@ class StoreStaffRequest extends FormRequest
             'email' => ['nullable', 'required_without:phone', 'email', 'max:255', Rule::unique('users')],
             'phone' => ['nullable', 'required_without:email', 'string', 'max:32', Rule::unique('users')],
             'password' => ['required', 'string', Password::defaults()],
+            'pin' => ['nullable', 'digits_between:4,6'],
             'roles' => ['present', 'array'],
             'roles.*' => ['integer', 'distinct', Rule::exists('roles', 'id')->where('tenant_id', $tenantId)],
             'all_branches' => ['sometimes', 'boolean'],

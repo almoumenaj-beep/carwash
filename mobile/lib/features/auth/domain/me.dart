@@ -10,6 +10,7 @@ class Me {
     required this.roles,
     required this.permissions,
     required this.branches,
+    this.maxDiscountBps = 0,
   });
 
   factory Me.fromJson(Map<String, dynamic> json) {
@@ -25,6 +26,7 @@ class Me {
       roles: [for (final role in json['roles'] as List) RoleSummary.fromJson(role as Map<String, dynamic>)],
       permissions: {for (final permission in json['permissions'] as List) permission as String},
       branches: [for (final branch in json['branches'] as List) BranchSummary.fromJson(branch as Map<String, dynamic>)],
+      maxDiscountBps: json['max_discount_bps'] as int? ?? 0,
     );
   }
 
@@ -37,6 +39,9 @@ class Me {
   final List<RoleSummary> roles;
   final Set<String> permissions;
   final List<BranchSummary> branches;
+
+  /// The largest discount the user may give at the till, in basis points (1000 = 10%).
+  final int maxDiscountBps;
 
   /// Whether the server granted [permission]. For showing or hiding UI only — the server enforces it.
   bool can(String permission) => permissions.contains(permission);

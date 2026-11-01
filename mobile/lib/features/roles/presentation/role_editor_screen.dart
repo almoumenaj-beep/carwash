@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
+import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
@@ -64,8 +65,10 @@ class _RoleForm extends ConsumerStatefulWidget {
 class _RoleFormState extends ConsumerState<_RoleForm> {
   late final _name = TextEditingController(text: widget.role?.name ?? '');
   late final Set<String> _selected = {...?widget.role?.permissions};
+  late final _maxDiscount = TextEditingController(text: PercentFormat.format(widget.role?.maxDiscountBps ?? 0));
   bool _saving = false;
   bool _nameMissing = false;
+  bool _maxDiscountInvalid = false;
   ApiProblem? _problem;
 
   bool get _isNew => widget.role == null;
@@ -80,16 +83,22 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
   @override
   void dispose() {
     _name.dispose();
+    _maxDiscount.dispose();
     super.dispose();
   }
 
+  /// The discount limit only matters while the role may give discounts.
+  bool get _givesDiscounts => _selected.contains(Permissions.posDiscount);
+
   Future<void> _save() async {
     final name = _name.text.trim();
+    final maxDiscountBps = _givesDiscounts ? PercentFormat.parse(_maxDiscount.text) : 0;
     setState(() {
       _nameMissing = name.isEmpty;
+      _maxDiscountInvalid = maxDiscountBps == null;
       _problem = null;
     });
-    if (_nameMissing) {
+    if (_nameMissing || maxDiscountBps == null) {
       return;
     }
 
@@ -98,11 +107,18 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
     final repository = ref.read(rolesRepositoryProvider);
     try {
       if (_isNew) {
-        await repository.create(name: name, permissions: _selected);
+        final role = await repository.create(name: name, permissions: _selected);
+        if (maxDiscountBps > 0) {
+          await repository.update(role.id, maxDiscountBps: maxDiscountBps);
+        }
       } else {
         final role = widget.role!;
-        if (name != role.name) {
-          await repository.rename(role.id, name);
+        if (name != role.name || maxDiscountBps != role.maxDiscountBps) {
+          await repository.update(
+            role.id,
+            name: name != role.name ? name : null,
+            maxDiscountBps: maxDiscountBps != role.maxDiscountBps ? maxDiscountBps : null,
+          );
         }
         if (!_sameSet(_selected, role.permissions)) {
           await repository.syncPermissions(role.id, _selected);
@@ -163,7 +179,10 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final nameError = _nameMissing ? l10n.fieldRequired : _problem?.fieldError('name');
-    final generalError = _problem != null && nameError == null ? problemMessage(context, _problem!) : null;
+    final maxDiscountError = _maxDiscountInvalid ? l10n.percentInvalid : _problem?.fieldError('max_discount_bps');
+    final generalError = _problem != null && nameError == null && maxDiscountError == null
+        ? problemMessage(context, _problem!)
+        : null;
 
     return Scaffold(
       appBar: AppBar(
@@ -192,6 +211,21 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
             enabled: _canEdit,
             decoration: InputDecoration(labelText: l10n.roleName, errorText: nameError),
           ),
+          if (_givesDiscounts && !_isOwnerRole) ...[
+            const SizedBox(height: 12),
+            TextField(
+              controller: _maxDiscount,
+              enabled: _canEdit,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: InputDecoration(
+                labelText: l10n.maxDiscountField,
+                helperText: l10n.maxDiscountHint(PercentFormat.format(widget.me.maxDiscountBps)),
+                suffixText: '%',
+                errorText: maxDiscountError,
+                prefixIcon: const Icon(Icons.percent),
+              ),
+            ),
+          ],
           if (generalError != null) ...[
             const SizedBox(height: 12),
             Text(generalError, style: TextStyle(color: theme.colorScheme.error)),

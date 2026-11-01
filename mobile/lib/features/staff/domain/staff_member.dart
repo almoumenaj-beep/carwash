@@ -52,6 +52,7 @@ class StaffDraft {
     required this.email,
     required this.phone,
     required this.password,
+    this.pin,
     required this.roleIds,
     required this.allBranches,
     required this.branchIds,
@@ -63,6 +64,9 @@ class StaffDraft {
   final String? email;
   final String? phone;
   final String? password;
+
+  /// For switching in on a shared till; left out when empty, so an existing PIN is kept.
+  final String? pin;
   final Set<int> roleIds;
   final bool allBranches;
   final Set<String> branchIds;
@@ -74,6 +78,7 @@ class StaffDraft {
     'email': email,
     'phone': phone,
     if (password != null && password!.isNotEmpty) 'password': password,
+    if (pin != null && pin!.isNotEmpty) 'pin': pin,
     if (includeBranches) ...{'all_branches': allBranches, 'branch_ids': allBranches ? <String>[] : branchIds.toList()},
     if (isActive != null) 'is_active': isActive,
   };

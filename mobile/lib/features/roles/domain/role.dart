@@ -8,6 +8,7 @@ class Role {
     required this.isOwnerRole,
     required this.permissions,
     required this.usersCount,
+    this.maxDiscountBps = 0,
   });
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
@@ -18,6 +19,7 @@ class Role {
     isOwnerRole: json['is_owner_role'] as bool,
     permissions: {for (final permission in (json['permissions'] as List?) ?? const []) permission as String},
     usersCount: json['users_count'] as int? ?? 0,
+    maxDiscountBps: json['max_discount_bps'] as int? ?? 0,
   );
 
   final int id;
@@ -31,6 +33,9 @@ class Role {
   final bool isOwnerRole;
   final Set<String> permissions;
   final int usersCount;
+
+  /// The largest discount staff holding the role may give, in basis points (1000 = 10%).
+  final int maxDiscountBps;
 }
 
 /// One module of the permission catalog with its translated permissions.
