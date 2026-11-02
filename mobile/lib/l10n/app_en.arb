@@ -395,6 +395,63 @@
   "paidBadge": "Paid",
   "done": "Done",
   "darkMode": "Dark mode",
+  "expensesTitle": "Expenses",
+  "expensesSubtitle": "Spending, suppliers and recurring bills",
+  "owedTab": "Owed",
+  "suppliersTab": "Suppliers",
+  "recurringTab": "Recurring",
+  "newExpense": "New expense",
+  "expenseCategories": "Expense categories",
+  "expenseCategory": "Category",
+  "amountField": "Amount",
+  "paymentMethodField": "Paid by",
+  "payFromDrawer": "From the drawer",
+  "payCash": "Cash",
+  "payBankTransfer": "Bank transfer",
+  "payCard": "Card",
+  "notPaidYet": "Not paid yet",
+  "payFromDrawerHint": "Taken from your shift's drawer today; the drawer count at close expects it.",
+  "supplierField": "Supplier",
+  "noSupplier": "No supplier",
+  "owedToSupplierHint": "Recorded as owed to this supplier until paid.",
+  "expenseDate": "Date",
+  "payExpense": "Pay with",
+  "thisMonth": "This month",
+  "lastMonth": "Last month",
+  "totalOwed": "Total owed",
+  "totalSpent": "Total",
+  "nothingOwed": "Nothing is owed.",
+  "noExpenses": "No expenses in this period.",
+  "recurringBadge": "Recurring",
+  "addSupplier": "Add supplier",
+  "noSuppliers": "No suppliers yet.",
+  "owedAmount": "Owed {amount}",
+  "@owedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "addRecurring": "Add recurring expense",
+  "recurringHint": "On its due date a recurring expense is recorded as owed, until it is paid.",
+  "noRecurring": "No recurring expenses.",
+  "nextDue": "Next: {date}",
+  "@nextDue": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "nextDueField": "Next due date",
+  "recurringDescriptionHint": "e.g. Shop rent",
+  "frequencyWeekly": "Weekly",
+  "frequencyMonthly": "Monthly",
+  "frequencyYearly": "Yearly",
+  "cashPaidOut": "Expenses paid from the drawer",
+  "expensesTotal": "Expenses",
+  "netTotal": "Net",
   "dailySalesTitle": "Daily sales",
   "dailySalesSubtitle": "Sales, cars and staff for any day",
   "previousDay": "Previous day",

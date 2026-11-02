@@ -12,6 +12,7 @@ class CashShift {
     required this.invoicesCount,
     required this.discountsTotal,
     required this.cashTaken,
+    this.cashPaidOut = 0,
     required this.expectedCash,
     required this.countedCash,
     required this.variance,
@@ -29,6 +30,7 @@ class CashShift {
     invoicesCount: json['invoices_count'] as int,
     discountsTotal: json['discounts_total'] as int,
     cashTaken: json['cash_taken'] as int,
+    cashPaidOut: json['cash_paid_out'] as int? ?? 0,
     expectedCash: json['expected_cash'] as int,
     countedCash: json['counted_cash'] as int?,
     variance: json['variance'] as int?,
@@ -50,7 +52,10 @@ class CashShift {
   /// Cash taken for invoices, after change was given.
   final int cashTaken;
 
-  /// What should be in the drawer: the float plus the cash taken.
+  /// Cash taken out of the drawer to pay expenses.
+  final int cashPaidOut;
+
+  /// What should be in the drawer: the float plus the cash taken, less the expenses paid from it.
   final int expectedCash;
 
   /// Set once closed; [variance] is counted minus expected, negative when the drawer is short.

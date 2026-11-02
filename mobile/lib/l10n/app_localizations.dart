@@ -1454,6 +1454,264 @@ abstract class AppLocalizations {
   /// **'Dark mode'**
   String get darkMode;
 
+  /// No description provided for @expensesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expensesTitle;
+
+  /// No description provided for @expensesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending, suppliers and recurring bills'**
+  String get expensesSubtitle;
+
+  /// No description provided for @owedTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed'**
+  String get owedTab;
+
+  /// No description provided for @suppliersTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Suppliers'**
+  String get suppliersTab;
+
+  /// No description provided for @recurringTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurringTab;
+
+  /// No description provided for @newExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'New expense'**
+  String get newExpense;
+
+  /// No description provided for @expenseCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense categories'**
+  String get expenseCategories;
+
+  /// No description provided for @expenseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get expenseCategory;
+
+  /// No description provided for @amountField.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amountField;
+
+  /// No description provided for @paymentMethodField.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid by'**
+  String get paymentMethodField;
+
+  /// No description provided for @payFromDrawer.
+  ///
+  /// In en, this message translates to:
+  /// **'From the drawer'**
+  String get payFromDrawer;
+
+  /// No description provided for @payCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash'**
+  String get payCash;
+
+  /// No description provided for @payBankTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transfer'**
+  String get payBankTransfer;
+
+  /// No description provided for @payCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get payCard;
+
+  /// No description provided for @notPaidYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not paid yet'**
+  String get notPaidYet;
+
+  /// No description provided for @payFromDrawerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken from your shift\'s drawer today; the drawer count at close expects it.'**
+  String get payFromDrawerHint;
+
+  /// No description provided for @supplierField.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier'**
+  String get supplierField;
+
+  /// No description provided for @noSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'No supplier'**
+  String get noSupplier;
+
+  /// No description provided for @owedToSupplierHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded as owed to this supplier until paid.'**
+  String get owedToSupplierHint;
+
+  /// No description provided for @expenseDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get expenseDate;
+
+  /// No description provided for @payExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay with'**
+  String get payExpense;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get thisMonth;
+
+  /// No description provided for @lastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last month'**
+  String get lastMonth;
+
+  /// No description provided for @totalOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Total owed'**
+  String get totalOwed;
+
+  /// No description provided for @totalSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get totalSpent;
+
+  /// No description provided for @nothingOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is owed.'**
+  String get nothingOwed;
+
+  /// No description provided for @noExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'No expenses in this period.'**
+  String get noExpenses;
+
+  /// No description provided for @recurringBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurringBadge;
+
+  /// No description provided for @addSupplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Add supplier'**
+  String get addSupplier;
+
+  /// No description provided for @noSuppliers.
+  ///
+  /// In en, this message translates to:
+  /// **'No suppliers yet.'**
+  String get noSuppliers;
+
+  /// No description provided for @owedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed {amount}'**
+  String owedAmount(String amount);
+
+  /// No description provided for @addRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Add recurring expense'**
+  String get addRecurring;
+
+  /// No description provided for @recurringHint.
+  ///
+  /// In en, this message translates to:
+  /// **'On its due date a recurring expense is recorded as owed, until it is paid.'**
+  String get recurringHint;
+
+  /// No description provided for @noRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring expenses.'**
+  String get noRecurring;
+
+  /// No description provided for @nextDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {date}'**
+  String nextDue(String date);
+
+  /// No description provided for @nextDueField.
+  ///
+  /// In en, this message translates to:
+  /// **'Next due date'**
+  String get nextDueField;
+
+  /// No description provided for @recurringDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Shop rent'**
+  String get recurringDescriptionHint;
+
+  /// No description provided for @frequencyWeekly.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly'**
+  String get frequencyWeekly;
+
+  /// No description provided for @frequencyMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get frequencyMonthly;
+
+  /// No description provided for @frequencyYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get frequencyYearly;
+
+  /// No description provided for @cashPaidOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses paid from the drawer'**
+  String get cashPaidOut;
+
+  /// No description provided for @expensesTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expensesTotal;
+
+  /// No description provided for @netTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get netTotal;
+
   /// No description provided for @dailySalesTitle.
   ///
   /// In en, this message translates to:

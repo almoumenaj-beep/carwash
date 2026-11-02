@@ -9,6 +9,8 @@ class DailySales {
     required this.vat,
     required this.cashCollected,
     required this.averageTicket,
+    this.expenses = 0,
+    this.net = 0,
     required this.carsCheckedIn,
     required this.carsDelivered,
     required this.carsCancelled,
@@ -33,6 +35,8 @@ class DailySales {
       vat: totals['vat'] as int,
       cashCollected: totals['cash_collected'] as int,
       averageTicket: totals['average_ticket'] as int,
+      expenses: totals['expenses'] as int? ?? 0,
+      net: totals['net'] as int? ?? 0,
       carsCheckedIn: cars['checked_in'] as int,
       carsDelivered: cars['delivered'] as int,
       carsCancelled: cars['cancelled'] as int,
@@ -65,6 +69,10 @@ class DailySales {
   final int vat;
   final int cashCollected;
   final int averageTicket;
+
+  /// Expenses dated that day (paid or owed), and sales less them.
+  final int expenses;
+  final int net;
   final int carsCheckedIn;
   final int carsDelivered;
   final int carsCancelled;

@@ -769,6 +769,139 @@ class AppLocalizationsEn extends AppLocalizations {
   String get darkMode => 'Dark mode';
 
   @override
+  String get expensesTitle => 'Expenses';
+
+  @override
+  String get expensesSubtitle => 'Spending, suppliers and recurring bills';
+
+  @override
+  String get owedTab => 'Owed';
+
+  @override
+  String get suppliersTab => 'Suppliers';
+
+  @override
+  String get recurringTab => 'Recurring';
+
+  @override
+  String get newExpense => 'New expense';
+
+  @override
+  String get expenseCategories => 'Expense categories';
+
+  @override
+  String get expenseCategory => 'Category';
+
+  @override
+  String get amountField => 'Amount';
+
+  @override
+  String get paymentMethodField => 'Paid by';
+
+  @override
+  String get payFromDrawer => 'From the drawer';
+
+  @override
+  String get payCash => 'Cash';
+
+  @override
+  String get payBankTransfer => 'Bank transfer';
+
+  @override
+  String get payCard => 'Card';
+
+  @override
+  String get notPaidYet => 'Not paid yet';
+
+  @override
+  String get payFromDrawerHint => 'Taken from your shift\'s drawer today; the drawer count at close expects it.';
+
+  @override
+  String get supplierField => 'Supplier';
+
+  @override
+  String get noSupplier => 'No supplier';
+
+  @override
+  String get owedToSupplierHint => 'Recorded as owed to this supplier until paid.';
+
+  @override
+  String get expenseDate => 'Date';
+
+  @override
+  String get payExpense => 'Pay with';
+
+  @override
+  String get thisMonth => 'This month';
+
+  @override
+  String get lastMonth => 'Last month';
+
+  @override
+  String get totalOwed => 'Total owed';
+
+  @override
+  String get totalSpent => 'Total';
+
+  @override
+  String get nothingOwed => 'Nothing is owed.';
+
+  @override
+  String get noExpenses => 'No expenses in this period.';
+
+  @override
+  String get recurringBadge => 'Recurring';
+
+  @override
+  String get addSupplier => 'Add supplier';
+
+  @override
+  String get noSuppliers => 'No suppliers yet.';
+
+  @override
+  String owedAmount(String amount) {
+    return 'Owed $amount';
+  }
+
+  @override
+  String get addRecurring => 'Add recurring expense';
+
+  @override
+  String get recurringHint => 'On its due date a recurring expense is recorded as owed, until it is paid.';
+
+  @override
+  String get noRecurring => 'No recurring expenses.';
+
+  @override
+  String nextDue(String date) {
+    return 'Next: $date';
+  }
+
+  @override
+  String get nextDueField => 'Next due date';
+
+  @override
+  String get recurringDescriptionHint => 'e.g. Shop rent';
+
+  @override
+  String get frequencyWeekly => 'Weekly';
+
+  @override
+  String get frequencyMonthly => 'Monthly';
+
+  @override
+  String get frequencyYearly => 'Yearly';
+
+  @override
+  String get cashPaidOut => 'Expenses paid from the drawer';
+
+  @override
+  String get expensesTotal => 'Expenses';
+
+  @override
+  String get netTotal => 'Net';
+
+  @override
   String get dailySalesTitle => 'Daily sales';
 
   @override

@@ -18,6 +18,9 @@ abstract final class Permissions {
   static const posCheckout = 'pos.checkout';
   static const posDiscount = 'pos.discount';
   static const reportsSales = 'reports.sales';
+  static const expensesView = 'expenses.view';
+  static const expensesCreate = 'expenses.create';
+  static const expensesApprove = 'expenses.approve';
 }
 
 /// Which permissions open each section; holding any one of them is enough.
@@ -28,6 +31,7 @@ const routePermissions = <String, List<String>>{
   '/checkout': [Permissions.posCheckout],
   '/shift': [Permissions.posCheckout],
   '/reports': [Permissions.reportsSales],
+  '/expenses': [Permissions.expensesView],
   '/roles': [Permissions.rolesManage, Permissions.usersManage],
   '/staff': [Permissions.usersManage],
   '/devices': [Permissions.usersManage],

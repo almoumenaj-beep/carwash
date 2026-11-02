@@ -16,6 +16,7 @@ import '../../features/catalog/presentation/service_editor_screen.dart';
 import '../../features/customers/presentation/customer_editor_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
+import '../../features/expenses/presentation/expenses_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/orders/presentation/check_in_screen.dart';
 import '../../features/orders/presentation/checkout_screen.dart';
@@ -111,6 +112,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/shift',
         builder: (_, state) => ShiftScreen(branchId: state.uri.queryParameters['branch']),
       ),
+      GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
       GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),

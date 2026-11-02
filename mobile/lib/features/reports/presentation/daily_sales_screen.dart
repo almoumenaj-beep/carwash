@@ -144,6 +144,8 @@ class _Report extends ConsumerWidget {
             (l10n.shiftCashTaken, money.format(report.cashCollected), Icons.point_of_sale_outlined),
             (l10n.shiftDiscounts, money.format(report.discounts), Icons.local_offer_outlined),
             (l10n.vatTotal, money.format(report.vat), Icons.account_balance_outlined),
+            (l10n.expensesTotal, money.format(report.expenses), Icons.account_balance_wallet_outlined),
+            (l10n.netTotal, money.format(report.net), Icons.savings_outlined),
           ],
         ),
         const SizedBox(height: 8),

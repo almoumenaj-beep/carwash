@@ -780,6 +780,139 @@ class AppLocalizationsAr extends AppLocalizations {
   String get darkMode => 'الوضع الداكن';
 
   @override
+  String get expensesTitle => 'المصروفات';
+
+  @override
+  String get expensesSubtitle => 'المصروفات والموردون والمصاريف الدورية';
+
+  @override
+  String get owedTab => 'المستحقة';
+
+  @override
+  String get suppliersTab => 'الموردون';
+
+  @override
+  String get recurringTab => 'الدورية';
+
+  @override
+  String get newExpense => 'مصروف جديد';
+
+  @override
+  String get expenseCategories => 'تصنيفات المصروفات';
+
+  @override
+  String get expenseCategory => 'التصنيف';
+
+  @override
+  String get amountField => 'المبلغ';
+
+  @override
+  String get paymentMethodField => 'طريقة الدفع';
+
+  @override
+  String get payFromDrawer => 'من الدرج';
+
+  @override
+  String get payCash => 'نقداً';
+
+  @override
+  String get payBankTransfer => 'تحويل بنكي';
+
+  @override
+  String get payCard => 'بطاقة';
+
+  @override
+  String get notPaidYet => 'غير مدفوع';
+
+  @override
+  String get payFromDrawerHint => 'يُخصم من درج ورديتك اليوم، ويُحسب عند جرد الإقفال.';
+
+  @override
+  String get supplierField => 'المورد';
+
+  @override
+  String get noSupplier => 'بدون مورد';
+
+  @override
+  String get owedToSupplierHint => 'يُسجَّل مستحقاً لهذا المورد حتى يُدفع.';
+
+  @override
+  String get expenseDate => 'التاريخ';
+
+  @override
+  String get payExpense => 'الدفع بـ';
+
+  @override
+  String get thisMonth => 'هذا الشهر';
+
+  @override
+  String get lastMonth => 'الشهر الماضي';
+
+  @override
+  String get totalOwed => 'إجمالي المستحق';
+
+  @override
+  String get totalSpent => 'الإجمالي';
+
+  @override
+  String get nothingOwed => 'لا توجد مستحقات.';
+
+  @override
+  String get noExpenses => 'لا مصروفات في هذه الفترة.';
+
+  @override
+  String get recurringBadge => 'دوري';
+
+  @override
+  String get addSupplier => 'إضافة مورد';
+
+  @override
+  String get noSuppliers => 'لا يوجد موردون بعد.';
+
+  @override
+  String owedAmount(String amount) {
+    return 'مستحق $amount';
+  }
+
+  @override
+  String get addRecurring => 'إضافة مصروف دوري';
+
+  @override
+  String get recurringHint => 'في تاريخ الاستحقاق يُسجَّل المصروف الدوري مستحقاً حتى يُدفع.';
+
+  @override
+  String get noRecurring => 'لا مصروفات دورية.';
+
+  @override
+  String nextDue(String date) {
+    return 'القادم: $date';
+  }
+
+  @override
+  String get nextDueField => 'تاريخ الاستحقاق القادم';
+
+  @override
+  String get recurringDescriptionHint => 'مثل: إيجار المحل';
+
+  @override
+  String get frequencyWeekly => 'أسبوعي';
+
+  @override
+  String get frequencyMonthly => 'شهري';
+
+  @override
+  String get frequencyYearly => 'سنوي';
+
+  @override
+  String get cashPaidOut => 'مصروفات من الدرج';
+
+  @override
+  String get expensesTotal => 'المصروفات';
+
+  @override
+  String get netTotal => 'الصافي';
+
+  @override
   String get dailySalesTitle => 'تقرير المبيعات';
 
   @override
