@@ -16,7 +16,6 @@ class SessionStorage {
   static const _deviceIdentifierKey = 'device_identifier';
   static const _deviceSecretKey = 'device_secret';
   static const _themeModeKey = 'theme_mode';
-  static const _brandColorKey = 'brand_color';
 
   final FlutterSecureStorage _storage;
 
@@ -34,11 +33,6 @@ class SessionStorage {
   Future<String?> themeMode() => _storage.read(key: _themeModeKey);
 
   Future<void> saveThemeMode(String mode) => _storage.write(key: _themeModeKey, value: mode);
-
-  /// The key of the app colour last chosen on this device; null before the first choice.
-  Future<String?> brandColor() => _storage.read(key: _brandColorKey);
-
-  Future<void> saveBrandColor(String key) => _storage.write(key: _brandColorKey, value: key);
 
   /// A random identifier created on first use and kept for the life of the installation.
   Future<String> deviceIdentifier() async {

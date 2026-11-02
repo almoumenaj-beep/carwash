@@ -1466,60 +1466,6 @@ abstract class AppLocalizations {
   /// **'No staff work at this branch yet; add them under Staff.'**
   String get noWashersInBranch;
 
-  /// No description provided for @appColor.
-  ///
-  /// In en, this message translates to:
-  /// **'App colour'**
-  String get appColor;
-
-  /// No description provided for @colorTeal.
-  ///
-  /// In en, this message translates to:
-  /// **'Light teal'**
-  String get colorTeal;
-
-  /// No description provided for @colorTurquoise.
-  ///
-  /// In en, this message translates to:
-  /// **'Turquoise'**
-  String get colorTurquoise;
-
-  /// No description provided for @colorDeepTeal.
-  ///
-  /// In en, this message translates to:
-  /// **'Deep teal'**
-  String get colorDeepTeal;
-
-  /// No description provided for @colorSky.
-  ///
-  /// In en, this message translates to:
-  /// **'Sky blue'**
-  String get colorSky;
-
-  /// No description provided for @colorNavy.
-  ///
-  /// In en, this message translates to:
-  /// **'Navy'**
-  String get colorNavy;
-
-  /// No description provided for @colorGreen.
-  ///
-  /// In en, this message translates to:
-  /// **'Green'**
-  String get colorGreen;
-
-  /// No description provided for @colorPurple.
-  ///
-  /// In en, this message translates to:
-  /// **'Purple'**
-  String get colorPurple;
-
-  /// No description provided for @colorOrange.
-  ///
-  /// In en, this message translates to:
-  /// **'Orange'**
-  String get colorOrange;
-
   /// No description provided for @isPackage.
   ///
   /// In en, this message translates to:

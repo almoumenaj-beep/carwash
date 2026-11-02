@@ -775,33 +775,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noWashersInBranch => 'No staff work at this branch yet; add them under Staff.';
 
   @override
-  String get appColor => 'App colour';
-
-  @override
-  String get colorTeal => 'Light teal';
-
-  @override
-  String get colorTurquoise => 'Turquoise';
-
-  @override
-  String get colorDeepTeal => 'Deep teal';
-
-  @override
-  String get colorSky => 'Sky blue';
-
-  @override
-  String get colorNavy => 'Navy';
-
-  @override
-  String get colorGreen => 'Green';
-
-  @override
-  String get colorPurple => 'Purple';
-
-  @override
-  String get colorOrange => 'Orange';
-
-  @override
   String get isPackage => 'Package';
 
   @override

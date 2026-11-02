@@ -18,8 +18,8 @@ class CarWashApp extends ConsumerWidget {
       locale: ref.watch(localeProvider),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      theme: AppTheme.light(ref.watch(brandColorProvider).seed),
-      darkTheme: AppTheme.dark(ref.watch(brandColorProvider).seed),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       themeMode: ref.watch(themeModeProvider),
       routerConfig: ref.watch(routerProvider),
     );
