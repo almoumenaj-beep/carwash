@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\BranchStaffController;
 use App\Http\Controllers\Api\V1\CashShiftController;
 use App\Http\Controllers\Api\V1\CustomerController;
+use App\Http\Controllers\Api\V1\DailySalesReportController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
 use App\Http\Controllers\Api\V1\MeController;
@@ -59,6 +60,8 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('orders', OrderController::class)->only(['index', 'store', 'show', 'update']);
         Route::post('orders/{order}/status', [OrderStatusController::class, 'store'])->name('orders.status.store');
         Route::post('orders/{order}/checkout', [OrderCheckoutController::class, 'store'])->name('orders.checkout.store');
+
+        Route::get('reports/daily-sales', DailySalesReportController::class)->name('reports.daily-sales');
 
         Route::get('shifts', [CashShiftController::class, 'index'])->name('shifts.index');
         Route::get('shifts/current', [CashShiftController::class, 'current'])->name('shifts.current');
