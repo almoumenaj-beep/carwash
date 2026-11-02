@@ -780,6 +780,71 @@ class AppLocalizationsAr extends AppLocalizations {
   String get darkMode => 'الوضع الداكن';
 
   @override
+  String get dailySalesTitle => 'تقرير المبيعات';
+
+  @override
+  String get dailySalesSubtitle => 'المبيعات والسيارات والموظفون لأي يوم';
+
+  @override
+  String get previousDay => 'اليوم السابق';
+
+  @override
+  String get nextDay => 'اليوم التالي';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get noSalesThatDay => 'لا مبيعات ولا سيارات في هذا اليوم.';
+
+  @override
+  String get salesTotal => 'المبيعات';
+
+  @override
+  String get averageTicket => 'متوسط الفاتورة';
+
+  @override
+  String get vatTotal => 'الضريبة';
+
+  @override
+  String get carsCheckedIn => 'سيارات مستقبَلة';
+
+  @override
+  String get carsInQueue => 'ما زالت في الطابور';
+
+  @override
+  String get byCashier => 'الكاشير';
+
+  @override
+  String get byHour => 'المبيعات حسب الساعة';
+
+  @override
+  String invoicesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فاتورة',
+      few: '$count فواتير',
+      two: 'فاتورتان',
+      one: 'فاتورة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String carsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count سيارة',
+      few: '$count سيارات',
+      two: 'سيارتان',
+      one: 'سيارة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chooseWasher => 'اختر العامل الذي سيغسل السيارة.';
 
   @override

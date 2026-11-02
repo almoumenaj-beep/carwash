@@ -769,6 +769,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get darkMode => 'Dark mode';
 
   @override
+  String get dailySalesTitle => 'Daily sales';
+
+  @override
+  String get dailySalesSubtitle => 'Sales, cars and staff for any day';
+
+  @override
+  String get previousDay => 'Previous day';
+
+  @override
+  String get nextDay => 'Next day';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get noSalesThatDay => 'No sales or cars on this day.';
+
+  @override
+  String get salesTotal => 'Sales';
+
+  @override
+  String get averageTicket => 'Average invoice';
+
+  @override
+  String get vatTotal => 'VAT';
+
+  @override
+  String get carsCheckedIn => 'Cars checked in';
+
+  @override
+  String get carsInQueue => 'Still in the queue';
+
+  @override
+  String get byCashier => 'Cashiers';
+
+  @override
+  String get byHour => 'Sales by hour';
+
+  @override
+  String invoicesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count invoices', one: '1 invoice');
+    return '$_temp0';
+  }
+
+  @override
+  String carsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count cars', one: '1 car');
+    return '$_temp0';
+  }
+
+  @override
   String get chooseWasher => 'Choose the washer who will wash the car.';
 
   @override

@@ -1454,6 +1454,96 @@ abstract class AppLocalizations {
   /// **'Dark mode'**
   String get darkMode;
 
+  /// No description provided for @dailySalesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily sales'**
+  String get dailySalesTitle;
+
+  /// No description provided for @dailySalesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales, cars and staff for any day'**
+  String get dailySalesSubtitle;
+
+  /// No description provided for @previousDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get previousDay;
+
+  /// No description provided for @nextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get nextDay;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @noSalesThatDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales or cars on this day.'**
+  String get noSalesThatDay;
+
+  /// No description provided for @salesTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales'**
+  String get salesTotal;
+
+  /// No description provided for @averageTicket.
+  ///
+  /// In en, this message translates to:
+  /// **'Average invoice'**
+  String get averageTicket;
+
+  /// No description provided for @vatTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'VAT'**
+  String get vatTotal;
+
+  /// No description provided for @carsCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cars checked in'**
+  String get carsCheckedIn;
+
+  /// No description provided for @carsInQueue.
+  ///
+  /// In en, this message translates to:
+  /// **'Still in the queue'**
+  String get carsInQueue;
+
+  /// No description provided for @byCashier.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashiers'**
+  String get byCashier;
+
+  /// No description provided for @byHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales by hour'**
+  String get byHour;
+
+  /// No description provided for @invoicesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 invoice} other{{count} invoices}}'**
+  String invoicesCount(int count);
+
+  /// No description provided for @carsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 car} other{{count} cars}}'**
+  String carsCount(int count);
+
   /// No description provided for @chooseWasher.
   ///
   /// In en, this message translates to:

@@ -70,6 +70,12 @@ class _SectionsMenu extends ConsumerWidget {
       (path: '/queue', icon: Icons.local_car_wash_outlined, title: l10n.queueTitle, subtitle: l10n.queueSubtitle),
       (path: '/shift', icon: Icons.point_of_sale_outlined, title: l10n.shiftTitle, subtitle: l10n.shiftSubtitle),
       (
+        path: '/reports',
+        icon: Icons.bar_chart_outlined,
+        title: l10n.dailySalesTitle,
+        subtitle: l10n.dailySalesSubtitle,
+      ),
+      (
         path: '/customers',
         icon: Icons.people_alt_outlined,
         title: l10n.customersTitle,

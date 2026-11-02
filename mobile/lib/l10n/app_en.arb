@@ -395,6 +395,35 @@
   "paidBadge": "Paid",
   "done": "Done",
   "darkMode": "Dark mode",
+  "dailySalesTitle": "Daily sales",
+  "dailySalesSubtitle": "Sales, cars and staff for any day",
+  "previousDay": "Previous day",
+  "nextDay": "Next day",
+  "today": "Today",
+  "noSalesThatDay": "No sales or cars on this day.",
+  "salesTotal": "Sales",
+  "averageTicket": "Average invoice",
+  "vatTotal": "VAT",
+  "carsCheckedIn": "Cars checked in",
+  "carsInQueue": "Still in the queue",
+  "byCashier": "Cashiers",
+  "byHour": "Sales by hour",
+  "invoicesCount": "{count, plural, =1{1 invoice} other{{count} invoices}}",
+  "@invoicesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "carsCount": "{count, plural, =1{1 car} other{{count} cars}}",
+  "@carsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "chooseWasher": "Choose the washer who will wash the car.",
   "noWashersInBranch": "No staff work at this branch yet; add them under Staff.",
   "isPackage": "Package",
