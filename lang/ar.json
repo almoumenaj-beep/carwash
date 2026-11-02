@@ -65,5 +65,9 @@
     "The drawer does not match; explain the difference.": "النقد في الدرج لا يطابق المتوقع؛ اكتب سبب الفرق.",
     "A package cannot be an add-on.": "الباقة لا تكون إضافة.",
     "A package includes at least two services, and no other packages.": "الباقة تضم خدمتين على الأقل، ولا تضم باقات أخرى.",
-    "This service is part of a package. Remove it from the package first.": "هذه الخدمة ضمن باقة. احذفها من الباقة أولاً."
+    "This service is part of a package. Remove it from the package first.": "هذه الخدمة ضمن باقة. احذفها من الباقة أولاً.",
+    "Open your shift at this branch to pay from its drawer.": "افتح ورديتك في هذا الفرع لتدفع من درجه.",
+    "This expense is already paid.": "هذا المصروف مدفوع مسبقاً.",
+    "This expense was counted in a closed shift and cannot be deleted.": "هذا المصروف محسوب في وردية مُقفلة ولا يمكن حذفه.",
+    "This category has expenses. Deactivate it instead of deleting it.": "لهذا التصنيف مصروفات. أوقفه بدلاً من حذفه."
 }

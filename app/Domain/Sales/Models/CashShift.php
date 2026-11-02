@@ -2,6 +2,8 @@
 
 namespace App\Domain\Sales\Models;
 
+use App\Domain\Expenses\Enums\ExpensePaymentMethod;
+use App\Domain\Expenses\Models\Expense;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use App\Domain\Sales\Enums\PaymentMethod;
@@ -60,11 +62,22 @@ class CashShift extends Model
     }
 
     /**
-     * What should be in the drawer now: the float plus the cash taken.
+     * Cash taken out of the drawer during the shift to pay expenses.
+     */
+    public function cashPaidOut(): int
+    {
+        return (int) Expense::query()
+            ->where('cash_shift_id', $this->id)
+            ->where('payment_method', ExpensePaymentMethod::CashDrawer->value)
+            ->sum('amount');
+    }
+
+    /**
+     * What should be in the drawer now: the float plus the cash taken, less the expenses paid from it.
      */
     public function expectedCash(): int
     {
-        return $this->opening_float + $this->cashTaken();
+        return $this->opening_float + $this->cashTaken() - $this->cashPaidOut();
     }
 
     /**

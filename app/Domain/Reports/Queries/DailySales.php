@@ -2,6 +2,7 @@
 
 namespace App\Domain\Reports\Queries;
 
+use App\Domain\Expenses\Models\Expense;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Sales\Enums\PaymentMethod;
@@ -14,7 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * One day's sales at one or more branches: the day runs midnight to midnight in the car wash's time
- * zone. Sales come from the invoices issued that day, cars from the orders checked in that day.
+ * zone. Sales come from the invoices issued that day, cars from the orders checked in that day, and
+ * expenses from those dated that day (paid or owed); `net` is sales less expenses.
  * Amounts are in minor units (BHD: fils).
  */
 class DailySales
@@ -32,6 +34,7 @@ class DailySales
 
         $count = $invoices()->count();
         $sales = (int) $invoices()->sum('total');
+        $expenses = (int) Expense::query()->whereIn('branch_id', $branchIds)->whereDate('spent_on', $day->toDateString())->sum('amount');
 
         return [
             'date' => $day->toDateString(),
@@ -48,6 +51,8 @@ class DailySales
                     ->where('received_at', '<', $to)
                     ->sum('amount'),
                 'average_ticket' => $count === 0 ? 0 : intdiv($sales, $count),
+                'expenses' => $expenses,
+                'net' => $sales - $expenses,
             ],
             'cars' => [
                 'checked_in' => $orders()->count(),

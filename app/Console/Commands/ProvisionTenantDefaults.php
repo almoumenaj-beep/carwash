@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domain\Catalog\Actions\ProvisionDefaultCatalog;
+use App\Domain\Expenses\Actions\ProvisionDefaultExpenseCategories;
 use App\Domain\Identity\Actions\ProvisionDefaultRoles;
 use App\Domain\Identity\Actions\SyncPermissionCatalog;
 use App\Domain\Platform\Models\Tenant;
@@ -12,7 +13,7 @@ use Illuminate\Console\Command;
 
 /**
  * Brings every tenant up to date with the defaults new tenants get (permission catalog,
- * default roles, vehicle sizes). Idempotent: existing data and customisations are kept.
+ * default roles, vehicle sizes, expense categories). Idempotent: existing data and customisations are kept.
  * Run after deployments that add defaults.
  */
 #[Signature('tenants:provision-defaults')]
@@ -23,12 +24,14 @@ class ProvisionTenantDefaults extends Command
         SyncPermissionCatalog $syncPermissionCatalog,
         ProvisionDefaultRoles $provisionDefaultRoles,
         ProvisionDefaultCatalog $provisionDefaultCatalog,
+        ProvisionDefaultExpenseCategories $provisionDefaultExpenseCategories,
     ): int {
         $syncPermissionCatalog->handle();
 
-        Tenant::query()->orderBy('created_at')->each(function (Tenant $tenant) use ($provisionDefaultRoles, $provisionDefaultCatalog): void {
+        Tenant::query()->orderBy('created_at')->each(function (Tenant $tenant) use ($provisionDefaultRoles, $provisionDefaultCatalog, $provisionDefaultExpenseCategories): void {
             $provisionDefaultRoles->handle($tenant);
             $provisionDefaultCatalog->handle($tenant);
+            $provisionDefaultExpenseCategories->handle($tenant);
 
             $this->components->info("Provisioned {$tenant->name}");
         });

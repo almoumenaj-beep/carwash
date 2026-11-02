@@ -9,18 +9,22 @@ use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\DailySalesReportController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
+use App\Http\Controllers\Api\V1\ExpenseCategoryController;
+use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\OrderCheckoutController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\OrderStatusController;
 use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\Api\V1\RecurringExpenseController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
 use App\Http\Controllers\Api\V1\ServiceCategoryController;
 use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\StaffController;
+use App\Http\Controllers\Api\V1\SupplierController;
 use App\Http\Controllers\Api\V1\UserRoleController;
 use App\Http\Controllers\Api\V1\VehicleController;
 use App\Http\Controllers\Api\V1\VehicleSizeController;
@@ -62,6 +66,12 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('orders/{order}/checkout', [OrderCheckoutController::class, 'store'])->name('orders.checkout.store');
 
         Route::get('reports/daily-sales', DailySalesReportController::class)->name('reports.daily-sales');
+
+        Route::apiResource('expense-categories', ExpenseCategoryController::class)->except('show');
+        Route::apiResource('suppliers', SupplierController::class)->only(['index', 'store', 'update']);
+        Route::apiResource('recurring-expenses', RecurringExpenseController::class)->except('show');
+        Route::apiResource('expenses', ExpenseController::class)->only(['index', 'store', 'destroy']);
+        Route::post('expenses/{expense}/pay', [ExpenseController::class, 'pay'])->name('expenses.pay');
 
         Route::get('shifts', [CashShiftController::class, 'index'])->name('shifts.index');
         Route::get('shifts/current', [CashShiftController::class, 'current'])->name('shifts.current');

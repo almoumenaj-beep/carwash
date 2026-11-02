@@ -35,6 +35,7 @@ class CashShiftResource extends JsonResource
             'discounts_total' => (int) (clone $invoices)->sum('discount_total'),
             'vat_total' => (int) (clone $invoices)->sum('vat_amount'),
             'cash_taken' => $this->cashTaken(),
+            'cash_paid_out' => $this->cashPaidOut(),
             'expected_cash' => $this->expected_cash ?? $this->expectedCash(),
             'counted_cash' => $this->counted_cash,
             'variance' => $this->variance,
