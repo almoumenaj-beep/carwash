@@ -21,8 +21,8 @@ import 'order_widgets.dart';
 class QueueScreen extends ConsumerStatefulWidget {
   const QueueScreen({super.key});
 
-  /// How often the queue is fetched again while it is open.
-  static const refreshEvery = Duration(seconds: 15);
+  /// How often the queue is fetched again while it is open; to be replaced by real-time updates (Reverb).
+  static const refreshEvery = Duration(seconds: 5);
 
   @override
   ConsumerState<QueueScreen> createState() => _QueueScreenState();
