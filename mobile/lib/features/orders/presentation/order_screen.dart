@@ -392,7 +392,7 @@ class _AssignmentSheetState extends ConsumerState<_AssignmentSheet> {
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
-            FilledButton(onPressed: _saving ? null : _save, child: Text(l10n.save)),
+            FilledButton(onPressed: _saving || _staffIds.isEmpty ? null : _save, child: Text(l10n.save)),
           ],
         ),
       ),

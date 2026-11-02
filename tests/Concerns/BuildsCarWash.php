@@ -103,6 +103,7 @@ trait BuildsCarWash
             'branch_id' => $this->branch->id,
             'vehicle_id' => $this->vehicle->id,
             'items' => [['service_id' => $this->wash->id]],
+            'staff_ids' => [$this->washer->id],
             ...$overrides,
         ]);
     }

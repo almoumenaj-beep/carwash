@@ -201,7 +201,7 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
     final total = chosen.fold<int>(0, (sum, service) => sum + (_price(service) ?? 0));
     final minutes = chosen.fold<int>(0, (sum, service) => sum + _minutes(service));
     final problem = _problem;
-    final canSubmit = !_saving && _plate.text.trim().isNotEmpty && _hasMainService;
+    final canSubmit = !_saving && _plate.text.trim().isNotEmpty && _hasMainService && _staffIds.isNotEmpty;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.checkInTitle)),
@@ -320,6 +320,11 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(l10n.chooseMainService, style: TextStyle(color: theme.colorScheme.error)),
+                  ),
+                if (_hasMainService && _staffIds.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Text(l10n.chooseWasher, style: TextStyle(color: theme.colorScheme.error)),
                   ),
                 Row(
                   children: [

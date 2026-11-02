@@ -13,7 +13,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * Checks a car in: a registered vehicle_id, or a walk-in plate (with its size for pricing),
- * optionally with the walk-in's phone and name to register them and their car.
+ * optionally with the walk-in's phone and name to register them and their car. At least one washer
+ * is assigned from the start, so every car has someone responsible for it.
  */
 class StoreOrderRequest extends FormRequest
 {
@@ -62,7 +63,7 @@ class StoreOrderRequest extends FormRequest
             'items.*.service_id' => ['required', 'uuid', 'distinct', Rule::exists('services', 'id')->where('tenant_id', $tenantId)],
             'items.*.quantity' => ['sometimes', 'integer', 'between:1,20'],
             'bay_id' => ['nullable', 'uuid'],
-            'staff_ids' => ['sometimes', 'array', 'max:10'],
+            'staff_ids' => ['required', 'array', 'min:1', 'max:10'],
             'staff_ids.*' => ['uuid', 'distinct'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'customer_phone' => ['nullable', 'string', 'regex:/^\+\d{8,15}$/'],
@@ -77,6 +78,8 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'customer_phone.regex' => __('Enter a valid phone number.'),
+            'staff_ids.required' => __('Choose the washer who will wash the car.'),
+            'staff_ids.min' => __('Choose the washer who will wash the car.'),
         ];
     }
 }

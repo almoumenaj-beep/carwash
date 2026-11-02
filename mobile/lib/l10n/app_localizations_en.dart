@@ -769,6 +769,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get darkMode => 'Dark mode';
 
   @override
+  String get chooseWasher => 'Choose the washer who will wash the car.';
+
+  @override
+  String get noWashersInBranch => 'No staff work at this branch yet; add them under Staff.';
+
+  @override
   String get appColor => 'App colour';
 
   @override

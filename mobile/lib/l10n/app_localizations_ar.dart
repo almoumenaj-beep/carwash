@@ -780,6 +780,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get darkMode => 'الوضع الداكن';
 
   @override
+  String get chooseWasher => 'اختر العامل الذي سيغسل السيارة.';
+
+  @override
+  String get noWashersInBranch => 'لا يوجد موظفون في هذا الفرع بعد؛ أضفهم من «الموظفون».';
+
+  @override
   String get appColor => 'لون التطبيق';
 
   @override

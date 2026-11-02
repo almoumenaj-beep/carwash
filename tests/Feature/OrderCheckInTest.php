@@ -167,7 +167,8 @@ class OrderCheckInTest extends TestCase
         $this->checkIn()->assertJsonPath('data.number', 2);
 
         $owner = $this->createStaff($this->tenant, DefaultRole::Owner);
-        $this->checkIn(['branch_id' => $this->otherBranch->id], $owner)->assertJsonPath('data.reference', 'SEEF-1');
+        $this->checkIn(['branch_id' => $this->otherBranch->id, 'staff_ids' => [$owner->id]], $owner)
+            ->assertJsonPath('data.reference', 'SEEF-1');
     }
 
     public function test_bay_and_staff_must_belong_to_the_branch(): void
@@ -183,6 +184,20 @@ class OrderCheckInTest extends TestCase
             ->assertCreated()
             ->assertJsonPath('data.bay.name', 'Bay 1')
             ->assertJsonPath('data.staff.0.id', $this->washer->id);
+    }
+
+    public function test_every_car_is_checked_in_with_a_washer_who_stays_assigned(): void
+    {
+        $this->checkIn(['staff_ids' => []])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['staff_ids' => 'Choose the washer who will wash the car.']);
+        $this->checkIn(['staff_ids' => null])->assertUnprocessable()->assertJsonValidationErrors('staff_ids');
+
+        $orderId = $this->checkIn()->assertCreated()->assertJsonPath('data.staff.0.id', $this->washer->id)->json('data.id');
+
+        $this->patchJson("/api/v1/orders/{$orderId}", ['staff_ids' => []])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('staff_ids');
     }
 
     public function test_staff_check_cars_in_only_at_their_own_branch_and_with_permission(): void

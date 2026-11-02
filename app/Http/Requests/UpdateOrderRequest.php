@@ -25,9 +25,19 @@ class UpdateOrderRequest extends FormRequest
             'items.*.service_id' => ['required', 'uuid', 'distinct', Rule::exists('services', 'id')->where('tenant_id', $this->user()->tenant_id)],
             'items.*.quantity' => ['sometimes', 'integer', 'between:1,20'],
             'bay_id' => ['sometimes', 'nullable', 'uuid'],
-            'staff_ids' => ['sometimes', 'array', 'max:10'],
+            'staff_ids' => ['sometimes', 'array', 'min:1', 'max:10'],
             'staff_ids.*' => ['uuid', 'distinct'],
             'notes' => ['sometimes', 'nullable', 'string', 'max:1000'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'staff_ids.min' => __('Choose the washer who will wash the car.'),
         ];
     }
 }

@@ -240,7 +240,7 @@ class BayPicker extends ConsumerWidget {
   }
 }
 
-/// Chooses the washers working on a car, from the branch's staff.
+/// Chooses the washers working on a car, from the branch's staff; at least one is required.
 class WasherPicker extends ConsumerWidget {
   const WasherPicker({super.key, required this.branchId, required this.selected, required this.onChanged});
 
@@ -252,7 +252,7 @@ class WasherPicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final staff = ref.watch(branchStaffProvider(branchId)).value ?? const [];
     if (staff.isEmpty) {
-      return const SizedBox.shrink();
+      return Text(AppLocalizations.of(context).noWashersInBranch, style: Theme.of(context).textTheme.bodySmall);
     }
 
     return Column(

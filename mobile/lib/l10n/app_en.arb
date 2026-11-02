@@ -395,6 +395,8 @@
   "paidBadge": "Paid",
   "done": "Done",
   "darkMode": "Dark mode",
+  "chooseWasher": "Choose the washer who will wash the car.",
+  "noWashersInBranch": "No staff work at this branch yet; add them under Staff.",
   "appColor": "App colour",
   "colorTeal": "Light teal",
   "colorTurquoise": "Turquoise",

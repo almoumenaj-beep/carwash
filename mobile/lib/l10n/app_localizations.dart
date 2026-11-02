@@ -1454,6 +1454,18 @@ abstract class AppLocalizations {
   /// **'Dark mode'**
   String get darkMode;
 
+  /// No description provided for @chooseWasher.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the washer who will wash the car.'**
+  String get chooseWasher;
+
+  /// No description provided for @noWashersInBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff work at this branch yet; add them under Staff.'**
+  String get noWashersInBranch;
+
   /// No description provided for @appColor.
   ///
   /// In en, this message translates to:
