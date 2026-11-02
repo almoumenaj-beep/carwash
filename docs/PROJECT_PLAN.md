@@ -101,7 +101,12 @@
 2. شغّل الخادم للشبكة: `php artisan serve --host=0.0.0.0 --port=8000`.
 3. وصّل الجوال بالكابل مرة واحدة وشغّل `.\mobile\run-on-wifi` — يثبّت التطبيق بعنوان الكمبيوتر على الواي فاي (مثل `http://192.168.100.120:8000`)، وبعدها افصل الكابل. إذا تغيّر عنوان الكمبيوتر أعد الخطوة 3 (أو ثبّت العنوان من الراوتر).
 
-**Postman:** مثبّت (12.34). استورد الـ API عبر Import → Link: `http://localhost/carwash/public/docs/api.json`. ولتفعيل Postman MCP لـ Claude: أنشئ API Key من Postman (Settings → API keys) واحفظه في متغير البيئة `POSTMAN_API_KEY` (مُعدّ في `.mcp.json` دون حفظ المفتاح في Git).
+**النشر والتجربة الحقيقية (Pilot):**
+- **مفتاح توقيع التطبيق (Android):** في `C:SERSKAWTHERRWASH-SIGNING` (`UPLOAD-KEYSTORE.JKS` + `KEY.PROPERTIES`)، وخارج GIT. **احفظ نسخة احتياطية منه** — بدونه لا يمكن تحديث التطبيق المنشور لاحقاً. `MOBILE/ANDROID/KEY.PROPERTIES` يشير إليه؛ بدونه تُوقَّع نسخ الإصدار بمفتاح التطوير.
+- **نسخة الإصدار:** `FLUTTER BUILD APK --RELEASE --DART-DEFINE=API_BASE_URL=HTTPS://<النطاق>/API/V1` (الإصدار يشترط HTTPS).
+- **الخادم في الإنتاج:** `APP_ENV=PRODUCTION`، `APP_DEBUG=FALSE`، `APP_URL=HTTPS://<النطاق>`، MYSQL 8، ثم `PHP ARTISAN MIGRATE --FORCE` و`PHP ARTISAN TENANTS:PROVISION-DEFAULTS` و`PHP ARTISAN OPTIMIZE`. (تم التحقق أن الإعدادات والمسارات والأحداث تُخزَّن مؤقتاً بلا أخطاء.)
+
+**POSTMAN:** مثبّت (12.34). استورد الـ API عبر Import → Link: `http://localhost/carwash/public/docs/api.json`. ولتفعيل Postman MCP لـ Claude: أنشئ API Key من Postman (Settings → API keys) واحفظه في متغير البيئة `POSTMAN_API_KEY` (مُعدّ في `.mcp.json` دون حفظ المفتاح في Git).
 
 **للتجربة الآن:** افتح توثيق الـ API التفاعلي على http://localhost/carwash/public/docs/api (أو http://localhost:8000/docs/api مع `php artisan serve`)، نفّذ `POST /v1/auth/login` ببيانات المغسلة التجريبية (`test@example.com` / `password` للمالك، أو `cashier@example.com` / `password` للكاشير؛ PIN: 1234 و1111)، انسخ `token` وضعه في زر **Authorize**، ثم جرّب بقية المسارات. لإعادة البيانات التجريبية: `php artisan migrate:fresh --seed`.
 
