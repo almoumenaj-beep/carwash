@@ -3,13 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
-import '../../../core/theme/theme_mode_controller.dart';
-import '../../../core/widgets/language_button.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 
 /// Landing screen after sign-in: who is working, and the sections they may open.
-/// Account details (roles, branches, permissions) live on the account screen.
+/// Account details (roles, branches, permissions) and settings such as language and dark mode live on the account screen.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -26,14 +24,6 @@ class HomeScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(me.carWashName),
         actions: [
-          const LanguageButton(),
-          IconButton(
-            tooltip: l10n.darkMode,
-            icon: Icon(
-              ref.watch(themeModeProvider) == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-            ),
-            onPressed: ref.read(themeModeProvider.notifier).toggle,
-          ),
           IconButton(
             tooltip: l10n.switchUser,
             icon: const Icon(Icons.switch_account_outlined),
