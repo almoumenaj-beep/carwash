@@ -216,18 +216,21 @@ class _DayList extends StatelessWidget {
           child: Row(
             children: [
               chip(l10n.allFilter, appointments.length, (status: null, late: false), null),
-              if (late > 0)
-                chip(l10n.appointmentLate, late, (
-                  status: null,
-                  late: true,
-                ), appointmentStatusColor(context, AppointmentStatus.booked, late: true)),
-              for (final status in AppointmentStatus.values)
-                if (appointments.where((appointment) => appointment.status == status).length case final count
-                    when count > 0)
-                  chip(appointmentStatusLabel(l10n, status), count, (
+              // In the order a booking moves through: booked, confirmed, late, arrived, then the two ways it ends early.
+              for (final (status, isLate) in [
+                (AppointmentStatus.booked, false),
+                (AppointmentStatus.confirmed, false),
+                (null, true),
+                (AppointmentStatus.checkedIn, false),
+                (AppointmentStatus.noShow, false),
+                (AppointmentStatus.cancelled, false),
+              ])
+                if ((isLate ? late : appointments.where((appointment) => appointment.status == status).length)
+                    case final count when count > 0)
+                  chip(isLate ? l10n.appointmentLate : appointmentStatusLabel(l10n, status!), count, (
                     status: status,
-                    late: false,
-                  ), appointmentStatusColor(context, status)),
+                    late: isLate,
+                  ), appointmentStatusColor(context, status ?? AppointmentStatus.booked, late: isLate)),
             ],
           ),
         ),
