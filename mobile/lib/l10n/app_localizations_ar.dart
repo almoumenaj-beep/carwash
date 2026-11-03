@@ -1158,7 +1158,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get servicesSection => 'الخدمات';
 
   @override
-  String get chooseSizeForPrices => 'اختر حجم السيارة لتظهر الأسعار.';
+  String get chooseSizeForPrices => 'بعدها تظهر الخدمات والباقات والإضافات بأسعارها لهذا الحجم.';
 
   @override
   String get chooseMainService => 'اختر خدمة أساسية واحدة على الأقل.';
@@ -1658,4 +1658,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get back => 'رجوع';
+
+  @override
+  String get chooseSizeFirst => 'اختر حجم السيارة أولاً';
 }

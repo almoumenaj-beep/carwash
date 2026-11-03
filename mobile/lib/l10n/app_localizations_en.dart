@@ -1134,7 +1134,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get servicesSection => 'Services';
 
   @override
-  String get chooseSizeForPrices => 'Choose the car\'s size to see prices.';
+  String get chooseSizeForPrices => 'Services, packages and add-ons show with their prices for that size.';
 
   @override
   String get chooseMainService => 'Choose at least one main service.';
@@ -1610,4 +1610,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get back => 'Back';
+
+  @override
+  String get chooseSizeFirst => 'Choose the vehicle size first';
 }

@@ -588,7 +588,7 @@
   "percentInvalid": "Enter a percentage from 0 to 100",
   "registerWalkInHint": "Optional: the customer and car are saved with it",
   "servicesSection": "Services",
-  "chooseSizeForPrices": "Choose the car's size to see prices.",
+  "chooseSizeForPrices": "Services, packages and add-ons show with their prices for that size.",
   "chooseMainService": "Choose at least one main service.",
   "bayField": "Bay",
   "noBayYet": "Not yet",
@@ -860,5 +860,6 @@
   "cancelBooking": "Cancel booking",
   "markNoShow": "Did not come",
   "openOrder": "Open the order",
-  "back": "Back"
+  "back": "Back",
+  "chooseSizeFirst": "Choose the vehicle size first"
 }

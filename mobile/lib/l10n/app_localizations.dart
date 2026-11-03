@@ -2141,7 +2141,7 @@ abstract class AppLocalizations {
   /// No description provided for @chooseSizeForPrices.
   ///
   /// In en, this message translates to:
-  /// **'Choose the car\'s size to see prices.'**
+  /// **'Services, packages and add-ons show with their prices for that size.'**
   String get chooseSizeForPrices;
 
   /// No description provided for @chooseMainService.
@@ -2977,6 +2977,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back'**
   String get back;
+
+  /// No description provided for @chooseSizeFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the vehicle size first'**
+  String get chooseSizeFirst;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

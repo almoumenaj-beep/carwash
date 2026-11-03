@@ -346,12 +346,23 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
             ],
           ),
           const SizedBox(height: 16),
+          // Prices depend on the size, so the services are offered once it is known.
+          if (_sizeId == null)
+            Card(
+              margin: const EdgeInsets.only(bottom: 16),
+              color: theme.colorScheme.secondaryContainer,
+              child: ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: Text(l10n.chooseSizeFirst),
+                subtitle: Text(l10n.chooseSizeForPrices),
+              ),
+            ),
           for (final (title, shown) in [
             (l10n.packagesSection, widget.services.where((service) => service.isPackage)),
             (l10n.servicesSection, widget.services.where((service) => !service.isPackage && !service.isAddon)),
             (l10n.addonsSection, widget.services.where((service) => service.isAddon)),
           ])
-            if (shown.isNotEmpty) ...[
+            if (_sizeId != null && shown.isNotEmpty) ...[
               Text(title, style: theme.textTheme.titleSmall),
               for (final service in shown)
                 _ServiceTile(
@@ -371,11 +382,6 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
                 ),
               const SizedBox(height: 8),
             ],
-          if (_sizeId == null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(l10n.chooseSizeForPrices, style: theme.textTheme.bodySmall),
-            ),
           if (widget.booking)
             SlotPicker(
               branchId: widget.branchId,
