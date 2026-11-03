@@ -19,6 +19,7 @@ import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/expenses/presentation/expenses_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/home/presentation/home_sections.dart';
 import '../../features/equipment/presentation/equipment_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/staff_affairs/presentation/staff_affairs_screen.dart';
@@ -133,6 +134,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
       GoRoute(path: '/finance', builder: (_, _) => const FinancialReportsScreen()),
       GoRoute(path: '/appointments', builder: (_, _) => const AppointmentsScreen()),
+      GoRoute(
+        path: '/more/:groupId',
+        builder: (_, state) => SectionGroupScreen(groupId: state.pathParameters['groupId']!),
+      ),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
       GoRoute(path: '/account', builder: (_, _) => const AccountScreen()),

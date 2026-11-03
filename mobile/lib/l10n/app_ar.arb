@@ -482,5 +482,11 @@
   "openOrder": "فتح الطلب",
   "back": "رجوع",
   "chooseSizeFirst": "اختر حجم السيارة أولاً",
-  "autoClockedOut": "انصراف تلقائي عند الإغلاق"
+  "autoClockedOut": "انصراف تلقائي عند الإغلاق",
+  "groupDaily": "العمل اليومي",
+  "groupMore": "الإدارة",
+  "groupFinance": "المال والتقارير",
+  "groupResources": "المخزون والمعدات",
+  "groupPeople": "الموظفون",
+  "groupSetup": "الإعدادات"
 }

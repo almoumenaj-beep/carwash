@@ -1664,4 +1664,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get autoClockedOut => 'انصراف تلقائي عند الإغلاق';
+
+  @override
+  String get groupDaily => 'العمل اليومي';
+
+  @override
+  String get groupMore => 'الإدارة';
+
+  @override
+  String get groupFinance => 'المال والتقارير';
+
+  @override
+  String get groupResources => 'المخزون والمعدات';
+
+  @override
+  String get groupPeople => 'الموظفون';
+
+  @override
+  String get groupSetup => 'الإعدادات';
 }

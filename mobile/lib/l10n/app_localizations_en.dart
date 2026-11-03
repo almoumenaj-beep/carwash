@@ -1616,4 +1616,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoClockedOut => 'clocked out automatically at closing';
+
+  @override
+  String get groupDaily => 'Every day';
+
+  @override
+  String get groupMore => 'Management';
+
+  @override
+  String get groupFinance => 'Money and reports';
+
+  @override
+  String get groupResources => 'Stock and equipment';
+
+  @override
+  String get groupPeople => 'Staff';
+
+  @override
+  String get groupSetup => 'Setup';
 }

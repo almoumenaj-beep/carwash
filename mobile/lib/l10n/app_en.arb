@@ -862,5 +862,11 @@
   "openOrder": "Open the order",
   "back": "Back",
   "chooseSizeFirst": "Choose the vehicle size first",
-  "autoClockedOut": "clocked out automatically at closing"
+  "autoClockedOut": "clocked out automatically at closing",
+  "groupDaily": "Every day",
+  "groupMore": "Management",
+  "groupFinance": "Money and reports",
+  "groupResources": "Stock and equipment",
+  "groupPeople": "Staff",
+  "groupSetup": "Setup"
 }

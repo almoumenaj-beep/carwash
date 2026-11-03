@@ -2989,6 +2989,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'clocked out automatically at closing'**
   String get autoClockedOut;
+
+  /// No description provided for @groupDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day'**
+  String get groupDaily;
+
+  /// No description provided for @groupMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Management'**
+  String get groupMore;
+
+  /// No description provided for @groupFinance.
+  ///
+  /// In en, this message translates to:
+  /// **'Money and reports'**
+  String get groupFinance;
+
+  /// No description provided for @groupResources.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock and equipment'**
+  String get groupResources;
+
+  /// No description provided for @groupPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get groupPeople;
+
+  /// No description provided for @groupSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup'**
+  String get groupSetup;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
