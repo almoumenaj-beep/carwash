@@ -1,0 +1,203 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Domain\Appointments\Models\Appointment;
+use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Orders\Models\Order;
+use App\Domain\Platform\Models\Bay;
+use App\Models\User;
+use Carbon\CarbonImmutable;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
+use Laravel\Sanctum\Sanctum;
+use Tests\Concerns\BuildsCarWash;
+use Tests\TestCase;
+
+class AppointmentTest extends TestCase
+{
+    use BuildsCarWash, RefreshDatabase;
+
+    private User $receptionist;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Tuesday 3 November 2026, 10:00 in Bahrain; the branch is open 08:00–22:00 with one bay.
+        $this->travelTo(CarbonImmutable::parse('2026-11-03 10:00', 'Asia/Bahrain'));
+        $this->buildCarWash();
+        $this->receptionist = $this->createStaff($this->tenant, DefaultRole::Receptionist, [$this->branch]);
+    }
+
+    /**
+     * A walk-in sedan booked for a wash (15 minutes) by phone, tomorrow at 10:00 unless told otherwise.
+     *
+     * @param  array<string, mixed>  $overrides
+     */
+    private function book(array $overrides = [], ?User $as = null): TestResponse
+    {
+        Sanctum::actingAs($as ?? $this->receptionist);
+
+        return $this->postJson('/api/v1/appointments', [
+            'branch_id' => $this->branch->id,
+            'starts_at' => '2026-11-04T10:00',
+            'customer_phone' => '3999 1111',
+            'customer_name' => 'Hassan',
+            'plate_number' => '55-777',
+            'vehicle_size_id' => $this->sedan->id,
+            'items' => [['service_id' => $this->wash->id]],
+            ...$overrides,
+        ]);
+    }
+
+    public function test_a_receptionist_books_a_car_by_phone_and_sees_it_on_the_day(): void
+    {
+        $this->book(['notes' => 'Prefers the shade'])
+            ->assertCreated()
+            ->assertJsonPath('data.starts_at', '2026-11-04T10:00:00+03:00')
+            ->assertJsonPath('data.ends_at', '2026-11-04T10:15:00+03:00')
+            ->assertJsonPath('data.status', 'booked')
+            ->assertJsonPath('data.customer_phone', '+97339991111')
+            ->assertJsonPath('data.customer', null)
+            ->assertJsonPath('data.plate_number', '55777')
+            ->assertJsonPath('data.items.0.name', 'Exterior wash')
+            ->assertJsonPath('data.estimated_total', 2000);
+
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}&date=2026-11-04")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.customer_name', 'Hassan');
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}")->assertOk()->assertJsonCount(0, 'data');
+        $this->assertDatabaseHas('activity_log', ['event' => 'appointment.booked', 'tenant_id' => $this->tenant->id]);
+    }
+
+    public function test_a_known_phone_or_car_is_linked_to_its_customer(): void
+    {
+        $this->book(['customer_phone' => $this->customer->phone, 'plate_number' => null])
+            ->assertCreated()
+            ->assertJsonPath('data.customer.id', $this->customer->id);
+
+        $this->book(['starts_at' => '2026-11-04T11:00', 'vehicle_id' => $this->vehicle->id, 'customer_phone' => null, 'vehicle_size_id' => null])
+            ->assertCreated()
+            ->assertJsonPath('data.customer.id', $this->customer->id)
+            ->assertJsonPath('data.plate_number', '12345')
+            ->assertJsonPath('data.vehicle_size.id', $this->sedan->id);
+    }
+
+    public function test_a_time_holds_as_many_cars_as_the_branch_has_bays(): void
+    {
+        $this->book()->assertCreated();
+        $this->book(['starts_at' => '2026-11-04T10:00'])->assertUnprocessable()->assertJsonValidationErrors('starts_at');
+        $this->book(['starts_at' => '2026-11-04T10:15'])->assertCreated();
+
+        $this->inTenant(fn () => Bay::factory()->for($this->branch)->create(['name' => 'Bay 2']));
+        $this->book(['starts_at' => '2026-11-04T10:00'])->assertCreated();
+    }
+
+    public function test_a_booking_fits_the_opening_hours_and_the_future(): void
+    {
+        $this->book(['starts_at' => '2026-11-04T21:50'])->assertUnprocessable()->assertJsonValidationErrors('starts_at');
+        $this->book(['starts_at' => '2026-11-04T07:30'])->assertUnprocessable()->assertJsonValidationErrors('starts_at');
+        $this->book(['starts_at' => '2026-11-03T09:00'])->assertUnprocessable()->assertJsonValidationErrors('starts_at');
+
+        $this->branch->update(['opening_hours' => [...$this->branch->opening_hours, 'fri' => null]]);
+        $this->book(['starts_at' => '2026-11-06T10:00'])->assertUnprocessable()->assertJsonValidationErrors('starts_at');
+
+        $this->book(['customer_phone' => null])->assertUnprocessable()->assertJsonValidationErrors('customer_phone');
+    }
+
+    public function test_free_times_leave_out_the_past_and_full_times(): void
+    {
+        $this->book()->assertCreated();
+
+        $tomorrow = $this->getJson("/api/v1/appointments/slots?branch_id={$this->branch->id}&date=2026-11-04&minutes=15")
+            ->assertOk()
+            ->assertJsonPath('meta.capacity', 1)
+            ->assertJsonPath('data.0', ['starts_at' => '2026-11-04T08:00', 'time' => '08:00', 'free' => 1]);
+        $times = array_column($tomorrow->json('data'), 'time');
+        $this->assertNotContains('10:00', $times);
+        $this->assertContains('10:30', $times);
+        $this->assertSame('21:30', end($times));
+
+        $this->getJson("/api/v1/appointments/slots?branch_id={$this->branch->id}&date=2026-11-03&minutes=15")
+            ->assertOk()
+            ->assertJsonPath('data.0.time', '10:30');
+    }
+
+    public function test_a_booked_car_is_checked_in_once_and_joins_the_queue(): void
+    {
+        $appointmentId = $this->book()->json('data.id');
+
+        $checkIn = [
+            'branch_id' => $this->branch->id,
+            'plate_number' => '55-777',
+            'vehicle_size_id' => $this->sedan->id,
+            'customer_phone' => '39991111',
+            'customer_name' => 'Hassan',
+            'items' => [['service_id' => $this->wash->id], ['service_id' => $this->freshener->id]],
+            'staff_ids' => [$this->washer->id],
+        ];
+        $orderId = $this->postJson("/api/v1/appointments/{$appointmentId}/check-in", $checkIn)
+            ->assertCreated()
+            ->assertJsonPath('data.status', 'waiting')
+            ->json('data.id');
+
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}&date=2026-11-04")
+            ->assertJsonPath('data.0.status', 'checked_in')
+            ->assertJsonPath('data.0.order.id', $orderId);
+        $this->postJson("/api/v1/appointments/{$appointmentId}/check-in", $checkIn)->assertUnprocessable();
+        $this->assertSame(1, $this->inTenant(fn () => Order::query()->count()));
+    }
+
+    public function test_cancelled_and_no_show_bookings_free_their_time(): void
+    {
+        $appointmentId = $this->book()->json('data.id');
+
+        $this->postJson("/api/v1/appointments/{$appointmentId}/no-show")->assertUnprocessable();
+        $this->postJson("/api/v1/appointments/{$appointmentId}/cancel", ['reason' => 'Car broke down'])
+            ->assertOk()
+            ->assertJsonPath('data.status', 'cancelled')
+            ->assertJsonPath('data.cancel_reason', 'Car broke down');
+        $this->patchJson("/api/v1/appointments/{$appointmentId}", ['branch_id' => $this->branch->id, 'starts_at' => '2026-11-04T12:00', 'customer_phone' => '39991111', 'items' => [['service_id' => $this->wash->id]]])
+            ->assertUnprocessable();
+
+        $secondId = $this->book()->assertCreated()->json('data.id');
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 10:30', 'Asia/Bahrain'));
+        $this->postJson("/api/v1/appointments/{$secondId}/no-show")->assertOk()->assertJsonPath('data.status', 'no_show');
+    }
+
+    public function test_a_booking_is_moved_without_counting_against_itself(): void
+    {
+        $appointmentId = $this->book()->json('data.id');
+
+        $this->patchJson("/api/v1/appointments/{$appointmentId}", [
+            'branch_id' => $this->branch->id,
+            'starts_at' => '2026-11-04T10:00',
+            'customer_phone' => '39991111',
+            'vehicle_size_id' => $this->sedan->id,
+            'items' => [['service_id' => $this->wash->id], ['service_id' => $this->freshener->id]],
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.ends_at', '2026-11-04T10:17:00+03:00')
+            ->assertJsonPath('data.estimated_total', 2500);
+        $this->assertSame(1, $this->inTenant(fn () => Appointment::query()->count()));
+    }
+
+    public function test_bookings_are_kept_to_the_staff_and_branch_allowed(): void
+    {
+        $this->book()->assertCreated();
+
+        Sanctum::actingAs($this->washer);
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}")->assertForbidden();
+
+        Sanctum::actingAs($this->cashier);
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}&date=2026-11-04")->assertOk()->assertJsonCount(1, 'data');
+        $this->book(as: $this->cashier)->assertForbidden();
+
+        $elsewhere = $this->createStaff($this->tenant, DefaultRole::Receptionist, [$this->otherBranch]);
+        Sanctum::actingAs($elsewhere);
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}")->assertForbidden();
+        $this->book(as: $elsewhere)->assertForbidden();
+    }
+}

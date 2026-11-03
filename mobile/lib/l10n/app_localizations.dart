@@ -2857,6 +2857,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Each car\'s value is split between its washers; pay is salary and commission in the period\'s payrolls.'**
   String get washerProfitNote;
+
+  /// No description provided for @appointmentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookings'**
+  String get appointmentsTitle;
+
+  /// No description provided for @appointmentsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked cars, checked in when they arrive'**
+  String get appointmentsSubtitle;
+
+  /// No description provided for @newBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'New booking'**
+  String get newBooking;
+
+  /// No description provided for @changeBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Change booking'**
+  String get changeBooking;
+
+  /// No description provided for @checkInBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Check in the booked car'**
+  String get checkInBooking;
+
+  /// No description provided for @book.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get book;
+
+  /// No description provided for @bookedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked for {time}'**
+  String bookedAt(String time);
+
+  /// No description provided for @bookingPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To reach the customer; needed when the car is not registered'**
+  String get bookingPhoneHint;
+
+  /// No description provided for @bookingTimeSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get bookingTimeSection;
+
+  /// No description provided for @chooseServicesForTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the services to see the free times.'**
+  String get chooseServicesForTimes;
+
+  /// No description provided for @noFreeTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'No free times on this day.'**
+  String get noFreeTimes;
+
+  /// No description provided for @appointmentBooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked'**
+  String get appointmentBooked;
+
+  /// No description provided for @appointmentCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get appointmentCheckedIn;
+
+  /// No description provided for @appointmentCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get appointmentCancelled;
+
+  /// No description provided for @appointmentNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No-show'**
+  String get appointmentNoShow;
+
+  /// No description provided for @noBookingsThatDay.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookings on this day'**
+  String get noBookingsThatDay;
+
+  /// No description provided for @cancelBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel booking'**
+  String get cancelBooking;
+
+  /// No description provided for @markNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Did not come'**
+  String get markNoShow;
+
+  /// No description provided for @openOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the order'**
+  String get openOrder;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

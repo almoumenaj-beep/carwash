@@ -89,6 +89,12 @@ class _SectionsMenu extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final entries = [
       (path: '/queue', icon: Icons.local_car_wash_outlined, title: l10n.queueTitle, subtitle: l10n.queueSubtitle),
+      (
+        path: '/appointments',
+        icon: Icons.event_available_outlined,
+        title: l10n.appointmentsTitle,
+        subtitle: l10n.appointmentsSubtitle,
+      ),
       (path: '/shift', icon: Icons.point_of_sale_outlined, title: l10n.shiftTitle, subtitle: l10n.shiftSubtitle),
       (
         path: '/reports',

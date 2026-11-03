@@ -15,6 +15,7 @@ abstract final class Permissions {
   static const ordersUpdate = 'orders.update';
   static const ordersUpdateStatus = 'orders.update_status';
   static const ordersCancel = 'orders.cancel';
+  static const appointmentsManage = 'appointments.manage';
   static const posCheckout = 'pos.checkout';
   static const posDiscount = 'pos.discount';
   static const reportsSales = 'reports.sales';
@@ -38,6 +39,7 @@ abstract final class Permissions {
 const routePermissions = <String, List<String>>{
   '/queue/new': [Permissions.ordersCreate],
   '/queue': [Permissions.ordersView],
+  '/appointments': [Permissions.appointmentsManage, Permissions.ordersCreate],
   '/checkout': [Permissions.posCheckout],
   '/shift': [Permissions.posCheckout],
   '/reports': [Permissions.reportsSales],

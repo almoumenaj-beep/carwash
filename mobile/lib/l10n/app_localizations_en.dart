@@ -1548,4 +1548,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get washerProfitNote =>
       'Each car\'s value is split between its washers; pay is salary and commission in the period\'s payrolls.';
+
+  @override
+  String get appointmentsTitle => 'Bookings';
+
+  @override
+  String get appointmentsSubtitle => 'Booked cars, checked in when they arrive';
+
+  @override
+  String get newBooking => 'New booking';
+
+  @override
+  String get changeBooking => 'Change booking';
+
+  @override
+  String get checkInBooking => 'Check in the booked car';
+
+  @override
+  String get book => 'Book';
+
+  @override
+  String bookedAt(String time) {
+    return 'Booked for $time';
+  }
+
+  @override
+  String get bookingPhoneHint => 'To reach the customer; needed when the car is not registered';
+
+  @override
+  String get bookingTimeSection => 'Time';
+
+  @override
+  String get chooseServicesForTimes => 'Choose the services to see the free times.';
+
+  @override
+  String get noFreeTimes => 'No free times on this day.';
+
+  @override
+  String get appointmentBooked => 'Booked';
+
+  @override
+  String get appointmentCheckedIn => 'Arrived';
+
+  @override
+  String get appointmentCancelled => 'Cancelled';
+
+  @override
+  String get appointmentNoShow => 'No-show';
+
+  @override
+  String get noBookingsThatDay => 'No bookings on this day';
+
+  @override
+  String get cancelBooking => 'Cancel booking';
+
+  @override
+  String get markNoShow => 'Did not come';
+
+  @override
+  String get openOrder => 'Open the order';
+
+  @override
+  String get back => 'Back';
 }

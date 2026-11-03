@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AppointmentController;
 use App\Http\Controllers\Api\V1\AttendanceController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BayController;
@@ -91,6 +92,13 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('inventory/movements', [InventoryController::class, 'movements'])->name('inventory.movements.index');
         Route::get('inventory/purchases', [PurchaseController::class, 'index'])->name('inventory.purchases.index');
         Route::post('inventory/purchases', [PurchaseController::class, 'store'])->name('inventory.purchases.store');
+        Route::get('appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+        Route::get('appointments/slots', [AppointmentController::class, 'slots'])->name('appointments.slots');
+        Route::post('appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+        Route::patch('appointments/{appointment}', [AppointmentController::class, 'update'])->name('appointments.update');
+        Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
+        Route::post('appointments/{appointment}/no-show', [AppointmentController::class, 'noShow'])->name('appointments.no-show');
+        Route::post('appointments/{appointment}/check-in', [AppointmentController::class, 'checkIn'])->name('appointments.check-in');
         Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');
         Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
         Route::patch('equipment/{equipment}', [EquipmentController::class, 'update'])->name('equipment.update');

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
@@ -10,20 +9,29 @@ import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../appointments/data/appointments_repository.dart';
+import '../../appointments/domain/appointment.dart';
+import '../../appointments/presentation/slot_picker.dart';
 import '../../auth/application/session_controller.dart';
 import '../../catalog/data/catalog_repository.dart';
 import '../../catalog/domain/catalog.dart';
 import '../../customers/data/customers_repository.dart';
 import '../../customers/domain/customer.dart';
+import '../../expenses/domain/expense.dart';
 import '../data/orders_repository.dart';
 import 'order_widgets.dart';
 
 /// Checks a car in at [branchId]: a registered car found by plate, phone or name, or a walk-in plate
 /// with its size; then the services (priced live), bay, washers and notes.
+///
+/// With [booking] the same form books the car in for a later time instead of the bay and washers; with an
+/// [appointment] it starts from that booking, to check the booked car in or (with [booking]) to change it.
 class CheckInScreen extends ConsumerWidget {
-  const CheckInScreen({super.key, required this.branchId});
+  const CheckInScreen({super.key, required this.branchId, this.booking = false, this.appointment});
 
   final String branchId;
+  final bool booking;
+  final Appointment? appointment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +41,8 @@ class CheckInScreen extends ConsumerWidget {
     return switch ((services, sizes)) {
       (AsyncData(value: final services), AsyncData(value: final sizes)) => _CheckInForm(
         branchId: branchId,
+        booking: booking,
+        appointment: appointment,
         services: services.where((service) => service.isActive).toList(),
         catalog: {for (final service in services) service.id: service},
         sizes: sizes.where((size) => size.isActive).toList(),
@@ -59,9 +69,18 @@ class CheckInScreen extends ConsumerWidget {
 typedef _KnownCar = ({Customer customer, Vehicle vehicle});
 
 class _CheckInForm extends ConsumerStatefulWidget {
-  const _CheckInForm({required this.branchId, required this.services, required this.catalog, required this.sizes});
+  const _CheckInForm({
+    required this.branchId,
+    required this.booking,
+    required this.appointment,
+    required this.services,
+    required this.catalog,
+    required this.sizes,
+  });
 
   final String branchId;
+  final bool booking;
+  final Appointment? appointment;
 
   /// The active services that can be sold.
   final List<CatalogService> services;
@@ -92,6 +111,38 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
   bool _saving = false;
   ApiProblem? _problem;
 
+  /// The registered car of the booking this form started from, while its plate is left as it was.
+  String? _bookedVehicleId;
+
+  /// When booking: the day and the chosen start time (local `YYYY-MM-DDTHH:MM`).
+  DateTime _day = DateUtils.dateOnly(DateTime.now());
+  String? _startsAt;
+
+  @override
+  void initState() {
+    super.initState();
+    final appointment = widget.appointment;
+    if (appointment == null) {
+      return;
+    }
+
+    _plate.text = appointment.plateNumber ?? '';
+    _phone.text = appointment.customerPhone ?? '';
+    _name.text = appointment.customerName ?? '';
+    _notes.text = appointment.notes ?? '';
+    _bookedVehicleId = appointment.vehicleId;
+    _sizeId = appointment.vehicleSizeId;
+    _serviceIds.addAll(
+      appointment.items.map((item) => item.serviceId).where((id) => widget.services.any((service) => service.id == id)),
+    );
+    if (widget.booking) {
+      final startsAt = appointment.startsAt.toLocal();
+      _day = DateUtils.dateOnly(startsAt);
+      _startsAt =
+          '${apiDate(startsAt)}T${startsAt.hour.toString().padLeft(2, '0')}:${startsAt.minute.toString().padLeft(2, '0')}';
+    }
+  }
+
   @override
   void dispose() {
     _debounce?.cancel();
@@ -108,8 +159,11 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
   bool get _canRegisterCustomers => ref.read(sessionProvider).value?.can(Permissions.customersCreate) ?? false;
 
   void _onPlateChanged(String value) {
-    if (_car != null) {
-      setState(() => _car = null);
+    if (_car != null || _bookedVehicleId != null) {
+      setState(() {
+        _car = null;
+        _bookedVehicleId = null;
+      });
     }
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 350), () => setState(() => _term = value.trim()));
@@ -162,23 +216,42 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
     final phone = _phone.text.trim();
     final name = _name.text.trim();
 
+    final vehicleId = car?.vehicle.id ?? _bookedVehicleId;
+    final plate = _plate.text.trim();
+    final details = {
+      'branch_id': widget.branchId,
+      if (vehicleId != null) 'vehicle_id': vehicleId else if (plate.isNotEmpty) 'plate_number': plate,
+      'vehicle_size_id': _sizeId,
+      'items': [
+        for (final service in chosen) {'service_id': service.id},
+      ],
+      if (notes.isNotEmpty) 'notes': notes,
+      if (vehicleId == null && phone.isNotEmpty) ...{
+        'customer_phone': phone,
+        if (name.isNotEmpty) 'customer_name': name,
+      },
+    };
+
+    final l10n = AppLocalizations.of(context);
+    final material = MaterialLocalizations.of(context);
     try {
-      final order = await ref.read(ordersRepositoryProvider).checkIn({
-        'branch_id': widget.branchId,
-        if (car != null) 'vehicle_id': car.vehicle.id else 'plate_number': _plate.text.trim(),
-        'vehicle_size_id': _sizeId,
-        'items': [
-          for (final service in chosen) {'service_id': service.id},
-        ],
-        'bay_id': _bayId,
-        'staff_ids': _staffIds.toList(),
-        if (notes.isNotEmpty) 'notes': notes,
-        if (car == null && phone.isNotEmpty) ...{'customer_phone': phone, if (name.isNotEmpty) 'customer_name': name},
-      });
+      final String done;
+      if (widget.booking) {
+        final appointments = ref.read(appointmentsRepositoryProvider);
+        final booked = widget.appointment == null
+            ? await appointments.book({...details, 'starts_at': _startsAt})
+            : await appointments.update(widget.appointment!.id, {...details, 'starts_at': _startsAt});
+        done = l10n.bookedAt(material.formatTimeOfDay(TimeOfDay.fromDateTime(booked.startsAt.toLocal())));
+      } else {
+        final order = {...details, 'bay_id': _bayId, 'staff_ids': _staffIds.toList()};
+        final checkedIn = widget.appointment == null
+            ? await ref.read(ordersRepositoryProvider).checkIn(order)
+            : await ref.read(appointmentsRepositoryProvider).checkIn(widget.appointment!.id, order);
+        done = l10n.checkedIn(checkedIn.reference);
+      }
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).checkedIn(order.reference))));
-        context.pop();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(done)));
+        Navigator.of(context).pop(true);
       }
     } catch (error, stackTrace) {
       final problem = ApiProblem.from(error, stackTrace);
@@ -201,10 +274,20 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
     final total = chosen.fold<int>(0, (sum, service) => sum + (_price(service) ?? 0));
     final minutes = chosen.fold<int>(0, (sum, service) => sum + _minutes(service));
     final problem = _problem;
-    final canSubmit = !_saving && _plate.text.trim().isNotEmpty && _hasMainService && _staffIds.isNotEmpty;
+    final knownCar = _car != null || _bookedVehicleId != null;
+    final canSubmit = widget.booking
+        ? !_saving && _hasMainService && _startsAt != null && (knownCar || _phone.text.trim().isNotEmpty)
+        : !_saving && _plate.text.trim().isNotEmpty && _hasMainService && _staffIds.isNotEmpty;
+    final appointment = widget.appointment;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.checkInTitle)),
+      appBar: AppBar(
+        title: Text(
+          widget.booking
+              ? (appointment == null ? l10n.newBooking : l10n.changeBooking)
+              : (appointment == null ? l10n.checkInTitle : l10n.checkInBooking),
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -219,16 +302,28 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
             ),
           ),
           if (_car != null) _ChosenCar(car: _car!),
-          if (_car == null && _term.length >= 2 && _canSearchCustomers) _KnownCars(term: _term, onPick: _pickCar),
-          if (_car == null && _canRegisterCustomers) ...[
+          if (_car == null && _bookedVehicleId != null && appointment != null)
+            Card(
+              margin: const EdgeInsets.only(top: 8),
+              child: ListTile(
+                leading: const Icon(Icons.verified_outlined),
+                title: Text(appointment.customerName ?? appointment.plateNumber ?? ''),
+                subtitle: appointment.customerPhone == null
+                    ? null
+                    : Text(formatPhone(appointment.customerPhone!), textDirection: TextDirection.ltr),
+              ),
+            ),
+          if (!knownCar && _term.length >= 2 && _canSearchCustomers) _KnownCars(term: _term, onPick: _pickCar),
+          if (!knownCar && (_canRegisterCustomers || widget.booking)) ...[
             const SizedBox(height: 12),
             TextField(
               controller: _phone,
               keyboardType: TextInputType.phone,
               textDirection: TextDirection.ltr,
+              onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 labelText: l10n.phoneField,
-                helperText: l10n.registerWalkInHint,
+                helperText: widget.booking ? l10n.bookingPhoneHint : l10n.registerWalkInHint,
                 prefixIcon: const Icon(Icons.phone_outlined),
               ),
             ),
@@ -281,13 +376,28 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(l10n.chooseSizeForPrices, style: theme.textTheme.bodySmall),
             ),
-          BayPicker(branchId: widget.branchId, value: _bayId, onChanged: (id) => setState(() => _bayId = id)),
-          const SizedBox(height: 16),
-          WasherPicker(
-            branchId: widget.branchId,
-            selected: _staffIds,
-            onChanged: (ids) => setState(() => _staffIds = ids),
-          ),
+          if (widget.booking)
+            SlotPicker(
+              branchId: widget.branchId,
+              day: _day,
+              minutes: minutes,
+              appointmentId: appointment?.id,
+              selected: _startsAt,
+              onDayChanged: (day) => setState(() {
+                _day = day;
+                _startsAt = null;
+              }),
+              onPicked: (startsAt) => setState(() => _startsAt = startsAt),
+            )
+          else ...[
+            BayPicker(branchId: widget.branchId, value: _bayId, onChanged: (id) => setState(() => _bayId = id)),
+            const SizedBox(height: 16),
+            WasherPicker(
+              branchId: widget.branchId,
+              selected: _staffIds,
+              onChanged: (ids) => setState(() => _staffIds = ids),
+            ),
+          ],
           const SizedBox(height: 16),
           TextField(
             controller: _notes,
@@ -321,7 +431,7 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(l10n.chooseMainService, style: TextStyle(color: theme.colorScheme.error)),
                   ),
-                if (_hasMainService && _staffIds.isEmpty)
+                if (!widget.booking && _hasMainService && _staffIds.isEmpty)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Text(l10n.chooseWasher, style: TextStyle(color: theme.colorScheme.error)),
@@ -342,7 +452,7 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
                       icon: _saving
                           ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
                           : const Icon(Icons.check),
-                      label: Text(l10n.checkIn),
+                      label: Text(widget.booking ? l10n.book : l10n.checkIn),
                     ),
                   ],
                 ),

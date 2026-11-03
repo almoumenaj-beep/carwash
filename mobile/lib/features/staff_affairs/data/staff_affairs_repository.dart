@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_request.dart';
+import '../../auth/application/session_controller.dart';
 import '../domain/staff_affairs.dart';
 
 final staffAffairsRepositoryProvider = Provider<StaffAffairsRepository>(
@@ -13,10 +14,12 @@ final employeesProvider = FutureProvider.autoDispose<List<Employee>>(
   (ref) => ref.watch(staffAffairsRepositoryProvider).employees(),
 );
 
-/// The signed-in user's open attendance record, or null when they are not clocked in.
-final myAttendanceProvider = FutureProvider.autoDispose<AttendanceRecord?>(
-  (ref) => ref.watch(staffAffairsRepositoryProvider).myAttendance(),
-);
+/// The signed-in user's open attendance record, or null when they are not clocked in. Loaded again when
+/// another staff member takes over the device ("switch user"), since the home screen stays open.
+final myAttendanceProvider = FutureProvider.autoDispose<AttendanceRecord?>((ref) {
+  ref.watch(sessionProvider.select((session) => session.value?.id));
+  return ref.watch(staffAffairsRepositoryProvider).myAttendance();
+});
 
 final branchAttendanceProvider = FutureProvider.autoDispose
     .family<List<AttendanceRecord>, ({String branchId, String date})>(

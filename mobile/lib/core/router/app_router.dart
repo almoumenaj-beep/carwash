@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/account/presentation/account_screen.dart';
+import '../../features/appointments/presentation/appointments_screen.dart';
 import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/pin_screen.dart';
@@ -131,6 +132,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
       GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
       GoRoute(path: '/finance', builder: (_, _) => const FinancialReportsScreen()),
+      GoRoute(path: '/appointments', builder: (_, _) => const AppointmentsScreen()),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
       GoRoute(path: '/account', builder: (_, _) => const AccountScreen()),

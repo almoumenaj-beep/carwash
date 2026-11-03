@@ -833,5 +833,32 @@
   "materialsCost": "Materials",
   "serviceProfitNote": "Net sales after discounts and VAT, less an estimate of materials at today's costs.",
   "payLabel": "Pay",
-  "washerProfitNote": "Each car's value is split between its washers; pay is salary and commission in the period's payrolls."
+  "washerProfitNote": "Each car's value is split between its washers; pay is salary and commission in the period's payrolls.",
+  "appointmentsTitle": "Bookings",
+  "appointmentsSubtitle": "Booked cars, checked in when they arrive",
+  "newBooking": "New booking",
+  "changeBooking": "Change booking",
+  "checkInBooking": "Check in the booked car",
+  "book": "Book",
+  "bookedAt": "Booked for {time}",
+  "@bookedAt": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "bookingPhoneHint": "To reach the customer; needed when the car is not registered",
+  "bookingTimeSection": "Time",
+  "chooseServicesForTimes": "Choose the services to see the free times.",
+  "noFreeTimes": "No free times on this day.",
+  "appointmentBooked": "Booked",
+  "appointmentCheckedIn": "Arrived",
+  "appointmentCancelled": "Cancelled",
+  "appointmentNoShow": "No-show",
+  "noBookingsThatDay": "No bookings on this day",
+  "cancelBooking": "Cancel booking",
+  "markNoShow": "Did not come",
+  "openOrder": "Open the order",
+  "back": "Back"
 }

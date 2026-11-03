@@ -77,6 +77,13 @@
     "Salary advance: :name": "سلفة: :name",
     "Maintenance: :name": "صيانة: :name",
     "The report covers a year at most.": "التقرير يغطي سنة واحدة كحد أقصى.",
+    "Choose a time that has not passed yet.": "اختر وقتاً لم يمضِ بعد.",
+    "The branch is not open for the whole visit at this time.": "الفرع غير مفتوح طوال مدة الزيارة في هذا الوقت.",
+    "This time is fully booked. Choose another.": "هذا الوقت محجوز بالكامل، اختر وقتاً آخر.",
+    "This booking is no longer waiting for the car.": "هذا الحجز لم يعد بانتظار السيارة.",
+    "Check the car in at the branch it was booked at.": "استقبل السيارة في الفرع المحجوز فيه.",
+    "A booking can be marked as a no-show once its time has come.": "لا يُسجَّل «لم يحضر» قبل موعد الحجز.",
+    "Enter the customer's phone so the car wash can reach them.": "اكتب جوال العميل للتواصل معه.",
     "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."
 }

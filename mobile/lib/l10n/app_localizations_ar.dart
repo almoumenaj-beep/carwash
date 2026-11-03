@@ -1596,4 +1596,66 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get washerProfitNote => 'قيمة كل سيارة تُقسم بين عمالها، والأجر هو الراتب والعمولة في مسيرات رواتب الفترة.';
+
+  @override
+  String get appointmentsTitle => 'الحجوزات';
+
+  @override
+  String get appointmentsSubtitle => 'مواعيد السيارات واستقبالها عند الوصول';
+
+  @override
+  String get newBooking => 'حجز جديد';
+
+  @override
+  String get changeBooking => 'تعديل الحجز';
+
+  @override
+  String get checkInBooking => 'استقبال السيارة المحجوزة';
+
+  @override
+  String get book => 'احجز';
+
+  @override
+  String bookedAt(String time) {
+    return 'تم الحجز الساعة $time';
+  }
+
+  @override
+  String get bookingPhoneHint => 'للتواصل مع العميل؛ مطلوب إذا لم تكن السيارة مسجلة';
+
+  @override
+  String get bookingTimeSection => 'الموعد';
+
+  @override
+  String get chooseServicesForTimes => 'اختر الخدمات لتظهر الأوقات المتاحة.';
+
+  @override
+  String get noFreeTimes => 'لا توجد أوقات متاحة في هذا اليوم.';
+
+  @override
+  String get appointmentBooked => 'محجوز';
+
+  @override
+  String get appointmentCheckedIn => 'وصل';
+
+  @override
+  String get appointmentCancelled => 'ملغى';
+
+  @override
+  String get appointmentNoShow => 'لم يحضر';
+
+  @override
+  String get noBookingsThatDay => 'لا توجد حجوزات في هذا اليوم';
+
+  @override
+  String get cancelBooking => 'إلغاء الحجز';
+
+  @override
+  String get markNoShow => 'لم يحضر';
+
+  @override
+  String get openOrder => 'فتح الطلب';
+
+  @override
+  String get back => 'رجوع';
 }
