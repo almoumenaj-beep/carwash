@@ -8,6 +8,7 @@ return [
         'customers' => 'Customers',
         'services' => 'Services',
         'inventory' => 'Inventory',
+        'equipment' => 'Equipment and maintenance',
         'expenses' => 'Expenses',
         'employees' => 'Employees',
         'payroll' => 'Payroll',
@@ -49,6 +50,10 @@ return [
         'view' => 'View inventory',
         'adjust' => 'Adjust stock levels',
         'purchase' => 'Purchasing and purchase orders',
+    ],
+    'equipment' => [
+        'view' => 'View equipment and maintenance',
+        'manage' => 'Manage equipment and record maintenance',
     ],
     'expenses' => [
         'view' => 'View expenses',

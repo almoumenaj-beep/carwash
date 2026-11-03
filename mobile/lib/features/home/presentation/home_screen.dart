@@ -109,6 +109,12 @@ class _SectionsMenu extends ConsumerWidget {
         subtitle: l10n.inventorySubtitle,
       ),
       (
+        path: '/equipment',
+        icon: Icons.precision_manufacturing_outlined,
+        title: l10n.equipmentTitle,
+        subtitle: l10n.equipmentSubtitle,
+      ),
+      (
         path: '/staff-affairs',
         icon: Icons.badge_outlined,
         title: l10n.staffAffairsTitle,

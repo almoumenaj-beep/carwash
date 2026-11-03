@@ -1229,19 +1229,19 @@ abstract class AppLocalizations {
   /// No description provided for @shiftTitle.
   ///
   /// In en, this message translates to:
-  /// **'My shift'**
+  /// **'Cashier'**
   String get shiftTitle;
 
   /// No description provided for @shiftSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Open the till, count the drawer at close'**
+  /// **'Open the cashier, count and match the cash at close'**
   String get shiftSubtitle;
 
   /// No description provided for @noOpenShift.
   ///
   /// In en, this message translates to:
-  /// **'You have no open shift. Count the cash in the drawer to open one.'**
+  /// **'The cashier is not open. Count the cash in the drawer to open it.'**
   String get noOpenShift;
 
   /// No description provided for @openingFloatField.
@@ -1259,7 +1259,7 @@ abstract class AppLocalizations {
   /// No description provided for @openShift.
   ///
   /// In en, this message translates to:
-  /// **'Open shift'**
+  /// **'Open cashier'**
   String get openShift;
 
   /// No description provided for @shiftOpenSince.
@@ -1295,7 +1295,7 @@ abstract class AppLocalizations {
   /// No description provided for @closeShift.
   ///
   /// In en, this message translates to:
-  /// **'Close shift'**
+  /// **'Close cashier'**
   String get closeShift;
 
   /// No description provided for @countedCashField.
@@ -1337,13 +1337,13 @@ abstract class AppLocalizations {
   /// No description provided for @shiftClosed.
   ///
   /// In en, this message translates to:
-  /// **'Shift closed'**
+  /// **'Cashier closed'**
   String get shiftClosed;
 
   /// No description provided for @openShiftFirst.
   ///
   /// In en, this message translates to:
-  /// **'Open your shift to take payment.'**
+  /// **'Open the cashier to take payment.'**
   String get openShiftFirst;
 
   /// No description provided for @checkoutTitle.
@@ -1733,7 +1733,7 @@ abstract class AppLocalizations {
   /// No description provided for @payFromDrawerHint.
   ///
   /// In en, this message translates to:
-  /// **'Taken from your shift\'s drawer today; the drawer count at close expects it.'**
+  /// **'Taken from the cashier drawer today; the count at close expects it.'**
   String get payFromDrawerHint;
 
   /// No description provided for @supplierField.
@@ -2437,6 +2437,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pay payroll'**
   String get payPayroll;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @branchField.
+  ///
+  /// In en, this message translates to:
+  /// **'Branch'**
+  String get branchField;
+
+  /// No description provided for @equipmentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment and maintenance'**
+  String get equipmentTitle;
+
+  /// No description provided for @equipmentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Machines, maintenance due and breakdowns'**
+  String get equipmentSubtitle;
+
+  /// No description provided for @addEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add equipment'**
+  String get addEquipment;
+
+  /// No description provided for @editEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit equipment'**
+  String get editEquipment;
+
+  /// No description provided for @noEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'No equipment yet. Add pressure washers, vacuums and compressors to keep track of their maintenance.'**
+  String get noEquipment;
+
+  /// No description provided for @equipmentInService.
+  ///
+  /// In en, this message translates to:
+  /// **'In service'**
+  String get equipmentInService;
+
+  /// No description provided for @equipmentOutOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Broken'**
+  String get equipmentOutOfService;
+
+  /// No description provided for @equipmentRetired.
+  ///
+  /// In en, this message translates to:
+  /// **'Retired'**
+  String get equipmentRetired;
+
+  /// No description provided for @maintenanceOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance overdue by {count, plural, =1{1 day} other{{count} days}}'**
+  String maintenanceOverdue(int count);
+
+  /// No description provided for @maintenanceDueToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance due today'**
+  String get maintenanceDueToday;
+
+  /// No description provided for @maintenanceDueIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance in {count, plural, =1{1 day} other{{count} days}}'**
+  String maintenanceDueIn(int count);
+
+  /// No description provided for @maintenanceDueCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 machine needs maintenance now} other{{count} machines need maintenance now}}'**
+  String maintenanceDueCount(int count);
+
+  /// No description provided for @reportBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Report a breakdown'**
+  String get reportBreakdown;
+
+  /// No description provided for @backInService.
+  ///
+  /// In en, this message translates to:
+  /// **'Back in service'**
+  String get backInService;
+
+  /// No description provided for @retireEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Retire'**
+  String get retireEquipment;
+
+  /// No description provided for @recordMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Record maintenance'**
+  String get recordMaintenance;
+
+  /// No description provided for @noPeriodicMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'No periodic maintenance'**
+  String get noPeriodicMaintenance;
+
+  /// No description provided for @maintenanceEvery.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance every {count, plural, =1{day} other{{count} days}}'**
+  String maintenanceEvery(int count);
+
+  /// No description provided for @nextMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Next maintenance'**
+  String get nextMaintenance;
+
+  /// No description provided for @serialNumberField.
+  ///
+  /// In en, this message translates to:
+  /// **'Serial number'**
+  String get serialNumberField;
+
+  /// No description provided for @purchaseSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get purchaseSection;
+
+  /// No description provided for @maintenanceHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance history'**
+  String get maintenanceHistory;
+
+  /// No description provided for @noMaintenanceYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No maintenance recorded'**
+  String get noMaintenanceYet;
+
+  /// No description provided for @periodicMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Periodic'**
+  String get periodicMaintenance;
+
+  /// No description provided for @repairMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Repair'**
+  String get repairMaintenance;
+
+  /// No description provided for @equipmentNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get equipmentNameField;
+
+  /// No description provided for @equipmentNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Pressure washer 1'**
+  String get equipmentNameHint;
+
+  /// No description provided for @maintenanceIntervalField.
+  ///
+  /// In en, this message translates to:
+  /// **'Periodic maintenance every'**
+  String get maintenanceIntervalField;
+
+  /// No description provided for @daysUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get daysUnit;
+
+  /// No description provided for @maintenanceIntervalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty if it needs no periodic maintenance'**
+  String get maintenanceIntervalHint;
+
+  /// No description provided for @maintenanceIntervalInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 1 to 3650 days'**
+  String get maintenanceIntervalInvalid;
+
+  /// No description provided for @purchaseDateField.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase date'**
+  String get purchaseDateField;
+
+  /// No description provided for @purchaseCostField.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase price'**
+  String get purchaseCostField;
+
+  /// No description provided for @periodicMaintenanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The next maintenance is counted from this one'**
+  String get periodicMaintenanceHint;
+
+  /// No description provided for @repairMaintenanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A broken machine goes back in service'**
+  String get repairMaintenanceHint;
+
+  /// No description provided for @maintenanceDateField.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get maintenanceDateField;
+
+  /// No description provided for @whatWasDoneField.
+  ///
+  /// In en, this message translates to:
+  /// **'What was done?'**
+  String get whatWasDoneField;
+
+  /// No description provided for @maintenanceCostField.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost'**
+  String get maintenanceCostField;
+
+  /// No description provided for @maintenanceCostHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: recorded as an expense of the branch'**
+  String get maintenanceCostHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

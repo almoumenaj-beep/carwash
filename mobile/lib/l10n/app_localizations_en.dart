@@ -639,13 +639,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingCars => 'Registered cars';
 
   @override
-  String get shiftTitle => 'My shift';
+  String get shiftTitle => 'Cashier';
 
   @override
-  String get shiftSubtitle => 'Open the till, count the drawer at close';
+  String get shiftSubtitle => 'Open the cashier, count and match the cash at close';
 
   @override
-  String get noOpenShift => 'You have no open shift. Count the cash in the drawer to open one.';
+  String get noOpenShift => 'The cashier is not open. Count the cash in the drawer to open it.';
 
   @override
   String get openingFloatField => 'Cash in the drawer at opening';
@@ -654,7 +654,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get openingFloatHint => 'Leave empty if the drawer is empty.';
 
   @override
-  String get openShift => 'Open shift';
+  String get openShift => 'Open cashier';
 
   @override
   String shiftOpenSince(String time) {
@@ -674,7 +674,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expectedCash => 'Expected in the drawer';
 
   @override
-  String get closeShift => 'Close shift';
+  String get closeShift => 'Close cashier';
 
   @override
   String get countedCashField => 'Cash counted in the drawer';
@@ -699,10 +699,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get varianceLabel => 'Difference';
 
   @override
-  String get shiftClosed => 'Shift closed';
+  String get shiftClosed => 'Cashier closed';
 
   @override
-  String get openShiftFirst => 'Open your shift to take payment.';
+  String get openShiftFirst => 'Open the cashier to take payment.';
 
   @override
   String get checkoutTitle => 'Payment';
@@ -914,7 +914,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notPaidYet => 'Not paid yet';
 
   @override
-  String get payFromDrawerHint => 'Taken from your shift\'s drawer today; the drawer count at close expects it.';
+  String get payFromDrawerHint => 'Taken from the cashier drawer today; the count at close expects it.';
 
   @override
   String get supplierField => 'Supplier';
@@ -1306,4 +1306,148 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get payPayroll => 'Pay payroll';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get branchField => 'Branch';
+
+  @override
+  String get equipmentTitle => 'Equipment and maintenance';
+
+  @override
+  String get equipmentSubtitle => 'Machines, maintenance due and breakdowns';
+
+  @override
+  String get addEquipment => 'Add equipment';
+
+  @override
+  String get editEquipment => 'Edit equipment';
+
+  @override
+  String get noEquipment =>
+      'No equipment yet. Add pressure washers, vacuums and compressors to keep track of their maintenance.';
+
+  @override
+  String get equipmentInService => 'In service';
+
+  @override
+  String get equipmentOutOfService => 'Broken';
+
+  @override
+  String get equipmentRetired => 'Retired';
+
+  @override
+  String maintenanceOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days', one: '1 day');
+    return 'Maintenance overdue by $_temp0';
+  }
+
+  @override
+  String get maintenanceDueToday => 'Maintenance due today';
+
+  @override
+  String maintenanceDueIn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days', one: '1 day');
+    return 'Maintenance in $_temp0';
+  }
+
+  @override
+  String maintenanceDueCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count machines need maintenance now',
+      one: '1 machine needs maintenance now',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reportBreakdown => 'Report a breakdown';
+
+  @override
+  String get backInService => 'Back in service';
+
+  @override
+  String get retireEquipment => 'Retire';
+
+  @override
+  String get recordMaintenance => 'Record maintenance';
+
+  @override
+  String get noPeriodicMaintenance => 'No periodic maintenance';
+
+  @override
+  String maintenanceEvery(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days', one: 'day');
+    return 'Maintenance every $_temp0';
+  }
+
+  @override
+  String get nextMaintenance => 'Next maintenance';
+
+  @override
+  String get serialNumberField => 'Serial number';
+
+  @override
+  String get purchaseSection => 'Purchase';
+
+  @override
+  String get maintenanceHistory => 'Maintenance history';
+
+  @override
+  String get noMaintenanceYet => 'No maintenance recorded';
+
+  @override
+  String get periodicMaintenance => 'Periodic';
+
+  @override
+  String get repairMaintenance => 'Repair';
+
+  @override
+  String get equipmentNameField => 'Name';
+
+  @override
+  String get equipmentNameHint => 'e.g. Pressure washer 1';
+
+  @override
+  String get maintenanceIntervalField => 'Periodic maintenance every';
+
+  @override
+  String get daysUnit => 'days';
+
+  @override
+  String get maintenanceIntervalHint => 'Leave empty if it needs no periodic maintenance';
+
+  @override
+  String get maintenanceIntervalInvalid => 'Enter 1 to 3650 days';
+
+  @override
+  String get purchaseDateField => 'Purchase date';
+
+  @override
+  String get purchaseCostField => 'Purchase price';
+
+  @override
+  String get periodicMaintenanceHint => 'The next maintenance is counted from this one';
+
+  @override
+  String get repairMaintenanceHint => 'A broken machine goes back in service';
+
+  @override
+  String get maintenanceDateField => 'Date';
+
+  @override
+  String get whatWasDoneField => 'What was done?';
+
+  @override
+  String get maintenanceCostField => 'Cost';
+
+  @override
+  String get maintenanceCostHint => 'Optional: recorded as an expense of the branch';
 }

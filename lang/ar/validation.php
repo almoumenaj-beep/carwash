@@ -186,6 +186,12 @@ return [
 
     'attributes' => [
         'name' => 'الاسم',
+        'serial_number' => 'الرقم التسلسلي',
+        'purchase_cost' => 'سعر الشراء',
+        'maintenance_interval_days' => 'الصيانة كل (يوم)',
+        'performed_on' => 'تاريخ الصيانة',
+        'cost' => 'التكلفة',
+        'kind' => 'النوع',
         'email' => 'البريد الإلكتروني',
         'phone' => 'رقم الجوال',
         'login' => 'البريد الإلكتروني أو رقم الجوال',

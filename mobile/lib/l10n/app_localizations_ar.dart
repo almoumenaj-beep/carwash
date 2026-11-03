@@ -650,13 +650,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matchingCars => 'سيارات مسجلة';
 
   @override
-  String get shiftTitle => 'ورديتي';
+  String get shiftTitle => 'الكاشير';
 
   @override
-  String get shiftSubtitle => 'فتح الصندوق وجرده عند الإقفال';
+  String get shiftSubtitle => 'افتح الكاشير، وعند الإقفال اجرد الكاش وطابقه';
 
   @override
-  String get noOpenShift => 'ليس لديك وردية مفتوحة. عُدّ النقد في الدرج وافتح ورديتك.';
+  String get noOpenShift => 'الكاشير غير مفتوح. عُدّ النقد في الدرج وافتح الكاشير.';
 
   @override
   String get openingFloatField => 'النقد في الدرج عند الفتح';
@@ -665,11 +665,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get openingFloatHint => 'اتركه فارغاً إذا كان الدرج فارغاً.';
 
   @override
-  String get openShift => 'فتح الوردية';
+  String get openShift => 'فتح الكاشير';
 
   @override
   String shiftOpenSince(String time) {
-    return 'مفتوحة منذ $time';
+    return 'مفتوح منذ $time';
   }
 
   @override
@@ -685,7 +685,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get expectedCash => 'المتوقع في الدرج';
 
   @override
-  String get closeShift => 'إقفال الوردية';
+  String get closeShift => 'إقفال الكاشير';
 
   @override
   String get countedCashField => 'النقد المعدود في الدرج';
@@ -710,10 +710,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get varianceLabel => 'الفرق';
 
   @override
-  String get shiftClosed => 'تم إقفال الوردية';
+  String get shiftClosed => 'تم إقفال الكاشير';
 
   @override
-  String get openShiftFirst => 'افتح ورديتك لتستطيع التحصيل.';
+  String get openShiftFirst => 'افتح الكاشير لتستطيع التحصيل.';
 
   @override
   String get checkoutTitle => 'التحصيل';
@@ -924,7 +924,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notPaidYet => 'غير مدفوع';
 
   @override
-  String get payFromDrawerHint => 'يُخصم من درج ورديتك اليوم، ويُحسب عند جرد الإقفال.';
+  String get payFromDrawerHint => 'يُخصم من درج الكاشير اليوم، ويُحسب عند جرد الإقفال.';
 
   @override
   String get supplierField => 'المورد';
@@ -1330,4 +1330,170 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get payPayroll => 'ادفع الرواتب';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get notSet => 'غير محدد';
+
+  @override
+  String get branchField => 'الفرع';
+
+  @override
+  String get equipmentTitle => 'المعدات والصيانة';
+
+  @override
+  String get equipmentSubtitle => 'الأجهزة ومواعيد صيانتها والأعطال';
+
+  @override
+  String get addEquipment => 'إضافة جهاز';
+
+  @override
+  String get editEquipment => 'تعديل الجهاز';
+
+  @override
+  String get noEquipment => 'لم تُضف أجهزة بعد. أضف مكائن الضغط والمكانس والكمبرسورات لتتابع صيانتها.';
+
+  @override
+  String get equipmentInService => 'يعمل';
+
+  @override
+  String get equipmentOutOfService => 'معطّل';
+
+  @override
+  String get equipmentRetired => 'خارج الخدمة نهائياً';
+
+  @override
+  String maintenanceOverdue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوماً',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return 'الصيانة متأخرة $_temp0';
+  }
+
+  @override
+  String get maintenanceDueToday => 'الصيانة مستحقة اليوم';
+
+  @override
+  String maintenanceDueIn(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوماً',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return 'الصيانة بعد $_temp0';
+  }
+
+  @override
+  String maintenanceDueCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count جهازاً تحتاج صيانة الآن',
+      few: '$count أجهزة تحتاج صيانة الآن',
+      two: 'جهازان يحتاجان صيانة الآن',
+      one: 'جهاز واحد يحتاج صيانة الآن',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reportBreakdown => 'الإبلاغ عن عطل';
+
+  @override
+  String get backInService => 'عاد للعمل';
+
+  @override
+  String get retireEquipment => 'إخراجه من الخدمة نهائياً';
+
+  @override
+  String get recordMaintenance => 'تسجيل صيانة';
+
+  @override
+  String get noPeriodicMaintenance => 'بدون صيانة دورية';
+
+  @override
+  String maintenanceEvery(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count يوماً',
+      few: '$count أيام',
+      two: 'يومين',
+      one: 'يوم واحد',
+    );
+    return 'صيانة كل $_temp0';
+  }
+
+  @override
+  String get nextMaintenance => 'الصيانة القادمة';
+
+  @override
+  String get serialNumberField => 'الرقم التسلسلي';
+
+  @override
+  String get purchaseSection => 'الشراء';
+
+  @override
+  String get maintenanceHistory => 'سجل الصيانة';
+
+  @override
+  String get noMaintenanceYet => 'لا توجد صيانة مسجلة';
+
+  @override
+  String get periodicMaintenance => 'صيانة دورية';
+
+  @override
+  String get repairMaintenance => 'إصلاح عطل';
+
+  @override
+  String get equipmentNameField => 'اسم الجهاز';
+
+  @override
+  String get equipmentNameHint => 'مثال: مكينة الضغط 1';
+
+  @override
+  String get maintenanceIntervalField => 'الصيانة الدورية كل';
+
+  @override
+  String get daysUnit => 'يوم';
+
+  @override
+  String get maintenanceIntervalHint => 'اتركه فارغاً إذا لا يحتاج صيانة دورية';
+
+  @override
+  String get maintenanceIntervalInvalid => 'اكتب عدد أيام من 1 إلى 3650';
+
+  @override
+  String get purchaseDateField => 'تاريخ الشراء';
+
+  @override
+  String get purchaseCostField => 'سعر الشراء';
+
+  @override
+  String get periodicMaintenanceHint => 'يبدأ العدّ للصيانة القادمة من تاريخ هذه الصيانة';
+
+  @override
+  String get repairMaintenanceHint => 'إذا كان الجهاز معطّلاً يعود «يعمل» بعد الإصلاح';
+
+  @override
+  String get maintenanceDateField => 'تاريخ الصيانة';
+
+  @override
+  String get whatWasDoneField => 'ماذا تم؟';
+
+  @override
+  String get maintenanceCostField => 'التكلفة';
+
+  @override
+  String get maintenanceCostHint => 'اختياري: تُسجَّل مصروفاً على فرع الجهاز';
 }

@@ -24,6 +24,8 @@ abstract final class Permissions {
   static const inventoryView = 'inventory.view';
   static const inventoryAdjust = 'inventory.adjust';
   static const inventoryPurchase = 'inventory.purchase';
+  static const equipmentView = 'equipment.view';
+  static const equipmentManage = 'equipment.manage';
   static const employeesView = 'employees.view';
   static const employeesManage = 'employees.manage';
   static const payrollView = 'payroll.view';
@@ -40,6 +42,7 @@ const routePermissions = <String, List<String>>{
   '/reports': [Permissions.reportsSales],
   '/expenses': [Permissions.expensesView],
   '/inventory': [Permissions.inventoryView],
+  '/equipment': [Permissions.equipmentView],
   '/staff-affairs': [Permissions.employeesView, Permissions.payrollView],
   '/roles': [Permissions.rolesManage, Permissions.usersManage],
   '/staff': [Permissions.usersManage],

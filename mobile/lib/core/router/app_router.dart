@@ -18,6 +18,7 @@ import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/expenses/presentation/expenses_screen.dart';
 import '../../features/home/presentation/home_screen.dart';
+import '../../features/equipment/presentation/equipment_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/staff_affairs/presentation/staff_affairs_screen.dart';
 import '../../features/orders/presentation/check_in_screen.dart';
@@ -115,6 +116,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => ShiftScreen(branchId: state.uri.queryParameters['branch']),
       ),
       GoRoute(path: '/inventory', builder: (_, _) => const InventoryScreen()),
+      GoRoute(
+        path: '/equipment',
+        builder: (_, _) => const EquipmentScreen(),
+        routes: [
+          GoRoute(
+            path: ':equipmentId',
+            builder: (_, state) => EquipmentDetailScreen(equipmentId: state.pathParameters['equipmentId']!),
+          ),
+        ],
+      ),
       GoRoute(path: '/staff-affairs', builder: (_, _) => const StaffAffairsScreen()),
       GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
       GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),

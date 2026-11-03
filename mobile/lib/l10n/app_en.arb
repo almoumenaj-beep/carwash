@@ -301,12 +301,12 @@
     }
   },
   "matchingCars": "Registered cars",
-  "shiftTitle": "My shift",
-  "shiftSubtitle": "Open the till, count the drawer at close",
-  "noOpenShift": "You have no open shift. Count the cash in the drawer to open one.",
+  "shiftTitle": "Cashier",
+  "shiftSubtitle": "Open the cashier, count and match the cash at close",
+  "noOpenShift": "The cashier is not open. Count the cash in the drawer to open it.",
   "openingFloatField": "Cash in the drawer at opening",
   "openingFloatHint": "Leave empty if the drawer is empty.",
-  "openShift": "Open shift",
+  "openShift": "Open cashier",
   "shiftOpenSince": "Open since {time}",
   "@shiftOpenSince": {
     "placeholders": {
@@ -319,7 +319,7 @@
   "shiftCashTaken": "Cash taken",
   "shiftDiscounts": "Discounts given",
   "expectedCash": "Expected in the drawer",
-  "closeShift": "Close shift",
+  "closeShift": "Close cashier",
   "countedCashField": "Cash counted in the drawer",
   "drawerMatches": "The drawer matches",
   "drawerShort": "Short by {amount}",
@@ -340,8 +340,8 @@
   },
   "varianceNoteField": "Why does it not match?",
   "varianceLabel": "Difference",
-  "shiftClosed": "Shift closed",
-  "openShiftFirst": "Open your shift to take payment.",
+  "shiftClosed": "Cashier closed",
+  "openShiftFirst": "Open the cashier to take payment.",
   "checkoutTitle": "Payment",
   "collectPayment": "Collect payment",
   "payOnly": "Pay only",
@@ -471,7 +471,7 @@
   "payBankTransfer": "Bank transfer",
   "payCard": "Card",
   "notPaidYet": "Not paid yet",
-  "payFromDrawerHint": "Taken from your shift's drawer today; the drawer count at close expects it.",
+  "payFromDrawerHint": "Taken from the cashier drawer today; the count at close expects it.",
   "supplierField": "Supplier",
   "noSupplier": "No supplier",
   "owedToSupplierHint": "Recorded as owed to this supplier until paid.",
@@ -721,5 +721,75 @@
       }
     }
   },
-  "payPayroll": "Pay payroll"
+  "payPayroll": "Pay payroll",
+  "edit": "Edit",
+  "notSet": "Not set",
+  "branchField": "Branch",
+  "equipmentTitle": "Equipment and maintenance",
+  "equipmentSubtitle": "Machines, maintenance due and breakdowns",
+  "addEquipment": "Add equipment",
+  "editEquipment": "Edit equipment",
+  "noEquipment": "No equipment yet. Add pressure washers, vacuums and compressors to keep track of their maintenance.",
+  "equipmentInService": "In service",
+  "equipmentOutOfService": "Broken",
+  "equipmentRetired": "Retired",
+  "maintenanceOverdue": "Maintenance overdue by {count, plural, =1{1 day} other{{count} days}}",
+  "@maintenanceOverdue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "maintenanceDueToday": "Maintenance due today",
+  "maintenanceDueIn": "Maintenance in {count, plural, =1{1 day} other{{count} days}}",
+  "@maintenanceDueIn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "maintenanceDueCount": "{count, plural, =1{1 machine needs maintenance now} other{{count} machines need maintenance now}}",
+  "@maintenanceDueCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reportBreakdown": "Report a breakdown",
+  "backInService": "Back in service",
+  "retireEquipment": "Retire",
+  "recordMaintenance": "Record maintenance",
+  "noPeriodicMaintenance": "No periodic maintenance",
+  "maintenanceEvery": "Maintenance every {count, plural, =1{day} other{{count} days}}",
+  "@maintenanceEvery": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nextMaintenance": "Next maintenance",
+  "serialNumberField": "Serial number",
+  "purchaseSection": "Purchase",
+  "maintenanceHistory": "Maintenance history",
+  "noMaintenanceYet": "No maintenance recorded",
+  "periodicMaintenance": "Periodic",
+  "repairMaintenance": "Repair",
+  "equipmentNameField": "Name",
+  "equipmentNameHint": "e.g. Pressure washer 1",
+  "maintenanceIntervalField": "Periodic maintenance every",
+  "daysUnit": "days",
+  "maintenanceIntervalHint": "Leave empty if it needs no periodic maintenance",
+  "maintenanceIntervalInvalid": "Enter 1 to 3650 days",
+  "purchaseDateField": "Purchase date",
+  "purchaseCostField": "Purchase price",
+  "periodicMaintenanceHint": "The next maintenance is counted from this one",
+  "repairMaintenanceHint": "A broken machine goes back in service",
+  "maintenanceDateField": "Date",
+  "whatWasDoneField": "What was done?",
+  "maintenanceCostField": "Cost",
+  "maintenanceCostHint": "Optional: recorded as an expense of the branch"
 }
