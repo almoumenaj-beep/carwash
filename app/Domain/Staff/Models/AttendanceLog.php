@@ -17,6 +17,15 @@ class AttendanceLog extends Model
     use BelongsToTenant, HasUuids;
 
     /**
+     * Mirrors the database defaults so a freshly created record is complete before it is refreshed.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'auto_clocked_out' => false,
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -26,6 +35,7 @@ class AttendanceLog extends Model
         return [
             'clock_in_at' => 'datetime',
             'clock_out_at' => 'datetime',
+            'auto_clocked_out' => 'boolean',
         ];
     }
 

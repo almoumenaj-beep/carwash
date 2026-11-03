@@ -60,6 +60,7 @@ class AttendanceRecord {
     required this.clockInAt,
     required this.clockOutAt,
     required this.minutes,
+    this.autoClockedOut = false,
   });
 
   factory AttendanceRecord.fromJson(Map<String, dynamic> json) => AttendanceRecord(
@@ -69,6 +70,7 @@ class AttendanceRecord {
     clockInAt: DateTime.parse(json['clock_in_at'] as String),
     clockOutAt: json['clock_out_at'] == null ? null : DateTime.parse(json['clock_out_at'] as String),
     minutes: json['minutes'] as int,
+    autoClockedOut: json['auto_clocked_out'] as bool? ?? false,
   );
 
   final String userName;
@@ -77,6 +79,9 @@ class AttendanceRecord {
   final DateTime clockInAt;
   final DateTime? clockOutAt;
   final int minutes;
+
+  /// Clocked out by the system at the branch's closing time because they forgot.
+  final bool autoClockedOut;
 }
 
 /// Money advanced to a staff member, deducted from a later payroll.

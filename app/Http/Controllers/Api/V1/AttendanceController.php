@@ -90,6 +90,7 @@ class AttendanceController extends Controller
             'clock_in_at' => $log->clock_in_at->toIso8601String(),
             'clock_out_at' => $log->clock_out_at?->toIso8601String(),
             'minutes' => (int) $log->clock_in_at->diffInMinutes($end),
+            'auto_clocked_out' => $log->auto_clocked_out,
         ];
     }
 }

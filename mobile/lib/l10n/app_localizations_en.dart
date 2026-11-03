@@ -1613,4 +1613,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseSizeFirst => 'Choose the vehicle size first';
+
+  @override
+  String get autoClockedOut => 'clocked out automatically at closing';
 }

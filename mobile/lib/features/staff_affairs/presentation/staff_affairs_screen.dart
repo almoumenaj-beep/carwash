@@ -397,12 +397,18 @@ class _AttendanceState extends ConsumerState<_Attendance> {
             children: [
               for (final record in value)
                 ListTile(
-                  leading: Icon(record.clockOutAt == null ? Icons.timer_outlined : Icons.check_circle_outline),
+                  leading: Icon(
+                    record.clockOutAt == null
+                        ? Icons.timer_outlined
+                        : (record.autoClockedOut ? Icons.schedule_outlined : Icons.check_circle_outline),
+                    color: record.autoClockedOut ? Theme.of(context).colorScheme.error : null,
+                  ),
                   title: Text(record.userName),
                   subtitle: Text(
                     record.clockOutAt == null
                         ? l10n.stillAtWork(time(record.clockInAt))
-                        : '${time(record.clockInAt)} → ${time(record.clockOutAt!)}',
+                        : '${time(record.clockInAt)} → ${time(record.clockOutAt!)}'
+                              '${record.autoClockedOut ? ' · ${l10n.autoClockedOut}' : ''}',
                   ),
                   trailing: Text(l10n.hoursWorked((record.minutes / 60).toStringAsFixed(1))),
                 ),

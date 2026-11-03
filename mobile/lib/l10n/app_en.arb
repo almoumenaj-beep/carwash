@@ -861,5 +861,6 @@
   "markNoShow": "Did not come",
   "openOrder": "Open the order",
   "back": "Back",
-  "chooseSizeFirst": "Choose the vehicle size first"
+  "chooseSizeFirst": "Choose the vehicle size first",
+  "autoClockedOut": "clocked out automatically at closing"
 }

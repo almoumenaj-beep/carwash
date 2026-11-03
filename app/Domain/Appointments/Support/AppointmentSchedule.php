@@ -20,25 +20,6 @@ class AppointmentSchedule
      */
     public const SLOT_MINUTES = 30;
 
-    /**
-     * When the branch opens and closes on a date, or null when it is closed that day. A branch that closes
-     * after midnight closes on the next date.
-     *
-     * @return array{0: CarbonImmutable, 1: CarbonImmutable}|null
-     */
-    public function window(Branch $branch, CarbonImmutable $date): ?array
-    {
-        $hours = $branch->weeklyHours()[strtolower($date->format('D'))] ?? null;
-        if ($hours === null) {
-            return null;
-        }
-
-        $opens = $date->setTimeFromTimeString($hours['opens']);
-        $closes = $date->setTimeFromTimeString($hours['closes']);
-
-        return [$opens, $closes->lte($opens) ? $closes->addDay() : $closes];
-    }
-
     public function capacity(Branch $branch): int
     {
         return max(1, $branch->bays()->where('is_active', true)->count());
@@ -82,7 +63,7 @@ class AppointmentSchedule
             throw ValidationException::withMessages(['starts_at' => __('Choose a time that has not passed yet.')]);
         }
 
-        $windows = array_filter([$this->window($branch, $start->startOfDay()), $this->window($branch, $start->startOfDay()->subDay())]);
+        $windows = array_filter([$branch->openingWindow($start), $branch->openingWindow($start->subDay())]);
         $open = array_filter($windows, fn (array $window) => $start->gte($window[0]) && $end->lte($window[1]));
         if ($open === []) {
             throw ValidationException::withMessages(['starts_at' => __('The branch is not open for the whole visit at this time.')]);
@@ -100,7 +81,7 @@ class AppointmentSchedule
      */
     public function slots(Branch $branch, CarbonImmutable $date, int $minutes, ?string $ignoreId = null): array
     {
-        $window = $this->window($branch, $date->startOfDay());
+        $window = $branch->openingWindow($date);
         if ($window === null) {
             return [];
         }

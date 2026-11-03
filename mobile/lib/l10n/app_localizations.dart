@@ -2983,6 +2983,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose the vehicle size first'**
   String get chooseSizeFirst;
+
+  /// No description provided for @autoClockedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'clocked out automatically at closing'**
+  String get autoClockedOut;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

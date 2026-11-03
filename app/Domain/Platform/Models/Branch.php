@@ -6,6 +6,7 @@ use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Policies\BranchPolicy;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Database\Factories\BranchFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
@@ -77,6 +78,25 @@ class Branch extends Model
         $hours = $this->opening_hours ?? [];
 
         return array_combine(self::WEEK_DAYS, array_map(fn (string $day) => $hours[$day] ?? null, self::WEEK_DAYS));
+    }
+
+    /**
+     * When the branch opens and closes on a date (taken in that date's time zone), or null when it is closed
+     * that day. A branch that closes after midnight closes on the next date.
+     *
+     * @return array{0: CarbonImmutable, 1: CarbonImmutable}|null
+     */
+    public function openingWindow(CarbonImmutable $date): ?array
+    {
+        $hours = $this->weeklyHours()[strtolower($date->format('D'))] ?? null;
+        if ($hours === null) {
+            return null;
+        }
+
+        $opens = $date->startOfDay()->setTimeFromTimeString($hours['opens']);
+        $closes = $date->startOfDay()->setTimeFromTimeString($hours['closes']);
+
+        return [$opens, $closes->lte($opens) ? $closes->addDay() : $closes];
     }
 
     /**

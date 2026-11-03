@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('expenses:generate-recurring')->hourly()->withoutOverlapping();
+Schedule::command('attendance:close-forgotten')->everyFifteenMinutes()->withoutOverlapping();

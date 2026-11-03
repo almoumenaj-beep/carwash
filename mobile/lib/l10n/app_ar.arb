@@ -481,5 +481,6 @@
   "markNoShow": "لم يحضر",
   "openOrder": "فتح الطلب",
   "back": "رجوع",
-  "chooseSizeFirst": "اختر حجم السيارة أولاً"
+  "chooseSizeFirst": "اختر حجم السيارة أولاً",
+  "autoClockedOut": "انصراف تلقائي عند الإغلاق"
 }

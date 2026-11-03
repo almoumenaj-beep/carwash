@@ -1661,4 +1661,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chooseSizeFirst => 'اختر حجم السيارة أولاً';
+
+  @override
+  String get autoClockedOut => 'انصراف تلقائي عند الإغلاق';
 }
