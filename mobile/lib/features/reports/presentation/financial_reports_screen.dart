@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -82,29 +83,17 @@ class _FinancialReportsScreenState extends ConsumerState<FinancialReportsScreen>
     final branches = ref.watch(sessionProvider).value?.branches ?? const <BranchSummary>[];
     final period = (branchId: _branchId, from: apiDate(_range.start), to: apiDate(_range.end));
     final date = MaterialLocalizations.of(context).formatMediumDate;
-    final branchName = branches.where((branch) => branch.id == _branchId).firstOrNull?.name ?? l10n.allBranches;
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.financialReportsTitle),
-          actions: [
-            if (branches.length > 1)
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.store_outlined),
-                initialValue: _branchId ?? '',
-                onSelected: (id) => setState(() => _branchId = id.isEmpty ? null : id),
-                itemBuilder: (_) => [
-                  PopupMenuItem(value: '', child: Text(l10n.allBranches)),
-                  for (final branch in branches) PopupMenuItem(value: branch.id, child: Text(branch.name)),
-                ],
-              ),
-          ],
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(120),
+            preferredSize: Size.fromHeight(branches.length > 1 ? 168 : 120),
             child: Column(
               children: [
+                BranchChips(selected: _branchId, onChanged: (id) => setState(() => _branchId = id)),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -127,10 +116,7 @@ class _FinancialReportsScreenState extends ConsumerState<FinancialReportsScreen>
                     ],
                   ),
                 ),
-                Text(
-                  '${date(_range.start)} – ${date(_range.end)}${branches.length > 1 ? ' · $branchName' : ''}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text('${date(_range.start)} – ${date(_range.end)}', style: Theme.of(context).textTheme.bodySmall),
                 TabBar(
                   tabs: [
                     Tab(text: l10n.profitLossTab),

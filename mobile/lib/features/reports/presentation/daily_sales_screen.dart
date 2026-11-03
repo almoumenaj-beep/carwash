@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/money/money_format.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/application/session_controller.dart';
-import '../../auth/domain/me.dart';
 import '../data/reports_repository.dart';
 import '../domain/daily_sales.dart';
 
@@ -43,27 +42,11 @@ class _DailySalesScreenState extends ConsumerState<DailySalesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final branches = ref.watch(sessionProvider).value?.branches ?? const <BranchSummary>[];
     final query = (branchId: _branchId, date: _dateParam);
     final report = ref.watch(dailySalesProvider(query));
-    final branchName = branches.where((branch) => branch.id == _branchId).firstOrNull?.name ?? l10n.allBranches;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.dailySalesTitle),
-        actions: [
-          if (branches.length > 1)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.store_outlined),
-              initialValue: _branchId ?? '',
-              onSelected: (id) => setState(() => _branchId = id.isEmpty ? null : id),
-              itemBuilder: (_) => [
-                PopupMenuItem(value: '', child: Text(l10n.allBranches)),
-                for (final branch in branches) PopupMenuItem(value: branch.id, child: Text(branch.name)),
-              ],
-            ),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.dailySalesTitle)),
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(dailySalesProvider(query).future),
         child: ListView(
@@ -93,8 +76,7 @@ class _DailySalesScreenState extends ConsumerState<DailySalesScreen> {
                 ),
               ],
             ),
-            if (branches.length > 1)
-              Text(branchName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
+            BranchChips(selected: _branchId, onChanged: (id) => setState(() => _branchId = id)),
             const SizedBox(height: 8),
             switch (report) {
               AsyncData(:final value) => _Report(report: value),
