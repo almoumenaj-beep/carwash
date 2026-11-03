@@ -32,7 +32,7 @@ class AppointmentSchedule
     {
         $bookings = Appointment::query()
             ->where('branch_id', $branch->id)
-            ->where('status', AppointmentStatus::Booked)
+            ->whereIn('status', AppointmentStatus::open())
             ->where('starts_at', '<', $end->utc())
             ->where('ends_at', '>', $start->utc())
             ->when($ignoreId !== null, fn ($query) => $query->whereKeyNot($ignoreId))

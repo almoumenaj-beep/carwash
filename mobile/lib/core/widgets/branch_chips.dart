@@ -5,14 +5,15 @@ import '../../features/auth/application/session_controller.dart';
 import '../../features/auth/domain/me.dart';
 import '../../l10n/app_localizations.dart';
 
-/// Which branch a screen shows, as chips always in view: "all branches" (null) or one of the user's branches.
-/// Shows nothing for staff with a single branch.
+/// Which branch a screen shows, as chips always in view: "all branches" (null, unless [includeAll] is off) or one
+/// of the user's branches. Shows nothing for staff with a single branch.
 class BranchChips extends ConsumerWidget {
-  const BranchChips({super.key, required this.selected, required this.onChanged});
+  const BranchChips({super.key, required this.selected, required this.onChanged, this.includeAll = true});
 
   /// The chosen branch, or null for all of them.
   final String? selected;
   final ValueChanged<String?> onChanged;
+  final bool includeAll;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +29,10 @@ class BranchChips extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
-          for (final (id, name) in [(null, l10n.allBranches), for (final branch in branches) (branch.id, branch.name)])
+          for (final (id, name) in [
+            if (includeAll) (null, l10n.allBranches),
+            for (final branch in branches) (branch.id, branch.name),
+          ])
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(

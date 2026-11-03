@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -17,12 +18,32 @@ import '../domain/appointment.dart';
 
 String appointmentStatusLabel(AppLocalizations l10n, AppointmentStatus status) => switch (status) {
   AppointmentStatus.booked => l10n.appointmentBooked,
+  AppointmentStatus.confirmed => l10n.appointmentConfirmed,
   AppointmentStatus.checkedIn => l10n.appointmentCheckedIn,
   AppointmentStatus.cancelled => l10n.appointmentCancelled,
   AppointmentStatus.noShow => l10n.appointmentNoShow,
 };
 
-/// A branch's bookings day by day: book a car in, change or cancel a booking, and check the car in when it arrives.
+/// The colour a booking's status is shown in; a booking still waiting after its time shows as late.
+Color appointmentStatusColor(BuildContext context, AppointmentStatus status, {bool late = false}) {
+  final dark = Theme.of(context).brightness == Brightness.dark;
+  final MaterialColor color = late
+      ? Colors.orange
+      : switch (status) {
+          AppointmentStatus.booked => Colors.blue,
+          AppointmentStatus.confirmed => Colors.indigo,
+          AppointmentStatus.checkedIn => Colors.green,
+          AppointmentStatus.cancelled => Colors.grey,
+          AppointmentStatus.noShow => Colors.red,
+        };
+  return dark ? color.shade300 : color.shade700;
+}
+
+/// What the list is narrowed to: every booking, one status, or those running late.
+typedef _Filter = ({AppointmentStatus? status, bool late});
+
+/// A branch's bookings day by day: book a car in, confirm, change or cancel a booking, and check the car in
+/// when it arrives. The day's bookings can be narrowed to one status.
 class AppointmentsScreen extends ConsumerStatefulWidget {
   const AppointmentsScreen({super.key});
 
@@ -33,13 +54,19 @@ class AppointmentsScreen extends ConsumerStatefulWidget {
 class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
   String? _branchId;
   DateTime _day = DateUtils.dateOnly(DateTime.now());
+  _Filter _filter = (status: null, late: false);
 
-  Future<void> _open(Widget screen, String branchId) async {
+  Future<void> _open(Widget screen) async {
     final changed = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => screen));
     if (changed ?? false) {
       ref.invalidate(appointmentsProvider);
     }
   }
+
+  void _moveTo(DateTime day) => setState(() {
+    _day = day;
+    _filter = (status: null, late: false);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -58,23 +85,10 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
     final today = DateUtils.dateOnly(DateTime.now());
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(branches.length > 1 ? '${l10n.appointmentsTitle} · ${branch.name}' : l10n.appointmentsTitle),
-        actions: [
-          if (branches.length > 1)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.store_outlined),
-              initialValue: branch.id,
-              onSelected: (id) => setState(() => _branchId = id),
-              itemBuilder: (_) => [
-                for (final option in branches) PopupMenuItem(value: option.id, child: Text(option.name)),
-              ],
-            ),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.appointmentsTitle)),
       floatingActionButton: (me?.can(Permissions.appointmentsManage) ?? false)
           ? FloatingActionButton.extended(
-              onPressed: () => _open(CheckInScreen(branchId: branch.id, booking: true), branch.id),
+              onPressed: () => _open(CheckInScreen(branchId: branch.id, booking: true)),
               icon: const Icon(Icons.event_available_outlined),
               label: Text(l10n.newBooking),
             )
@@ -84,12 +98,20 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
         child: ListView(
           padding: const EdgeInsets.only(bottom: 96),
           children: [
+            BranchChips(
+              selected: branch.id,
+              includeAll: false,
+              onChanged: (id) => setState(() {
+                _branchId = id;
+                _filter = (status: null, late: false);
+              }),
+            ),
             Row(
               children: [
                 IconButton(
                   tooltip: l10n.previousDay,
                   icon: const Icon(Icons.chevron_left),
-                  onPressed: () => setState(() => _day = _day.subtract(const Duration(days: 1))),
+                  onPressed: () => _moveTo(_day.subtract(const Duration(days: 1))),
                 ),
                 Expanded(
                   child: TextButton.icon(
@@ -108,7 +130,7 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
                         lastDate: today.add(const Duration(days: 365)),
                       );
                       if (picked != null) {
-                        setState(() => _day = picked);
+                        _moveTo(picked);
                       }
                     },
                   ),
@@ -116,7 +138,7 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
                 IconButton(
                   tooltip: l10n.nextDay,
                   icon: const Icon(Icons.chevron_right),
-                  onPressed: () => setState(() => _day = _day.add(const Duration(days: 1))),
+                  onPressed: () => _moveTo(_day.add(const Duration(days: 1))),
                 ),
               ],
             ),
@@ -125,16 +147,13 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
                 padding: const EdgeInsets.all(48),
                 child: Text(l10n.noBookingsThatDay, textAlign: TextAlign.center),
               ),
-              AsyncData(:final value) => Column(
-                children: [
-                  for (final appointment in value)
-                    _AppointmentTile(
-                      appointment: appointment,
-                      onCheckIn: () => _open(CheckInScreen(branchId: branch.id, appointment: appointment), branch.id),
-                      onChange: () =>
-                          _open(CheckInScreen(branchId: branch.id, booking: true, appointment: appointment), branch.id),
-                    ),
-                ],
+              AsyncData(:final value) => _DayList(
+                appointments: value,
+                filter: _filter,
+                onFilter: (filter) => setState(() => _filter = filter),
+                onCheckIn: (appointment) => _open(CheckInScreen(branchId: branch.id, appointment: appointment)),
+                onChange: (appointment) =>
+                    _open(CheckInScreen(branchId: branch.id, booking: true, appointment: appointment)),
               ),
               AsyncError(:final error) => ErrorView(
                 error: error,
@@ -148,6 +167,77 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The day's bookings under chips counting each status (and those running late), which narrow the list.
+class _DayList extends StatelessWidget {
+  const _DayList({
+    required this.appointments,
+    required this.filter,
+    required this.onFilter,
+    required this.onCheckIn,
+    required this.onChange,
+  });
+
+  final List<Appointment> appointments;
+  final _Filter filter;
+  final ValueChanged<_Filter> onFilter;
+  final ValueChanged<Appointment> onCheckIn;
+  final ValueChanged<Appointment> onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final now = DateTime.now();
+    final late = appointments.where((appointment) => appointment.isLateAt(now)).length;
+    final shown = appointments.where(
+      (appointment) =>
+          filter.late ? appointment.isLateAt(now) : filter.status == null || appointment.status == filter.status,
+    );
+
+    Widget chip(String label, int count, _Filter value, Color? color) => Padding(
+      padding: const EdgeInsetsDirectional.only(end: 8),
+      child: FilterChip(
+        avatar: color == null ? null : Icon(Icons.circle, size: 10, color: color),
+        label: Text('$label ($count)'),
+        selected: filter == value,
+        showCheckmark: false,
+        onSelected: (_) => onFilter(value),
+      ),
+    );
+
+    return Column(
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              chip(l10n.allFilter, appointments.length, (status: null, late: false), null),
+              if (late > 0)
+                chip(l10n.appointmentLate, late, (
+                  status: null,
+                  late: true,
+                ), appointmentStatusColor(context, AppointmentStatus.booked, late: true)),
+              for (final status in AppointmentStatus.values)
+                if (appointments.where((appointment) => appointment.status == status).length case final count
+                    when count > 0)
+                  chip(appointmentStatusLabel(l10n, status), count, (
+                    status: status,
+                    late: false,
+                  ), appointmentStatusColor(context, status)),
+            ],
+          ),
+        ),
+        for (final appointment in shown)
+          _AppointmentTile(
+            appointment: appointment,
+            onCheckIn: () => onCheckIn(appointment),
+            onChange: () => onChange(appointment),
+          ),
+      ],
     );
   }
 }
@@ -214,7 +304,7 @@ class _AppointmentTile extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (appointment.isBooked && canCheckIn)
+            if (appointment.isOpen && canCheckIn)
               ListTile(
                 leading: const Icon(Icons.local_car_wash_outlined),
                 title: Text(l10n.checkInBooking),
@@ -223,7 +313,17 @@ class _AppointmentTile extends ConsumerWidget {
                   onCheckIn();
                 },
               ),
-            if (appointment.isBooked && canManage)
+            if (appointment.status == AppointmentStatus.booked && canManage)
+              ListTile(
+                leading: Icon(Icons.task_alt, color: appointmentStatusColor(context, AppointmentStatus.confirmed)),
+                title: Text(l10n.confirmBooking),
+                subtitle: Text(l10n.confirmBookingHint),
+                onTap: () {
+                  Navigator.of(sheet).pop();
+                  _run(context, ref, () => ref.read(appointmentsRepositoryProvider).confirm(appointment.id));
+                },
+              ),
+            if (appointment.isOpen && canManage)
               ListTile(
                 leading: const Icon(Icons.edit_calendar_outlined),
                 title: Text(l10n.changeBooking),
@@ -232,7 +332,7 @@ class _AppointmentTile extends ConsumerWidget {
                   onChange();
                 },
               ),
-            if (appointment.isBooked && canManage && appointment.startsAt.isBefore(DateTime.now()))
+            if (appointment.isLateAt(DateTime.now()) && canManage)
               ListTile(
                 leading: const Icon(Icons.person_off_outlined),
                 title: Text(l10n.markNoShow),
@@ -241,7 +341,7 @@ class _AppointmentTile extends ConsumerWidget {
                   _run(context, ref, () => ref.read(appointmentsRepositoryProvider).noShow(appointment.id));
                 },
               ),
-            if (appointment.isBooked && canManage)
+            if (appointment.isOpen && canManage)
               ListTile(
                 leading: Icon(Icons.event_busy_outlined, color: Theme.of(context).colorScheme.error),
                 title: Text(l10n.cancelBooking),
@@ -278,6 +378,13 @@ class _AppointmentTile extends ConsumerWidget {
       ?appointment.plateNumber,
     ];
     final faded = appointment.status == AppointmentStatus.cancelled || appointment.status == AppointmentStatus.noShow;
+    final late = appointment.isLateAt(DateTime.now());
+    final statusColor = appointmentStatusColor(context, appointment.status, late: late);
+    final details = [
+      if (appointment.orderNumber != null) '#${appointment.orderNumber}',
+      ?appointment.cancelReason,
+      money.format(appointment.estimatedTotal),
+    ];
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -296,17 +403,20 @@ class _AppointmentTile extends ConsumerWidget {
           who.isEmpty ? '—' : who.join(' · '),
           style: faded ? TextStyle(decoration: TextDecoration.lineThrough, color: theme.disabledColor) : null,
         ),
-        subtitle: Text(
-          [
-            appointment.items.map((item) => item.name).join(' + '),
-            [
-              appointmentStatusLabel(l10n, appointment.status),
-              if (appointment.orderNumber != null) '#${appointment.orderNumber}',
-              ?appointment.cancelReason,
-              money.format(appointment.estimatedTotal),
-            ].join(' · '),
-            ?appointment.notes,
-          ].join('\n'),
+        subtitle: Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: '${appointment.items.map((item) => item.name).join(' + ')}\n'),
+              TextSpan(
+                text:
+                    '● ${appointmentStatusLabel(l10n, appointment.status)}'
+                    '${late ? ' · ${l10n.appointmentLate}' : ''}',
+                style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
+              ),
+              TextSpan(text: ' · ${details.join(' · ')}'),
+              if (appointment.notes != null) TextSpan(text: '\n${appointment.notes}'),
+            ],
+          ),
         ),
         isThreeLine: true,
         onTap: () => _actions(context, ref),

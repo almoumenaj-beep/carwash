@@ -86,8 +86,24 @@ class AppointmentController extends Controller
 
     public function update(SaveAppointmentRequest $request, Appointment $appointment, BookAppointment $bookAppointment): JsonResponse
     {
-        $this->ensureBooked($appointment);
+        $this->ensureOpen($appointment);
         $appointment = $bookAppointment->handle($request->user(), $request->validated(), $appointment);
+
+        return response()->json(['data' => $this->presentAll(collect([$appointment->load(self::RELATIONS)]), $request)[0]]);
+    }
+
+    /**
+     * The customer said they are coming.
+     */
+    public function confirm(Request $request, Appointment $appointment): JsonResponse
+    {
+        $this->authorizeManaging($request, $appointment);
+        if ($appointment->status !== AppointmentStatus::Booked) {
+            throw ValidationException::withMessages(['appointment' => __('Only a booking not confirmed yet can be confirmed.')]);
+        }
+
+        $appointment->forceFill(['status' => AppointmentStatus::Confirmed])->save();
+        $this->auditTrail->record('appointment.confirmed', $appointment, $request->user(), 'Appointment confirmed');
 
         return response()->json(['data' => $this->presentAll(collect([$appointment->load(self::RELATIONS)]), $request)[0]]);
     }
@@ -96,7 +112,7 @@ class AppointmentController extends Controller
     {
         $this->authorizeManaging($request, $appointment);
         $request->validate(['reason' => ['nullable', 'string', 'max:255']]);
-        $this->ensureBooked($appointment);
+        $this->ensureOpen($appointment);
 
         $appointment->forceFill(['status' => AppointmentStatus::Cancelled, 'cancel_reason' => $request->input('reason')])->save();
         $this->auditTrail->record('appointment.cancelled', $appointment, $request->user(), 'Appointment cancelled', ['reason' => $request->input('reason')]);
@@ -110,7 +126,7 @@ class AppointmentController extends Controller
     public function noShow(Request $request, Appointment $appointment): JsonResponse
     {
         $this->authorizeManaging($request, $appointment);
-        $this->ensureBooked($appointment);
+        $this->ensureOpen($appointment);
         if ($appointment->starts_at->isFuture()) {
             throw ValidationException::withMessages(['appointment' => __('A booking can be marked as a no-show once its time has come.')]);
         }
@@ -153,9 +169,9 @@ class AppointmentController extends Controller
     /**
      * @throws ValidationException
      */
-    private function ensureBooked(Appointment $appointment): void
+    private function ensureOpen(Appointment $appointment): void
     {
-        if (! $appointment->isBooked()) {
+        if (! $appointment->isOpen()) {
             throw ValidationException::withMessages(['appointment' => __('This booking is no longer waiting for the car.')]);
         }
     }

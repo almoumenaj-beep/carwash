@@ -848,5 +848,10 @@
   "groupPeople": "Staff",
   "groupSetup": "Setup",
   "manageCategories": "Expense categories",
-  "manageCategoriesHint": "Add, rename or switch off categories"
+  "manageCategoriesHint": "Add, rename or switch off categories",
+  "appointmentConfirmed": "Confirmed",
+  "appointmentLate": "Late",
+  "confirmBooking": "Confirm booking",
+  "confirmBookingHint": "Once the customer says they are coming",
+  "allFilter": "All"
 }

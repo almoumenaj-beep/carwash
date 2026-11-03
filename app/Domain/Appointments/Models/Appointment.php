@@ -49,9 +49,12 @@ class Appointment extends Model
         ];
     }
 
-    public function isBooked(): bool
+    /**
+     * Still waiting for the car: booked or confirmed.
+     */
+    public function isOpen(): bool
     {
-        return $this->status === AppointmentStatus::Booked;
+        return in_array($this->status, AppointmentStatus::open(), true);
     }
 
     /**

@@ -28,7 +28,7 @@ class CheckInAppointment
     {
         return DB::transaction(function () use ($actor, $appointment, $orderData): Order {
             $appointment = Appointment::query()->lockForUpdate()->findOrFail($appointment->id);
-            if (! $appointment->isBooked()) {
+            if (! $appointment->isOpen()) {
                 throw ValidationException::withMessages(['appointment' => __('This booking is no longer waiting for the car.')]);
             }
             if ($orderData['branch_id'] !== $appointment->branch_id) {

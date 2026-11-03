@@ -95,6 +95,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('appointments/slots', [AppointmentController::class, 'slots'])->name('appointments.slots');
         Route::post('appointments', [AppointmentController::class, 'store'])->name('appointments.store');
         Route::patch('appointments/{appointment}', [AppointmentController::class, 'update'])->name('appointments.update');
+        Route::post('appointments/{appointment}/confirm', [AppointmentController::class, 'confirm'])->name('appointments.confirm');
         Route::post('appointments/{appointment}/cancel', [AppointmentController::class, 'cancel'])->name('appointments.cancel');
         Route::post('appointments/{appointment}/no-show', [AppointmentController::class, 'noShow'])->name('appointments.no-show');
         Route::post('appointments/{appointment}/check-in', [AppointmentController::class, 'checkIn'])->name('appointments.check-in');

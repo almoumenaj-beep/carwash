@@ -482,5 +482,10 @@
   "groupPeople": "الموظفون",
   "groupSetup": "الإعدادات",
   "manageCategories": "تصنيفات المصروفات",
-  "manageCategoriesHint": "إضافة تصنيف أو تعديله أو إيقافه"
+  "manageCategoriesHint": "إضافة تصنيف أو تعديله أو إيقافه",
+  "appointmentConfirmed": "مؤكد",
+  "appointmentLate": "متأخر",
+  "confirmBooking": "تأكيد الحجز",
+  "confirmBookingHint": "بعد التواصل مع العميل وتأكيده الحضور",
+  "allFilter": "الكل"
 }
