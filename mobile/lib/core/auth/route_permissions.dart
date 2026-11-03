@@ -24,6 +24,10 @@ abstract final class Permissions {
   static const inventoryView = 'inventory.view';
   static const inventoryAdjust = 'inventory.adjust';
   static const inventoryPurchase = 'inventory.purchase';
+  static const employeesView = 'employees.view';
+  static const employeesManage = 'employees.manage';
+  static const payrollView = 'payroll.view';
+  static const payrollRun = 'payroll.run';
 }
 
 /// Which permissions open each section; holding any one of them is enough.
@@ -36,6 +40,7 @@ const routePermissions = <String, List<String>>{
   '/reports': [Permissions.reportsSales],
   '/expenses': [Permissions.expensesView],
   '/inventory': [Permissions.inventoryView],
+  '/staff-affairs': [Permissions.employeesView, Permissions.payrollView],
   '/roles': [Permissions.rolesManage, Permissions.usersManage],
   '/staff': [Permissions.usersManage],
   '/devices': [Permissions.usersManage],

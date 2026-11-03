@@ -1171,4 +1171,139 @@ class AppLocalizationsEn extends AppLocalizations {
   String cancelledBecause(String reason) {
     return 'Cancelled: $reason';
   }
+
+  @override
+  String get clockInAt => 'Clock in at';
+
+  @override
+  String get notClockedIn => 'You have not clocked in';
+
+  @override
+  String clockedInSince(String time) {
+    return 'At work since $time';
+  }
+
+  @override
+  String get clockIn => 'Clock in';
+
+  @override
+  String get clockOut => 'Clock out';
+
+  @override
+  String get staffAffairsTitle => 'Staff affairs';
+
+  @override
+  String get staffAffairsSubtitle => 'Pay, commission, attendance and advances';
+
+  @override
+  String get employeesTab => 'Employees';
+
+  @override
+  String get attendanceTab => 'Attendance';
+
+  @override
+  String get advancesTab => 'Advances';
+
+  @override
+  String get payrollTab => 'Payroll';
+
+  @override
+  String get noCommission => 'No commission';
+
+  @override
+  String commissionPerCar(String amount) {
+    return '$amount per car';
+  }
+
+  @override
+  String commissionPercent(String percent) {
+    return '$percent% of each car';
+  }
+
+  @override
+  String salaryLabel(String amount) {
+    return 'Salary $amount';
+  }
+
+  @override
+  String advancesOwed(String amount) {
+    return 'Advances $amount';
+  }
+
+  @override
+  String get giveAdvance => 'Give an advance';
+
+  @override
+  String get monthlySalaryField => 'Monthly salary';
+
+  @override
+  String get commissionField => 'Commission';
+
+  @override
+  String get noCommissionShort => 'None';
+
+  @override
+  String get perCarShort => 'Per car';
+
+  @override
+  String get perCarField => 'Amount per car';
+
+  @override
+  String get percentOfCarField => 'Share of the car\'s value';
+
+  @override
+  String get commissionSplitHint => 'Split equally when several washers share a car';
+
+  @override
+  String get advanceHint => 'Recorded as an expense and deducted from the next payroll';
+
+  @override
+  String get noAttendance => 'No one clocked in on this day';
+
+  @override
+  String stillAtWork(String time) {
+    return 'Since $time, still at work';
+  }
+
+  @override
+  String hoursWorked(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String get noAdvances => 'No advances yet';
+
+  @override
+  String get advanceDeducted => 'Deducted';
+
+  @override
+  String get advanceOutstanding => 'Not deducted yet';
+
+  @override
+  String get calculateThisMonth => 'Calculate this month';
+
+  @override
+  String get calculateLastMonth => 'Last month';
+
+  @override
+  String get noPayroll => 'No payroll yet';
+
+  @override
+  String get payrollPaid => 'Paid';
+
+  @override
+  String get payrollDraft => 'Draft, recalculated until paid';
+
+  @override
+  String commissionAmount(String amount) {
+    return 'Commission $amount';
+  }
+
+  @override
+  String advancesDeducted(String amount) {
+    return 'Advances −$amount';
+  }
+
+  @override
+  String get payPayroll => 'Pay payroll';
 }

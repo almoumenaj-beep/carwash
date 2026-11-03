@@ -2203,6 +2203,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancelled: {reason}'**
   String cancelledBecause(String reason);
+
+  /// No description provided for @clockInAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock in at'**
+  String get clockInAt;
+
+  /// No description provided for @notClockedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not clocked in'**
+  String get notClockedIn;
+
+  /// No description provided for @clockedInSince.
+  ///
+  /// In en, this message translates to:
+  /// **'At work since {time}'**
+  String clockedInSince(String time);
+
+  /// No description provided for @clockIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock in'**
+  String get clockIn;
+
+  /// No description provided for @clockOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock out'**
+  String get clockOut;
+
+  /// No description provided for @staffAffairsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff affairs'**
+  String get staffAffairsTitle;
+
+  /// No description provided for @staffAffairsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay, commission, attendance and advances'**
+  String get staffAffairsSubtitle;
+
+  /// No description provided for @employeesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Employees'**
+  String get employeesTab;
+
+  /// No description provided for @attendanceTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance'**
+  String get attendanceTab;
+
+  /// No description provided for @advancesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Advances'**
+  String get advancesTab;
+
+  /// No description provided for @payrollTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Payroll'**
+  String get payrollTab;
+
+  /// No description provided for @noCommission.
+  ///
+  /// In en, this message translates to:
+  /// **'No commission'**
+  String get noCommission;
+
+  /// No description provided for @commissionPerCar.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} per car'**
+  String commissionPerCar(String amount);
+
+  /// No description provided for @commissionPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of each car'**
+  String commissionPercent(String percent);
+
+  /// No description provided for @salaryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary {amount}'**
+  String salaryLabel(String amount);
+
+  /// No description provided for @advancesOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Advances {amount}'**
+  String advancesOwed(String amount);
+
+  /// No description provided for @giveAdvance.
+  ///
+  /// In en, this message translates to:
+  /// **'Give an advance'**
+  String get giveAdvance;
+
+  /// No description provided for @monthlySalaryField.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly salary'**
+  String get monthlySalaryField;
+
+  /// No description provided for @commissionField.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission'**
+  String get commissionField;
+
+  /// No description provided for @noCommissionShort.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get noCommissionShort;
+
+  /// No description provided for @perCarShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Per car'**
+  String get perCarShort;
+
+  /// No description provided for @perCarField.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount per car'**
+  String get perCarField;
+
+  /// No description provided for @percentOfCarField.
+  ///
+  /// In en, this message translates to:
+  /// **'Share of the car\'s value'**
+  String get percentOfCarField;
+
+  /// No description provided for @commissionSplitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Split equally when several washers share a car'**
+  String get commissionSplitHint;
+
+  /// No description provided for @advanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded as an expense and deducted from the next payroll'**
+  String get advanceHint;
+
+  /// No description provided for @noAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'No one clocked in on this day'**
+  String get noAttendance;
+
+  /// No description provided for @stillAtWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Since {time}, still at work'**
+  String stillAtWork(String time);
+
+  /// No description provided for @hoursWorked.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} h'**
+  String hoursWorked(String hours);
+
+  /// No description provided for @noAdvances.
+  ///
+  /// In en, this message translates to:
+  /// **'No advances yet'**
+  String get noAdvances;
+
+  /// No description provided for @advanceDeducted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deducted'**
+  String get advanceDeducted;
+
+  /// No description provided for @advanceOutstanding.
+  ///
+  /// In en, this message translates to:
+  /// **'Not deducted yet'**
+  String get advanceOutstanding;
+
+  /// No description provided for @calculateThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculate this month'**
+  String get calculateThisMonth;
+
+  /// No description provided for @calculateLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last month'**
+  String get calculateLastMonth;
+
+  /// No description provided for @noPayroll.
+  ///
+  /// In en, this message translates to:
+  /// **'No payroll yet'**
+  String get noPayroll;
+
+  /// No description provided for @payrollPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get payrollPaid;
+
+  /// No description provided for @payrollDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft, recalculated until paid'**
+  String get payrollDraft;
+
+  /// No description provided for @commissionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Commission {amount}'**
+  String commissionAmount(String amount);
+
+  /// No description provided for @advancesDeducted.
+  ///
+  /// In en, this message translates to:
+  /// **'Advances −{amount}'**
+  String advancesDeducted(String amount);
+
+  /// No description provided for @payPayroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay payroll'**
+  String get payPayroll;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

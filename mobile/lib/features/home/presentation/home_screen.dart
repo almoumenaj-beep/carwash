@@ -6,6 +6,7 @@ import '../../../core/auth/route_permissions.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
+import '../../staff_affairs/presentation/attendance_card.dart';
 
 /// Landing screen after sign-in: who is working, and the sections they may open.
 /// Account details (roles, branches, permissions) and settings such as language and dark mode live on the account screen.
@@ -69,6 +70,7 @@ class HomeScreen extends ConsumerWidget {
                 onTap: () => context.push('/account'),
               ),
             ),
+            const AttendanceCard(),
             const _SectionsMenu(),
           ],
         ),
@@ -105,6 +107,12 @@ class _SectionsMenu extends ConsumerWidget {
         icon: Icons.inventory_2_outlined,
         title: l10n.inventoryTitle,
         subtitle: l10n.inventorySubtitle,
+      ),
+      (
+        path: '/staff-affairs',
+        icon: Icons.badge_outlined,
+        title: l10n.staffAffairsTitle,
+        subtitle: l10n.staffAffairsSubtitle,
       ),
       (
         path: '/customers',

@@ -1195,4 +1195,139 @@ class AppLocalizationsAr extends AppLocalizations {
   String cancelledBecause(String reason) {
     return 'أُلغي: $reason';
   }
+
+  @override
+  String get clockInAt => 'سجّل الحضور في';
+
+  @override
+  String get notClockedIn => 'لم تسجّل حضورك اليوم';
+
+  @override
+  String clockedInSince(String time) {
+    return 'في الدوام منذ $time';
+  }
+
+  @override
+  String get clockIn => 'حضور';
+
+  @override
+  String get clockOut => 'انصراف';
+
+  @override
+  String get staffAffairsTitle => 'شؤون الموظفين';
+
+  @override
+  String get staffAffairsSubtitle => 'الرواتب والعمولات والحضور والسلف';
+
+  @override
+  String get employeesTab => 'الموظفون';
+
+  @override
+  String get attendanceTab => 'الحضور';
+
+  @override
+  String get advancesTab => 'السلف';
+
+  @override
+  String get payrollTab => 'الرواتب';
+
+  @override
+  String get noCommission => 'بدون عمولة';
+
+  @override
+  String commissionPerCar(String amount) {
+    return 'عمولة $amount للسيارة';
+  }
+
+  @override
+  String commissionPercent(String percent) {
+    return 'عمولة $percent% من السيارة';
+  }
+
+  @override
+  String salaryLabel(String amount) {
+    return 'راتب $amount';
+  }
+
+  @override
+  String advancesOwed(String amount) {
+    return 'سلف $amount';
+  }
+
+  @override
+  String get giveAdvance => 'صرف سلفة';
+
+  @override
+  String get monthlySalaryField => 'الراتب الشهري';
+
+  @override
+  String get commissionField => 'العمولة';
+
+  @override
+  String get noCommissionShort => 'بدون';
+
+  @override
+  String get perCarShort => 'للسيارة';
+
+  @override
+  String get perCarField => 'المبلغ عن كل سيارة';
+
+  @override
+  String get percentOfCarField => 'النسبة من قيمة السيارة';
+
+  @override
+  String get commissionSplitHint => 'إذا غسل السيارة أكثر من عامل تُقسم العمولة بينهم';
+
+  @override
+  String get advanceHint => 'تُسجَّل كمصروف وتُخصم من الراتب القادم';
+
+  @override
+  String get noAttendance => 'لا يوجد حضور في هذا اليوم';
+
+  @override
+  String stillAtWork(String time) {
+    return 'منذ $time – ما زال في الدوام';
+  }
+
+  @override
+  String hoursWorked(String hours) {
+    return '$hours س';
+  }
+
+  @override
+  String get noAdvances => 'لا توجد سلف';
+
+  @override
+  String get advanceDeducted => 'خُصمت';
+
+  @override
+  String get advanceOutstanding => 'لم تُخصم بعد';
+
+  @override
+  String get calculateThisMonth => 'احسب رواتب هذا الشهر';
+
+  @override
+  String get calculateLastMonth => 'الشهر الماضي';
+
+  @override
+  String get noPayroll => 'لم تُحسب رواتب بعد';
+
+  @override
+  String get payrollPaid => 'مدفوعة';
+
+  @override
+  String get payrollDraft => 'مسودة – يُعاد حسابها حتى الدفع';
+
+  @override
+  String commissionAmount(String amount) {
+    return 'عمولة $amount';
+  }
+
+  @override
+  String advancesDeducted(String amount) {
+    return 'سلف −$amount';
+  }
+
+  @override
+  String get payPayroll => 'ادفع الرواتب';
 }
