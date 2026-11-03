@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CarWash logo: a car under a water drop and bubbles, in white. Drawn within the adaptive icon's
+     safe zone (the middle 66 of 108 units) so every launcher mask keeps it whole. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Water drop -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,24 C54,24 46.5,33 46.5,37.5 A7.5,7.5 0 0,0 61.5,37.5 C61.5,33 54,24 54,24 Z" />
+    <!-- Bubbles -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.85"
+        android:pathData="M40,40 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 M68,37 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
+    <!-- Car body with its windows cut out -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M31,62 L35,53 Q37,49 42,49 L66,49 Q71,49 73,53 L77,62 Q81,62.5 81,66 L81,72 Q81,74 79,74 L29,74 Q27,74 27,72 L27,66 Q27,62.5 31,62 Z M39,61 L41.5,55 Q42.5,53 44.5,53 L52.5,53 L52.5,61 Z M55.5,61 L55.5,53 L63.5,53 Q65.5,53 66.5,55 L69,61 Z" />
+    <!-- Wheels -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M39,74 m-5.5,0 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0 M69,74 m-5.5,0 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0" />
+    <path
+        android:fillColor="#0288D1"
+        android:pathData="M39,74 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0 M69,74 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0" />
+</vector>

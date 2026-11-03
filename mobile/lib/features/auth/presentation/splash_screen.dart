@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/error_view.dart';
 import '../application/session_controller.dart';
 
@@ -15,7 +16,12 @@ class SplashScreen extends ConsumerWidget {
     return Scaffold(
       body: session.hasError
           ? ErrorView(error: session.error!, onRetry: () => ref.invalidate(sessionProvider))
-          : const Center(child: CircularProgressIndicator()),
+          : const Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [AppLogo(size: 96), SizedBox(height: 32), CircularProgressIndicator()],
+              ),
+            ),
     );
   }
 }

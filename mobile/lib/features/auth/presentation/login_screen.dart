@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/network/api_problem.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/language_button.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
@@ -81,7 +82,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(Icons.local_car_wash, size: 64, color: theme.colorScheme.primary),
+                    const Center(child: AppLogo(size: 88)),
                     const SizedBox(height: 16),
                     Text(l10n.signInTitle, style: theme.textTheme.headlineMedium, textAlign: TextAlign.center),
                     const SizedBox(height: 4),
