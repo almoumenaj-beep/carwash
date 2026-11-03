@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- CarWash logo: a car under a water drop and bubbles, in white. Drawn within the adaptive icon's
-     safe zone (the middle 66 of 108 units) so every launcher mask keeps it whole. -->
+<!-- CarWash logo "night shine": a sky-blue car with sparkles. Scaled into the adaptive icon's safe zone
+     (the middle 66 of 108 units) so circular launcher masks keep it whole. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Water drop -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M54,24 C54,24 46.5,33 46.5,37.5 A7.5,7.5 0 0,0 61.5,37.5 C61.5,33 54,24 54,24 Z" />
-    <!-- Bubbles -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:fillAlpha="0.85"
-        android:pathData="M40,40 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 M68,37 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0" />
-    <!-- Car body with its windows cut out -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:fillType="evenOdd"
-        android:pathData="M31,62 L35,53 Q37,49 42,49 L66,49 Q71,49 73,53 L77,62 Q81,62.5 81,66 L81,72 Q81,74 79,74 L29,74 Q27,74 27,72 L27,66 Q27,62.5 31,62 Z M39,61 L41.5,55 Q42.5,53 44.5,53 L52.5,53 L52.5,61 Z M55.5,61 L55.5,53 L63.5,53 Q65.5,53 66.5,55 L69,61 Z" />
-    <!-- Wheels -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M39,74 m-5.5,0 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0 M69,74 m-5.5,0 a5.5,5.5 0 1,0 11,0 a5.5,5.5 0 1,0 -11,0" />
-    <path
-        android:fillColor="#0288D1"
-        android:pathData="M39,74 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0 M69,74 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0" />
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.82"
+        android:scaleY="0.82">
+        <!-- Car body with its windows cut out -->
+        <path
+            android:fillColor="#4FC3F7"
+            android:fillType="evenOdd"
+            android:pathData="M24,66 L30,55 Q33,50 39,49 L58,47 Q66,46.5 72,52 L78,58 Q85,59 86,64 L86,70 Q86,72.5 83.5,72.5 L24.5,72.5 Q22,72.5 22,70 L22,68 Q22,66.3 24,66 Z M33,64 L37,56 Q38.3,53.6 41,53.4 L52,52.6 L52,64 Z M55.5,64 L55.5,52.4 L60,52.2 Q65,52 68.5,55.6 L72.5,64 Z" />
+        <!-- Wheels -->
+        <path
+            android:fillColor="#4FC3F7"
+            android:pathData="M36,72.5 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0 M72,72.5 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+        <path
+            android:fillColor="#0B2545"
+            android:pathData="M36,72.5 m-2.4,0 a2.4,2.4 0 1,0 4.8,0 a2.4,2.4 0 1,0 -4.8,0 M72,72.5 m-2.4,0 a2.4,2.4 0 1,0 4.8,0 a2.4,2.4 0 1,0 -4.8,0" />
+        <!-- Sparkles -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M74,22 Q75,30 83,31 Q75,32 74,40 Q73,32 65,31 Q73,30 74,22 Z M50,28 Q50.6,32.4 55,33 Q50.6,33.6 50,38 Q49.4,33.6 45,33 Q49.4,32.4 50,28 Z" />
+        <path
+            android:fillAlpha="0.8"
+            android:fillColor="#FFFFFF"
+            android:pathData="M30,34 Q30.4,36.6 33,37 Q30.4,37.4 30,40 Q29.6,37.4 27,37 Q29.6,36.6 30,34 Z" />
+    </group>
 </vector>
