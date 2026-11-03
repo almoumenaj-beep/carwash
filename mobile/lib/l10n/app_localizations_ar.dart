@@ -780,6 +780,105 @@ class AppLocalizationsAr extends AppLocalizations {
   String get darkMode => 'الوضع الداكن';
 
   @override
+  String get inventoryTitle => 'المخزون';
+
+  @override
+  String get inventorySubtitle => 'المواد والأرصدة والمشتريات والجرد';
+
+  @override
+  String get stockTab => 'المخزون';
+
+  @override
+  String get purchasesTab => 'المشتريات';
+
+  @override
+  String get newPurchase => 'مشتريات جديدة';
+
+  @override
+  String get addMaterial => 'إضافة مادة';
+
+  @override
+  String get noMaterials => 'لا توجد مواد بعد. أضف المواد التي تستخدمها مثل الصابون والمناشف.';
+
+  @override
+  String lowStock(String min, String unit) {
+    return 'منخفض: الحد الأدنى $min $unit';
+  }
+
+  @override
+  String minStockLabel(String min, String unit) {
+    return 'الحد الأدنى $min $unit';
+  }
+
+  @override
+  String unitCostLabel(String cost, String unit) {
+    return 'آخر سعر $cost لكل $unit';
+  }
+
+  @override
+  String get stockCount => 'جرد';
+
+  @override
+  String get countedQuantity => 'الكمية المعدودة';
+
+  @override
+  String get stockHistory => 'السجل';
+
+  @override
+  String get noMovements => 'لا توجد حركات بعد.';
+
+  @override
+  String get movementPurchase => 'شراء';
+
+  @override
+  String get movementConsumption => 'استهلاك غسيل';
+
+  @override
+  String get movementCount => 'جرد';
+
+  @override
+  String get quantityInvalid => 'اكتب كمية، مثل 2.5';
+
+  @override
+  String get unitField => 'الوحدة';
+
+  @override
+  String get unitHint => 'مثل: لتر، كيلو، حبة';
+
+  @override
+  String get minStockField => 'الحد الأدنى';
+
+  @override
+  String get minStockHint => 'تُنبَّه عندما يصل الرصيد لهذا الحد.';
+
+  @override
+  String get noPurchases => 'لا مشتريات بعد.';
+
+  @override
+  String get materialsSection => 'المواد';
+
+  @override
+  String get addMaterialLine => 'إضافة مادة';
+
+  @override
+  String get quantityField => 'الكمية';
+
+  @override
+  String get unitPriceField => 'سعر الوحدة';
+
+  @override
+  String get addAtLeastOneMaterial => 'أضف مادة واحدة على الأقل.';
+
+  @override
+  String get purchaseCategoryHint => 'تُسجَّل المشتريات أيضاً كمصروف في هذا التصنيف.';
+
+  @override
+  String get serviceMaterials => 'المواد المستهلكة';
+
+  @override
+  String get serviceMaterialsHint => 'ما تستهلكه الخدمة في كل مرة، ويُخصم من مخزون الفرع عند بدء الغسيل.';
+
+  @override
   String get expensesTitle => 'المصروفات';
 
   @override

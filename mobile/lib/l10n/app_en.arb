@@ -395,6 +395,67 @@
   "paidBadge": "Paid",
   "done": "Done",
   "darkMode": "Dark mode",
+  "inventoryTitle": "Inventory",
+  "inventorySubtitle": "Materials, stock, purchases and counts",
+  "stockTab": "Stock",
+  "purchasesTab": "Purchases",
+  "newPurchase": "New purchase",
+  "addMaterial": "Add material",
+  "noMaterials": "No materials yet. Add the materials you use, such as shampoo or towels.",
+  "lowStock": "Low: minimum {min} {unit}",
+  "@lowStock": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "minStockLabel": "Minimum {min} {unit}",
+  "@minStockLabel": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "unitCostLabel": "Last cost {cost} per {unit}",
+  "@unitCostLabel": {
+    "placeholders": {
+      "cost": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "stockCount": "Stock count",
+  "countedQuantity": "Quantity counted",
+  "stockHistory": "History",
+  "noMovements": "No movements yet.",
+  "movementPurchase": "Purchase",
+  "movementConsumption": "Used by a wash",
+  "movementCount": "Stock count",
+  "quantityInvalid": "Enter a quantity, e.g. 2.5",
+  "unitField": "Unit",
+  "unitHint": "e.g. L, kg, pc",
+  "minStockField": "Minimum stock",
+  "minStockHint": "You are warned when stock falls to this level.",
+  "noPurchases": "No purchases yet.",
+  "materialsSection": "Materials",
+  "addMaterialLine": "Add material",
+  "quantityField": "Quantity",
+  "unitPriceField": "Price per unit",
+  "addAtLeastOneMaterial": "Add at least one material.",
+  "purchaseCategoryHint": "The purchase is also recorded as an expense in this category.",
+  "serviceMaterials": "Materials used",
+  "serviceMaterialsHint": "What one sale of this service uses. It is taken from the branch's stock when the wash starts.",
   "expensesTitle": "Expenses",
   "expensesSubtitle": "Spending, suppliers and recurring bills",
   "owedTab": "Owed",

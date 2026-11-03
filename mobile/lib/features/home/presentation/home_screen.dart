@@ -82,6 +82,12 @@ class _SectionsMenu extends ConsumerWidget {
         subtitle: l10n.expensesSubtitle,
       ),
       (
+        path: '/inventory',
+        icon: Icons.inventory_2_outlined,
+        title: l10n.inventoryTitle,
+        subtitle: l10n.inventorySubtitle,
+      ),
+      (
         path: '/customers',
         icon: Icons.people_alt_outlined,
         title: l10n.customersTitle,

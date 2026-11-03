@@ -1454,6 +1454,192 @@ abstract class AppLocalizations {
   /// **'Dark mode'**
   String get darkMode;
 
+  /// No description provided for @inventoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory'**
+  String get inventoryTitle;
+
+  /// No description provided for @inventorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials, stock, purchases and counts'**
+  String get inventorySubtitle;
+
+  /// No description provided for @stockTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock'**
+  String get stockTab;
+
+  /// No description provided for @purchasesTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases'**
+  String get purchasesTab;
+
+  /// No description provided for @newPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'New purchase'**
+  String get newPurchase;
+
+  /// No description provided for @addMaterial.
+  ///
+  /// In en, this message translates to:
+  /// **'Add material'**
+  String get addMaterial;
+
+  /// No description provided for @noMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'No materials yet. Add the materials you use, such as shampoo or towels.'**
+  String get noMaterials;
+
+  /// No description provided for @lowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low: minimum {min} {unit}'**
+  String lowStock(String min, String unit);
+
+  /// No description provided for @minStockLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum {min} {unit}'**
+  String minStockLabel(String min, String unit);
+
+  /// No description provided for @unitCostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Last cost {cost} per {unit}'**
+  String unitCostLabel(String cost, String unit);
+
+  /// No description provided for @stockCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock count'**
+  String get stockCount;
+
+  /// No description provided for @countedQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity counted'**
+  String get countedQuantity;
+
+  /// No description provided for @stockHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get stockHistory;
+
+  /// No description provided for @noMovements.
+  ///
+  /// In en, this message translates to:
+  /// **'No movements yet.'**
+  String get noMovements;
+
+  /// No description provided for @movementPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase'**
+  String get movementPurchase;
+
+  /// No description provided for @movementConsumption.
+  ///
+  /// In en, this message translates to:
+  /// **'Used by a wash'**
+  String get movementConsumption;
+
+  /// No description provided for @movementCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Stock count'**
+  String get movementCount;
+
+  /// No description provided for @quantityInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a quantity, e.g. 2.5'**
+  String get quantityInvalid;
+
+  /// No description provided for @unitField.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get unitField;
+
+  /// No description provided for @unitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. L, kg, pc'**
+  String get unitHint;
+
+  /// No description provided for @minStockField.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum stock'**
+  String get minStockField;
+
+  /// No description provided for @minStockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You are warned when stock falls to this level.'**
+  String get minStockHint;
+
+  /// No description provided for @noPurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'No purchases yet.'**
+  String get noPurchases;
+
+  /// No description provided for @materialsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get materialsSection;
+
+  /// No description provided for @addMaterialLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add material'**
+  String get addMaterialLine;
+
+  /// No description provided for @quantityField.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantityField;
+
+  /// No description provided for @unitPriceField.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per unit'**
+  String get unitPriceField;
+
+  /// No description provided for @addAtLeastOneMaterial.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one material.'**
+  String get addAtLeastOneMaterial;
+
+  /// No description provided for @purchaseCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The purchase is also recorded as an expense in this category.'**
+  String get purchaseCategoryHint;
+
+  /// No description provided for @serviceMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials used'**
+  String get serviceMaterials;
+
+  /// No description provided for @serviceMaterialsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What one sale of this service uses. It is taken from the branch\'s stock when the wash starts.'**
+  String get serviceMaterialsHint;
+
   /// No description provided for @expensesTitle.
   ///
   /// In en, this message translates to:

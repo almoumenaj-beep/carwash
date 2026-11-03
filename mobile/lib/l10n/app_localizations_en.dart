@@ -769,6 +769,106 @@ class AppLocalizationsEn extends AppLocalizations {
   String get darkMode => 'Dark mode';
 
   @override
+  String get inventoryTitle => 'Inventory';
+
+  @override
+  String get inventorySubtitle => 'Materials, stock, purchases and counts';
+
+  @override
+  String get stockTab => 'Stock';
+
+  @override
+  String get purchasesTab => 'Purchases';
+
+  @override
+  String get newPurchase => 'New purchase';
+
+  @override
+  String get addMaterial => 'Add material';
+
+  @override
+  String get noMaterials => 'No materials yet. Add the materials you use, such as shampoo or towels.';
+
+  @override
+  String lowStock(String min, String unit) {
+    return 'Low: minimum $min $unit';
+  }
+
+  @override
+  String minStockLabel(String min, String unit) {
+    return 'Minimum $min $unit';
+  }
+
+  @override
+  String unitCostLabel(String cost, String unit) {
+    return 'Last cost $cost per $unit';
+  }
+
+  @override
+  String get stockCount => 'Stock count';
+
+  @override
+  String get countedQuantity => 'Quantity counted';
+
+  @override
+  String get stockHistory => 'History';
+
+  @override
+  String get noMovements => 'No movements yet.';
+
+  @override
+  String get movementPurchase => 'Purchase';
+
+  @override
+  String get movementConsumption => 'Used by a wash';
+
+  @override
+  String get movementCount => 'Stock count';
+
+  @override
+  String get quantityInvalid => 'Enter a quantity, e.g. 2.5';
+
+  @override
+  String get unitField => 'Unit';
+
+  @override
+  String get unitHint => 'e.g. L, kg, pc';
+
+  @override
+  String get minStockField => 'Minimum stock';
+
+  @override
+  String get minStockHint => 'You are warned when stock falls to this level.';
+
+  @override
+  String get noPurchases => 'No purchases yet.';
+
+  @override
+  String get materialsSection => 'Materials';
+
+  @override
+  String get addMaterialLine => 'Add material';
+
+  @override
+  String get quantityField => 'Quantity';
+
+  @override
+  String get unitPriceField => 'Price per unit';
+
+  @override
+  String get addAtLeastOneMaterial => 'Add at least one material.';
+
+  @override
+  String get purchaseCategoryHint => 'The purchase is also recorded as an expense in this category.';
+
+  @override
+  String get serviceMaterials => 'Materials used';
+
+  @override
+  String get serviceMaterialsHint =>
+      'What one sale of this service uses. It is taken from the branch\'s stock when the wash starts.';
+
+  @override
   String get expensesTitle => 'Expenses';
 
   @override

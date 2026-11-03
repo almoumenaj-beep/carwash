@@ -9,7 +9,10 @@ import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/auth/route_permissions.dart';
+import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
+import '../../inventory/presentation/service_materials_screen.dart';
 import '../../settings/data/settings_repository.dart';
 import '../../staff/data/staff_repository.dart';
 import '../data/catalog_repository.dart';
@@ -410,6 +413,19 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
       appBar: AppBar(
         title: Text(_isNew ? l10n.newService : widget.service!.name),
         actions: [
+          if (!_isNew &&
+              !widget.service!.isPackage &&
+              (ref.watch(sessionProvider).value?.can(Permissions.inventoryView) ?? false))
+            IconButton(
+              tooltip: l10n.serviceMaterials,
+              icon: const Icon(Icons.science_outlined),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) =>
+                      ServiceMaterialsScreen(serviceId: widget.service!.id, serviceName: widget.service!.name),
+                ),
+              ),
+            ),
           if (!_isNew) IconButton(tooltip: l10n.delete, icon: const Icon(Icons.delete_outline), onPressed: _delete),
         ],
       ),
