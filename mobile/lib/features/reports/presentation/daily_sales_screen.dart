@@ -136,7 +136,7 @@ class _Report extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Tiles(
+        ReportTiles(
           tiles: [
             (l10n.salesTotal, money.format(report.sales), Icons.payments_outlined),
             (l10n.shiftInvoices, '${report.invoicesCount}', Icons.receipt_long_outlined),
@@ -149,7 +149,7 @@ class _Report extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 8),
-        _Tiles(
+        ReportTiles(
           tiles: [
             (l10n.carsCheckedIn, '${report.carsCheckedIn}', Icons.directions_car_outlined),
             (l10n.statusDelivered, '${report.carsDelivered}', Icons.key_outlined),
@@ -158,7 +158,7 @@ class _Report extends ConsumerWidget {
           ],
         ),
         if (report.byService.isNotEmpty)
-          _Section(
+          ReportSection(
             title: l10n.servicesSection,
             rows: [
               for (final service in report.byService)
@@ -166,7 +166,7 @@ class _Report extends ConsumerWidget {
             ],
           ),
         if (report.byCashier.isNotEmpty)
-          _Section(
+          ReportSection(
             title: l10n.byCashier,
             rows: [
               for (final cashier in report.byCashier)
@@ -174,7 +174,7 @@ class _Report extends ConsumerWidget {
             ],
           ),
         if (report.byWasher.isNotEmpty)
-          _Section(
+          ReportSection(
             title: l10n.washersSection,
             rows: [for (final washer in report.byWasher) (washer.name, l10n.carsCount(washer.cars))],
           ),
@@ -224,8 +224,8 @@ class _Report extends ConsumerWidget {
 }
 
 /// Figures in a grid of small cards, two per row.
-class _Tiles extends StatelessWidget {
-  const _Tiles({required this.tiles});
+class ReportTiles extends StatelessWidget {
+  const ReportTiles({super.key, required this.tiles});
 
   final List<(String, String, IconData)> tiles;
 
@@ -266,8 +266,8 @@ class _Tiles extends StatelessWidget {
   }
 }
 
-class _Section extends StatelessWidget {
-  const _Section({required this.title, required this.rows});
+class ReportSection extends StatelessWidget {
+  const ReportSection({super.key, required this.title, required this.rows});
 
   final String title;
   final List<(String, String)> rows;

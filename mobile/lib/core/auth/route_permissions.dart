@@ -18,6 +18,7 @@ abstract final class Permissions {
   static const posCheckout = 'pos.checkout';
   static const posDiscount = 'pos.discount';
   static const reportsSales = 'reports.sales';
+  static const reportsProfit = 'reports.profit';
   static const expensesView = 'expenses.view';
   static const expensesCreate = 'expenses.create';
   static const expensesApprove = 'expenses.approve';
@@ -40,6 +41,7 @@ const routePermissions = <String, List<String>>{
   '/checkout': [Permissions.posCheckout],
   '/shift': [Permissions.posCheckout],
   '/reports': [Permissions.reportsSales],
+  '/finance': [Permissions.reportsProfit],
   '/expenses': [Permissions.expensesView],
   '/inventory': [Permissions.inventoryView],
   '/equipment': [Permissions.equipmentView],

@@ -1496,4 +1496,104 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get maintenanceCostHint => 'اختياري: تُسجَّل مصروفاً على فرع الجهاز';
+
+  @override
+  String get financialReportsTitle => 'التقارير المالية';
+
+  @override
+  String get financialReportsSubtitle => 'الأرباح والخسائر والتدفق النقدي والربحية';
+
+  @override
+  String get thisYear => 'هذه السنة';
+
+  @override
+  String get customPeriod => 'فترة أخرى';
+
+  @override
+  String get profitLossTab => 'الأرباح والخسائر';
+
+  @override
+  String get cashFlowTab => 'التدفق النقدي';
+
+  @override
+  String get profitabilityTab => 'الربحية';
+
+  @override
+  String get noFiguresInPeriod => 'لا توجد مبيعات ولا مصروفات في هذه الفترة';
+
+  @override
+  String get profitLabel => 'صافي الربح';
+
+  @override
+  String get lossLabel => 'صافي الخسارة';
+
+  @override
+  String marginLabel(String percent) {
+    return 'هامش الربح $percent%';
+  }
+
+  @override
+  String get revenueSection => 'الإيرادات';
+
+  @override
+  String get grossSales => 'المبيعات قبل الخصم';
+
+  @override
+  String get netSales => 'صافي المبيعات';
+
+  @override
+  String get totalExpenses => 'إجمالي المصروفات';
+
+  @override
+  String get ofWhichOwed => 'منها غير مدفوع';
+
+  @override
+  String get profitLossNote =>
+      'صافي المبيعات بدون الضريبة. المصروفات تُحسب بتاريخها مدفوعة أو مستحقة: المواد عند شرائها، والرواتب عند دفعها.';
+
+  @override
+  String get moneyIn => 'الداخل';
+
+  @override
+  String get moneyOut => 'الخارج';
+
+  @override
+  String get netCashFlow => 'صافي التدفق';
+
+  @override
+  String stillOwed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مستحقاً غير مدفوع',
+      few: '$count مستحقات غير مدفوعة',
+      two: 'مستحقان غير مدفوعين',
+      one: 'مستحق واحد غير مدفوع',
+      zero: 'لا مستحقات',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get byDay => 'حسب اليوم';
+
+  @override
+  String get cashFlowNote =>
+      'الداخل ما دفعه العملاء، والخارج المصروفات المدفوعة فعلاً بتاريخ دفعها. المستحقات هي المبالغ غير المدفوعة حتى اليوم.';
+
+  @override
+  String get byBranch => 'حسب الفرع';
+
+  @override
+  String get materialsCost => 'المواد';
+
+  @override
+  String get serviceProfitNote =>
+      'صافي المبيعات بعد الخصم والضريبة، ناقص تكلفة المواد التقديرية بأسعار المواد الحالية.';
+
+  @override
+  String get payLabel => 'الأجر';
+
+  @override
+  String get washerProfitNote => 'قيمة كل سيارة تُقسم بين عمالها، والأجر هو الراتب والعمولة في مسيرات رواتب الفترة.';
 }

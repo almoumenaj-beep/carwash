@@ -791,5 +791,47 @@
   "maintenanceDateField": "Date",
   "whatWasDoneField": "What was done?",
   "maintenanceCostField": "Cost",
-  "maintenanceCostHint": "Optional: recorded as an expense of the branch"
+  "maintenanceCostHint": "Optional: recorded as an expense of the branch",
+  "financialReportsTitle": "Financial reports",
+  "financialReportsSubtitle": "Profit and loss, cash flow and profitability",
+  "thisYear": "This year",
+  "customPeriod": "Custom",
+  "profitLossTab": "Profit & loss",
+  "cashFlowTab": "Cash flow",
+  "profitabilityTab": "Profitability",
+  "noFiguresInPeriod": "No sales or expenses in this period",
+  "profitLabel": "Net profit",
+  "lossLabel": "Net loss",
+  "marginLabel": "Margin {percent}%",
+  "@marginLabel": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "revenueSection": "Revenue",
+  "grossSales": "Sales before discounts",
+  "netSales": "Net sales",
+  "totalExpenses": "Total expenses",
+  "ofWhichOwed": "Of which still owed",
+  "profitLossNote": "Net sales leave out VAT. Expenses count by their date, paid or owed: materials when bought, wages when payroll is paid.",
+  "moneyIn": "Money in",
+  "moneyOut": "Money out",
+  "netCashFlow": "Net cash flow",
+  "stillOwed": "{count, plural, =0{Nothing owed} =1{1 bill still owed} other{{count} bills still owed}}",
+  "@stillOwed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "byDay": "By day",
+  "cashFlowNote": "Money in is what customers paid; money out is expenses actually paid, on the day paid. Owed is what is unpaid today.",
+  "byBranch": "By branch",
+  "materialsCost": "Materials",
+  "serviceProfitNote": "Net sales after discounts and VAT, less an estimate of materials at today's costs.",
+  "payLabel": "Pay",
+  "washerProfitNote": "Each car's value is split between its washers; pay is salary and commission in the period's payrolls."
 }

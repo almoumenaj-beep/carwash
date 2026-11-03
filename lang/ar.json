@@ -76,6 +76,7 @@
     "This month has been paid and can no longer change.": "رواتب هذا الشهر صُرفت ولا يمكن تغييرها.",
     "Salary advance: :name": "سلفة: :name",
     "Maintenance: :name": "صيانة: :name",
+    "The report covers a year at most.": "التقرير يغطي سنة واحدة كحد أقصى.",
     "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."
 }

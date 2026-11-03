@@ -1450,4 +1450,102 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get maintenanceCostHint => 'Optional: recorded as an expense of the branch';
+
+  @override
+  String get financialReportsTitle => 'Financial reports';
+
+  @override
+  String get financialReportsSubtitle => 'Profit and loss, cash flow and profitability';
+
+  @override
+  String get thisYear => 'This year';
+
+  @override
+  String get customPeriod => 'Custom';
+
+  @override
+  String get profitLossTab => 'Profit & loss';
+
+  @override
+  String get cashFlowTab => 'Cash flow';
+
+  @override
+  String get profitabilityTab => 'Profitability';
+
+  @override
+  String get noFiguresInPeriod => 'No sales or expenses in this period';
+
+  @override
+  String get profitLabel => 'Net profit';
+
+  @override
+  String get lossLabel => 'Net loss';
+
+  @override
+  String marginLabel(String percent) {
+    return 'Margin $percent%';
+  }
+
+  @override
+  String get revenueSection => 'Revenue';
+
+  @override
+  String get grossSales => 'Sales before discounts';
+
+  @override
+  String get netSales => 'Net sales';
+
+  @override
+  String get totalExpenses => 'Total expenses';
+
+  @override
+  String get ofWhichOwed => 'Of which still owed';
+
+  @override
+  String get profitLossNote =>
+      'Net sales leave out VAT. Expenses count by their date, paid or owed: materials when bought, wages when payroll is paid.';
+
+  @override
+  String get moneyIn => 'Money in';
+
+  @override
+  String get moneyOut => 'Money out';
+
+  @override
+  String get netCashFlow => 'Net cash flow';
+
+  @override
+  String stillOwed(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bills still owed',
+      one: '1 bill still owed',
+      zero: 'Nothing owed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get byDay => 'By day';
+
+  @override
+  String get cashFlowNote =>
+      'Money in is what customers paid; money out is expenses actually paid, on the day paid. Owed is what is unpaid today.';
+
+  @override
+  String get byBranch => 'By branch';
+
+  @override
+  String get materialsCost => 'Materials';
+
+  @override
+  String get serviceProfitNote => 'Net sales after discounts and VAT, less an estimate of materials at today\'s costs.';
+
+  @override
+  String get payLabel => 'Pay';
+
+  @override
+  String get washerProfitNote =>
+      'Each car\'s value is split between its washers; pay is salary and commission in the period\'s payrolls.';
 }

@@ -2689,6 +2689,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Optional: recorded as an expense of the branch'**
   String get maintenanceCostHint;
+
+  /// No description provided for @financialReportsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial reports'**
+  String get financialReportsTitle;
+
+  /// No description provided for @financialReportsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit and loss, cash flow and profitability'**
+  String get financialReportsSubtitle;
+
+  /// No description provided for @thisYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get thisYear;
+
+  /// No description provided for @customPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get customPeriod;
+
+  /// No description provided for @profitLossTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Profit & loss'**
+  String get profitLossTab;
+
+  /// No description provided for @cashFlowTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash flow'**
+  String get cashFlowTab;
+
+  /// No description provided for @profitabilityTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Profitability'**
+  String get profitabilityTab;
+
+  /// No description provided for @noFiguresInPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'No sales or expenses in this period'**
+  String get noFiguresInPeriod;
+
+  /// No description provided for @profitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Net profit'**
+  String get profitLabel;
+
+  /// No description provided for @lossLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Net loss'**
+  String get lossLabel;
+
+  /// No description provided for @marginLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Margin {percent}%'**
+  String marginLabel(String percent);
+
+  /// No description provided for @revenueSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Revenue'**
+  String get revenueSection;
+
+  /// No description provided for @grossSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Sales before discounts'**
+  String get grossSales;
+
+  /// No description provided for @netSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Net sales'**
+  String get netSales;
+
+  /// No description provided for @totalExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Total expenses'**
+  String get totalExpenses;
+
+  /// No description provided for @ofWhichOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'Of which still owed'**
+  String get ofWhichOwed;
+
+  /// No description provided for @profitLossNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Net sales leave out VAT. Expenses count by their date, paid or owed: materials when bought, wages when payroll is paid.'**
+  String get profitLossNote;
+
+  /// No description provided for @moneyIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Money in'**
+  String get moneyIn;
+
+  /// No description provided for @moneyOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Money out'**
+  String get moneyOut;
+
+  /// No description provided for @netCashFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Net cash flow'**
+  String get netCashFlow;
+
+  /// No description provided for @stillOwed.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing owed} =1{1 bill still owed} other{{count} bills still owed}}'**
+  String stillOwed(int count);
+
+  /// No description provided for @byDay.
+  ///
+  /// In en, this message translates to:
+  /// **'By day'**
+  String get byDay;
+
+  /// No description provided for @cashFlowNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Money in is what customers paid; money out is expenses actually paid, on the day paid. Owed is what is unpaid today.'**
+  String get cashFlowNote;
+
+  /// No description provided for @byBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'By branch'**
+  String get byBranch;
+
+  /// No description provided for @materialsCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials'**
+  String get materialsCost;
+
+  /// No description provided for @serviceProfitNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Net sales after discounts and VAT, less an estimate of materials at today\'s costs.'**
+  String get serviceProfitNote;
+
+  /// No description provided for @payLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get payLabel;
+
+  /// No description provided for @washerProfitNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Each car\'s value is split between its washers; pay is salary and commission in the period\'s payrolls.'**
+  String get washerProfitNote;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

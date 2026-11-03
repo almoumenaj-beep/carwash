@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\EmployeeController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
+use App\Http\Controllers\Api\V1\FinancialReportController;
 use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\MePinController;
@@ -74,6 +75,8 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('orders/{order}/checkout', [OrderCheckoutController::class, 'store'])->name('orders.checkout.store');
 
         Route::get('reports/daily-sales', DailySalesReportController::class)->name('reports.daily-sales');
+        Route::get('reports/profit-loss', [FinancialReportController::class, 'profitAndLoss'])->name('reports.profit-loss');
+        Route::get('reports/cash-flow', [FinancialReportController::class, 'cashFlow'])->name('reports.cash-flow');
 
         Route::apiResource('expense-categories', ExpenseCategoryController::class)->except('show');
         Route::apiResource('suppliers', SupplierController::class)->only(['index', 'store', 'update']);

@@ -97,6 +97,12 @@ class _SectionsMenu extends ConsumerWidget {
         subtitle: l10n.dailySalesSubtitle,
       ),
       (
+        path: '/finance',
+        icon: Icons.query_stats_outlined,
+        title: l10n.financialReportsTitle,
+        subtitle: l10n.financialReportsSubtitle,
+      ),
+      (
         path: '/expenses',
         icon: Icons.account_balance_wallet_outlined,
         title: l10n.expensesTitle,

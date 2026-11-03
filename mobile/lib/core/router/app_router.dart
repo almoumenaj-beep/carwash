@@ -29,6 +29,7 @@ import '../../features/roles/presentation/role_editor_screen.dart';
 import '../../features/roles/presentation/roles_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/reports/presentation/daily_sales_screen.dart';
+import '../../features/reports/presentation/financial_reports_screen.dart';
 import '../../features/shifts/presentation/shift_screen.dart';
 import '../../features/staff/presentation/staff_editor_screen.dart';
 import '../../features/staff/presentation/staff_screen.dart';
@@ -129,6 +130,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/staff-affairs', builder: (_, _) => const StaffAffairsScreen()),
       GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
       GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
+      GoRoute(path: '/finance', builder: (_, _) => const FinancialReportsScreen()),
       GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
       GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
       GoRoute(path: '/account', builder: (_, _) => const AccountScreen()),
