@@ -1656,5 +1656,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get groupSetup => 'الإعدادات';
 
   @override
-  String get categoriesButton => 'التصنيفات';
+  String get manageCategories => 'تصنيفات المصروفات';
+
+  @override
+  String get manageCategoriesHint => 'إضافة تصنيف أو تعديله أو إيقافه';
 }

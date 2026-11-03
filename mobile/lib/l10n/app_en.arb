@@ -847,5 +847,6 @@
   "groupResources": "Stock and equipment",
   "groupPeople": "Staff",
   "groupSetup": "Setup",
-  "categoriesButton": "Categories"
+  "manageCategories": "Expense categories",
+  "manageCategoriesHint": "Add, rename or switch off categories"
 }

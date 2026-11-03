@@ -43,16 +43,6 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.expensesTitle),
-          actions: [
-            if (canApprove)
-              TextButton.icon(
-                icon: const Icon(Icons.category_outlined),
-                label: Text(l10n.categoriesButton),
-                onPressed: () =>
-                    Navigator.of(context)
-                        .push(MaterialPageRoute<void>(builder: (_) => const ExpenseCategoriesScreen())),
-              ),
-          ],
           bottom: TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,
@@ -82,6 +72,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
           children: [
             _ExpenseList(
               unpaid: false,
+              showCategories: canApprove,
               monthsBack: _monthsBack,
               onMonthChanged: (back) => setState(() => _monthsBack = back),
               onChanged: _refreshAll,
@@ -102,9 +93,13 @@ class _ExpenseList extends ConsumerWidget {
     required this.monthsBack,
     required this.onMonthChanged,
     required this.onChanged,
+    this.showCategories = false,
   });
 
   final bool unpaid;
+
+  /// Whether to offer managing the categories above the list.
+  final bool showCategories;
   final int monthsBack;
   final ValueChanged<int>? onMonthChanged;
   final VoidCallback onChanged;
@@ -129,6 +124,19 @@ class _ExpenseList extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.only(bottom: 96),
         children: [
+          if (showCategories)
+            Card(
+              margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+              child: ListTile(
+                leading: const Icon(Icons.category_outlined),
+                title: Text(l10n.manageCategories),
+                subtitle: Text(l10n.manageCategoriesHint),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () =>
+                    Navigator.of(context)
+                        .push(MaterialPageRoute<void>(builder: (_) => const ExpenseCategoriesScreen())),
+              ),
+            ),
           if (onMonthChanged != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),

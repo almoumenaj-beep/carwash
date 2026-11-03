@@ -481,5 +481,6 @@
   "groupResources": "المخزون والمعدات",
   "groupPeople": "الموظفون",
   "groupSetup": "الإعدادات",
-  "categoriesButton": "التصنيفات"
+  "manageCategories": "تصنيفات المصروفات",
+  "manageCategoriesHint": "إضافة تصنيف أو تعديله أو إيقافه"
 }

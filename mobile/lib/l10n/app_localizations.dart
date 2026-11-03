@@ -2978,11 +2978,17 @@ abstract class AppLocalizations {
   /// **'Setup'**
   String get groupSetup;
 
-  /// No description provided for @categoriesButton.
+  /// No description provided for @manageCategories.
   ///
   /// In en, this message translates to:
-  /// **'Categories'**
-  String get categoriesButton;
+  /// **'Expense categories'**
+  String get manageCategories;
+
+  /// No description provided for @manageCategoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add, rename or switch off categories'**
+  String get manageCategoriesHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

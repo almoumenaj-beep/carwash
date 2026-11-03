@@ -1608,5 +1608,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupSetup => 'Setup';
 
   @override
-  String get categoriesButton => 'Categories';
+  String get manageCategories => 'Expense categories';
+
+  @override
+  String get manageCategoriesHint => 'Add, rename or switch off categories';
 }
