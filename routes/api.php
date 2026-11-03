@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AttendanceController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BayController;
 use App\Http\Controllers\Api\V1\BranchController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Api\V1\CustomerController;
 use App\Http\Controllers\Api\V1\DailySalesReportController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
+use App\Http\Controllers\Api\V1\EmployeeController;
 use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\InventoryController;
@@ -17,11 +19,13 @@ use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\OrderCheckoutController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\OrderStatusController;
+use App\Http\Controllers\Api\V1\PayrollController;
 use App\Http\Controllers\Api\V1\PermissionController;
 use App\Http\Controllers\Api\V1\PurchaseController;
 use App\Http\Controllers\Api\V1\RecurringExpenseController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
+use App\Http\Controllers\Api\V1\SalaryAdvanceController;
 use App\Http\Controllers\Api\V1\ServiceCategoryController;
 use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\ServiceMaterialController;
@@ -83,6 +87,18 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('inventory/movements', [InventoryController::class, 'movements'])->name('inventory.movements.index');
         Route::get('inventory/purchases', [PurchaseController::class, 'index'])->name('inventory.purchases.index');
         Route::post('inventory/purchases', [PurchaseController::class, 'store'])->name('inventory.purchases.store');
+        Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
+        Route::put('employees/{user}/pay-terms', [EmployeeController::class, 'updateProfile'])->name('employees.pay-terms.update');
+        Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('attendance/me', [AttendanceController::class, 'me'])->name('attendance.me');
+        Route::post('attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
+        Route::post('attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
+        Route::get('salary-advances', [SalaryAdvanceController::class, 'index'])->name('salary-advances.index');
+        Route::post('salary-advances', [SalaryAdvanceController::class, 'store'])->name('salary-advances.store');
+        Route::get('payroll-runs', [PayrollController::class, 'index'])->name('payroll-runs.index');
+        Route::post('payroll-runs', [PayrollController::class, 'store'])->name('payroll-runs.store');
+        Route::post('payroll-runs/{payrollRun}/pay', [PayrollController::class, 'pay'])->name('payroll-runs.pay');
+
         Route::get('services/{service}/materials', [ServiceMaterialController::class, 'show'])->name('services.materials.show');
         Route::put('services/{service}/materials', [ServiceMaterialController::class, 'update'])->name('services.materials.update');
 

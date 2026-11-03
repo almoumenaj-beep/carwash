@@ -71,5 +71,10 @@
     "This expense was counted in a closed shift and cannot be deleted.": "هذا المصروف محسوب في وردية مُقفلة ولا يمكن حذفه.",
     "This category has expenses. Deactivate it instead of deleting it.": "لهذا التصنيف مصروفات. أوقفه بدلاً من حذفه.",
     "Materials purchase": "مشتريات مواد",
+    "You are already clocked in.": "سجّلت حضورك مسبقاً.",
+    "You are not clocked in.": "لم تسجّل حضورك.",
+    "This month has been paid and can no longer change.": "رواتب هذا الشهر صُرفت ولا يمكن تغييرها.",
+    "Salary advance: :name": "سلفة: :name",
+    "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."
 }

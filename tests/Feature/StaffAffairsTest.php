@@ -1,0 +1,182 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Domain\Expenses\Models\Expense;
+use App\Domain\Expenses\Models\ExpenseCategory;
+use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Orders\Models\Order;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\Concerns\BuildsCarWash;
+use Tests\TestCase;
+
+class StaffAffairsTest extends TestCase
+{
+    use BuildsCarWash, RefreshDatabase;
+
+    private User $owner;
+
+    private User $manager;
+
+    private ExpenseCategory $wages;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->buildCarWash();
+        $this->owner = $this->createStaff($this->tenant, DefaultRole::Owner);
+        $this->manager = $this->createStaff($this->tenant, DefaultRole::BranchManager, [$this->branch]);
+        $this->wages = $this->inTenant(fn () => ExpenseCategory::factory()->create(['name' => 'Wages']));
+    }
+
+    /**
+     * @param  array<string, mixed>  $terms
+     */
+    private function setPayTerms(User $staff, array $terms): void
+    {
+        Sanctum::actingAs($this->manager);
+        $this->putJson("/api/v1/employees/{$staff->id}/pay-terms", $terms)->assertOk();
+    }
+
+    /**
+     * Checks a car in for the washer (and anyone else given), washes, passes and delivers it this month.
+     *
+     * @param  list<string>  $staffIds
+     */
+    private function deliverCar(array $staffIds): string
+    {
+        $orderId = $this->checkIn(['staff_ids' => $staffIds])->json('data.id');
+        $this->pay($orderId)->assertCreated();
+        $this->washAndPass($orderId, $this->washer);
+        $this->moveTo($orderId, 'delivered', $this->cashier)->assertOk();
+
+        return $orderId;
+    }
+
+    public function test_staff_clock_in_and_out_and_managers_see_the_day(): void
+    {
+        Sanctum::actingAs($this->washer);
+        $this->postJson('/api/v1/attendance/clock-in', ['branch_id' => $this->branch->id])->assertCreated();
+        $this->postJson('/api/v1/attendance/clock-in', ['branch_id' => $this->branch->id])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('attendance');
+        $this->getJson('/api/v1/attendance/me')->assertJsonPath('data.branch.id', $this->branch->id);
+        $this->postJson('/api/v1/attendance/clock-in', ['branch_id' => $this->otherBranch->id])->assertForbidden();
+
+        $this->postJson('/api/v1/attendance/clock-out')->assertOk()->assertJsonPath('data.user.id', $this->washer->id);
+        $this->getJson('/api/v1/attendance/me')->assertJsonPath('data', null);
+        $this->postJson('/api/v1/attendance/clock-out')->assertUnprocessable();
+
+        $this->getJson("/api/v1/attendance?branch_id={$this->branch->id}")->assertForbidden();
+        Sanctum::actingAs($this->manager);
+        $this->getJson("/api/v1/attendance?branch_id={$this->branch->id}")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.user.name', $this->washer->name);
+    }
+
+    public function test_managers_set_pay_terms_and_see_their_staff(): void
+    {
+        $this->setPayTerms($this->washer, ['monthly_salary' => 150000, 'commission_type' => 'per_car', 'commission_value' => 500]);
+
+        $staff = collect($this->getJson('/api/v1/employees')->assertOk()->json('data'))->keyBy('id');
+        $this->assertSame(150000, $staff[$this->washer->id]['monthly_salary']);
+        $this->assertSame('per_car', $staff[$this->washer->id]['commission_type']);
+        $this->assertFalse($staff->has($this->createStaff($this->tenant, DefaultRole::Washer, [$this->otherBranch])->id));
+
+        $this->putJson("/api/v1/employees/{$this->washer->id}/pay-terms", ['monthly_salary' => 1, 'commission_type' => 'percent', 'commission_value' => 10001])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('commission_value');
+
+        Sanctum::actingAs($this->cashier);
+        $this->getJson('/api/v1/employees')->assertForbidden();
+    }
+
+    public function test_an_advance_is_an_expense_now_and_comes_off_the_next_payroll(): void
+    {
+        $this->setPayTerms($this->washer, ['monthly_salary' => 150000, 'commission_type' => 'none', 'commission_value' => 0]);
+
+        $this->postJson('/api/v1/salary-advances', [
+            'user_id' => $this->washer->id,
+            'branch_id' => $this->branch->id,
+            'amount' => 20000,
+            'expense_category_id' => $this->wages->id,
+            'payment_method' => 'cash',
+        ])->assertCreated()->assertJsonPath('data.is_deducted', false);
+        $this->assertSame(20000, $this->inTenant(fn () => Expense::query()->sole()->amount));
+
+        $staff = collect($this->getJson('/api/v1/employees')->json('data'))->keyBy('id');
+        $this->assertSame(20000, $staff[$this->washer->id]['outstanding_advances']);
+    }
+
+    public function test_payroll_adds_salary_and_commission_less_advances_and_paying_fixes_it(): void
+    {
+        $this->setPayTerms($this->washer, ['monthly_salary' => 150000, 'commission_type' => 'per_car', 'commission_value' => 500]);
+        $this->setPayTerms($this->cashier, ['monthly_salary' => 200000, 'commission_type' => 'percent', 'commission_value' => 1000]);
+        $this->deliverCar([$this->washer->id]);
+        $this->deliverCar([$this->washer->id, $this->cashier->id]);
+        $this->checkIn(['staff_ids' => [$this->washer->id]])->assertCreated();
+
+        Sanctum::actingAs($this->manager);
+        $this->postJson('/api/v1/salary-advances', [
+            'user_id' => $this->washer->id,
+            'branch_id' => $this->branch->id,
+            'amount' => 30000,
+            'expense_category_id' => $this->wages->id,
+            'payment_method' => 'cash',
+        ])->assertCreated();
+
+        Sanctum::actingAs($this->owner);
+        $now = now($this->tenant->timezone);
+        $run = $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])->assertOk();
+        $lines = collect($run->json('data.lines'))->keyBy('user.id');
+
+        // Washer: 150.000 salary + 0.500 for the first car + 0.250 (half) for the shared car − 30.000 advance.
+        $this->assertSame(2, $lines[$this->washer->id]['cars_count']);
+        $this->assertSame(750, $lines[$this->washer->id]['commission']);
+        $this->assertSame(30000, $lines[$this->washer->id]['advances']);
+        $this->assertSame(120750, $lines[$this->washer->id]['net']);
+        // Cashier: 200.000 + 10% of half the shared 2.000 car = 0.100.
+        $this->assertSame(1, $lines[$this->cashier->id]['cars_count']);
+        $this->assertSame(100, $lines[$this->cashier->id]['commission']);
+        $run->assertJsonPath('data.status', 'draft')->assertJsonPath('data.total_net', 120750 + 200100);
+
+        $this->postJson("/api/v1/payroll-runs/{$run->json('data.id')}/pay", [
+            'branch_id' => $this->branch->id,
+            'expense_category_id' => $this->wages->id,
+            'payment_method' => 'bank_transfer',
+        ])->assertOk()->assertJsonPath('data.status', 'paid');
+
+        $this->assertSame(30000 + 320850, (int) $this->inTenant(fn () => Expense::query()->sum('amount')));
+        $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('payroll');
+
+        Sanctum::actingAs($this->manager);
+        $this->getJson('/api/v1/salary-advances')->assertJsonPath('data.0.is_deducted', true);
+        $this->getJson('/api/v1/payroll-runs')->assertForbidden();
+    }
+
+    public function test_a_draft_follows_new_deliveries_until_it_is_paid(): void
+    {
+        $this->setPayTerms($this->washer, ['monthly_salary' => 0, 'commission_type' => 'per_car', 'commission_value' => 1000]);
+        $now = now($this->tenant->timezone);
+
+        Sanctum::actingAs($this->owner);
+        $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])
+            ->assertJsonPath('data.lines', []);
+
+        $this->deliverCar([$this->washer->id]);
+        Sanctum::actingAs($this->owner);
+        $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])
+            ->assertJsonPath('data.lines.0.commission', 1000);
+
+        $lastMonth = $now->copy()->subMonthNoOverflow();
+        $this->inTenant(fn () => Order::query()->update(['delivered_at' => $lastMonth]));
+        $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])
+            ->assertJsonPath('data.lines', []);
+    }
+}
