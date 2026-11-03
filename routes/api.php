@@ -28,7 +28,6 @@ use App\Http\Controllers\Api\V1\PurchaseController;
 use App\Http\Controllers\Api\V1\RecurringExpenseController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
-use App\Http\Controllers\Api\V1\SalaryAdvanceController;
 use App\Http\Controllers\Api\V1\ServiceCategoryController;
 use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\ServiceMaterialController;
@@ -110,8 +109,6 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('attendance/me', [AttendanceController::class, 'me'])->name('attendance.me');
         Route::post('attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
         Route::post('attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
-        Route::get('salary-advances', [SalaryAdvanceController::class, 'index'])->name('salary-advances.index');
-        Route::post('salary-advances', [SalaryAdvanceController::class, 'store'])->name('salary-advances.store');
         Route::get('payroll-runs', [PayrollController::class, 'index'])->name('payroll-runs.index');
         Route::post('payroll-runs', [PayrollController::class, 'store'])->name('payroll-runs.store');
         Route::post('payroll-runs/{payrollRun}/pay', [PayrollController::class, 'pay'])->name('payroll-runs.pay');

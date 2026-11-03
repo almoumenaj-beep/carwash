@@ -14,7 +14,7 @@ import '../../expenses/presentation/expense_widgets.dart';
 import '../data/staff_affairs_repository.dart';
 import '../domain/staff_affairs.dart';
 
-/// Staff affairs: pay terms and advances, a branch's attendance for a day, and monthly payroll. Each tab shows
+/// Staff affairs: pay terms, a branch's attendance for a day, and monthly payroll. Each tab shows
 /// only to staff with the permission behind it.
 class StaffAffairsScreen extends ConsumerWidget {
   const StaffAffairsScreen({super.key});
@@ -28,7 +28,6 @@ class StaffAffairsScreen extends ConsumerWidget {
     final tabs = [
       if (canView) (Tab(text: l10n.employeesTab), const _Employees()),
       if (canView) (Tab(text: l10n.attendanceTab), const _Attendance()),
-      if (canView) (Tab(text: l10n.advancesTab), const _Advances()),
       if (canPayroll) (Tab(text: l10n.payrollTab), const _Payroll()),
     ];
 
@@ -83,19 +82,8 @@ class _Employees extends ConsumerWidget {
                   [
                     if (employee.monthlySalary > 0) l10n.salaryLabel(money.format(employee.monthlySalary)),
                     commissionLabel(l10n, money, employee),
-                    if (employee.outstandingAdvances > 0) l10n.advancesOwed(money.format(employee.outstandingAdvances)),
                   ].join(' · '),
                 ),
-                trailing: canManage
-                    ? IconButton(
-                        tooltip: l10n.giveAdvance,
-                        icon: const Icon(Icons.payments_outlined),
-                        onPressed: () => showDialog<void>(
-                          context: context,
-                          builder: (_) => _AdvanceDialog(employee: employee),
-                        ),
-                      )
-                    : null,
                 onTap: canManage
                     ? () => showDialog<void>(
                         context: context,
@@ -226,103 +214,6 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
   }
 }
 
-/// Gives an advance, recorded as an expense of a branch and deducted from the next payroll.
-class _AdvanceDialog extends ConsumerStatefulWidget {
-  const _AdvanceDialog({required this.employee});
-
-  final Employee employee;
-
-  @override
-  ConsumerState<_AdvanceDialog> createState() => _AdvanceDialogState();
-}
-
-class _AdvanceDialogState extends ConsumerState<_AdvanceDialog> {
-  final _amount = TextEditingController();
-  ExpensePaymentMethod _method = ExpensePaymentMethod.cash;
-  String? _error;
-
-  @override
-  void dispose() {
-    _amount.dispose();
-    super.dispose();
-  }
-
-  Future<void> _save(String branchId, String? categoryId) async {
-    final l10n = AppLocalizations.of(context);
-    final money = ref.read(moneyFormatProvider);
-    final amount = money.parse(_amount.text);
-    if (amount == null || amount <= 0 || categoryId == null) {
-      setState(() => _error = l10n.amountInvalid(money.toInput(2500)));
-      return;
-    }
-    try {
-      await ref.read(staffAffairsRepositoryProvider).giveAdvance({
-        'user_id': widget.employee.id,
-        'branch_id': branchId,
-        'amount': amount,
-        'expense_category_id': categoryId,
-        'payment_method': _method.apiValue,
-      });
-      ref.invalidate(employeesProvider);
-      ref.invalidate(salaryAdvancesProvider);
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    } catch (error, stackTrace) {
-      if (mounted) {
-        setState(() => _error = changeError(context, error, stackTrace));
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final money = ref.watch(moneyFormatProvider);
-    final branches = ref.watch(sessionProvider).value?.branches ?? const <BranchSummary>[];
-    final categories = ref.watch(expenseCategoriesProvider).value ?? const <ExpenseCategory>[];
-    final category = wagesCategory(categories);
-
-    return AlertDialog(
-      title: Text('${l10n.giveAdvance} · ${widget.employee.name}'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            controller: _amount,
-            autofocus: true,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(labelText: l10n.amountField, suffixText: money.currency),
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            children: [
-              for (final method in ExpensePaymentMethod.values)
-                ChoiceChip(
-                  label: Text(paymentMethodLabel(l10n, method)),
-                  selected: _method == method,
-                  onSelected: (_) => setState(() => _method = method),
-                ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(l10n.advanceHint, style: Theme.of(context).textTheme.bodySmall),
-          if (_error != null) Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-        ],
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
-        FilledButton(
-          onPressed: branches.isEmpty ? null : () => _save(branches.first.id, category?.id),
-          child: Text(l10n.save),
-        ),
-      ],
-    );
-  }
-}
-
 /// The category wages are recorded under: "Wages" (or the Arabic default) when it exists, else the first one.
 ExpenseCategory? wagesCategory(List<ExpenseCategory> categories) {
   final active = categories.where((category) => category.isActive).toList();
@@ -428,41 +319,6 @@ class _AttendanceState extends ConsumerState<_Attendance> {
   }
 }
 
-class _Advances extends ConsumerWidget {
-  const _Advances();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final money = ref.watch(moneyFormatProvider);
-
-    return switch (ref.watch(salaryAdvancesProvider)) {
-      AsyncData(:final value) when value.isEmpty => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Text(l10n.noAdvances, textAlign: TextAlign.center),
-        ),
-      ),
-      AsyncData(:final value) => ListView(
-        children: [
-          for (final advance in value)
-            ListTile(
-              leading: Icon(advance.isDeducted ? Icons.check_circle_outline : Icons.schedule),
-              title: Text(advance.userName),
-              subtitle: Text(
-                '${MaterialLocalizations.of(context).formatMediumDate(advance.givenOn)} · '
-                '${advance.isDeducted ? l10n.advanceDeducted : l10n.advanceOutstanding}',
-              ),
-              trailing: Text(money.format(advance.amount)),
-            ),
-        ],
-      ),
-      AsyncError(:final error) => ErrorView(error: error, onRetry: () => ref.invalidate(salaryAdvancesProvider)),
-      _ => const Center(child: CircularProgressIndicator()),
-    };
-  }
-}
-
 class _Payroll extends ConsumerStatefulWidget {
   const _Payroll();
 
@@ -478,7 +334,6 @@ class _PayrollState extends ConsumerState<_Payroll> {
     try {
       await change();
       ref.invalidate(payrollRunsProvider);
-      ref.invalidate(salaryAdvancesProvider);
       ref.invalidate(employeesProvider);
     } catch (error, stackTrace) {
       if (mounted) {
@@ -573,7 +428,6 @@ class _PayrollState extends ConsumerState<_Payroll> {
                           l10n.salaryLabel(money.format(line.baseSalary)),
                           if (line.carsCount > 0) l10n.carsCount(line.carsCount),
                           if (line.commission > 0) l10n.commissionAmount(money.format(line.commission)),
-                          if (line.advances > 0) l10n.advancesDeducted(money.format(line.advances)),
                         ].join(' · '),
                       ),
                       trailing: Text(money.format(line.net), style: Theme.of(context).textTheme.titleSmall),

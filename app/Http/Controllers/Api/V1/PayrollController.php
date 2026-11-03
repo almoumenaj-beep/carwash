@@ -83,7 +83,6 @@ class PayrollController extends Controller
                 'base_salary' => $line->base_salary,
                 'cars_count' => $line->cars_count,
                 'commission' => $line->commission,
-                'advances' => $line->advances,
                 'net' => $line->net,
             ])->values(),
         ];

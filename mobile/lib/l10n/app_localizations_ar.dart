@@ -1217,16 +1217,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get staffAffairsTitle => 'شؤون الموظفين';
 
   @override
-  String get staffAffairsSubtitle => 'الرواتب والعمولات والحضور والسلف';
+  String get staffAffairsSubtitle => 'الرواتب والعمولات والحضور';
 
   @override
   String get employeesTab => 'الموظفون';
 
   @override
   String get attendanceTab => 'الحضور';
-
-  @override
-  String get advancesTab => 'السلف';
 
   @override
   String get payrollTab => 'الرواتب';
@@ -1250,14 +1247,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String advancesOwed(String amount) {
-    return 'سلف $amount';
-  }
-
-  @override
-  String get giveAdvance => 'صرف سلفة';
-
-  @override
   String get monthlySalaryField => 'الراتب الشهري';
 
   @override
@@ -1279,9 +1268,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commissionSplitHint => 'إذا غسل السيارة أكثر من عامل تُقسم العمولة بينهم';
 
   @override
-  String get advanceHint => 'تُسجَّل كمصروف وتُخصم من الراتب القادم';
-
-  @override
   String get noAttendance => 'لا يوجد حضور في هذا اليوم';
 
   @override
@@ -1293,15 +1279,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String hoursWorked(String hours) {
     return '$hours س';
   }
-
-  @override
-  String get noAdvances => 'لا توجد سلف';
-
-  @override
-  String get advanceDeducted => 'خُصمت';
-
-  @override
-  String get advanceOutstanding => 'لم تُخصم بعد';
 
   @override
   String get calculateThisMonth => 'احسب رواتب هذا الشهر';
@@ -1321,11 +1298,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String commissionAmount(String amount) {
     return 'عمولة $amount';
-  }
-
-  @override
-  String advancesDeducted(String amount) {
-    return 'سلف −$amount';
   }
 
   @override

@@ -1193,16 +1193,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get staffAffairsTitle => 'Staff affairs';
 
   @override
-  String get staffAffairsSubtitle => 'Pay, commission, attendance and advances';
+  String get staffAffairsSubtitle => 'Pay, commission, attendance and payroll';
 
   @override
   String get employeesTab => 'Employees';
 
   @override
   String get attendanceTab => 'Attendance';
-
-  @override
-  String get advancesTab => 'Advances';
 
   @override
   String get payrollTab => 'Payroll';
@@ -1226,14 +1223,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String advancesOwed(String amount) {
-    return 'Advances $amount';
-  }
-
-  @override
-  String get giveAdvance => 'Give an advance';
-
-  @override
   String get monthlySalaryField => 'Monthly salary';
 
   @override
@@ -1255,9 +1244,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commissionSplitHint => 'Split equally when several washers share a car';
 
   @override
-  String get advanceHint => 'Recorded as an expense and deducted from the next payroll';
-
-  @override
   String get noAttendance => 'No one clocked in on this day';
 
   @override
@@ -1269,15 +1255,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String hoursWorked(String hours) {
     return '$hours h';
   }
-
-  @override
-  String get noAdvances => 'No advances yet';
-
-  @override
-  String get advanceDeducted => 'Deducted';
-
-  @override
-  String get advanceOutstanding => 'Not deducted yet';
 
   @override
   String get calculateThisMonth => 'Calculate this month';
@@ -1297,11 +1274,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String commissionAmount(String amount) {
     return 'Commission $amount';
-  }
-
-  @override
-  String advancesDeducted(String amount) {
-    return 'Advances −$amount';
   }
 
   @override

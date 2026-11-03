@@ -7,7 +7,6 @@ use App\Domain\Platform\Audit\AuditTrail;
 use App\Domain\Staff\Enums\CommissionType;
 use App\Domain\Staff\Models\AttendanceLog;
 use App\Domain\Staff\Models\EmployeeProfile;
-use App\Domain\Staff\Models\SalaryAdvance;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +15,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 /**
- * Staff as employees: pay terms, advances not yet deducted, and whether they are clocked in now. Seen with
+ * Staff as employees: pay terms, and whether they are clocked in now. Seen with
  * employees.view (staff who share a branch with the user, or everyone for all-branch users); pay terms
  * change with employees.manage. Amounts in minor units.
  */
@@ -44,7 +43,6 @@ class EmployeeController extends Controller
 
         $ids = $staff->modelKeys();
         $profiles = EmployeeProfile::query()->whereIn('user_id', $ids)->get()->keyBy('user_id');
-        $advances = SalaryAdvance::query()->whereIn('user_id', $ids)->whereNull('payroll_run_id')->groupBy('user_id')->selectRaw('user_id, SUM(amount) AS total')->pluck('total', 'user_id');
         $open = AttendanceLog::query()->whereIn('user_id', $ids)->whereNull('clock_out_at')->get()->keyBy('user_id');
 
         return response()->json(['data' => $staff->map(fn (User $member) => [
@@ -54,7 +52,6 @@ class EmployeeController extends Controller
             'monthly_salary' => $profiles->get($member->id)?->monthly_salary ?? 0,
             'commission_type' => $profiles->get($member->id)?->commission_type ?? CommissionType::None,
             'commission_value' => $profiles->get($member->id)?->commission_value ?? 0,
-            'outstanding_advances' => (int) ($advances[$member->id] ?? 0),
             'clocked_in_at' => $open->get($member->id)?->clock_in_at?->toIso8601String(),
         ])]);
     }

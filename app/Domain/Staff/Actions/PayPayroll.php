@@ -5,14 +5,12 @@ namespace App\Domain\Staff\Actions;
 use App\Domain\Expenses\Actions\RecordExpense;
 use App\Domain\Platform\Audit\AuditTrail;
 use App\Domain\Staff\Models\PayrollRun;
-use App\Domain\Staff\Models\SalaryAdvance;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Pays a month: recalculates it one last time, records what is paid out as an expense, marks the advances
- * it deducted, and fixes the month.
+ * Pays a month: recalculates it one last time, records what is paid out as an expense, and fixes the month.
  */
 class PayPayroll
 {
@@ -37,7 +35,6 @@ class PayPayroll
             }
 
             $this->calculatePayroll->fill($run, $actor->tenant);
-            [, $end] = $run->period($actor->tenant->timezone);
             $payout = (int) $run->lines()->where('net', '>', 0)->sum('net');
 
             $expense = $payout === 0 ? null : $this->recordExpense->handle($actor, [
@@ -47,12 +44,6 @@ class PayPayroll
                 'description' => __('Payroll :month/:year', ['month' => $run->month, 'year' => $run->year]),
                 'payment_method' => $data['payment_method'],
             ]);
-
-            SalaryAdvance::query()
-                ->whereNull('payroll_run_id')
-                ->where('given_on', '<=', $end->toDateString())
-                ->whereIn('user_id', $run->lines()->select('user_id'))
-                ->update(['payroll_run_id' => $run->id]);
 
             $run->forceFill([
                 'status' => 'paid',

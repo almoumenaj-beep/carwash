@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * One staff member's pay for a month: salary + commission − advances = net.
+ * One staff member's pay for a month: salary + commission = net.
  */
-#[Fillable(['user_id', 'base_salary', 'cars_count', 'commission', 'advances', 'net'])]
+#[Fillable(['user_id', 'base_salary', 'cars_count', 'commission', 'net'])]
 class PayrollLine extends Model
 {
     use BelongsToTenant, HasUuids;
@@ -28,7 +28,6 @@ class PayrollLine extends Model
             'base_salary' => 'integer',
             'cars_count' => 'integer',
             'commission' => 'integer',
-            'advances' => 'integer',
             'net' => 'integer',
         ];
     }

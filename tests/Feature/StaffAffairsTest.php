@@ -95,24 +95,7 @@ class StaffAffairsTest extends TestCase
         $this->getJson('/api/v1/employees')->assertForbidden();
     }
 
-    public function test_an_advance_is_an_expense_now_and_comes_off_the_next_payroll(): void
-    {
-        $this->setPayTerms($this->washer, ['monthly_salary' => 150000, 'commission_type' => 'none', 'commission_value' => 0]);
-
-        $this->postJson('/api/v1/salary-advances', [
-            'user_id' => $this->washer->id,
-            'branch_id' => $this->branch->id,
-            'amount' => 20000,
-            'expense_category_id' => $this->wages->id,
-            'payment_method' => 'cash',
-        ])->assertCreated()->assertJsonPath('data.is_deducted', false);
-        $this->assertSame(20000, $this->inTenant(fn () => Expense::query()->sole()->amount));
-
-        $staff = collect($this->getJson('/api/v1/employees')->json('data'))->keyBy('id');
-        $this->assertSame(20000, $staff[$this->washer->id]['outstanding_advances']);
-    }
-
-    public function test_payroll_adds_salary_and_commission_less_advances_and_paying_fixes_it(): void
+    public function test_payroll_adds_salary_and_commission_and_paying_fixes_it(): void
     {
         $this->setPayTerms($this->washer, ['monthly_salary' => 150000, 'commission_type' => 'per_car', 'commission_value' => 500]);
         $this->setPayTerms($this->cashier, ['monthly_salary' => 200000, 'commission_type' => 'percent', 'commission_value' => 1000]);
@@ -120,29 +103,20 @@ class StaffAffairsTest extends TestCase
         $this->deliverCar([$this->washer->id, $this->cashier->id]);
         $this->checkIn(['staff_ids' => [$this->washer->id]])->assertCreated();
 
-        Sanctum::actingAs($this->manager);
-        $this->postJson('/api/v1/salary-advances', [
-            'user_id' => $this->washer->id,
-            'branch_id' => $this->branch->id,
-            'amount' => 30000,
-            'expense_category_id' => $this->wages->id,
-            'payment_method' => 'cash',
-        ])->assertCreated();
-
         Sanctum::actingAs($this->owner);
         $now = now($this->tenant->timezone);
         $run = $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])->assertOk();
         $lines = collect($run->json('data.lines'))->keyBy('user.id');
 
-        // Washer: 150.000 salary + 0.500 for the first car + 0.250 (half) for the shared car − 30.000 advance.
+        // Washer: 150.000 salary + 0.500 for the first car + 0.250 (half) for the shared car.
         $this->assertSame(2, $lines[$this->washer->id]['cars_count']);
         $this->assertSame(750, $lines[$this->washer->id]['commission']);
-        $this->assertSame(30000, $lines[$this->washer->id]['advances']);
-        $this->assertSame(120750, $lines[$this->washer->id]['net']);
+        $this->assertSame(150750, $lines[$this->washer->id]['net']);
+        $this->assertArrayNotHasKey('advances', $lines[$this->washer->id]);
         // Cashier: 200.000 + 10% of half the shared 2.000 car = 0.100.
         $this->assertSame(1, $lines[$this->cashier->id]['cars_count']);
         $this->assertSame(100, $lines[$this->cashier->id]['commission']);
-        $run->assertJsonPath('data.status', 'draft')->assertJsonPath('data.total_net', 120750 + 200100);
+        $run->assertJsonPath('data.status', 'draft')->assertJsonPath('data.total_net', 150750 + 200100);
 
         $this->postJson("/api/v1/payroll-runs/{$run->json('data.id')}/pay", [
             'branch_id' => $this->branch->id,
@@ -150,13 +124,12 @@ class StaffAffairsTest extends TestCase
             'payment_method' => 'bank_transfer',
         ])->assertOk()->assertJsonPath('data.status', 'paid');
 
-        $this->assertSame(30000 + 320850, (int) $this->inTenant(fn () => Expense::query()->sum('amount')));
+        $this->assertSame(350850, (int) $this->inTenant(fn () => Expense::query()->sum('amount')));
         $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('payroll');
 
         Sanctum::actingAs($this->manager);
-        $this->getJson('/api/v1/salary-advances')->assertJsonPath('data.0.is_deducted', true);
         $this->getJson('/api/v1/payroll-runs')->assertForbidden();
     }
 

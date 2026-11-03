@@ -4,7 +4,7 @@ import 'package:carwash_app/features/staff_affairs/presentation/staff_affairs_sc
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('reads an employee with pay terms, advances and attendance', () {
+  test('reads an employee with pay terms and attendance', () {
     final employee = Employee.fromJson({
       'id': 'u1',
       'name': 'Mahmood',
@@ -12,13 +12,11 @@ void main() {
       'monthly_salary': 150000,
       'commission_type': 'per_car',
       'commission_value': 500,
-      'outstanding_advances': 20000,
       'clocked_in_at': '2026-11-03T08:00:00+03:00',
     });
 
     expect(employee.commissionType, CommissionType.perCar);
     expect(employee.commissionValue, 500);
-    expect(employee.outstandingAdvances, 20000);
     expect(employee.clockedInAt, isNotNull);
   });
 
@@ -28,7 +26,7 @@ void main() {
       'year': 2026,
       'month': 10,
       'status': 'draft',
-      'total_net': 135000,
+      'total_net': 155000,
       'paid_at': null,
       'lines': [
         {
@@ -36,15 +34,14 @@ void main() {
           'base_salary': 150000,
           'cars_count': 10,
           'commission': 5000,
-          'advances': 20000,
-          'net': 135000,
+          'net': 155000,
         },
       ],
     });
 
     expect(run.isPaid, isFalse);
     expect(run.lines.single.name, 'Mahmood');
-    expect(run.lines.single.net, 135000);
+    expect(run.lines.single.net, 155000);
   });
 
   test('records wages under the wages category when there is one', () {

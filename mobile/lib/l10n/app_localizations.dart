@@ -2243,7 +2243,7 @@ abstract class AppLocalizations {
   /// No description provided for @staffAffairsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Pay, commission, attendance and advances'**
+  /// **'Pay, commission, attendance and payroll'**
   String get staffAffairsSubtitle;
 
   /// No description provided for @employeesTab.
@@ -2257,12 +2257,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Attendance'**
   String get attendanceTab;
-
-  /// No description provided for @advancesTab.
-  ///
-  /// In en, this message translates to:
-  /// **'Advances'**
-  String get advancesTab;
 
   /// No description provided for @payrollTab.
   ///
@@ -2293,18 +2287,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Salary {amount}'**
   String salaryLabel(String amount);
-
-  /// No description provided for @advancesOwed.
-  ///
-  /// In en, this message translates to:
-  /// **'Advances {amount}'**
-  String advancesOwed(String amount);
-
-  /// No description provided for @giveAdvance.
-  ///
-  /// In en, this message translates to:
-  /// **'Give an advance'**
-  String get giveAdvance;
 
   /// No description provided for @monthlySalaryField.
   ///
@@ -2348,12 +2330,6 @@ abstract class AppLocalizations {
   /// **'Split equally when several washers share a car'**
   String get commissionSplitHint;
 
-  /// No description provided for @advanceHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Recorded as an expense and deducted from the next payroll'**
-  String get advanceHint;
-
   /// No description provided for @noAttendance.
   ///
   /// In en, this message translates to:
@@ -2371,24 +2347,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{hours} h'**
   String hoursWorked(String hours);
-
-  /// No description provided for @noAdvances.
-  ///
-  /// In en, this message translates to:
-  /// **'No advances yet'**
-  String get noAdvances;
-
-  /// No description provided for @advanceDeducted.
-  ///
-  /// In en, this message translates to:
-  /// **'Deducted'**
-  String get advanceDeducted;
-
-  /// No description provided for @advanceOutstanding.
-  ///
-  /// In en, this message translates to:
-  /// **'Not deducted yet'**
-  String get advanceOutstanding;
 
   /// No description provided for @calculateThisMonth.
   ///
@@ -2425,12 +2383,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Commission {amount}'**
   String commissionAmount(String amount);
-
-  /// No description provided for @advancesDeducted.
-  ///
-  /// In en, this message translates to:
-  /// **'Advances −{amount}'**
-  String advancesDeducted(String amount);
 
   /// No description provided for @payPayroll.
   ///

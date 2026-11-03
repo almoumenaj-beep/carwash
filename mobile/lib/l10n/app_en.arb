@@ -633,10 +633,9 @@
   "clockIn": "Clock in",
   "clockOut": "Clock out",
   "staffAffairsTitle": "Staff affairs",
-  "staffAffairsSubtitle": "Pay, commission, attendance and advances",
+  "staffAffairsSubtitle": "Pay, commission, attendance and payroll",
   "employeesTab": "Employees",
   "attendanceTab": "Attendance",
-  "advancesTab": "Advances",
   "payrollTab": "Payroll",
   "noCommission": "No commission",
   "commissionPerCar": "{amount} per car",
@@ -663,15 +662,6 @@
       }
     }
   },
-  "advancesOwed": "Advances {amount}",
-  "@advancesOwed": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "giveAdvance": "Give an advance",
   "monthlySalaryField": "Monthly salary",
   "commissionField": "Commission",
   "noCommissionShort": "None",
@@ -679,7 +669,6 @@
   "perCarField": "Amount per car",
   "percentOfCarField": "Share of the car's value",
   "commissionSplitHint": "Split equally when several washers share a car",
-  "advanceHint": "Recorded as an expense and deducted from the next payroll",
   "noAttendance": "No one clocked in on this day",
   "stillAtWork": "Since {time}, still at work",
   "@stillAtWork": {
@@ -697,9 +686,6 @@
       }
     }
   },
-  "noAdvances": "No advances yet",
-  "advanceDeducted": "Deducted",
-  "advanceOutstanding": "Not deducted yet",
   "calculateThisMonth": "Calculate this month",
   "calculateLastMonth": "Last month",
   "noPayroll": "No payroll yet",
@@ -707,14 +693,6 @@
   "payrollDraft": "Draft, recalculated until paid",
   "commissionAmount": "Commission {amount}",
   "@commissionAmount": {
-    "placeholders": {
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "advancesDeducted": "Advances −{amount}",
-  "@advancesDeducted": {
     "placeholders": {
       "amount": {
         "type": "String"

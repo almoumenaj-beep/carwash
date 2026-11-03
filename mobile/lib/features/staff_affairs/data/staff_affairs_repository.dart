@@ -26,10 +26,6 @@ final branchAttendanceProvider = FutureProvider.autoDispose
       (ref, query) => ref.watch(staffAffairsRepositoryProvider).attendance(query.branchId, query.date),
     );
 
-final salaryAdvancesProvider = FutureProvider.autoDispose<List<SalaryAdvance>>(
-  (ref) => ref.watch(staffAffairsRepositoryProvider).advances(),
-);
-
 final payrollRunsProvider = FutureProvider.autoDispose<List<PayrollRun>>(
   (ref) => ref.watch(staffAffairsRepositoryProvider).payrollRuns(),
 );
@@ -77,15 +73,6 @@ class StaffAffairsRepository {
       () => _dio.get<Map<String, dynamic>>('/attendance', queryParameters: {'branch_id': branchId, 'date': date}),
     );
     return [for (final record in unwrapData<List>(response)) AttendanceRecord.fromJson(record as Map<String, dynamic>)];
-  }
-
-  Future<List<SalaryAdvance>> advances() async {
-    final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/salary-advances'));
-    return [for (final advance in unwrapData<List>(response)) SalaryAdvance.fromJson(advance as Map<String, dynamic>)];
-  }
-
-  Future<void> giveAdvance(Map<String, dynamic> data) async {
-    await sendRequest(() => _dio.post<Map<String, dynamic>>('/salary-advances', data: data));
   }
 
   Future<List<PayrollRun>> payrollRuns() async {
