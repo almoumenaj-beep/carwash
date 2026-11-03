@@ -1606,4 +1606,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get groupSetup => 'Setup';
+
+  @override
+  String get categoriesButton => 'Categories';
 }

@@ -72,12 +72,14 @@ class ExpensesRepository {
     ];
   }
 
-  Future<void> saveCategory(String? id, Map<String, dynamic> data) async {
-    await sendRequest(
+  /// Adds a category (no [id]) or changes one; returns it as saved.
+  Future<ExpenseCategory> saveCategory(String? id, Map<String, dynamic> data) async {
+    final response = await sendRequest(
       () => id == null
           ? _dio.post<Map<String, dynamic>>('/expense-categories', data: data)
           : _dio.patch<Map<String, dynamic>>('/expense-categories/$id', data: data),
     );
+    return ExpenseCategory.fromJson(unwrapData(response));
   }
 
   Future<void> deleteCategory(String id) async {

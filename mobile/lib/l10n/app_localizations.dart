@@ -2977,6 +2977,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Setup'**
   String get groupSetup;
+
+  /// No description provided for @categoriesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categoriesButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

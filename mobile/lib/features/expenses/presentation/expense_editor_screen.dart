@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
@@ -8,6 +9,7 @@ import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
 import '../data/expenses_repository.dart';
 import '../domain/expense.dart';
+import 'expense_categories_screen.dart';
 import 'expense_widgets.dart';
 
 /// Records an expense at a branch: paid now (from the till's drawer, in cash, by transfer or card) or left owed.
@@ -72,11 +74,43 @@ class _ExpenseFormState extends ConsumerState<_ExpenseForm> {
   bool _saving = false;
   String? _error;
 
+  /// The category list's own "new category" entry.
+  static const _newCategory = '';
+
+  /// Categories added from this form, until the list reloads with them.
+  final List<ExpenseCategory> _added = [];
+  int _categoryFieldVersion = 0;
+
+  List<ExpenseCategory> get _categories => [
+    ...widget.categories,
+    ..._added.where((added) => !widget.categories.any((category) => category.id == added.id)),
+  ];
+
   @override
   void dispose() {
     _amount.dispose();
     _description.dispose();
     super.dispose();
+  }
+
+  /// Adds a category by name and chooses it.
+  Future<void> _addCategory() async {
+    final name = await askCategoryName(context);
+    if (name != null && name.isNotEmpty && mounted) {
+      try {
+        final category = await ref.read(expensesRepositoryProvider).saveCategory(null, {'name': name});
+        _added.add(category);
+        _categoryId = category.id;
+        ref.invalidate(expenseCategoriesProvider);
+      } catch (error, stackTrace) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+        }
+      }
+    }
+    if (mounted) {
+      setState(() => _categoryFieldVersion++);
+    }
   }
 
   Future<void> _save(String branchId) async {
@@ -120,6 +154,7 @@ class _ExpenseFormState extends ConsumerState<_ExpenseForm> {
     final branches = ref.watch(sessionProvider).value?.branches ?? const <BranchSummary>[];
     final branch = branches.where((branch) => branch.id == _branchId).firstOrNull ?? branches.firstOrNull;
     final fromDrawer = _method == ExpensePaymentMethod.cashDrawer;
+    final canAddCategory = ref.watch(sessionProvider).value?.can(Permissions.expensesApprove) ?? false;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.newExpense)),
@@ -138,14 +173,26 @@ class _ExpenseFormState extends ConsumerState<_ExpenseForm> {
               const SizedBox(height: 12),
             ],
             DropdownButtonFormField<String>(
+              // Rebuilt after "new category" so it shows the category added, or the earlier choice if cancelled.
+              key: ValueKey(_categoryFieldVersion),
               initialValue: _categoryId,
               decoration: InputDecoration(labelText: l10n.expenseCategory),
               items: [
-                for (final category in widget.categories)
-                  DropdownMenuItem(value: category.id, child: Text(category.name)),
+                for (final category in _categories) DropdownMenuItem(value: category.id, child: Text(category.name)),
+                if (canAddCategory)
+                  DropdownMenuItem(
+                    value: _newCategory,
+                    child: Row(
+                      children: [
+                        Icon(Icons.add, size: 18, color: theme.colorScheme.primary),
+                        const SizedBox(width: 8),
+                        Text(l10n.addCategory, style: TextStyle(color: theme.colorScheme.primary)),
+                      ],
+                    ),
+                  ),
               ],
-              validator: (value) => value == null ? l10n.fieldRequired : null,
-              onChanged: (id) => setState(() => _categoryId = id),
+              validator: (value) => value == null || value == _newCategory ? l10n.fieldRequired : null,
+              onChanged: (id) => id == _newCategory ? _addCategory() : setState(() => _categoryId = id),
             ),
             const SizedBox(height: 12),
             AmountField(controller: _amount, label: l10n.amountField),

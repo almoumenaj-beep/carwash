@@ -1654,4 +1654,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get groupSetup => 'الإعدادات';
+
+  @override
+  String get categoriesButton => 'التصنيفات';
 }

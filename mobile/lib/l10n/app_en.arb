@@ -846,5 +846,6 @@
   "groupFinance": "Money and reports",
   "groupResources": "Stock and equipment",
   "groupPeople": "Staff",
-  "groupSetup": "Setup"
+  "groupSetup": "Setup",
+  "categoriesButton": "Categories"
 }

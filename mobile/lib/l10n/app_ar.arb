@@ -480,5 +480,6 @@
   "groupFinance": "المال والتقارير",
   "groupResources": "المخزون والمعدات",
   "groupPeople": "الموظفون",
-  "groupSetup": "الإعدادات"
+  "groupSetup": "الإعدادات",
+  "categoriesButton": "التصنيفات"
 }

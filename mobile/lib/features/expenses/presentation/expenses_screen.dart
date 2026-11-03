@@ -45,9 +45,9 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
           title: Text(l10n.expensesTitle),
           actions: [
             if (canApprove)
-              IconButton(
-                tooltip: l10n.expenseCategories,
+              TextButton.icon(
                 icon: const Icon(Icons.category_outlined),
+                label: Text(l10n.categoriesButton),
                 onPressed: () =>
                     Navigator.of(context)
                         .push(MaterialPageRoute<void>(builder: (_) => const ExpenseCategoriesScreen())),

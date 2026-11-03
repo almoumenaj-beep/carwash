@@ -7,6 +7,12 @@ import '../data/expenses_repository.dart';
 import '../domain/expense.dart';
 import 'expense_widgets.dart';
 
+/// Asks for a category's name; the trimmed name, or null when cancelled.
+Future<String?> askCategoryName(BuildContext context, {String? initial}) => showDialog<String>(
+  context: context,
+  builder: (_) => _NameDialog(initial: initial),
+);
+
 /// Expense categories: add, rename, switch on/off and delete (only when unused), each saved immediately.
 class ExpenseCategoriesScreen extends ConsumerWidget {
   const ExpenseCategoriesScreen({super.key});
@@ -22,11 +28,6 @@ class ExpenseCategoriesScreen extends ConsumerWidget {
     }
   }
 
-  Future<String?> _askName(BuildContext context, {String? initial}) => showDialog<String>(
-    context: context,
-    builder: (_) => _NameDialog(initial: initial),
-  );
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -38,7 +39,7 @@ class ExpenseCategoriesScreen extends ConsumerWidget {
         icon: const Icon(Icons.add),
         label: Text(l10n.addCategory),
         onPressed: () async {
-          final name = await _askName(context);
+          final name = await askCategoryName(context);
           if (name != null && name.isNotEmpty && context.mounted) {
             await _run(context, ref, () => repository.saveCategory(null, {'name': name}));
           }
@@ -54,7 +55,7 @@ class ExpenseCategoriesScreen extends ConsumerWidget {
             return ListTile(
               title: Text(category.name),
               onTap: () async {
-                final name = await _askName(context, initial: category.name);
+                final name = await askCategoryName(context, initial: category.name);
                 if (name != null && name.isNotEmpty && name != category.name && context.mounted) {
                   await _run(context, ref, () => repository.saveCategory(category.id, {'name': name}));
                 }
