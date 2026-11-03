@@ -30,6 +30,7 @@ class UpdateSettingsRequest extends FormRequest
             'vat_rate' => ['sometimes', 'required', 'numeric', 'between:0,100', 'decimal:0,2'],
             'prices_include_vat' => ['sometimes', 'required', 'boolean'],
             'vat_number' => ['sometimes', 'nullable', 'string', 'max:30'],
+            'appointment_grace_minutes' => ['sometimes', 'nullable', 'integer', 'between:5,720'],
         ];
     }
 }

@@ -31,6 +31,7 @@ class SettingsResource extends JsonResource
             'vat_rate' => $this->vatRatePercent(),
             'prices_include_vat' => $this->prices_include_vat,
             'vat_number' => $this->vat_number,
+            'appointment_grace_minutes' => $this->appointment_grace_minutes,
         ];
     }
 }

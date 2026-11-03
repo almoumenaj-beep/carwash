@@ -217,6 +217,27 @@ class AppointmentTest extends TestCase
         ])->assertCreated();
     }
 
+    public function test_a_late_booking_becomes_a_no_show_after_the_grace_time_set(): void
+    {
+        $this->tenant->update(['appointment_grace_minutes' => 20]);
+        $lateId = $this->book()->json('data.id');
+        $arrivedId = $this->book(['starts_at' => '2026-11-04T10:15'])->json('data.id');
+
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 10:19', 'Asia/Bahrain'));
+        $this->artisan('appointments:mark-no-shows')->assertSuccessful();
+        $this->assertSame('booked', $this->inTenant(fn () => Appointment::query()->find($lateId)->status->value));
+
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 10:20', 'Asia/Bahrain'));
+        $this->artisan('appointments:mark-no-shows')->assertSuccessful();
+        $this->assertSame('no_show', $this->inTenant(fn () => Appointment::query()->find($lateId)->status->value));
+        $this->assertSame('booked', $this->inTenant(fn () => Appointment::query()->find($arrivedId)->status->value));
+
+        $this->tenant->update(['appointment_grace_minutes' => null]);
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 18:00', 'Asia/Bahrain'));
+        $this->artisan('appointments:mark-no-shows')->assertSuccessful();
+        $this->assertSame('booked', $this->inTenant(fn () => Appointment::query()->find($arrivedId)->status->value));
+    }
+
     public function test_bookings_are_kept_to_the_staff_and_branch_allowed(): void
     {
         $this->book()->assertCreated();

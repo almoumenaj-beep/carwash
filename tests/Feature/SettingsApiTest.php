@@ -32,7 +32,17 @@ class SettingsApiTest extends TestCase
             ->assertJsonPath('data.currency_decimals', 3)
             ->assertJsonPath('data.timezone', 'Asia/Bahrain')
             ->assertJsonPath('data.vat_rate', 10)
-            ->assertJsonPath('data.prices_include_vat', true);
+            ->assertJsonPath('data.prices_include_vat', true)
+            ->assertJsonPath('data.appointment_grace_minutes', 30);
+    }
+
+    public function test_the_booking_grace_time_is_set_or_switched_off(): void
+    {
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::Owner));
+
+        $this->patchJson('/api/v1/settings', ['appointment_grace_minutes' => 45])->assertOk()->assertJsonPath('data.appointment_grace_minutes', 45);
+        $this->patchJson('/api/v1/settings', ['appointment_grace_minutes' => null])->assertOk()->assertJsonPath('data.appointment_grace_minutes', null);
+        $this->patchJson('/api/v1/settings', ['appointment_grace_minutes' => 2])->assertUnprocessable()->assertJsonValidationErrors('appointment_grace_minutes');
     }
 
     public function test_owner_updates_the_settings_and_the_change_is_audited(): void

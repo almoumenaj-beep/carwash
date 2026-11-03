@@ -1675,4 +1675,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get allFilter => 'الكل';
+
+  @override
+  String get graceMinutesField => 'مهلة السماح للحجز المتأخر';
+
+  @override
+  String get minutesUnit => 'دقيقة';
+
+  @override
+  String get graceMinutesHint =>
+      'إذا لم تصل السيارة خلال هذه المدة بعد موعدها يصير الحجز «لم يحضر» تلقائياً. اتركه فارغاً لإيقاف ذلك.';
+
+  @override
+  String get graceMinutesInvalid => 'اكتب من 5 إلى 720 دقيقة، أو اتركه فارغاً';
 }

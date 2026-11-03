@@ -9,6 +9,7 @@ class AppSettings {
     required this.vatRate,
     required this.pricesIncludeVat,
     required this.vatNumber,
+    this.appointmentGraceMinutes,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -20,6 +21,7 @@ class AppSettings {
     vatRate: (json['vat_rate'] as num).toDouble(),
     pricesIncludeVat: json['prices_include_vat'] as bool,
     vatNumber: json['vat_number'] as String?,
+    appointmentGraceMinutes: json['appointment_grace_minutes'] as int?,
   );
 
   final String name;
@@ -34,4 +36,8 @@ class AppSettings {
   final double vatRate;
   final bool pricesIncludeVat;
   final String? vatNumber;
+
+  /// Minutes after its time a booked car may still come before the booking becomes a no-show; null leaves late
+  /// bookings to the staff.
+  final int? appointmentGraceMinutes;
 }

@@ -45,6 +45,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
   late final _name = TextEditingController(text: widget.settings.name);
   late final _vatRate = TextEditingController(text: _formatRate(widget.settings.vatRate));
   late final _vatNumber = TextEditingController(text: widget.settings.vatNumber);
+  late final _graceMinutes = TextEditingController(text: widget.settings.appointmentGraceMinutes?.toString());
   late bool _pricesIncludeVat = widget.settings.pricesIncludeVat;
   late String _locale = widget.settings.locale;
   late String _timezone = widget.settings.timezone;
@@ -58,6 +59,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
     _name.dispose();
     _vatRate.dispose();
     _vatNumber.dispose();
+    _graceMinutes.dispose();
     super.dispose();
   }
 
@@ -77,6 +79,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         'vat_rate': double.parse(_vatRate.text.trim()),
         'prices_include_vat': _pricesIncludeVat,
         'vat_number': _vatNumber.text.trim().isEmpty ? null : _vatNumber.text.trim(),
+        'appointment_grace_minutes': int.tryParse(_graceMinutes.text.trim()),
         'locale': _locale,
         'timezone': _timezone,
       });
@@ -152,6 +155,27 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
             TextFormField(
               controller: _vatNumber,
               decoration: InputDecoration(labelText: l10n.vatNumber, errorText: _problem?.fieldError('vat_number')),
+            ),
+            const SizedBox(height: 24),
+            Text(l10n.appointmentsTitle, style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _graceMinutes,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: InputDecoration(
+                labelText: l10n.graceMinutesField,
+                suffixText: l10n.minutesUnit,
+                helperText: l10n.graceMinutesHint,
+                helperMaxLines: 3,
+                errorText: _problem?.fieldError('appointment_grace_minutes'),
+              ),
+              validator: (value) {
+                final minutes = int.tryParse(value?.trim() ?? '');
+                return (value ?? '').trim().isNotEmpty && (minutes == null || minutes < 5 || minutes > 720)
+                    ? l10n.graceMinutesInvalid
+                    : null;
+              },
             ),
             const SizedBox(height: 24),
             DropdownButtonFormField<String>(

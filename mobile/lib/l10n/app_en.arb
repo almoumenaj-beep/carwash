@@ -853,5 +853,9 @@
   "appointmentLate": "Late",
   "confirmBooking": "Confirm booking",
   "confirmBookingHint": "Once the customer says they are coming",
-  "allFilter": "All"
+  "allFilter": "All",
+  "graceMinutesField": "Grace time for late bookings",
+  "minutesUnit": "min",
+  "graceMinutesHint": "If the car has not come this long after its time, the booking becomes a no-show. Leave empty to switch this off.",
+  "graceMinutesInvalid": "Enter 5 to 720 minutes, or leave it empty"
 }

@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('expenses:generate-recurring')->hourly()->withoutOverlapping();
 Schedule::command('attendance:close-forgotten')->everyFifteenMinutes()->withoutOverlapping();
+Schedule::command('appointments:mark-no-shows')->everyFiveMinutes()->withoutOverlapping();

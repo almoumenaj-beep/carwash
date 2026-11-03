@@ -3019,6 +3019,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All'**
   String get allFilter;
+
+  /// No description provided for @graceMinutesField.
+  ///
+  /// In en, this message translates to:
+  /// **'Grace time for late bookings'**
+  String get graceMinutesField;
+
+  /// No description provided for @minutesUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minutesUnit;
+
+  /// No description provided for @graceMinutesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If the car has not come this long after its time, the booking becomes a no-show. Leave empty to switch this off.'**
+  String get graceMinutesHint;
+
+  /// No description provided for @graceMinutesInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 5 to 720 minutes, or leave it empty'**
+  String get graceMinutesInvalid;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
