@@ -3,6 +3,7 @@
 namespace App\Domain\Catalog\Models;
 
 use App\Domain\Catalog\Enums\PackageDiscountType;
+use App\Domain\Inventory\Models\InventoryItem;
 use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
@@ -78,6 +79,16 @@ class Service extends Model
         return $this->belongsToMany(Service::class, 'service_package_items', 'package_id', 'service_id')
             ->withPivot('sort_order')
             ->orderByPivot('sort_order');
+    }
+
+    /**
+     * What one sale of the service uses up; `pivot->quantity_milli` is in thousandths of the material's unit.
+     *
+     * @return BelongsToMany<InventoryItem, $this>
+     */
+    public function materials(): BelongsToMany
+    {
+        return $this->belongsToMany(InventoryItem::class, 'service_materials')->withPivot('quantity_milli');
     }
 
     /**

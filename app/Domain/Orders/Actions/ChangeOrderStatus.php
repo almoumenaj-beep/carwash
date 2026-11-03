@@ -2,6 +2,7 @@
 
 namespace App\Domain\Orders\Actions;
 
+use App\Domain\Inventory\Actions\ConsumeOrderMaterials;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderItem;
@@ -14,11 +15,14 @@ use Illuminate\Validation\ValidationException;
  * Moves a car along the queue. Only allowed transitions are accepted, a bay is used by one car
  * at a time, every step is stamped and recorded, and delivery counts as the customer's visit.
  * A car is handed over only once paid, and a paid order cannot be cancelled. Every inspection at
- * the quality check is recorded.
+ * the quality check is recorded. Starting the wash takes its materials out of the branch's stock.
  */
 class ChangeOrderStatus
 {
-    public function __construct(private OrderAssignments $assignments) {}
+    public function __construct(
+        private OrderAssignments $assignments,
+        private ConsumeOrderMaterials $consumeOrderMaterials,
+    ) {}
 
     /**
      * Leaving the quality check takes the inspection's results: to pass the car (ready) every service
@@ -53,7 +57,14 @@ class ChangeOrderStatus
             $this->assignments->ensureBayIsFree($order, $order->bay_id);
         }
 
-        return DB::transaction(function () use ($actor, $order, $current, $next, $reason, $inspection): Order {
+        // Materials are used up once, when the wash first starts; a car sent back for rework is not charged again.
+        $firstStart = $next === OrderStatus::InProgress && $order->started_at === null;
+
+        return DB::transaction(function () use ($actor, $order, $current, $next, $reason, $inspection, $firstStart): Order {
+            if ($firstStart) {
+                $this->consumeOrderMaterials->handle($order, $actor->id);
+            }
+
             if ($inspection !== null) {
                 $order->qualityChecks()->create([
                     'checked_by' => $actor->id,

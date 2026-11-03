@@ -69,5 +69,7 @@
     "Open your shift at this branch to pay from its drawer.": "افتح ورديتك في هذا الفرع لتدفع من درجه.",
     "This expense is already paid.": "هذا المصروف مدفوع مسبقاً.",
     "This expense was counted in a closed shift and cannot be deleted.": "هذا المصروف محسوب في وردية مُقفلة ولا يمكن حذفه.",
-    "This category has expenses. Deactivate it instead of deleting it.": "لهذا التصنيف مصروفات. أوقفه بدلاً من حذفه."
+    "This category has expenses. Deactivate it instead of deleting it.": "لهذا التصنيف مصروفات. أوقفه بدلاً من حذفه.",
+    "Materials purchase": "مشتريات مواد",
+    "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."
 }

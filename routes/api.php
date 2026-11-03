@@ -11,17 +11,20 @@ use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
 use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
+use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\OrderCheckoutController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\OrderStatusController;
 use App\Http\Controllers\Api\V1\PermissionController;
+use App\Http\Controllers\Api\V1\PurchaseController;
 use App\Http\Controllers\Api\V1\RecurringExpenseController;
 use App\Http\Controllers\Api\V1\RoleController;
 use App\Http\Controllers\Api\V1\RolePermissionController;
 use App\Http\Controllers\Api\V1\ServiceCategoryController;
 use App\Http\Controllers\Api\V1\ServiceController;
+use App\Http\Controllers\Api\V1\ServiceMaterialController;
 use App\Http\Controllers\Api\V1\SettingsController;
 use App\Http\Controllers\Api\V1\StaffController;
 use App\Http\Controllers\Api\V1\SupplierController;
@@ -72,6 +75,16 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('recurring-expenses', RecurringExpenseController::class)->except('show');
         Route::apiResource('expenses', ExpenseController::class)->only(['index', 'store', 'destroy']);
         Route::post('expenses/{expense}/pay', [ExpenseController::class, 'pay'])->name('expenses.pay');
+
+        Route::get('inventory/items', [InventoryController::class, 'index'])->name('inventory.items.index');
+        Route::post('inventory/items', [InventoryController::class, 'store'])->name('inventory.items.store');
+        Route::patch('inventory/items/{item}', [InventoryController::class, 'update'])->name('inventory.items.update');
+        Route::post('inventory/counts', [InventoryController::class, 'count'])->name('inventory.counts.store');
+        Route::get('inventory/movements', [InventoryController::class, 'movements'])->name('inventory.movements.index');
+        Route::get('inventory/purchases', [PurchaseController::class, 'index'])->name('inventory.purchases.index');
+        Route::post('inventory/purchases', [PurchaseController::class, 'store'])->name('inventory.purchases.store');
+        Route::get('services/{service}/materials', [ServiceMaterialController::class, 'show'])->name('services.materials.show');
+        Route::put('services/{service}/materials', [ServiceMaterialController::class, 'update'])->name('services.materials.update');
 
         Route::get('shifts', [CashShiftController::class, 'index'])->name('shifts.index');
         Route::get('shifts/current', [CashShiftController::class, 'current'])->name('shifts.current');
