@@ -3407,7 +3407,7 @@ abstract class AppLocalizations {
   /// No description provided for @addToList.
   ///
   /// In en, this message translates to:
-  /// **'Add to the list'**
+  /// **'Add material'**
   String get addToList;
 
   /// No description provided for @purchaseListSection.
@@ -3419,8 +3419,14 @@ abstract class AppLocalizations {
   /// No description provided for @purchaseListEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Choose a material, enter its quantity and price, then press «Add to the list».'**
+  /// **'Choose a material, enter its quantity and price, then press «Add material».'**
   String get purchaseListEmpty;
+
+  /// No description provided for @savePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Save purchase'**
+  String get savePurchase;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

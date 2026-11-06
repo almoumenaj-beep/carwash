@@ -457,7 +457,7 @@ class _PurchaseFormState extends ConsumerState<_PurchaseForm> {
               FilledButton.icon(
                 onPressed: _saving ? null : _save,
                 icon: const Icon(Icons.check),
-                label: Text(l10n.save),
+                label: Text(l10n.savePurchase),
               ),
             ],
           ),

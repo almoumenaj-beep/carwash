@@ -1848,7 +1848,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newMaterialOption => '+ New material…';
 
   @override
-  String get addToList => 'Add to the list';
+  String get addToList => 'Add material';
 
   @override
   String purchaseListSection(int count) {
@@ -1856,5 +1856,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get purchaseListEmpty => 'Choose a material, enter its quantity and price, then press «Add to the list».';
+  String get purchaseListEmpty => 'Choose a material, enter its quantity and price, then press «Add material».';
+
+  @override
+  String get savePurchase => 'Save purchase';
 }

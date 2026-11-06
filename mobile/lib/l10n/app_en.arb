@@ -1004,14 +1004,15 @@
   "cancelPayrollPayment": "Cancel payroll payment",
   "cancelPayrollPaymentConfirm": "This month's expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.",
   "newMaterialOption": "+ New material…",
-  "addToList": "Add to the list",
+  "addToList": "Add material",
   "purchaseListSection": "Materials bought ({count})",
-  "purchaseListEmpty": "Choose a material, enter its quantity and price, then press «Add to the list».",
+  "purchaseListEmpty": "Choose a material, enter its quantity and price, then press «Add material».",
   "@purchaseListSection": {
     "placeholders": {
       "count": {
         "type": "int"
       }
     }
-  }
+  },
+  "savePurchase": "Save purchase"
 }

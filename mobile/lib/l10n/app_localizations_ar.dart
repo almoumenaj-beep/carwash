@@ -1896,7 +1896,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newMaterialOption => '+ مادة جديدة…';
 
   @override
-  String get addToList => 'إضافة إلى القائمة';
+  String get addToList => 'إضافة المادة';
 
   @override
   String purchaseListSection(int count) {
@@ -1904,5 +1904,8 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get purchaseListEmpty => 'اختر مادة واكتب كميتها وسعرها، ثم اضغط «إضافة إلى القائمة».';
+  String get purchaseListEmpty => 'اختر مادة واكتب كميتها وسعرها، ثم اضغط «إضافة المادة».';
+
+  @override
+  String get savePurchase => 'حفظ المشتريات';
 }
