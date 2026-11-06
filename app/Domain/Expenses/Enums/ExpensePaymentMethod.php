@@ -11,5 +11,6 @@ enum ExpensePaymentMethod: string
     case CashDrawer = 'cash_drawer';
     case Cash = 'cash';
     case BankTransfer = 'bank_transfer';
+    case Benefit = 'benefit';
     case Card = 'card';
 }

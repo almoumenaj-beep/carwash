@@ -5,6 +5,7 @@ enum ExpensePaymentMethod {
   cashDrawer('cash_drawer'),
   cash('cash'),
   bankTransfer('bank_transfer'),
+  benefit('benefit'),
   card('card');
 
   const ExpensePaymentMethod(this.apiValue);

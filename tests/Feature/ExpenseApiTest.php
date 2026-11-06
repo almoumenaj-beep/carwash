@@ -69,6 +69,15 @@ class ExpenseApiTest extends TestCase
         $this->assertDatabaseHas('activity_log', ['event' => 'expense.recorded', 'tenant_id' => $this->tenant->id]);
     }
 
+    public function test_an_expense_can_be_paid_by_benefit_without_touching_the_drawer(): void
+    {
+        $this->record(['payment_method' => 'benefit'])
+            ->assertCreated()
+            ->assertJsonPath('data.is_paid', true)
+            ->assertJsonPath('data.payment_method', 'benefit');
+        $this->assertNull($this->inTenant(fn () => Expense::query()->sole()->cash_shift_id));
+    }
+
     public function test_an_expense_without_payment_is_owed_to_its_supplier_and_paid_later(): void
     {
         $expenseId = $this->record(['payment_method' => null, 'supplier_id' => $this->supplier->id, 'amount' => 12000])

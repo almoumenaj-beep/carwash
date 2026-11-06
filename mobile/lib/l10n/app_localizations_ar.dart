@@ -1908,4 +1908,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get savePurchase => 'حفظ المشتريات';
+
+  @override
+  String get payBenefit => 'بنفت';
 }

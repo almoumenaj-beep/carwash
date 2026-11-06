@@ -1860,4 +1860,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get savePurchase => 'Save purchase';
+
+  @override
+  String get payBenefit => 'BenefitPay';
 }

@@ -12,6 +12,7 @@ String paymentMethodLabel(AppLocalizations l10n, ExpensePaymentMethod? method) =
   ExpensePaymentMethod.cashDrawer => l10n.payFromDrawer,
   ExpensePaymentMethod.cash => l10n.payCash,
   ExpensePaymentMethod.bankTransfer => l10n.payBankTransfer,
+  ExpensePaymentMethod.benefit => l10n.payBenefit,
   ExpensePaymentMethod.card => l10n.payCard,
   null => l10n.notPaidYet,
 };

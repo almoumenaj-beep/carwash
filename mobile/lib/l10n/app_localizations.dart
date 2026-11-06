@@ -3427,6 +3427,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save purchase'**
   String get savePurchase;
+
+  /// No description provided for @payBenefit.
+  ///
+  /// In en, this message translates to:
+  /// **'BenefitPay'**
+  String get payBenefit;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1014,5 +1014,6 @@
       }
     }
   },
-  "savePurchase": "Save purchase"
+  "savePurchase": "Save purchase",
+  "payBenefit": "BenefitPay"
 }

@@ -555,5 +555,6 @@
   "addToList": "إضافة المادة",
   "purchaseListSection": "المواد المضافة ({count})",
   "purchaseListEmpty": "اختر مادة واكتب كميتها وسعرها، ثم اضغط «إضافة المادة».",
-  "savePurchase": "حفظ المشتريات"
+  "savePurchase": "حفظ المشتريات",
+  "payBenefit": "بنفت"
 }
