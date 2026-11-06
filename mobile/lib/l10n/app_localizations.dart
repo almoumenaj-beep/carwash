@@ -3487,6 +3487,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No actions are available on this booking.'**
   String get noBookingActions;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit my profile'**
+  String get editProfile;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated'**
+  String get profileSaved;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

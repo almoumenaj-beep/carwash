@@ -6,12 +6,14 @@ import '../../../core/l10n/locale_controller.dart';
 import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
+import '../../auth/domain/me.dart';
 import '../../auth/presentation/set_pin_dialog.dart';
 import '../../expenses/presentation/expense_widgets.dart';
 import '../../shifts/data/shifts_repository.dart';
 import '../../shifts/domain/cash_shift.dart';
 import '../../staff_affairs/data/staff_affairs_repository.dart';
 import '../../staff_affairs/domain/staff_affairs.dart';
+import 'edit_profile_dialog.dart';
 
 /// The signed-in staff member's own account, kept to one line per item; the full
 /// permission list opens in a sheet on demand.
@@ -92,6 +94,16 @@ class AccountScreen extends ConsumerWidget {
     await session.signOut();
   }
 
+  Future<void> _editProfile(BuildContext context, Me me) async {
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (_) => EditProfileDialog(me: me),
+    );
+    if ((saved ?? false) && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).profileSaved)));
+    }
+  }
+
   Future<void> _setPin(BuildContext context) async {
     final saved = await showDialog<bool>(context: context, builder: (_) => const SetPinDialog());
     if ((saved ?? false) && context.mounted) {
@@ -145,6 +157,8 @@ class AccountScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                   Text(me.name, style: theme.textTheme.titleLarge),
                   if (me.email != null) Text(me.email!, style: theme.textTheme.bodyMedium),
+                  if (me.phone != null)
+                    Text(me.phone!, style: theme.textTheme.bodyMedium, textDirection: TextDirection.ltr),
                   const SizedBox(height: 4),
                   Text(
                     '${me.roles.map((role) => role.label).join(l10n.listSeparator)} · ${me.carWashName}',
@@ -155,6 +169,11 @@ class AccountScreen extends ConsumerWidget {
               ),
             ),
             const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.edit_outlined),
+              title: Text(l10n.editProfile),
+              onTap: () => _editProfile(context, me),
+            ),
             ListTile(
               leading: const Icon(Icons.store_outlined),
               title: Text(l10n.branchesSection),

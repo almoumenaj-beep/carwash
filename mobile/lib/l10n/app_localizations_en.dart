@@ -1893,4 +1893,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noBookingActions => 'No actions are available on this booking.';
+
+  @override
+  String get editProfile => 'Edit my profile';
+
+  @override
+  String get profileSaved => 'Profile updated';
 }

@@ -1941,4 +1941,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noBookingActions => 'لا تتوفر إجراءات على هذا الحجز.';
+
+  @override
+  String get editProfile => 'تعديل البيانات الشخصية';
+
+  @override
+  String get profileSaved => 'تم تعديل البيانات';
 }

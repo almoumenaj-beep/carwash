@@ -95,6 +95,14 @@ class AuthRepository {
     );
   }
 
+  /// Updates the signed-in staff member's own name, email or phone.
+  Future<Me> updateProfile({String? name, String? email, String? phone}) async {
+    final response = await _send(
+      () => _dio.put<Map<String, dynamic>>('/me/profile', data: {'name': ?name, 'email': ?email, 'phone': ?phone}),
+    );
+    return Me.fromJson(unwrapData(response));
+  }
+
   /// Ends the session on the server when reachable; the device stays trusted for PIN switching.
   Future<void> signOut() async {
     try {

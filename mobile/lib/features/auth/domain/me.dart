@@ -4,6 +4,7 @@ class Me {
     required this.id,
     required this.name,
     required this.email,
+    this.phone,
     required this.carWashName,
     required this.isOwner,
     required this.allBranches,
@@ -22,6 +23,7 @@ class Me {
       id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String?,
+      phone: json['phone'] as String?,
       carWashName: tenant['name'] as String,
       isOwner: json['is_owner'] as bool,
       allBranches: json['all_branches'] as bool,
@@ -37,6 +39,7 @@ class Me {
   final String id;
   final String name;
   final String? email;
+  final String? phone;
   final String carWashName;
   final bool isOwner;
   final bool allBranches;
