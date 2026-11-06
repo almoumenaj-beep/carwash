@@ -48,6 +48,14 @@ class AttendanceLog extends Model
     }
 
     /**
+     * Minutes from clocking in to clocking out, or up to now while still at work.
+     */
+    public function minutesWorked(): int
+    {
+        return (int) $this->clock_in_at->diffInMinutes($this->clock_out_at ?? now());
+    }
+
+    /**
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Identity\Enums\Permission;
 use App\Domain\Platform\Models\Branch;
+use App\Domain\Reports\Queries\AttendanceSummary;
 use App\Domain\Staff\Actions\ClockAttendance;
 use App\Domain\Staff\Models\AttendanceLog;
 use App\Http\Controllers\Controller;
@@ -11,10 +12,11 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Attendance: every staff member clocks themselves in at a branch they work in and out again; managers
- * with employees.view see a branch's day.
+ * with employees.view see a branch's day, or a summary per staff member over a period.
  */
 class AttendanceController extends Controller
 {
@@ -77,19 +79,54 @@ class AttendanceController extends Controller
     }
 
     /**
+     * A branch's attendance per staff member over a period (`from`-`to`, default this month so far, at most a year).
+     */
+    public function summary(Request $request, AttendanceSummary $attendanceSummary): JsonResponse
+    {
+        Gate::authorize(Permission::EmployeesView->value);
+        $request->validate([
+            'branch_id' => ['required', 'uuid'],
+            'from' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
+            'to' => ['sometimes', 'nullable', 'date_format:Y-m-d', 'after_or_equal:from'],
+        ]);
+
+        $branch = Branch::query()->findOrFail($request->input('branch_id'));
+        Gate::authorize('view', $branch);
+
+        $timezone = $request->user()->tenant->timezone;
+        $today = CarbonImmutable::now($timezone)->startOfDay();
+        $from = $request->filled('from') ? CarbonImmutable::createFromFormat('Y-m-d', $request->input('from'), $timezone)->startOfDay() : $today->startOfMonth();
+        $to = $request->filled('to') ? CarbonImmutable::createFromFormat('Y-m-d', $request->input('to'), $timezone)->startOfDay() : $today;
+
+        if ($from->addYear()->lte($to)) {
+            throw ValidationException::withMessages(['to' => __('The report covers a year at most.')]);
+        }
+
+        $summary = $attendanceSummary->for($branch, $from, $to);
+
+        return response()->json(['data' => [
+            'from' => $from->toDateString(),
+            'to' => $to->toDateString(),
+            'total_minutes' => $summary['total_minutes'],
+            'staff' => array_map(fn (array $member) => [
+                ...$member,
+                'records' => array_map($this->present(...), $member['records']),
+            ], $summary['staff']),
+        ]]);
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function present(AttendanceLog $log): array
     {
-        $end = $log->clock_out_at ?? now();
-
         return [
             'id' => $log->id,
             'user' => ['id' => $log->user->id, 'name' => $log->user->name],
             'branch' => ['id' => $log->branch->id, 'name' => $log->branch->name],
             'clock_in_at' => $log->clock_in_at->toIso8601String(),
             'clock_out_at' => $log->clock_out_at?->toIso8601String(),
-            'minutes' => (int) $log->clock_in_at->diffInMinutes($end),
+            'minutes' => $log->minutesWorked(),
             'auto_clocked_out' => $log->auto_clocked_out,
         ];
     }

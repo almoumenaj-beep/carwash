@@ -81,6 +81,50 @@ class AttendanceRecord {
   final bool autoClockedOut;
 }
 
+/// A branch's attendance over a period, per staff member. Does not affect pay.
+class AttendanceSummary {
+  const AttendanceSummary({required this.from, required this.to, required this.totalMinutes, required this.staff});
+
+  factory AttendanceSummary.fromJson(Map<String, dynamic> json) => AttendanceSummary(
+    from: DateTime.parse(json['from'] as String),
+    to: DateTime.parse(json['to'] as String),
+    totalMinutes: json['total_minutes'] as int,
+    staff: [
+      for (final member in json['staff'] as List) AttendanceStaffSummary.fromJson(member as Map<String, dynamic>),
+    ],
+  );
+
+  final DateTime from;
+  final DateTime to;
+  final int totalMinutes;
+  final List<AttendanceStaffSummary> staff;
+}
+
+/// One staff member's days, hours and records at a branch over a period.
+class AttendanceStaffSummary {
+  const AttendanceStaffSummary({
+    required this.userName,
+    required this.days,
+    required this.minutes,
+    required this.autoClockedOutCount,
+    required this.records,
+  });
+
+  factory AttendanceStaffSummary.fromJson(Map<String, dynamic> json) => AttendanceStaffSummary(
+    userName: (json['user'] as Map<String, dynamic>)['name'] as String,
+    days: json['days'] as int,
+    minutes: json['minutes'] as int,
+    autoClockedOutCount: json['auto_clocked_out'] as int,
+    records: [for (final record in json['records'] as List) AttendanceRecord.fromJson(record as Map<String, dynamic>)],
+  );
+
+  final String userName;
+  final int days;
+  final int minutes;
+  final int autoClockedOutCount;
+  final List<AttendanceRecord> records;
+}
+
 /// A month's pay, drafted until paid.
 class PayrollRun {
   const PayrollRun({

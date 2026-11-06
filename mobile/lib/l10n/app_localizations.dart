@@ -3457,6 +3457,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Record the payment after confirming the money reached the car wash account.'**
   String get benefitPaymentHint;
+
+  /// No description provided for @openShiftBlocksSignOutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Close your cashier first'**
+  String get openShiftBlocksSignOutTitle;
+
+  /// No description provided for @openShiftBlocksSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Close your cashier at {branches} before signing out; count the drawer first.'**
+  String openShiftBlocksSignOut(String branches);
+
+  /// No description provided for @goToShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to the cashier'**
+  String get goToShift;
+
+  /// No description provided for @autoClosedShiftWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.'**
+  String get autoClosedShiftWarning;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

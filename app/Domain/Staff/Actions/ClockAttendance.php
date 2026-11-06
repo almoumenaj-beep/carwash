@@ -3,13 +3,15 @@
 namespace App\Domain\Staff\Actions;
 
 use App\Domain\Platform\Models\Branch;
+use App\Domain\Sales\Models\CashShift;
 use App\Domain\Staff\Models\AttendanceLog;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /**
- * A staff member clocking in at a branch they work in, and out again when they leave.
+ * A staff member clocking in at a branch they work in, and out again when they leave. They cannot clock
+ * out with an open cash shift at that branch; it must be closed, with the drawer counted, first.
  */
 class ClockAttendance
 {
@@ -39,6 +41,10 @@ class ClockAttendance
     {
         $log = AttendanceLog::openFor($user)
             ?? throw ValidationException::withMessages(['attendance' => __('You are not clocked in.')]);
+
+        if (CashShift::openFor($user, $log->branch) !== null) {
+            throw ValidationException::withMessages(['shift' => __('Close your cashier before clocking out.')]);
+        }
 
         $log->forceFill(['clock_out_at' => now()])->save();
 

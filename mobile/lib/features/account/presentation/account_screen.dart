@@ -8,6 +8,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/presentation/set_pin_dialog.dart';
 import '../../expenses/presentation/expense_widgets.dart';
+import '../../shifts/data/shifts_repository.dart';
+import '../../shifts/domain/cash_shift.dart';
 import '../../staff_affairs/data/staff_affairs_repository.dart';
 import '../../staff_affairs/domain/staff_affairs.dart';
 
@@ -16,9 +18,40 @@ import '../../staff_affairs/domain/staff_affairs.dart';
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
-  /// Signs out; someone still clocked in is first asked whether their day has ended.
+  /// Signs out. Blocked while a cashier is open anywhere, since nobody will be there to count its
+  /// drawer afterwards; someone still clocked in is then asked whether their day has ended.
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
     final session = ref.read(sessionProvider.notifier);
+    List<CashShift> openShifts = const [];
+    try {
+      openShifts = await ref.read(shiftsRepositoryProvider).mine();
+    } catch (_) {
+      // Open shifts could not be read: signing out must still work.
+    }
+
+    if (openShifts.isNotEmpty && context.mounted) {
+      final l10n = AppLocalizations.of(context);
+      final branches = openShifts.map((shift) => shift.branchName ?? '').join(l10n.listSeparator);
+      await showDialog<void>(
+        context: context,
+        builder: (dialog) => AlertDialog(
+          title: Text(l10n.openShiftBlocksSignOutTitle),
+          content: Text(l10n.openShiftBlocksSignOut(branches)),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(dialog).pop(), child: Text(l10n.back)),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialog).pop();
+                context.push('/shift?branch=${openShifts.first.branchId}');
+              },
+              child: Text(l10n.goToShift),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     AttendanceRecord? open;
     try {
       open = await ref.read(myAttendanceProvider.future);

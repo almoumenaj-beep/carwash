@@ -73,6 +73,8 @@
     "Materials purchase": "مشتريات مواد",
     "You are already clocked in.": "سجّلت حضورك مسبقاً.",
     "You are not clocked in.": "لم تسجّل حضورك.",
+    "Close your cashier before clocking out.": "أقفل الكاشير قبل تسجيل الانصراف.",
+    "Closed automatically at closing time; the drawer still needs to be counted.": "أُقفل تلقائياً عند وقت الإغلاق؛ ما زال الدرج يحتاج عدّاً فعلياً.",
     "This month has been paid and can no longer change.": "رواتب هذا الشهر صُرفت ولا يمكن تغييرها.",
     "Maintenance: :name": "صيانة: :name",
     "The report covers a year at most.": "التقرير يغطي سنة واحدة كحد أقصى.",

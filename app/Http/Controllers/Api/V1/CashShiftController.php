@@ -36,9 +36,24 @@ class CashShiftController extends Controller
         $shifts = CashShift::query()
             ->where('branch_id', $branch->id)
             ->unless($request->user()->can(Permission::ReportsSales->value), fn ($query) => $query->where('opened_by', $request->user()->id))
-            ->with(['opener', 'closer'])
+            ->with(['branch', 'opener', 'closer'])
             ->latest('opened_at')
             ->limit(30)
+            ->get();
+
+        return CashShiftResource::collection($shifts);
+    }
+
+    /**
+     * All of the user's open shifts, at every branch. Used to make sure they close their cashier
+     * before clocking out or signing out.
+     */
+    public function mine(Request $request): AnonymousResourceCollection
+    {
+        $shifts = CashShift::query()
+            ->open()
+            ->where('opened_by', $request->user()->id)
+            ->with(['branch', 'opener', 'closer'])
             ->get();
 
         return CashShiftResource::collection($shifts);
@@ -56,7 +71,7 @@ class CashShiftController extends Controller
 
         $shift = CashShift::openFor($request->user(), $branch);
 
-        return response()->json(['data' => $shift === null ? null : CashShiftResource::make($shift->load(['opener', 'closer']))]);
+        return response()->json(['data' => $shift === null ? null : CashShiftResource::make($shift->load(['branch', 'opener', 'closer']))]);
     }
 
     public function store(OpenCashShiftRequest $request, OpenCashShift $openCashShift): JsonResponse
@@ -67,7 +82,7 @@ class CashShiftController extends Controller
             $request->integer('opening_float'),
         );
 
-        return CashShiftResource::make($shift->load(['opener', 'closer']))
+        return CashShiftResource::make($shift->load(['branch', 'opener', 'closer']))
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
@@ -79,6 +94,6 @@ class CashShiftController extends Controller
     {
         $shift = $closeCashShift->handle($request->user(), $shift, $request->integer('counted_cash'), $request->validated('note'));
 
-        return CashShiftResource::make($shift->load(['opener', 'closer']));
+        return CashShiftResource::make($shift->load(['branch', 'opener', 'closer']));
     }
 }

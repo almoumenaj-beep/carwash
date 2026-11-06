@@ -1019,5 +1019,16 @@
   "shiftCardTaken": "Card payments",
   "shiftBenefitTaken": "BenefitPay payments",
   "cardPaymentHint": "Record the payment after it succeeds on the card machine.",
-  "benefitPaymentHint": "Record the payment after confirming the money reached the car wash account."
+  "benefitPaymentHint": "Record the payment after confirming the money reached the car wash account.",
+  "openShiftBlocksSignOutTitle": "Close your cashier first",
+  "openShiftBlocksSignOut": "Close your cashier at {branches} before signing out; count the drawer first.",
+  "@openShiftBlocksSignOut": {
+    "placeholders": {
+      "branches": {
+        "type": "String"
+      }
+    }
+  },
+  "goToShift": "Go to the cashier",
+  "autoClosedShiftWarning": "A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one."
 }

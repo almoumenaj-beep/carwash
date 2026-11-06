@@ -8,7 +8,10 @@ use App\Domain\Identity\Enums\DefaultRole;
 use App\Domain\Identity\Enums\Permission;
 use App\Domain\Identity\Models\Role;
 use App\Domain\Orders\Models\Order;
+use App\Domain\Platform\Models\Branch;
+use App\Domain\Staff\Models\AttendanceLog;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\Concerns\BuildsCarWash;
@@ -78,6 +81,79 @@ class StaffAffairsTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.user.name', $this->washer->name);
+    }
+
+    public function test_clocking_out_is_blocked_with_an_open_cash_shift(): void
+    {
+        Sanctum::actingAs($this->cashier);
+        $this->postJson('/api/v1/attendance/clock-in', ['branch_id' => $this->branch->id])->assertCreated();
+        $shiftId = $this->postJson('/api/v1/shifts', ['branch_id' => $this->branch->id, 'opening_float' => 10000])
+            ->assertCreated()
+            ->json('data.id');
+
+        $this->postJson('/api/v1/attendance/clock-out')->assertUnprocessable()->assertJsonValidationErrors('shift');
+        $this->getJson('/api/v1/shifts/mine')->assertJsonCount(1, 'data')->assertJsonPath('data.0.id', $shiftId);
+
+        $this->postJson("/api/v1/shifts/{$shiftId}/close", ['counted_cash' => 10000])->assertOk();
+        $this->postJson('/api/v1/attendance/clock-out')->assertOk();
+        $this->getJson('/api/v1/shifts/mine')->assertJsonCount(0, 'data');
+    }
+
+    /**
+     * A finished attendance record, with times in the car wash's time zone.
+     */
+    private function attended(User $user, Branch $branch, string $in, string $out, bool $auto = false): void
+    {
+        $this->inTenant(function () use ($user, $branch, $in, $out, $auto): void {
+            (new AttendanceLog)->forceFill([
+                'user_id' => $user->id,
+                'branch_id' => $branch->id,
+                'clock_in_at' => CarbonImmutable::parse($in, $this->tenant->timezone)->utc(),
+                'clock_out_at' => CarbonImmutable::parse($out, $this->tenant->timezone)->utc(),
+                'auto_clocked_out' => $auto,
+            ])->save();
+        });
+    }
+
+    public function test_the_attendance_summary_adds_up_days_and_hours_per_employee_over_a_period(): void
+    {
+        $this->attended($this->washer, $this->branch, '2026-10-05 08:00', '2026-10-05 12:00');
+        $this->attended($this->washer, $this->branch, '2026-10-05 16:00', '2026-10-05 18:00');
+        $this->attended($this->washer, $this->branch, '2026-10-06 00:30', '2026-10-06 01:30', auto: true);
+        $this->attended($this->cashier, $this->branch, '2026-10-06 08:00', '2026-10-06 18:00');
+        $this->attended($this->washer, $this->branch, '2026-10-04 08:00', '2026-10-04 12:00');
+        $this->attended($this->washer, $this->branch, '2026-10-07 08:00', '2026-10-07 12:00');
+        $this->attended($this->washer, $this->otherBranch, '2026-10-05 13:00', '2026-10-05 14:00');
+
+        Sanctum::actingAs($this->manager);
+        $this->getJson("/api/v1/attendance/summary?branch_id={$this->branch->id}&from=2026-10-05&to=2026-10-06")
+            ->assertOk()
+            ->assertJsonPath('data.total_minutes', 17 * 60)
+            ->assertJsonCount(2, 'data.staff')
+            ->assertJsonPath('data.staff.0.user.id', $this->cashier->id)
+            ->assertJsonPath('data.staff.0.days', 1)
+            ->assertJsonPath('data.staff.0.minutes', 600)
+            ->assertJsonPath('data.staff.1.user.id', $this->washer->id)
+            ->assertJsonPath('data.staff.1.days', 2)
+            ->assertJsonPath('data.staff.1.minutes', 420)
+            ->assertJsonPath('data.staff.1.auto_clocked_out', 1)
+            ->assertJsonCount(3, 'data.staff.1.records');
+    }
+
+    public function test_the_attendance_summary_stays_within_permissions_branches_and_a_year(): void
+    {
+        Sanctum::actingAs($this->washer);
+        $this->getJson("/api/v1/attendance/summary?branch_id={$this->branch->id}")->assertForbidden();
+
+        Sanctum::actingAs($this->manager);
+        $this->getJson("/api/v1/attendance/summary?branch_id={$this->otherBranch->id}")->assertForbidden();
+        $this->getJson("/api/v1/attendance/summary?branch_id={$this->branch->id}&from=2025-01-01&to=2026-01-01")
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('to');
+        $this->getJson("/api/v1/attendance/summary?branch_id={$this->branch->id}")
+            ->assertOk()
+            ->assertJsonPath('data.from', now($this->tenant->timezone)->startOfMonth()->toDateString())
+            ->assertJsonPath('data.staff', []);
     }
 
     public function test_managers_set_pay_terms_and_see_their_staff(): void

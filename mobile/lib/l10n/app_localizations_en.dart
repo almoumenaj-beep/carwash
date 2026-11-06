@@ -1875,4 +1875,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get benefitPaymentHint => 'Record the payment after confirming the money reached the car wash account.';
+
+  @override
+  String get openShiftBlocksSignOutTitle => 'Close your cashier first';
+
+  @override
+  String openShiftBlocksSignOut(String branches) {
+    return 'Close your cashier at $branches before signing out; count the drawer first.';
+  }
+
+  @override
+  String get goToShift => 'Go to the cashier';
+
+  @override
+  String get autoClosedShiftWarning =>
+      'A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.';
 }

@@ -112,6 +112,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
         Route::put('employees/{user}/pay-terms', [EmployeeController::class, 'updateProfile'])->name('employees.pay-terms.update');
         Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+        Route::get('attendance/summary', [AttendanceController::class, 'summary'])->name('attendance.summary');
         Route::get('attendance/me', [AttendanceController::class, 'me'])->name('attendance.me');
         Route::post('attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
         Route::post('attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
@@ -124,6 +125,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::put('services/{service}/materials', [ServiceMaterialController::class, 'update'])->name('services.materials.update');
 
         Route::get('shifts', [CashShiftController::class, 'index'])->name('shifts.index');
+        Route::get('shifts/mine', [CashShiftController::class, 'mine'])->name('shifts.mine');
         Route::get('shifts/current', [CashShiftController::class, 'current'])->name('shifts.current');
         Route::post('shifts', [CashShiftController::class, 'store'])->name('shifts.store');
         Route::post('shifts/{shift}/close', [CashShiftController::class, 'close'])->name('shifts.close');

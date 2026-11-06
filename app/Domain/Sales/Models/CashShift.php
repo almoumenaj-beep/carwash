@@ -24,6 +24,15 @@ class CashShift extends Model
     use BelongsToTenant, HasUuids;
 
     /**
+     * Mirrors the database default so a freshly created shift is complete before it is refreshed.
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'auto_closed' => false,
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -37,6 +46,7 @@ class CashShift extends Model
             'expected_cash' => 'integer',
             'counted_cash' => 'integer',
             'variance' => 'integer',
+            'auto_closed' => 'boolean',
         ];
     }
 

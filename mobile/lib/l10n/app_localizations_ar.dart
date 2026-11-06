@@ -1923,4 +1923,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get benefitPaymentHint => 'سجّل الدفع بعد أن تتأكد من وصول المبلغ إلى حساب المغسلة.';
+
+  @override
+  String get openShiftBlocksSignOutTitle => 'أقفل الكاشير أولاً';
+
+  @override
+  String openShiftBlocksSignOut(String branches) {
+    return 'أقفل الكاشير في: $branches، قبل تسجيل الخروج، بعد عدّ الدرج.';
+  }
+
+  @override
+  String get goToShift => 'الذهاب إلى الكاشير';
+
+  @override
+  String get autoClosedShiftWarning =>
+      'كاشير سابق أُقفل تلقائياً عند وقت الإغلاق. تأكد من مطابقة الدرج قبل فتح كاشير جديد.';
 }

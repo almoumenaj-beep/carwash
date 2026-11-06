@@ -10,7 +10,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * A shift with its till summary. Amounts are in minor units; `expected_cash` is live while the shift
- * is open, and `variance` (counted - expected, negative when short) is set once it is closed.
+ * is open, and `variance` (counted - expected, negative when short) is set once it is closed. `auto_closed`
+ * means nobody counted the drawer: the system closed it at closing time because the cashier forgot to.
  *
  * @mixin CashShift
  */
@@ -28,6 +29,7 @@ class CashShiftResource extends JsonResource
         return [
             'id' => $this->id,
             'branch_id' => $this->branch_id,
+            'branch_name' => $this->whenLoaded('branch', fn () => $this->branch->name),
             'is_open' => $this->isOpen(),
             'opened_by' => ['id' => $this->opener->id, 'name' => $this->opener->name],
             'opened_at' => $this->opened_at->toIso8601String(),
@@ -43,6 +45,7 @@ class CashShiftResource extends JsonResource
             'counted_cash' => $this->counted_cash,
             'variance' => $this->variance,
             'close_note' => $this->close_note,
+            'auto_closed' => $this->auto_closed,
             'closed_by' => $this->closer === null ? null : ['id' => $this->closer->id, 'name' => $this->closer->name],
             'closed_at' => $this->closed_at?->toIso8601String(),
         ];

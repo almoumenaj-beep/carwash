@@ -5,6 +5,7 @@ class CashShift {
   const CashShift({
     required this.id,
     required this.branchId,
+    this.branchName,
     required this.isOpen,
     required this.openedBy,
     required this.openedAt,
@@ -19,12 +20,14 @@ class CashShift {
     required this.countedCash,
     required this.variance,
     required this.closeNote,
+    this.autoClosed = false,
     required this.closedAt,
   });
 
   factory CashShift.fromJson(Map<String, dynamic> json) => CashShift(
     id: json['id'] as String,
     branchId: json['branch_id'] as String,
+    branchName: json['branch_name'] as String?,
     isOpen: json['is_open'] as bool,
     openedBy: NamedRef.fromJson(json['opened_by'] as Map<String, dynamic>),
     openedAt: DateTime.parse(json['opened_at'] as String),
@@ -39,11 +42,13 @@ class CashShift {
     countedCash: json['counted_cash'] as int?,
     variance: json['variance'] as int?,
     closeNote: json['close_note'] as String?,
+    autoClosed: json['auto_closed'] as bool? ?? false,
     closedAt: json['closed_at'] == null ? null : DateTime.parse(json['closed_at'] as String),
   );
 
   final String id;
   final String branchId;
+  final String? branchName;
   final bool isOpen;
   final NamedRef openedBy;
   final DateTime openedAt;
@@ -70,5 +75,9 @@ class CashShift {
   final int? countedCash;
   final int? variance;
   final String? closeNote;
+
+  /// Closed by the system at closing time because the cashier forgot to; the drawer still needs a
+  /// real count.
+  final bool autoClosed;
   final DateTime? closedAt;
 }

@@ -136,8 +136,11 @@ class _OpenShiftFormState extends ConsumerState<_OpenShiftForm> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     final money = ref.watch(moneyFormatProvider);
     final invalid = _float.text.trim().isNotEmpty && money.parse(_float.text) == null;
+    final recent = ref.watch(recentShiftsProvider(widget.branchId)).value;
+    final needsReview = recent?.firstOrNull?.autoClosed ?? false;
 
     return ListView(
       padding: const EdgeInsets.all(24),
@@ -145,6 +148,16 @@ class _OpenShiftFormState extends ConsumerState<_OpenShiftForm> {
         const Icon(Icons.point_of_sale_outlined, size: 64),
         const SizedBox(height: 16),
         Text(l10n.noOpenShift, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
+        if (needsReview) ...[
+          const SizedBox(height: 16),
+          Card(
+            color: theme.colorScheme.errorContainer,
+            child: ListTile(
+              leading: Icon(Icons.schedule_outlined, color: theme.colorScheme.onErrorContainer),
+              title: Text(l10n.autoClosedShiftWarning, style: TextStyle(color: theme.colorScheme.onErrorContainer)),
+            ),
+          ),
+        ],
         const SizedBox(height: 24),
         _amountField(
           money,
