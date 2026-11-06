@@ -43,12 +43,14 @@ class InventoryRepository {
     return [for (final item in unwrapData<List>(response)) InventoryItem.fromJson(item as Map<String, dynamic>)];
   }
 
-  Future<void> saveItem(String? id, Map<String, dynamic> data) async {
-    await sendRequest(
+  /// Adds a material (no [id]) or changes one; returns it as saved.
+  Future<InventoryItem> saveItem(String? id, Map<String, dynamic> data) async {
+    final response = await sendRequest(
       () => id == null
           ? _dio.post<Map<String, dynamic>>('/inventory/items', data: data)
           : _dio.patch<Map<String, dynamic>>('/inventory/items/$id', data: data),
     );
+    return InventoryItem.fromJson(unwrapData(response));
   }
 
   /// Sets the branch's stock of the material to what was counted.
@@ -115,6 +117,11 @@ class InventoryRepository {
       () => _dio.get<Map<String, dynamic>>('/inventory/purchases', queryParameters: {'branch_id': ?branchId}),
     );
     return [for (final purchase in unwrapData<List>(response)) Purchase.fromJson(purchase as Map<String, dynamic>)];
+  }
+
+  /// Cancels a purchase recorded by mistake: its quantities leave the stock and its expense is removed.
+  Future<void> cancelPurchase(String id) async {
+    await sendRequest(() => _dio.post<Map<String, dynamic>>('/inventory/purchases/$id/cancel'));
   }
 
   Future<void> recordPurchase(Map<String, dynamic> data) async {

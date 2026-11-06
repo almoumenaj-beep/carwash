@@ -68,6 +68,7 @@ class Expense {
     required this.paymentMethod,
     required this.isRecurring,
     required this.createdBy,
+    this.source,
   });
 
   factory Expense.fromJson(Map<String, dynamic> json) => Expense(
@@ -81,12 +82,16 @@ class Expense {
     paymentMethod: ExpensePaymentMethod.fromApi(json['payment_method'] as String?),
     isRecurring: json['is_recurring'] as bool? ?? false,
     createdBy: NamedRef.fromJson(json['created_by'] as Map<String, dynamic>),
+    source: json['source'] as String?,
   );
 
   final String id;
   final String branchId;
   final NamedRef category;
   final NamedRef? supplier;
+
+  /// Where it was recorded from (`purchase`, `payroll`, `maintenance`), and so managed; null when recorded by itself.
+  final String? source;
   final int amount;
   final DateTime spentOn;
   final String? description;

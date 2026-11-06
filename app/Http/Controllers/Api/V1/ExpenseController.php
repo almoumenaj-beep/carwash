@@ -24,7 +24,7 @@ use Illuminate\Validation\Rule;
  */
 class ExpenseController extends Controller
 {
-    private const RELATIONS = ['category', 'supplier', 'creator'];
+    private const RELATIONS = ['category', 'supplier', 'creator', 'purchase', 'payrollRun', 'maintenance'];
 
     /**
      * Expenses of a branch (or of every branch the user works in), newest first: those spent between

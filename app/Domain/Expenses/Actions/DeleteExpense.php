@@ -10,7 +10,8 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Deletes an expense recorded by mistake. Cash taken from a drawer whose shift is closed stays, since
- * the shift's count already relies on it.
+ * the shift's count already relies on it. An expense that is the money side of a purchase, payroll or
+ * maintenance is managed from there, or the two would disagree.
  */
 class DeleteExpense
 {
@@ -20,6 +21,22 @@ class DeleteExpense
      * @throws ValidationException
      */
     public function handle(User $actor, Expense $expense): void
+    {
+        if ($expense->source() !== null) {
+            throw ValidationException::withMessages(['expense' => __($expense->source() === 'purchase'
+                ? 'This expense came from an inventory purchase. Cancel the purchase from the inventory.'
+                : 'This expense came from payroll or maintenance and cannot be deleted here.')]);
+        }
+
+        $this->remove($actor, $expense);
+    }
+
+    /**
+     * Removes the expense, for whatever owns it to call when it goes.
+     *
+     * @throws ValidationException
+     */
+    public function remove(User $actor, Expense $expense): void
     {
         if ($expense->cash_shift_id !== null && ! $expense->cashShift->isOpen()) {
             throw ValidationException::withMessages(['expense' => __('This expense was counted in a closed shift and cannot be deleted.')]);

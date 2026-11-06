@@ -94,6 +94,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('inventory/movements', [InventoryController::class, 'movements'])->name('inventory.movements.index');
         Route::get('inventory/purchases', [PurchaseController::class, 'index'])->name('inventory.purchases.index');
         Route::post('inventory/purchases', [PurchaseController::class, 'store'])->name('inventory.purchases.store');
+        Route::post('inventory/purchases/{purchase}/cancel', [PurchaseController::class, 'cancel'])->name('inventory.purchases.cancel');
         Route::get('appointments', [AppointmentController::class, 'index'])->name('appointments.index');
         Route::get('appointments/slots', [AppointmentController::class, 'slots'])->name('appointments.slots');
         Route::post('appointments', [AppointmentController::class, 'store'])->name('appointments.store');

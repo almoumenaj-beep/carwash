@@ -91,12 +91,14 @@ class ExpensesRepository {
     return [for (final supplier in unwrapData<List>(response)) Supplier.fromJson(supplier as Map<String, dynamic>)];
   }
 
-  Future<void> saveSupplier(String? id, Map<String, dynamic> data) async {
-    await sendRequest(
+  /// Adds a supplier (no [id]) or changes one; returns it as saved.
+  Future<Supplier> saveSupplier(String? id, Map<String, dynamic> data) async {
+    final response = await sendRequest(
       () => id == null
           ? _dio.post<Map<String, dynamic>>('/suppliers', data: data)
           : _dio.patch<Map<String, dynamic>>('/suppliers/$id', data: data),
     );
+    return Supplier.fromJson(unwrapData(response));
   }
 
   Future<List<RecurringExpense>> recurring() async {

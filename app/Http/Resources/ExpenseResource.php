@@ -32,6 +32,7 @@ class ExpenseResource extends JsonResource
             'payment_method' => $this->payment_method,
             'paid_at' => $this->paid_at?->toIso8601String(),
             'is_recurring' => $this->recurring_expense_id !== null,
+            'source' => $this->source(),
             'created_by' => ['id' => $this->creator->id, 'name' => $this->creator->name],
         ];
     }

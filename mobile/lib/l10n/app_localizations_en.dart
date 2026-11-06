@@ -1797,4 +1797,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String issueCancelledBy(String name) {
     return 'Cancelled by $name';
   }
+
+  @override
+  String get movementCancellation => 'Purchase cancelled';
+
+  @override
+  String get cancelPurchase => 'Cancel purchase';
+
+  @override
+  String get cancelPurchaseConfirm =>
+      'This purchase\'s quantities leave the stock and its expense is removed. The purchase stays listed as cancelled.';
+
+  @override
+  String get newSupplierButton => 'New supplier';
+
+  @override
+  String get newMaterialButton => 'New material';
+
+  @override
+  String get sourcePurchase => 'Inventory purchase';
+
+  @override
+  String get sourcePayroll => 'Payroll';
+
+  @override
+  String get sourceMaintenance => 'Maintenance';
+
+  @override
+  String get materialsExpenseTitle => 'Are these materials for the stock?';
+
+  @override
+  String get materialsExpenseHint =>
+      'Record them from Inventory → New purchase: the stock goes up and the expense is recorded for you. Recording them here does not raise the stock, and recording them in both counts them twice.';
+
+  @override
+  String get openInventory => 'Open inventory';
 }

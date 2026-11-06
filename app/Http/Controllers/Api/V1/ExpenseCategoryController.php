@@ -21,9 +21,12 @@ class ExpenseCategoryController extends Controller
 {
     public function __construct(private AuditTrail $auditTrail) {}
 
+    /**
+     * Also read by staff recording purchases, which are filed under a category.
+     */
     public function index(): JsonResponse
     {
-        Gate::authorize(Permission::ExpensesView->value);
+        abort_unless(Gate::any([Permission::ExpensesView->value, Permission::InventoryPurchase->value]), Response::HTTP_FORBIDDEN);
 
         return response()->json(['data' => ExpenseCategory::query()->orderBy('sort_order')->orderBy('name')->get()->map($this->present(...))]);
     }

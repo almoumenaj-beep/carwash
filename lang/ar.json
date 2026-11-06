@@ -90,6 +90,10 @@
     "Choose an active staff member of this branch.": "اختر موظفاً نشطاً في هذا الفرع.",
     "Only materials issued to staff can be cancelled.": "يمكن إلغاء صرف المواد للموظفين فقط.",
     "This issue was already cancelled.": "هذا الصرف أُلغي من قبل.",
+    "This purchase was already cancelled.": "هذا الشراء أُلغي من قبل.",
+    "Part of :name from this purchase was already used. Correct it with a stock count.": "صُرف جزء من :name من هذا الشراء، فلا يمكن إلغاؤه. صحّح الكمية بعملية جرد.",
+    "This expense came from an inventory purchase. Cancel the purchase from the inventory.": "هذا المصروف من مشتريات المخزون. ألغِ الشراء من قسم المخزون.",
+    "This expense came from payroll or maintenance and cannot be deleted here.": "هذا المصروف من الرواتب أو الصيانة ولا يُحذف من هنا.",
     "Enter the customer's phone so the car wash can reach them.": "اكتب جوال العميل للتواصل معه.",
     "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."

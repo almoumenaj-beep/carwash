@@ -988,5 +988,16 @@
         "type": "String"
       }
     }
-  }
+  },
+  "movementCancellation": "Purchase cancelled",
+  "cancelPurchase": "Cancel purchase",
+  "cancelPurchaseConfirm": "This purchase's quantities leave the stock and its expense is removed. The purchase stays listed as cancelled.",
+  "newSupplierButton": "New supplier",
+  "newMaterialButton": "New material",
+  "sourcePurchase": "Inventory purchase",
+  "sourcePayroll": "Payroll",
+  "sourceMaintenance": "Maintenance",
+  "materialsExpenseTitle": "Are these materials for the stock?",
+  "materialsExpenseHint": "Record them from Inventory → New purchase: the stock goes up and the expense is recorded for you. Recording them here does not raise the stock, and recording them in both counts them twice.",
+  "openInventory": "Open inventory"
 }

@@ -44,7 +44,8 @@ enum StockMovementReason {
   consumption,
   count,
   issue,
-  reversal;
+  reversal,
+  cancellation;
 
   static StockMovementReason fromApi(String value) => values.firstWhere((reason) => reason.name == value);
 }
@@ -100,6 +101,8 @@ class Purchase {
     required this.total,
     required this.isPaid,
     required this.lines,
+    this.isCancelled = false,
+    this.cancelledBy,
   });
 
   factory Purchase.fromJson(Map<String, dynamic> json) => Purchase(
@@ -108,6 +111,8 @@ class Purchase {
     purchasedOn: DateTime.parse(json['purchased_on'] as String),
     total: json['total'] as int,
     isPaid: json['is_paid'] as bool,
+    isCancelled: json['is_cancelled'] as bool? ?? false,
+    cancelledBy: json['cancelled_by'] as String?,
     lines: [
       for (final line in json['lines'] as List)
         (
@@ -127,6 +132,10 @@ class Purchase {
 
   /// False while it is owed to the supplier.
   final bool isPaid;
+
+  /// Recorded by mistake: its quantities and expense were taken back.
+  final bool isCancelled;
+  final String? cancelledBy;
   final List<({String name, String unit, double quantity, int unitCost, int lineTotal})> lines;
 }
 

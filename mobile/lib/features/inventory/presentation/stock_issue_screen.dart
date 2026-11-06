@@ -177,32 +177,36 @@ class _StockIssueScreenState extends ConsumerState<StockIssueScreen> {
           ),
           const SizedBox(height: 16),
           if (remaining.isNotEmpty) ...[
-            DropdownButtonFormField<String>(
-              // Rebuilt as the list changes, so it empties after each material is added.
-              key: ValueKey('material-$branchId-${_lines.length}'),
-              initialValue: _materialId,
-              isExpanded: true,
-              decoration: InputDecoration(
-                labelText: l10n.materialField,
-                prefixIcon: const Icon(Icons.inventory_2_outlined),
-              ),
-              items: [
-                for (final item in remaining)
-                  DropdownMenuItem(
-                    value: item.id,
-                    child: Text('${item.name} (${formatQuantity(item.quantity)} ${item.unit})'),
-                  ),
-              ],
-              onChanged: (id) => setState(() {
-                _materialId = id;
-                _error = null;
-              }),
-            ),
-            const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
+                  flex: 3,
+                  child: DropdownButtonFormField<String>(
+                    // Rebuilt as the list changes, so it empties after each material is added.
+                    key: ValueKey('material-$branchId-${_lines.length}'),
+                    initialValue: _materialId,
+                    isExpanded: true,
+                    decoration: InputDecoration(labelText: l10n.materialField),
+                    items: [
+                      for (final item in remaining)
+                        DropdownMenuItem(
+                          value: item.id,
+                          child: Text(
+                            '${item.name} (${formatQuantity(item.quantity)} ${item.unit})',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    onChanged: (id) => setState(() {
+                      _materialId = id;
+                      _error = null;
+                    }),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
                   child: TextField(
                     controller: _quantity,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -210,22 +214,19 @@ class _StockIssueScreenState extends ConsumerState<StockIssueScreen> {
                       labelText: l10n.quantityField,
                       suffixText: chosen?.unit,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      helperText: chosen == null
-                          ? null
-                          : l10n.availableQuantity('${formatQuantity(chosen.quantity)} ${chosen.unit}'),
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: FilledButton.tonalIcon(
-                    onPressed: () => _addLine(remaining),
-                    icon: const Icon(Icons.add),
-                    label: Text(l10n.addMaterialLine),
-                  ),
-                ),
               ],
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: FilledButton.tonalIcon(
+                onPressed: () => _addLine(remaining),
+                icon: const Icon(Icons.add),
+                label: Text(l10n.addMaterialLine),
+              ),
             ),
           ],
           if (_error != null)

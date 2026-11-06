@@ -3313,6 +3313,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancelled by {name}'**
   String issueCancelledBy(String name);
+
+  /// No description provided for @movementCancellation.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase cancelled'**
+  String get movementCancellation;
+
+  /// No description provided for @cancelPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel purchase'**
+  String get cancelPurchase;
+
+  /// No description provided for @cancelPurchaseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This purchase\'s quantities leave the stock and its expense is removed. The purchase stays listed as cancelled.'**
+  String get cancelPurchaseConfirm;
+
+  /// No description provided for @newSupplierButton.
+  ///
+  /// In en, this message translates to:
+  /// **'New supplier'**
+  String get newSupplierButton;
+
+  /// No description provided for @newMaterialButton.
+  ///
+  /// In en, this message translates to:
+  /// **'New material'**
+  String get newMaterialButton;
+
+  /// No description provided for @sourcePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory purchase'**
+  String get sourcePurchase;
+
+  /// No description provided for @sourcePayroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Payroll'**
+  String get sourcePayroll;
+
+  /// No description provided for @sourceMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Maintenance'**
+  String get sourceMaintenance;
+
+  /// No description provided for @materialsExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Are these materials for the stock?'**
+  String get materialsExpenseTitle;
+
+  /// No description provided for @materialsExpenseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Record them from Inventory → New purchase: the stock goes up and the expense is recorded for you. Recording them here does not raise the stock, and recording them in both counts them twice.'**
+  String get materialsExpenseHint;
+
+  /// No description provided for @openInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Open inventory'**
+  String get openInventory;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

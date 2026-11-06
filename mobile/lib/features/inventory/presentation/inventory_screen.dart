@@ -195,6 +195,7 @@ String reasonLabel(AppLocalizations l10n, StockMovementReason reason) => switch 
   StockMovementReason.count => l10n.movementCount,
   StockMovementReason.issue => l10n.movementIssue,
   StockMovementReason.reversal => l10n.movementReversal,
+  StockMovementReason.cancellation => l10n.movementCancellation,
 };
 
 /// A material at the branch: its stock, a stock count, and its latest movements.
@@ -635,10 +636,44 @@ class _Purchases extends ConsumerWidget {
 
   final String branchId;
 
+  /// Asks first, since it changes the stock and the expenses.
+  Future<void> _cancel(BuildContext context, WidgetRef ref, Purchase purchase) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialog) => AlertDialog(
+        title: Text(l10n.cancelPurchase),
+        content: Text(l10n.cancelPurchaseConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.back)),
+          FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.cancelPurchase)),
+        ],
+      ),
+    );
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      await ref.read(inventoryRepositoryProvider).cancelPurchase(purchase.id);
+      ref.invalidate(purchasesProvider);
+      ref.invalidate(inventoryItemsProvider);
+      ref.invalidate(stockMovementsProvider);
+    } catch (error, stackTrace) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final money = ref.watch(moneyFormatProvider);
+
+    final me = ref.watch(sessionProvider).value;
+    final canCancel = me?.can(Permissions.inventoryPurchase) ?? false;
+    final canCancelPaid = canCancel && (me?.can(Permissions.expensesApprove) ?? false);
 
     return switch (ref.watch(purchasesProvider(branchId))) {
       AsyncData(:final value) when value.isEmpty => Center(child: Text(l10n.noPurchases)),
@@ -650,8 +685,8 @@ class _Purchases extends ConsumerWidget {
             for (final purchase in value)
               ExpansionTile(
                 leading: Icon(
-                  purchase.isPaid ? Icons.receipt_outlined : Icons.schedule,
-                  color: purchase.isPaid ? null : Theme.of(context).colorScheme.error,
+                  purchase.isCancelled ? Icons.block : (purchase.isPaid ? Icons.receipt_outlined : Icons.schedule),
+                  color: purchase.isPaid || purchase.isCancelled ? null : Theme.of(context).colorScheme.error,
                 ),
                 // What was bought names the row: the supplier alone does not tell two purchases apart.
                 title: Text(
@@ -660,12 +695,22 @@ class _Purchases extends ConsumerWidget {
                       .join('، '),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
+                  style: purchase.isCancelled
+                      ? TextStyle(decoration: TextDecoration.lineThrough, color: Theme.of(context).disabledColor)
+                      : null,
                 ),
                 subtitle: Text(
                   [
                     MaterialLocalizations.of(context).formatMediumDate(purchase.purchasedOn),
                     l10n.supplierLabel(purchase.supplierName ?? l10n.noSupplier),
-                    if (purchase.isPaid) l10n.paidBadge else l10n.notPaidYet,
+                    if (purchase.isCancelled)
+                      purchase.cancelledBy == null
+                          ? l10n.appointmentCancelled
+                          : l10n.issueCancelledBy(purchase.cancelledBy!)
+                    else if (purchase.isPaid)
+                      l10n.paidBadge
+                    else
+                      l10n.notPaidYet,
                   ].join(' · '),
                 ),
                 trailing: Text(money.format(purchase.total)),
@@ -676,6 +721,15 @@ class _Purchases extends ConsumerWidget {
                       title: Text(line.name),
                       subtitle: Text('${formatQuantity(line.quantity)} ${line.unit} × ${money.format(line.unitCost)}'),
                       trailing: Text(money.format(line.lineTotal)),
+                    ),
+                  if (!purchase.isCancelled && (purchase.isPaid ? canCancelPaid : canCancel))
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: TextButton.icon(
+                        onPressed: () => _cancel(context, ref, purchase),
+                        icon: const Icon(Icons.undo),
+                        label: Text(l10n.cancelPurchase),
+                      ),
                     ),
                 ],
               ),

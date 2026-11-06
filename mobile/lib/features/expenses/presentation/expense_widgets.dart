@@ -22,6 +22,12 @@ String frequencyLabel(AppLocalizations l10n, RecurrenceFrequency frequency) => s
   RecurrenceFrequency.yearly => l10n.frequencyYearly,
 };
 
+/// The default category for materials ("Cleaning supplies" or the Arabic default), if the car wash still has one.
+ExpenseCategory? materialsCategory(List<ExpenseCategory> categories) =>
+    categories.where((category) => isMaterialsCategory(category.name)).firstOrNull;
+
+bool isMaterialsCategory(String name) => name.contains('مواد') || name.toLowerCase().contains('suppl');
+
 /// The message to show for a failed change: the first field error, or the general one.
 String changeError(BuildContext context, Object error, StackTrace stackTrace) {
   final problem = ApiProblem.from(error, stackTrace);

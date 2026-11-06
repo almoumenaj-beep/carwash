@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../auth/application/session_controller.dart';
 import '../../expenses/data/expenses_repository.dart';
 import '../../expenses/domain/expense.dart';
 import '../../expenses/presentation/expense_widgets.dart';
@@ -23,14 +25,17 @@ class PurchaseEditorScreen extends ConsumerWidget {
     final suppliers = ref.watch(suppliersProvider);
     final categories = ref.watch(expenseCategoriesProvider);
 
+    // While a list reloads after something was added from the form, the form stays up with what was typed in it.
+    if (items.hasValue && suppliers.hasValue && categories.hasValue) {
+      return _PurchaseForm(
+        branchId: branchId,
+        items: items.requireValue.where((item) => item.isActive).toList(),
+        suppliers: suppliers.requireValue.where((supplier) => supplier.isActive).toList(),
+        categories: categories.requireValue.where((category) => category.isActive).toList(),
+      );
+    }
+
     return switch ((items, suppliers, categories)) {
-      (AsyncData(value: final items), AsyncData(value: final suppliers), AsyncData(value: final categories)) =>
-        _PurchaseForm(
-          branchId: branchId,
-          items: items.where((item) => item.isActive).toList(),
-          suppliers: suppliers.where((supplier) => supplier.isActive).toList(),
-          categories: categories.where((category) => category.isActive).toList(),
-        ),
       (AsyncError(:final error), _, _) ||
       (_, AsyncError(:final error), _) ||
       (_, _, AsyncError(:final error)) => Scaffold(
@@ -84,7 +89,11 @@ class _PurchaseFormState extends ConsumerState<_PurchaseForm> {
   final List<_Line> _lines = [];
   final _note = TextEditingController();
   String? _supplierId;
-  late String? _categoryId = widget.categories.firstOrNull?.id;
+  late String? _categoryId = materialsCategory(widget.categories)?.id ?? widget.categories.firstOrNull?.id;
+
+  /// Suppliers added from this form, until the list reloads with them.
+  final List<Supplier> _addedSuppliers = [];
+  int _supplierFieldVersion = 0;
 
   /// Null records the purchase as owed to the supplier.
   ExpensePaymentMethod? _method;
@@ -98,6 +107,67 @@ class _PurchaseFormState extends ConsumerState<_PurchaseForm> {
     }
     _note.dispose();
     super.dispose();
+  }
+
+  List<Supplier> get _suppliers => [
+    ...widget.suppliers,
+    ..._addedSuppliers.where((added) => !widget.suppliers.any((supplier) => supplier.id == added.id)),
+  ];
+
+  /// Adds a supplier by name and phone, and chooses it.
+  Future<void> _newSupplier() async {
+    final l10n = AppLocalizations.of(context);
+    final answer = await showDialog<(String, String)>(
+      context: context,
+      builder: (_) => _QuickAddDialog(title: l10n.addSupplier, secondLabel: l10n.phoneField, secondRequired: false),
+    );
+    if (answer == null || !mounted) {
+      return;
+    }
+
+    try {
+      final supplier = await ref.read(expensesRepositoryProvider).saveSupplier(null, {
+        'name': answer.$1,
+        'phone': answer.$2.isEmpty ? null : answer.$2,
+        'is_active': true,
+      });
+      ref.invalidate(suppliersProvider);
+      setState(() {
+        _addedSuppliers.add(supplier);
+        _supplierId = supplier.id;
+        _supplierFieldVersion++;
+      });
+    } catch (error, stackTrace) {
+      if (mounted) {
+        setState(() => _error = changeError(context, error, stackTrace));
+      }
+    }
+  }
+
+  /// Adds a material bought for the first time, and a line for it.
+  Future<void> _newMaterial() async {
+    final l10n = AppLocalizations.of(context);
+    final answer = await showDialog<(String, String)>(
+      context: context,
+      builder: (_) => _QuickAddDialog(title: l10n.addMaterial, secondLabel: l10n.unitField, secondHint: l10n.unitHint),
+    );
+    if (answer == null || !mounted) {
+      return;
+    }
+
+    try {
+      final item = await ref.read(inventoryRepositoryProvider).saveItem(null, {
+        'name': answer.$1,
+        'unit': answer.$2,
+        'is_active': true,
+      });
+      ref.invalidate(inventoryItemsProvider);
+      _addLine(item);
+    } catch (error, stackTrace) {
+      if (mounted) {
+        setState(() => _error = changeError(context, error, stackTrace));
+      }
+    }
   }
 
   void _addLine(InventoryItem item) {
@@ -176,13 +246,22 @@ class _PurchaseFormState extends ConsumerState<_PurchaseForm> {
         padding: const EdgeInsets.all(16),
         children: [
           DropdownButtonFormField<String?>(
+            key: ValueKey(_supplierFieldVersion),
             initialValue: _supplierId,
             decoration: InputDecoration(labelText: l10n.supplierField),
             items: [
               DropdownMenuItem(value: null, child: Text(l10n.noSupplier)),
-              for (final supplier in widget.suppliers) DropdownMenuItem(value: supplier.id, child: Text(supplier.name)),
+              for (final supplier in _suppliers) DropdownMenuItem(value: supplier.id, child: Text(supplier.name)),
             ],
             onChanged: (id) => setState(() => _supplierId = id),
+          ),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: _newSupplier,
+              icon: const Icon(Icons.add),
+              label: Text(l10n.newSupplierButton),
+            ),
           ),
           const SizedBox(height: 16),
           Text(l10n.materialsSection, style: theme.textTheme.titleSmall),
@@ -226,27 +305,38 @@ class _PurchaseFormState extends ConsumerState<_PurchaseForm> {
                 ],
               ),
             ),
-          if (available.isNotEmpty)
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: PopupMenuButton<InventoryItem>(
-                onSelected: _addLine,
-                itemBuilder: (_) => [for (final item in available) PopupMenuItem(value: item, child: Text(item.name))],
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.add, color: theme.colorScheme.primary),
-                      const SizedBox(width: 8),
-                      Text(l10n.addMaterialLine, style: TextStyle(color: theme.colorScheme.primary)),
-                    ],
+          if (widget.items.isEmpty && _lines.isEmpty)
+            Padding(padding: const EdgeInsets.only(top: 12), child: Text(l10n.noMaterials)),
+          Wrap(
+            spacing: 16,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              if (available.isNotEmpty)
+                PopupMenuButton<InventoryItem>(
+                  onSelected: _addLine,
+                  itemBuilder: (_) => [
+                    for (final item in available) PopupMenuItem(value: item, child: Text(item.name)),
+                  ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add, color: theme.colorScheme.primary),
+                        const SizedBox(width: 8),
+                        Text(l10n.addMaterialLine, style: TextStyle(color: theme.colorScheme.primary)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            )
-          else if (widget.items.isEmpty)
-            Padding(padding: const EdgeInsets.symmetric(vertical: 12), child: Text(l10n.noMaterials)),
+              if (ref.watch(sessionProvider).value?.can(Permissions.inventoryAdjust) ?? false)
+                TextButton.icon(
+                  onPressed: _newMaterial,
+                  icon: const Icon(Icons.fiber_new_outlined),
+                  label: Text(l10n.newMaterialButton),
+                ),
+            ],
+          ),
           const Divider(height: 24),
           Text(l10n.paymentMethodField, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
@@ -304,6 +394,75 @@ class _PurchaseFormState extends ConsumerState<_PurchaseForm> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Asks for a name and one more detail, without leaving the purchase; pops with both, trimmed.
+class _QuickAddDialog extends StatefulWidget {
+  const _QuickAddDialog({required this.title, required this.secondLabel, this.secondHint, this.secondRequired = true});
+
+  final String title;
+  final String secondLabel;
+  final String? secondHint;
+  final bool secondRequired;
+
+  @override
+  State<_QuickAddDialog> createState() => _QuickAddDialogState();
+}
+
+class _QuickAddDialogState extends State<_QuickAddDialog> {
+  final _name = TextEditingController();
+  final _second = TextEditingController();
+  bool _missing = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _second.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    final name = _name.text.trim();
+    final second = _second.text.trim();
+    if (name.isEmpty || (widget.secondRequired && second.isEmpty)) {
+      setState(() => _missing = true);
+      return;
+    }
+    Navigator.of(context).pop((name, second));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return AlertDialog(
+      title: Text(widget.title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _name,
+            autofocus: true,
+            decoration: InputDecoration(labelText: l10n.nameField),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _second,
+            decoration: InputDecoration(labelText: widget.secondLabel, hintText: widget.secondHint),
+          ),
+          if (_missing)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(l10n.fieldRequired, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+        FilledButton(onPressed: _save, child: Text(l10n.save)),
+      ],
     );
   }
 }

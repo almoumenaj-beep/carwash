@@ -142,7 +142,13 @@ class ExpenseApiTest extends TestCase
 
         Sanctum::actingAs($this->manager);
         $this->getJson("/api/v1/expenses?branch_id={$this->otherBranch->id}")->assertForbidden();
-        $this->postJson('/api/v1/suppliers', ['name' => 'X'])->assertForbidden();
+
+        // Managers record purchases, so they may add a supplier, but not change the existing ones.
+        $supplierId = $this->postJson('/api/v1/suppliers', ['name' => 'X'])->assertCreated()->json('data.id');
+        $this->patchJson("/api/v1/suppliers/{$supplierId}", ['name' => 'Y'])->assertForbidden();
+
+        Sanctum::actingAs($this->cashier);
+        $this->postJson('/api/v1/suppliers', ['name' => 'Z'])->assertForbidden();
     }
 
     public function test_categories_in_use_are_deactivated_not_deleted(): void

@@ -14,7 +14,8 @@ class SaveSupplierRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can(Permission::ExpensesApprove->value);
+        return $this->user()->can(Permission::ExpensesApprove->value)
+            || ($this->isMethod('post') && $this->user()->can(Permission::InventoryPurchase->value));
     }
 
     /**

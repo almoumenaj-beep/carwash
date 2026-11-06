@@ -536,5 +536,16 @@
   "movementReversal": "إلغاء صرف",
   "cancelIssueTitle": "إلغاء الصرف",
   "cancelIssueConfirm": "إلغاء صرف {what}؟ تعود الكمية إلى المخزون، ويبقى الصرف في السجل كملغى.",
-  "issueCancelledBy": "ألغاه {name}"
+  "issueCancelledBy": "ألغاه {name}",
+  "movementCancellation": "إلغاء شراء",
+  "cancelPurchase": "إلغاء الشراء",
+  "cancelPurchaseConfirm": "تُخصم كميات هذا الشراء من المخزون ويُحذف مصروفه من المصروفات، ويبقى الشراء في القائمة كملغى.",
+  "newSupplierButton": "مورد جديد",
+  "newMaterialButton": "مادة جديدة",
+  "sourcePurchase": "مشتريات مخزون",
+  "sourcePayroll": "رواتب",
+  "sourceMaintenance": "صيانة",
+  "materialsExpenseTitle": "هل هذه مواد للمخزون؟",
+  "materialsExpenseHint": "سجّلها من المخزون ← مشتريات جديدة، فتزيد الكمية ويُسجَّل المصروف تلقائياً. تسجيلها هنا لا يزيد المخزون، وتسجيلها في المكانين يحسبها مرتين.",
+  "openInventory": "فتح المخزون"
 }

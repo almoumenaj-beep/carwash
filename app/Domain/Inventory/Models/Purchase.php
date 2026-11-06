@@ -27,6 +27,7 @@ class Purchase extends Model
     {
         return [
             'purchased_on' => 'immutable_date',
+            'cancelled_at' => 'immutable_datetime',
             'total' => 'integer',
         ];
     }
@@ -53,6 +54,19 @@ class Purchase extends Model
     public function expense(): BelongsTo
     {
         return $this->belongsTo(Expense::class);
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->cancelled_at !== null;
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function canceller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
     }
 
     /**

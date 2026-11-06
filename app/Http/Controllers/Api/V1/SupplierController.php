@@ -20,9 +20,12 @@ class SupplierController extends Controller
 {
     public function __construct(private AuditTrail $auditTrail) {}
 
+    /**
+     * Also read by staff recording purchases, who choose the supplier but do not see what is owed.
+     */
     public function index(): JsonResponse
     {
-        Gate::authorize(Permission::ExpensesView->value);
+        abort_unless(Gate::any([Permission::ExpensesView->value, Permission::InventoryPurchase->value]), Response::HTTP_FORBIDDEN);
 
         $suppliers = Supplier::query()
             ->withSum(['expenses as owed' => fn (Builder $query) => $query->whereNull('paid_at')], 'amount')
@@ -59,7 +62,9 @@ class SupplierController extends Controller
             'phone' => $supplier->phone,
             'notes' => $supplier->notes,
             'is_active' => $supplier->is_active,
-            'owed' => (int) ($supplier->owed ?? $supplier->expenses()->whereNull('paid_at')->sum('amount')),
+            'owed' => Gate::allows(Permission::ExpensesView->value)
+                ? (int) ($supplier->owed ?? $supplier->expenses()->whereNull('paid_at')->sum('amount'))
+                : 0,
         ];
     }
 }

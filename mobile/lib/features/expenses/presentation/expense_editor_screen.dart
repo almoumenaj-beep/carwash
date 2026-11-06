@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
@@ -25,12 +26,16 @@ class ExpenseEditorScreen extends ConsumerWidget {
     final categories = ref.watch(expenseCategoriesProvider);
     final suppliers = ref.watch(suppliersProvider);
 
-    return switch ((categories, suppliers)) {
-      (AsyncData(value: final categories), AsyncData(value: final suppliers)) => _ExpenseForm(
+    // While a list reloads after a category was added from the form, the form stays up with what was typed in it.
+    if (categories.hasValue && suppliers.hasValue) {
+      return _ExpenseForm(
         branchId: branchId,
-        categories: categories.where((category) => category.isActive).toList(),
-        suppliers: suppliers.where((supplier) => supplier.isActive).toList(),
-      ),
+        categories: categories.requireValue.where((category) => category.isActive).toList(),
+        suppliers: suppliers.requireValue.where((supplier) => supplier.isActive).toList(),
+      );
+    }
+
+    return switch ((categories, suppliers)) {
       (AsyncError(:final error), _) || (_, AsyncError(:final error)) => Scaffold(
         appBar: AppBar(),
         body: ErrorView(
@@ -155,6 +160,7 @@ class _ExpenseFormState extends ConsumerState<_ExpenseForm> {
     final branch = branches.where((branch) => branch.id == _branchId).firstOrNull ?? branches.firstOrNull;
     final fromDrawer = _method == ExpensePaymentMethod.cashDrawer;
     final canAddCategory = ref.watch(sessionProvider).value?.can(Permissions.expensesApprove) ?? false;
+    final canPurchase = ref.watch(sessionProvider).value?.can(Permissions.inventoryPurchase) ?? false;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.newExpense)),
@@ -194,6 +200,31 @@ class _ExpenseFormState extends ConsumerState<_ExpenseForm> {
               validator: (value) => value == null || value == _newCategory ? l10n.fieldRequired : null,
               onChanged: (id) => id == _newCategory ? _addCategory() : setState(() => _categoryId = id),
             ),
+            if (canPurchase &&
+                _categories.any((category) => category.id == _categoryId && isMaterialsCategory(category.name)))
+              Card(
+                margin: const EdgeInsets.only(top: 12),
+                color: theme.colorScheme.secondaryContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(l10n.materialsExpenseTitle, style: theme.textTheme.titleSmall),
+                      const SizedBox(height: 4),
+                      Text(l10n.materialsExpenseHint),
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: TextButton.icon(
+                          onPressed: () => context.push('/inventory'),
+                          icon: const Icon(Icons.inventory_2_outlined),
+                          label: Text(l10n.openInventory),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             const SizedBox(height: 12),
             AmountField(controller: _amount, label: l10n.amountField),
             const SizedBox(height: 16),

@@ -1845,4 +1845,39 @@ class AppLocalizationsAr extends AppLocalizations {
   String issueCancelledBy(String name) {
     return 'ألغاه $name';
   }
+
+  @override
+  String get movementCancellation => 'إلغاء شراء';
+
+  @override
+  String get cancelPurchase => 'إلغاء الشراء';
+
+  @override
+  String get cancelPurchaseConfirm =>
+      'تُخصم كميات هذا الشراء من المخزون ويُحذف مصروفه من المصروفات، ويبقى الشراء في القائمة كملغى.';
+
+  @override
+  String get newSupplierButton => 'مورد جديد';
+
+  @override
+  String get newMaterialButton => 'مادة جديدة';
+
+  @override
+  String get sourcePurchase => 'مشتريات مخزون';
+
+  @override
+  String get sourcePayroll => 'رواتب';
+
+  @override
+  String get sourceMaintenance => 'صيانة';
+
+  @override
+  String get materialsExpenseTitle => 'هل هذه مواد للمخزون؟';
+
+  @override
+  String get materialsExpenseHint =>
+      'سجّلها من المخزون ← مشتريات جديدة، فتزيد الكمية ويُسجَّل المصروف تلقائياً. تسجيلها هنا لا يزيد المخزون، وتسجيلها في المكانين يحسبها مرتين.';
+
+  @override
+  String get openInventory => 'فتح المخزون';
 }

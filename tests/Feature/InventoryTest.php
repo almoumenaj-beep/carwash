@@ -290,6 +290,102 @@ class InventoryTest extends TestCase
         $this->getJson("/api/v1/inventory/items?branch_id={$this->branch->id}")->assertJsonFragment(['name' => 'Shampoo', 'quantity' => 9]);
     }
 
+    public function test_a_purchase_expense_is_managed_from_the_inventory_not_deleted_from_the_expenses(): void
+    {
+        $this->purchase(['payment_method' => 'cash'])->assertCreated();
+        $expense = $this->inTenant(fn () => Expense::query()->sole());
+
+        Sanctum::actingAs($this->owner);
+        $this->getJson('/api/v1/expenses')->assertJsonPath('data.0.source', 'purchase');
+        $this->deleteJson("/api/v1/expenses/{$expense->id}")->assertUnprocessable()->assertJsonValidationErrors('expense');
+
+        $this->assertSame(1, $this->inTenant(fn () => Expense::query()->count()));
+    }
+
+    public function test_cancelling_a_purchase_takes_the_stock_and_expense_back_and_keeps_it_listed(): void
+    {
+        $purchaseId = $this->purchase()->json('data.id');
+        Sanctum::actingAs($this->keeper);
+
+        $this->postJson("/api/v1/inventory/purchases/{$purchaseId}/cancel")
+            ->assertOk()
+            ->assertJsonPath('data.is_cancelled', true)
+            ->assertJsonPath('data.cancelled_by', $this->keeper->name);
+
+        $stock = $this->stockByName($this->branch->id);
+        $this->assertEquals(0, $stock['Shampoo']['quantity']);
+        $this->assertEquals(0, $stock['Towels']['quantity']);
+        $this->assertSame(0, $this->inTenant(fn () => Expense::query()->count()));
+
+        $this->getJson("/api/v1/inventory/purchases?branch_id={$this->branch->id}")->assertJsonPath('data.0.is_cancelled', true);
+        $this->getJson("/api/v1/inventory/movements?branch_id={$this->branch->id}&inventory_item_id={$this->shampoo->id}")
+            ->assertJsonPath('data.0.reason', 'cancellation')
+            ->assertJsonPath('data.0.change', -10);
+        $this->assertDatabaseHas('activity_log', ['event' => 'purchase.cancelled', 'tenant_id' => $this->tenant->id]);
+
+        $this->postJson("/api/v1/inventory/purchases/{$purchaseId}/cancel")->assertUnprocessable()->assertJsonValidationErrors('purchase');
+    }
+
+    public function test_a_purchase_partly_used_cannot_be_cancelled_and_nothing_changes(): void
+    {
+        $purchaseId = $this->purchase()->json('data.id');
+        $this->issue([[$this->towels, 1]])->assertCreated();
+
+        $this->postJson("/api/v1/inventory/purchases/{$purchaseId}/cancel")->assertUnprocessable()->assertJsonValidationErrors('purchase');
+
+        $stock = $this->stockByName($this->branch->id);
+        $this->assertEquals(10, $stock['Shampoo']['quantity']);
+        $this->assertEquals(99, $stock['Towels']['quantity']);
+        $this->assertSame(1, $this->inTenant(fn () => Expense::query()->count()));
+    }
+
+    public function test_cancelling_a_purchase_returns_the_cost_to_the_last_one_standing(): void
+    {
+        $this->purchase()->assertCreated();
+        $mistakeId = $this->purchase(['lines' => [['inventory_item_id' => $this->shampoo->id, 'quantity' => 1, 'unit_cost' => 9000]]])->json('data.id');
+        $this->assertSame(9000, $this->stockByName($this->branch->id)['Shampoo']['unit_cost']);
+
+        $this->postJson("/api/v1/inventory/purchases/{$mistakeId}/cancel")->assertOk();
+
+        $this->assertSame(1250, $this->stockByName($this->branch->id)['Shampoo']['unit_cost']);
+    }
+
+    public function test_cancelling_a_paid_purchase_also_needs_the_right_to_approve_expenses(): void
+    {
+        $purchaseId = $this->purchase(['payment_method' => 'cash'])->json('data.id');
+
+        Sanctum::actingAs($this->keeper);
+        $this->postJson("/api/v1/inventory/purchases/{$purchaseId}/cancel")->assertForbidden();
+        $this->assertSame(1, $this->inTenant(fn () => Expense::query()->count()));
+
+        Sanctum::actingAs($this->owner);
+        $this->postJson("/api/v1/inventory/purchases/{$purchaseId}/cancel")->assertOk();
+        $this->assertSame(0, $this->inTenant(fn () => Expense::query()->count()));
+    }
+
+    public function test_the_inventory_keeper_can_prepare_a_purchase_without_seeing_what_is_owed(): void
+    {
+        $this->purchase()->assertCreated();
+        Sanctum::actingAs($this->keeper);
+
+        $this->getJson('/api/v1/expense-categories')->assertOk();
+        $this->getJson('/api/v1/suppliers')
+            ->assertOk()
+            ->assertJsonPath('data.0.name', 'Gulf Chemicals')
+            ->assertJsonPath('data.0.owed', 0);
+        $this->postJson('/api/v1/suppliers', ['name' => 'New supplier'])->assertCreated();
+        $this->patchJson("/api/v1/suppliers/{$this->supplier->id}", ['name' => 'Renamed'])->assertForbidden();
+        $this->getJson('/api/v1/expenses')->assertForbidden();
+
+        Sanctum::actingAs($this->cashier);
+        $this->getJson('/api/v1/suppliers')->assertForbidden();
+        $this->getJson('/api/v1/expense-categories')->assertForbidden();
+
+        Sanctum::actingAs($this->owner);
+        $owed = collect($this->getJson('/api/v1/suppliers')->json('data'))->firstWhere('name', 'Gulf Chemicals');
+        $this->assertSame(17500, $owed['owed']);
+    }
+
     public function test_materials_set_on_a_service_still_show_in_the_days_usage(): void
     {
         $this->purchase()->assertCreated();
