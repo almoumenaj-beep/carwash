@@ -147,6 +147,75 @@ class EquipmentTest extends TestCase
             ->assertJsonPath('data.next_maintenance_on', '2026-11-08');
     }
 
+    public function test_cancelling_periodic_maintenance_returns_the_schedule_and_removes_the_expense(): void
+    {
+        $equipmentId = $this->addEquipment()->json('data.id');
+        $this->maintain($equipmentId, ['kind' => 'periodic', 'performed_on' => '2026-10-20'])->assertCreated();
+        $mistakeId = $this->maintain($equipmentId, [
+            'kind' => 'periodic',
+            'performed_on' => '2026-11-02',
+            'cost' => 15000,
+            'supplier_id' => $this->technician->id,
+            'expense_category_id' => $this->maintenance->id,
+        ])->assertJsonPath('equipment.next_maintenance_on', '2026-12-02')->json('data.id');
+
+        $expenseId = $this->inTenant(fn () => Expense::query()->sole()->id);
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::Owner));
+        $this->getJson('/api/v1/expenses')->assertJsonPath('data.0.source', 'maintenance');
+        $this->deleteJson("/api/v1/expenses/{$expenseId}")->assertUnprocessable()->assertJsonValidationErrors('expense');
+
+        Sanctum::actingAs($this->manager);
+        $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$mistakeId}/cancel")
+            ->assertOk()
+            ->assertJsonPath('data.is_cancelled', true)
+            ->assertJsonPath('data.cancelled_by', $this->manager->name)
+            ->assertJsonPath('equipment.last_maintained_on', '2026-10-20')
+            ->assertJsonPath('equipment.next_maintenance_on', '2026-11-19');
+
+        $this->assertSame(0, $this->inTenant(fn () => Expense::query()->count()));
+        $this->assertDatabaseHas('activity_log', ['event' => 'equipment.maintenance_cancelled', 'tenant_id' => $this->tenant->id]);
+        $this->getJson("/api/v1/equipment/{$equipmentId}/maintenances")->assertJsonPath('data.0.is_cancelled', true);
+        $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$mistakeId}/cancel")->assertUnprocessable()->assertJsonValidationErrors('maintenance');
+    }
+
+    public function test_cancelling_a_repair_leaves_the_equipment_broken_again_only_if_it_had_been(): void
+    {
+        $equipmentId = $this->addEquipment()->json('data.id');
+        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'out_of_service'])->assertOk();
+        $repairId = $this->maintain($equipmentId, ['kind' => 'repair'])->assertJsonPath('equipment.status', 'in_service')->json('data.id');
+
+        $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$repairId}/cancel")
+            ->assertOk()
+            ->assertJsonPath('equipment.status', 'out_of_service');
+
+        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'in_service'])->assertOk();
+        $otherId = $this->maintain($equipmentId, ['kind' => 'repair'])->json('data.id');
+        $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$otherId}/cancel")
+            ->assertOk()
+            ->assertJsonPath('equipment.status', 'in_service');
+    }
+
+    public function test_cancelling_paid_maintenance_also_needs_the_right_to_approve_expenses(): void
+    {
+        $equipmentId = $this->addEquipment()->json('data.id');
+        $maintenanceId = $this->maintain($equipmentId, [
+            'kind' => 'repair',
+            'cost' => 8000,
+            'expense_category_id' => $this->maintenance->id,
+            'payment_method' => 'cash',
+        ])->json('data.id');
+
+        $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$maintenanceId}/cancel")->assertForbidden();
+        $this->assertSame(1, $this->inTenant(fn () => Expense::query()->count()));
+
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::Owner));
+        $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$maintenanceId}/cancel")->assertOk();
+        $this->assertSame(0, $this->inTenant(fn () => Expense::query()->count()));
+
+        $otherEquipmentId = $this->addEquipment(['name' => 'Vacuum'])->json('data.id');
+        $this->postJson("/api/v1/equipment/{$otherEquipmentId}/maintenances/{$maintenanceId}/cancel")->assertNotFound();
+    }
+
     public function test_a_cost_needs_an_expense_category(): void
     {
         $equipmentId = $this->addEquipment()->json('data.id');

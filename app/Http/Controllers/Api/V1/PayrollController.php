@@ -6,6 +6,7 @@ use App\Domain\Expenses\Enums\ExpensePaymentMethod;
 use App\Domain\Identity\Enums\Permission;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Staff\Actions\CalculatePayroll;
+use App\Domain\Staff\Actions\CancelPayrollPayment;
 use App\Domain\Staff\Actions\PayPayroll;
 use App\Domain\Staff\Models\PayrollLine;
 use App\Domain\Staff\Models\PayrollRun;
@@ -62,6 +63,24 @@ class PayrollController extends Controller
         Gate::authorize('view', Branch::query()->findOrFail($validated['branch_id']));
 
         $run = $payPayroll->handle($request->user(), $payrollRun, $validated);
+
+        return response()->json(['data' => $this->present($run->load('lines.user'))]);
+    }
+
+    /**
+     * Cancel a month's payment recorded by mistake: the month is a draft again. It takes money back out of the
+     * books, so it also needs expenses.approve.
+     */
+    public function cancelPayment(Request $request, PayrollRun $payrollRun, CancelPayrollPayment $cancelPayrollPayment): JsonResponse
+    {
+        Gate::authorize(Permission::PayrollRun->value);
+        Gate::authorize(Permission::ExpensesApprove->value);
+
+        if ($payrollRun->expense !== null) {
+            Gate::authorize('view', Branch::query()->findOrFail($payrollRun->expense->branch_id));
+        }
+
+        $run = $cancelPayrollPayment->handle($request->user(), $payrollRun);
 
         return response()->json(['data' => $this->present($run->load('lines.user'))]);
     }

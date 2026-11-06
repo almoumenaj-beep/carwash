@@ -1880,4 +1880,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get openInventory => 'فتح المخزون';
+
+  @override
+  String get cancelMaintenance => 'إلغاء الصيانة';
+
+  @override
+  String get cancelMaintenanceConfirm =>
+      'يُحذف مصروفها من المصروفات إن وُجد، ويرجع موعد الصيانة القادمة وحالة الجهاز كما كانا، ويبقى السطر في السجل كملغى.';
+
+  @override
+  String get cancelPayrollPayment => 'إلغاء دفع الرواتب';
+
+  @override
+  String get cancelPayrollPaymentConfirm =>
+      'يُحذف مصروف هذا الشهر من المصروفات ويرجع المسير مسودة، فتراجعه وتدفعه من جديد. إذا كان المال قد صُرف فعلاً للموظفين فهذا لا يسترده.';
 }

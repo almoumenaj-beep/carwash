@@ -93,7 +93,10 @@
     "This purchase was already cancelled.": "هذا الشراء أُلغي من قبل.",
     "Part of :name from this purchase was already used. Correct it with a stock count.": "صُرف جزء من :name من هذا الشراء، فلا يمكن إلغاؤه. صحّح الكمية بعملية جرد.",
     "This expense came from an inventory purchase. Cancel the purchase from the inventory.": "هذا المصروف من مشتريات المخزون. ألغِ الشراء من قسم المخزون.",
-    "This expense came from payroll or maintenance and cannot be deleted here.": "هذا المصروف من الرواتب أو الصيانة ولا يُحذف من هنا.",
+    "This expense came from payroll. Cancel the payment from the payroll.": "هذا المصروف من الرواتب. ألغِ الدفع من تبويب الرواتب.",
+    "This expense came from equipment maintenance. Cancel it from the equipment.": "هذا المصروف من صيانة المعدات. ألغِ الصيانة من صفحة الجهاز.",
+    "This maintenance was already cancelled.": "هذه الصيانة أُلغيت من قبل.",
+    "This month has not been paid.": "هذا الشهر لم يُدفع.",
     "Enter the customer's phone so the car wash can reach them.": "اكتب جوال العميل للتواصل معه.",
     "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."

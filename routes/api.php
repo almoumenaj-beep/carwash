@@ -108,6 +108,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::patch('equipment/{equipment}', [EquipmentController::class, 'update'])->name('equipment.update');
         Route::get('equipment/{equipment}/maintenances', [EquipmentController::class, 'maintenances'])->name('equipment.maintenances.index');
         Route::post('equipment/{equipment}/maintenances', [EquipmentController::class, 'maintain'])->name('equipment.maintenances.store');
+        Route::post('equipment/{equipment}/maintenances/{maintenance}/cancel', [EquipmentController::class, 'cancelMaintenance'])->name('equipment.maintenances.cancel');
         Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
         Route::put('employees/{user}/pay-terms', [EmployeeController::class, 'updateProfile'])->name('employees.pay-terms.update');
         Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
@@ -117,6 +118,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('payroll-runs', [PayrollController::class, 'index'])->name('payroll-runs.index');
         Route::post('payroll-runs', [PayrollController::class, 'store'])->name('payroll-runs.store');
         Route::post('payroll-runs/{payrollRun}/pay', [PayrollController::class, 'pay'])->name('payroll-runs.pay');
+        Route::post('payroll-runs/{payrollRun}/cancel-payment', [PayrollController::class, 'cancelPayment'])->name('payroll-runs.cancel-payment');
 
         Route::get('services/{service}/materials', [ServiceMaterialController::class, 'show'])->name('services.materials.show');
         Route::put('services/{service}/materials', [ServiceMaterialController::class, 'update'])->name('services.materials.update');

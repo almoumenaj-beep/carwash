@@ -45,6 +45,8 @@ class RecordMaintenance
                 'payment_method' => $data['payment_method'] ?? null,
             ]);
 
+            $putBackInService = $kind === MaintenanceKind::Repair && $equipment->status === EquipmentStatus::OutOfService;
+
             $maintenance = new EquipmentMaintenance;
             $maintenance->forceFill([
                 'equipment_id' => $equipment->id,
@@ -54,14 +56,15 @@ class RecordMaintenance
                 'cost' => $cost,
                 'supplier_id' => $data['supplier_id'] ?? null,
                 'expense_id' => $expense?->id,
+                'put_back_in_service' => $putBackInService,
                 'created_by' => $actor->id,
             ])->save();
 
-            if ($kind === MaintenanceKind::Periodic && ($equipment->last_maintained_on === null || $performedOn->gte($equipment->last_maintained_on))) {
+            if ($kind === MaintenanceKind::Periodic && ($equipment->last_maintained_on === null || $performedOn->toDateString() >= $equipment->last_maintained_on->toDateString())) {
                 $equipment->last_maintained_on = $performedOn;
                 $equipment->scheduleNextMaintenance($today);
             }
-            if ($kind === MaintenanceKind::Repair && $equipment->status === EquipmentStatus::OutOfService) {
+            if ($putBackInService) {
                 $equipment->status = EquipmentStatus::InService;
             }
             $equipment->save();

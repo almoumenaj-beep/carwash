@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Equipment\Actions\CancelMaintenance;
 use App\Domain\Equipment\Actions\RecordMaintenance;
 use App\Domain\Equipment\Enums\EquipmentStatus;
 use App\Domain\Equipment\Models\Equipment;
@@ -87,7 +88,7 @@ class EquipmentController extends Controller
         Gate::authorize(Permission::EquipmentView->value);
         Gate::authorize('view', $equipment->branch);
 
-        $maintenances = $equipment->maintenances()->with(['supplier', 'expense', 'creator'])->latest('performed_on')->latest()->get();
+        $maintenances = $equipment->maintenances()->with(['supplier', 'expense', 'creator', 'canceller'])->latest('performed_on')->latest()->get();
 
         return response()->json(['data' => $maintenances->map($this->presentMaintenance(...))]);
     }
@@ -100,6 +101,28 @@ class EquipmentController extends Controller
             'data' => $this->presentMaintenance($maintenance->load(['supplier', 'expense', 'creator'])),
             'equipment' => $this->present($equipment->load('branch'), $this->today($request)),
         ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Cancel maintenance recorded by mistake. If its cost was already paid, that takes money back out of the
+     * books, so it also needs expenses.approve.
+     */
+    public function cancelMaintenance(Request $request, Equipment $equipment, EquipmentMaintenance $maintenance, CancelMaintenance $cancelMaintenance): JsonResponse
+    {
+        abort_unless($maintenance->equipment_id === $equipment->id, Response::HTTP_NOT_FOUND);
+        Gate::authorize(Permission::EquipmentManage->value);
+        Gate::authorize('view', $equipment->branch);
+
+        if ($maintenance->expense?->isPaid()) {
+            Gate::authorize(Permission::ExpensesApprove->value);
+        }
+
+        $maintenance = $cancelMaintenance->handle($request->user(), $maintenance);
+
+        return response()->json([
+            'data' => $this->presentMaintenance($maintenance->load(['supplier', 'expense', 'creator', 'canceller'])),
+            'equipment' => $this->present($equipment->refresh()->load('branch'), $this->today($request)),
+        ]);
     }
 
     private function today(Request $request): CarbonImmutable
@@ -144,6 +167,8 @@ class EquipmentController extends Controller
             'cost' => $maintenance->cost,
             'supplier' => $maintenance->supplier === null ? null : ['id' => $maintenance->supplier->id, 'name' => $maintenance->supplier->name],
             'is_paid' => $maintenance->expense?->isPaid() ?? true,
+            'is_cancelled' => $maintenance->isCancelled(),
+            'cancelled_by' => $maintenance->canceller?->name,
             'created_by' => ['id' => $maintenance->creator->id, 'name' => $maintenance->creator->name],
         ];
     }

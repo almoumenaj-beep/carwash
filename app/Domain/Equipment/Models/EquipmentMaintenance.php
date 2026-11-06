@@ -29,7 +29,22 @@ class EquipmentMaintenance extends Model
             'kind' => MaintenanceKind::class,
             'performed_on' => 'immutable_date',
             'cost' => 'integer',
+            'put_back_in_service' => 'boolean',
+            'cancelled_at' => 'immutable_datetime',
         ];
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->cancelled_at !== null;
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function canceller(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
     }
 
     /**

@@ -97,6 +97,8 @@ class Maintenance {
     required this.supplierName,
     required this.isPaid,
     required this.createdBy,
+    this.isCancelled = false,
+    this.cancelledBy,
   });
 
   factory Maintenance.fromJson(Map<String, dynamic> json) => Maintenance(
@@ -108,6 +110,8 @@ class Maintenance {
     supplierName: (json['supplier'] as Map<String, dynamic>?)?['name'] as String?,
     isPaid: json['is_paid'] as bool,
     createdBy: (json['created_by'] as Map<String, dynamic>)['name'] as String,
+    isCancelled: json['is_cancelled'] as bool? ?? false,
+    cancelledBy: json['cancelled_by'] as String?,
   );
 
   final String id;
@@ -120,4 +124,8 @@ class Maintenance {
   final String? supplierName;
   final bool isPaid;
   final String createdBy;
+
+  /// Recorded by mistake: its expense was removed and it no longer counts.
+  final bool isCancelled;
+  final String? cancelledBy;
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Domain\Expenses\Models\Expense;
 use App\Domain\Expenses\Models\ExpenseCategory;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Identity\Enums\Permission;
 use App\Domain\Identity\Models\Role;
 use App\Domain\Orders\Models\Order;
 use App\Models\User;
@@ -132,6 +133,38 @@ class StaffAffairsTest extends TestCase
 
         Sanctum::actingAs($this->manager);
         $this->getJson('/api/v1/payroll-runs')->assertForbidden();
+    }
+
+    public function test_cancelling_a_payment_removes_its_expense_and_makes_the_month_a_draft_again(): void
+    {
+        $withoutApproval = $this->createStaffWithPermissions($this->tenant, [Permission::PayrollRun, Permission::PayrollView]);
+        $this->setPayTerms($this->washer, ['monthly_salary' => 150000, 'commission_type' => 'none', 'commission_value' => 0]);
+        Sanctum::actingAs($this->owner);
+        $now = now($this->tenant->timezone);
+        $runId = $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])->json('data.id');
+        $pay = ['branch_id' => $this->branch->id, 'expense_category_id' => $this->wages->id, 'payment_method' => 'bank_transfer'];
+        $this->postJson("/api/v1/payroll-runs/{$runId}/pay", $pay)->assertOk();
+
+        $expense = $this->inTenant(fn () => Expense::query()->sole());
+        $this->getJson('/api/v1/expenses')->assertJsonPath('data.0.source', 'payroll');
+        $this->deleteJson("/api/v1/expenses/{$expense->id}")->assertUnprocessable()->assertJsonValidationErrors('expense');
+
+        Sanctum::actingAs($withoutApproval);
+        $this->postJson("/api/v1/payroll-runs/{$runId}/cancel-payment")->assertForbidden();
+
+        Sanctum::actingAs($this->owner);
+        $this->postJson("/api/v1/payroll-runs/{$runId}/cancel-payment")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'draft')
+            ->assertJsonPath('data.paid_at', null);
+        $this->assertSame(0, $this->inTenant(fn () => Expense::query()->count()));
+        $this->assertDatabaseHas('activity_log', ['event' => 'payroll.payment_cancelled', 'tenant_id' => $this->tenant->id]);
+
+        $this->postJson("/api/v1/payroll-runs/{$runId}/cancel-payment")->assertUnprocessable()->assertJsonValidationErrors('payroll');
+
+        $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])->assertOk();
+        $this->postJson("/api/v1/payroll-runs/{$runId}/pay", $pay)->assertOk()->assertJsonPath('data.status', 'paid');
+        $this->assertSame(150000, $this->inTenant(fn () => Expense::query()->sole()->amount));
     }
 
     public function test_a_percentage_commission_is_taken_of_the_final_invoice_amount(): void

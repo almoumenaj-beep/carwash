@@ -2,6 +2,7 @@
 
 namespace App\Domain\Staff\Models;
 
+use App\Domain\Expenses\Models\Expense;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -40,6 +41,14 @@ class PayrollRun extends Model
             'total_net' => 'integer',
             'paid_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return BelongsTo<Expense, $this>
+     */
+    public function expense(): BelongsTo
+    {
+        return $this->belongsTo(Expense::class);
     }
 
     public function isPaid(): bool

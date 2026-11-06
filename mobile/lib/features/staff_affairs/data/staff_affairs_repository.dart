@@ -88,6 +88,11 @@ class StaffAffairsRepository {
     return PayrollRun.fromJson(unwrapData(response));
   }
 
+  /// Cancels a month's payment recorded by mistake: its expense is removed and the month is a draft again.
+  Future<void> cancelPayrollPayment(String runId) async {
+    await sendRequest(() => _dio.post<Map<String, dynamic>>('/payroll-runs/$runId/cancel-payment'));
+  }
+
   Future<void> payPayroll(String runId, Map<String, dynamic> data) async {
     await sendRequest(() => _dio.post<Map<String, dynamic>>('/payroll-runs/$runId/pay', data: data));
   }

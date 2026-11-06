@@ -345,6 +345,25 @@ class _PayrollState extends ConsumerState<_Payroll> {
     await _run(() => ref.read(staffAffairsRepositoryProvider).calculatePayroll(month.year, month.month));
   }
 
+  /// Asks first, since it takes the payment back out of the expenses.
+  Future<void> _cancelPayment(PayrollRun run) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialog) => AlertDialog(
+        title: Text(l10n.cancelPayrollPayment),
+        content: Text(l10n.cancelPayrollPaymentConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.back)),
+          FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.cancelPayrollPayment)),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await _run(() => ref.read(staffAffairsRepositoryProvider).cancelPayrollPayment(run.id));
+    }
+  }
+
   Future<void> _pay(PayrollRun run) async {
     final l10n = AppLocalizations.of(context);
     final method = await askPaymentMethod(context);
@@ -373,6 +392,7 @@ class _PayrollState extends ConsumerState<_Payroll> {
     final l10n = AppLocalizations.of(context);
     final money = ref.watch(moneyFormatProvider);
     final canRun = ref.watch(sessionProvider).value?.can(Permissions.payrollRun) ?? false;
+    final canCancelPayment = canRun && (ref.watch(sessionProvider).value?.can(Permissions.expensesApprove) ?? false);
 
     return switch (ref.watch(payrollRunsProvider)) {
       AsyncData(:final value) => ListView(
@@ -424,6 +444,15 @@ class _PayrollState extends ConsumerState<_Payroll> {
                         ].join(' · '),
                       ),
                       trailing: Text(money.format(line.net), style: Theme.of(context).textTheme.titleSmall),
+                    ),
+                  if (run.isPaid && canCancelPayment)
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: OutlinedButton.icon(
+                        onPressed: _busy ? null : () => _cancelPayment(run),
+                        icon: const Icon(Icons.undo),
+                        label: Text(l10n.cancelPayrollPayment),
+                      ),
                     ),
                   if (!run.isPaid && canRun)
                     Padding(

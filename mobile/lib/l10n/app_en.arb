@@ -999,5 +999,9 @@
   "sourceMaintenance": "Maintenance",
   "materialsExpenseTitle": "Are these materials for the stock?",
   "materialsExpenseHint": "Record them from Inventory → New purchase: the stock goes up and the expense is recorded for you. Recording them here does not raise the stock, and recording them in both counts them twice.",
-  "openInventory": "Open inventory"
+  "openInventory": "Open inventory",
+  "cancelMaintenance": "Cancel maintenance",
+  "cancelMaintenanceConfirm": "Its expense, if any, is removed, the next maintenance date and the machine's status go back as they were, and the line stays on record as cancelled.",
+  "cancelPayrollPayment": "Cancel payroll payment",
+  "cancelPayrollPaymentConfirm": "This month's expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back."
 }

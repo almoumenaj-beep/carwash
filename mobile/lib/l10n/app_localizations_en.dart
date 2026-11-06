@@ -1832,4 +1832,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openInventory => 'Open inventory';
+
+  @override
+  String get cancelMaintenance => 'Cancel maintenance';
+
+  @override
+  String get cancelMaintenanceConfirm =>
+      'Its expense, if any, is removed, the next maintenance date and the machine\'s status go back as they were, and the line stays on record as cancelled.';
+
+  @override
+  String get cancelPayrollPayment => 'Cancel payroll payment';
+
+  @override
+  String get cancelPayrollPaymentConfirm =>
+      'This month\'s expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.';
 }

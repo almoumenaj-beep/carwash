@@ -3379,6 +3379,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open inventory'**
   String get openInventory;
+
+  /// No description provided for @cancelMaintenance.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel maintenance'**
+  String get cancelMaintenance;
+
+  /// No description provided for @cancelMaintenanceConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Its expense, if any, is removed, the next maintenance date and the machine\'s status go back as they were, and the line stays on record as cancelled.'**
+  String get cancelMaintenanceConfirm;
+
+  /// No description provided for @cancelPayrollPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel payroll payment'**
+  String get cancelPayrollPayment;
+
+  /// No description provided for @cancelPayrollPaymentConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This month\'s expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.'**
+  String get cancelPayrollPaymentConfirm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -122,6 +122,35 @@ class EquipmentDetailScreen extends ConsumerWidget {
 
   final String equipmentId;
 
+  /// Asks first, since it changes the expenses and the equipment's schedule or status.
+  Future<void> _cancelMaintenance(BuildContext context, WidgetRef ref, String maintenanceId) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialog) => AlertDialog(
+        title: Text(l10n.cancelMaintenance),
+        content: Text(l10n.cancelMaintenanceConfirm),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.back)),
+          FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.cancelMaintenance)),
+        ],
+      ),
+    );
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      await ref.read(equipmentRepositoryProvider).cancelMaintenance(equipmentId, maintenanceId);
+      ref.invalidate(equipmentProvider);
+      ref.invalidate(maintenancesProvider(equipmentId));
+    } catch (error, stackTrace) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+      }
+    }
+  }
+
   Future<void> _setStatus(BuildContext context, WidgetRef ref, EquipmentStatus status) async {
     try {
       await ref.read(equipmentRepositoryProvider).update(equipmentId, {'status': status.apiValue});
@@ -138,6 +167,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final money = ref.watch(moneyFormatProvider);
     final canManage = ref.watch(sessionProvider).value?.can(Permissions.equipmentManage) ?? false;
+    final canApprove = ref.watch(sessionProvider).value?.can(Permissions.expensesApprove) ?? false;
     final equipment = ref.watch(equipmentProvider).value?.where((item) => item.id == equipmentId).firstOrNull;
     if (equipment == null) {
       return Scaffold(
@@ -262,6 +292,9 @@ class EquipmentDetailScreen extends ConsumerWidget {
                         maintenance.kind == MaintenanceKind.periodic
                             ? l10n.periodicMaintenance
                             : l10n.repairMaintenance,
+                        style: maintenance.isCancelled
+                            ? TextStyle(decoration: TextDecoration.lineThrough, color: Theme.of(context).disabledColor)
+                            : null,
                       ),
                       subtitle: Text(
                         [
@@ -269,22 +302,39 @@ class EquipmentDetailScreen extends ConsumerWidget {
                           ?maintenance.description,
                           ?maintenance.supplierName,
                           maintenance.createdBy,
+                          if (maintenance.isCancelled)
+                            maintenance.cancelledBy == null
+                                ? l10n.appointmentCancelled
+                                : l10n.issueCancelledBy(maintenance.cancelledBy!),
                         ].join(' · '),
                       ),
-                      trailing: maintenance.cost == 0
-                          ? null
-                          : Column(
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (maintenance.cost > 0)
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(money.format(maintenance.cost)),
-                                if (!maintenance.isPaid)
+                                if (!maintenance.isPaid && !maintenance.isCancelled)
                                   Text(
                                     l10n.notPaidYet,
                                     style: TextStyle(color: Theme.of(context).colorScheme.error, fontSize: 12),
                                   ),
                               ],
                             ),
+                          // Already paid, it takes money back out of the books, which needs the right to approve.
+                          if (canManage &&
+                              !maintenance.isCancelled &&
+                              (maintenance.cost == 0 || !maintenance.isPaid || canApprove))
+                            IconButton(
+                              tooltip: l10n.cancelMaintenance,
+                              icon: const Icon(Icons.undo),
+                              onPressed: () => _cancelMaintenance(context, ref, maintenance.id),
+                            ),
+                        ],
+                      ),
                     ),
                 ],
               ),

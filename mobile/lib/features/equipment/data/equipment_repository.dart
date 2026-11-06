@@ -39,6 +39,13 @@ class EquipmentRepository {
     return [for (final item in unwrapData<List>(response)) Maintenance.fromJson(item as Map<String, dynamic>)];
   }
 
+  /// Cancels maintenance recorded by mistake: its expense is removed and the equipment goes back as it was.
+  Future<void> cancelMaintenance(String equipmentId, String maintenanceId) async {
+    await sendRequest(
+      () => _dio.post<Map<String, dynamic>>('/equipment/$equipmentId/maintenances/$maintenanceId/cancel'),
+    );
+  }
+
   Future<void> recordMaintenance(String equipmentId, Map<String, dynamic> data) async {
     await sendRequest(() => _dio.post<Map<String, dynamic>>('/equipment/$equipmentId/maintenances', data: data));
   }

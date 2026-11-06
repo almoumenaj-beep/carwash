@@ -23,9 +23,11 @@ class DeleteExpense
     public function handle(User $actor, Expense $expense): void
     {
         if ($expense->source() !== null) {
-            throw ValidationException::withMessages(['expense' => __($expense->source() === 'purchase'
-                ? 'This expense came from an inventory purchase. Cancel the purchase from the inventory.'
-                : 'This expense came from payroll or maintenance and cannot be deleted here.')]);
+            throw ValidationException::withMessages(['expense' => __(match ($expense->source()) {
+                'purchase' => 'This expense came from an inventory purchase. Cancel the purchase from the inventory.',
+                'payroll' => 'This expense came from payroll. Cancel the payment from the payroll.',
+                default => 'This expense came from equipment maintenance. Cancel it from the equipment.',
+            })]);
         }
 
         $this->remove($actor, $expense);
