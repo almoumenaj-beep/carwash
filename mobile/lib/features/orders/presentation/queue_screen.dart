@@ -82,22 +82,39 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
       onReload: _reload,
     );
 
+    final statusTabs = TabBar(
+      isScrollable: true,
+      tabAlignment: TabAlignment.start,
+      tabs: [
+        Tab(text: '${l10n.statusWaiting} (${waiting.length})'),
+        Tab(text: '${l10n.queueTabWashing} (${washing.length})'),
+        Tab(text: '${l10n.statusQualityCheck} (${inQualityCheck.length})'),
+        Tab(text: '${l10n.statusReady} (${ready.length})'),
+        Tab(text: l10n.queueTabToday),
+      ],
+    );
+
     return DefaultTabController(
       length: 5,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.queueTitle),
-          bottom: TabBar(
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            tabs: [
-              Tab(text: '${l10n.statusWaiting} (${waiting.length})'),
-              Tab(text: '${l10n.queueTabWashing} (${washing.length})'),
-              Tab(text: '${l10n.statusQualityCheck} (${inQualityCheck.length})'),
-              Tab(text: '${l10n.statusReady} (${ready.length})'),
-              Tab(text: l10n.queueTabToday),
-            ],
-          ),
+          // The branch comes before the statuses of its cars; a car wash with one branch has nothing to choose.
+          bottom: branches.length < 2
+              ? statusTabs
+              : PreferredSize(
+                  preferredSize: Size.fromHeight(statusTabs.preferredSize.height + 56),
+                  child: Column(
+                    children: [
+                      BranchChips(
+                        selected: branch.id,
+                        includeAll: false,
+                        onChanged: (id) => setState(() => _branchId = id),
+                      ),
+                      statusTabs,
+                    ],
+                  ),
+                ),
         ),
         floatingActionButton: Can(
           anyOf: const [Permissions.ordersCreate],
@@ -110,20 +127,13 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
             label: Text(l10n.checkIn),
           ),
         ),
-        body: Column(
+        body: TabBarView(
           children: [
-            BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  activeList(waiting),
-                  activeList(washing),
-                  activeList(inQualityCheck),
-                  activeList(ready),
-                  _TodayList(branchId: branch.id, onReload: _reload),
-                ],
-              ),
-            ),
+            activeList(waiting),
+            activeList(washing),
+            activeList(inQualityCheck),
+            activeList(ready),
+            _TodayList(branchId: branch.id, onReload: _reload),
           ],
         ),
       ),
