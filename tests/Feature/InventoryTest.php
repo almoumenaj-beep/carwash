@@ -228,6 +228,68 @@ class InventoryTest extends TestCase
         $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")->assertForbidden();
     }
 
+    public function test_cancelling_an_issue_puts_the_quantity_back_and_keeps_it_on_record(): void
+    {
+        $this->purchase()->assertCreated();
+        $this->issue([[$this->shampoo, 1.5], [$this->towels, 20]])->assertCreated();
+
+        $usage = $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}");
+        $towelIssue = collect($usage->json('data.issues'))->firstWhere('item.name', 'Towels');
+
+        $this->postJson("/api/v1/inventory/issues/{$towelIssue['id']}/cancel")
+            ->assertOk()
+            ->assertJsonPath('data.name', 'Towels')
+            ->assertJsonPath('data.quantity', 100);
+
+        $this->getJson("/api/v1/inventory/items?branch_id={$this->branch->id}")
+            ->assertJsonFragment(['name' => 'Shampoo', 'quantity' => 8.5])
+            ->assertJsonFragment(['name' => 'Towels', 'quantity' => 100]);
+
+        $usage = $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")
+            ->assertJsonCount(1, 'data.items', 'a cancelled issue no longer counts as usage')
+            ->assertJsonPath('data.items.0.item.name', 'Shampoo')
+            ->assertJsonCount(2, 'data.issues');
+        $cancelled = collect($usage->json('data.issues'))->firstWhere('item.name', 'Towels');
+        $this->assertTrue($cancelled['is_cancelled']);
+        $this->assertSame($this->keeper->name, $cancelled['cancelled_by']);
+
+        $this->getJson("/api/v1/inventory/movements?branch_id={$this->branch->id}&inventory_item_id={$this->towels->id}")
+            ->assertJsonPath('data.0.reason', 'reversal')
+            ->assertJsonPath('data.0.change', 20)
+            ->assertJsonPath('data.1.reason', 'issue');
+        $this->assertDatabaseHas('activity_log', ['event' => 'stock.issue_cancelled', 'tenant_id' => $this->tenant->id]);
+    }
+
+    public function test_an_issue_is_cancelled_once_and_only_issues_can_be_cancelled(): void
+    {
+        $this->purchase()->assertCreated();
+        $this->issue([[$this->shampoo, 1]])->assertCreated();
+        $issueId = $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")->json('data.issues.0.id');
+
+        $this->postJson("/api/v1/inventory/issues/{$issueId}/cancel")->assertOk();
+        $this->postJson("/api/v1/inventory/issues/{$issueId}/cancel")->assertUnprocessable()->assertJsonValidationErrors('movement');
+        $this->getJson("/api/v1/inventory/items?branch_id={$this->branch->id}")->assertJsonFragment(['name' => 'Shampoo', 'quantity' => 10]);
+
+        $purchaseMovement = $this->getJson("/api/v1/inventory/movements?branch_id={$this->branch->id}&inventory_item_id={$this->towels->id}")->json('data.0.id');
+        $this->postJson("/api/v1/inventory/issues/{$purchaseMovement}/cancel")->assertUnprocessable()->assertJsonValidationErrors('movement');
+    }
+
+    public function test_cancelling_needs_the_permission_and_the_branch(): void
+    {
+        $this->purchase()->assertCreated();
+        $this->issue([[$this->shampoo, 1]])->assertCreated();
+        $issueId = $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")->json('data.issues.0.id');
+
+        Sanctum::actingAs($this->cashier);
+        $this->postJson("/api/v1/inventory/issues/{$issueId}/cancel")->assertForbidden();
+
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::InventoryKeeper, [$this->otherBranch]));
+        $this->postJson("/api/v1/inventory/issues/{$issueId}/cancel")->assertForbidden();
+
+        Sanctum::actingAs($this->keeper);
+        $this->getJson("/api/v1/inventory/items?branch_id={$this->branch->id}")->assertJsonFragment(['name' => 'Shampoo', 'quantity' => 9]);
+    }
+
     public function test_materials_set_on_a_service_still_show_in_the_days_usage(): void
     {
         $this->purchase()->assertCreated();

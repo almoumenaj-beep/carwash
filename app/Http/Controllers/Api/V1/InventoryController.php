@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Identity\Enums\Permission;
+use App\Domain\Inventory\Actions\CancelStockIssue;
 use App\Domain\Inventory\Actions\CountStock;
 use App\Domain\Inventory\Actions\IssueStock;
 use App\Domain\Inventory\Models\InventoryItem;
@@ -117,6 +118,19 @@ class InventoryController extends Controller
         return response()->json(['data' => $movements->map(
             fn (StockMovement $movement) => $this->present($movement->loadMissing('item')->item, $movement->balance_milli),
         )], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Cancel materials issued by mistake: the quantity goes back in stock and the issue stays on record.
+     */
+    public function cancelIssue(Request $request, StockMovement $movement, CancelStockIssue $cancelStockIssue): JsonResponse
+    {
+        Gate::authorize(Permission::InventoryAdjust->value);
+        Gate::authorize('view', Branch::query()->findOrFail($movement->branch_id));
+
+        $reversal = $cancelStockIssue->handle($request->user(), $movement);
+
+        return response()->json(['data' => $this->present($movement->item, $reversal->balance_milli)]);
     }
 
     /**

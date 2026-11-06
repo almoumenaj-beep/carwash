@@ -1798,12 +1798,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get issueQuantitiesSection => 'الكميات';
-
-  @override
-  String get issueQuantitiesHint => 'اكتب الكمية أمام كل مادة تُصرف، واترك الباقي فارغاً.';
-
-  @override
   String availableQuantity(String value) {
     return 'المتوفر: $value';
   }
@@ -1817,8 +1811,38 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseReceiver => 'اختر الموظف المستلم';
 
   @override
-  String get enterIssueQuantities => 'اكتب كمية مادة واحدة على الأقل';
+  String get materialsIssued => 'تم صرف المواد';
 
   @override
-  String get materialsIssued => 'تم صرف المواد';
+  String get materialField => 'المادة';
+
+  @override
+  String get chooseMaterialFirst => 'اختر المادة';
+
+  @override
+  String get addOneMaterial => 'أضف مادة واحدة على الأقل إلى القائمة';
+
+  @override
+  String issueListSection(int count) {
+    return 'المواد المراد صرفها ($count)';
+  }
+
+  @override
+  String get issueListEmpty => 'اختر مادة واكتب كميتها، ثم اضغط «إضافة مادة».';
+
+  @override
+  String get movementReversal => 'إلغاء صرف';
+
+  @override
+  String get cancelIssueTitle => 'إلغاء الصرف';
+
+  @override
+  String cancelIssueConfirm(String what) {
+    return 'إلغاء صرف $what؟ تعود الكمية إلى المخزون، ويبقى الصرف في السجل كملغى.';
+  }
+
+  @override
+  String issueCancelledBy(String name) {
+    return 'ألغاه $name';
+  }
 }

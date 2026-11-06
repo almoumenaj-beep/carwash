@@ -34,8 +34,11 @@ void main() {
       ],
       'issues': [
         {
+          'id': 'm1',
           'item': {'id': 'i1', 'name': 'Shampoo', 'unit': 'L'},
           'quantity': 1.5,
+          'is_cancelled': true,
+          'cancelled_by': 'Ali',
           'note': 'Cleaning the bays',
           'by': 'Ali',
           'received_by': 'Mahmood',
@@ -49,10 +52,13 @@ void main() {
     expect(usage.items.single.total, 1.75);
     expect(usage.issues.single.note, 'Cleaning the bays');
     expect(usage.issues.single.receivedBy, 'Mahmood');
+    expect(usage.issues.single.isCancelled, isTrue);
+    expect(usage.issues.single.cancelledBy, 'Ali');
   });
 
   test('a stock movement can be an issue by hand', () {
     expect(StockMovementReason.fromApi('issue'), StockMovementReason.issue);
+    expect(StockMovementReason.fromApi('reversal'), StockMovementReason.reversal);
   });
 
   test('reads a stock movement', () {

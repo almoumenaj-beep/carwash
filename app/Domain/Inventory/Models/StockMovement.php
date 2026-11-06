@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * One change to a branch's stock, with the balance after it. Written only by StockLedger.
@@ -44,6 +45,16 @@ class StockMovement extends Model
     public function item(): BelongsTo
     {
         return $this->belongsTo(InventoryItem::class, 'inventory_item_id');
+    }
+
+    /**
+     * The movement that cancelled this issue, if any.
+     *
+     * @return HasOne<self, $this>
+     */
+    public function reversal(): HasOne
+    {
+        return $this->hasOne(self::class, 'reverses_movement_id');
     }
 
     /**

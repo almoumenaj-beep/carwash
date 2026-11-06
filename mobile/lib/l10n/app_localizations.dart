@@ -3236,18 +3236,6 @@ abstract class AppLocalizations {
   /// **'Received by {name}'**
   String receivedByLabel(String name);
 
-  /// No description provided for @issueQuantitiesSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Quantities'**
-  String get issueQuantitiesSection;
-
-  /// No description provided for @issueQuantitiesHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a quantity beside each material issued and leave the rest empty.'**
-  String get issueQuantitiesHint;
-
   /// No description provided for @availableQuantity.
   ///
   /// In en, this message translates to:
@@ -3266,17 +3254,65 @@ abstract class AppLocalizations {
   /// **'Choose who receives them'**
   String get chooseReceiver;
 
-  /// No description provided for @enterIssueQuantities.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a quantity for at least one material'**
-  String get enterIssueQuantities;
-
   /// No description provided for @materialsIssued.
   ///
   /// In en, this message translates to:
   /// **'Materials issued'**
   String get materialsIssued;
+
+  /// No description provided for @materialField.
+  ///
+  /// In en, this message translates to:
+  /// **'Material'**
+  String get materialField;
+
+  /// No description provided for @chooseMaterialFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the material'**
+  String get chooseMaterialFirst;
+
+  /// No description provided for @addOneMaterial.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one material to the list'**
+  String get addOneMaterial;
+
+  /// No description provided for @issueListSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials to issue ({count})'**
+  String issueListSection(int count);
+
+  /// No description provided for @issueListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a material and its quantity, then press «Add material».'**
+  String get issueListEmpty;
+
+  /// No description provided for @movementReversal.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue cancelled'**
+  String get movementReversal;
+
+  /// No description provided for @cancelIssueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel issue'**
+  String get cancelIssueTitle;
+
+  /// No description provided for @cancelIssueConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel issuing {what}? The quantity goes back in stock, and the issue stays on record as cancelled.'**
+  String cancelIssueConfirm(String what);
+
+  /// No description provided for @issueCancelledBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled by {name}'**
+  String issueCancelledBy(String name);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

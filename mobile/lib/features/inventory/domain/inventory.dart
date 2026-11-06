@@ -43,7 +43,8 @@ enum StockMovementReason {
   purchase,
   consumption,
   count,
-  issue;
+  issue,
+  reversal;
 
   static StockMovementReason fromApi(String value) => values.firstWhere((reason) => reason.name == value);
 }
@@ -149,9 +150,12 @@ class DailyStockUsage {
     issues: [
       for (final row in json['issues'] as List)
         (
-          name: ((row as Map<String, dynamic>)['item'] as Map<String, dynamic>)['name'] as String,
+          id: (row as Map<String, dynamic>)['id'] as String,
+          name: (row['item'] as Map<String, dynamic>)['name'] as String,
           unit: (row['item'] as Map<String, dynamic>)['unit'] as String,
           quantity: (row['quantity'] as num).toDouble(),
+          isCancelled: row['is_cancelled'] as bool,
+          cancelledBy: row['cancelled_by'] as String?,
           note: row['note'] as String?,
           by: row['by'] as String?,
           receivedBy: row['received_by'] as String?,
@@ -167,7 +171,20 @@ class DailyStockUsage {
   final List<({String name, String unit, double washes, double issued, double total, int cost})> items;
 
   /// Each material issued to staff, latest first.
-  final List<({String name, String unit, double quantity, String? note, String? by, String? receivedBy, DateTime at})>
+  final List<
+    ({
+      String id,
+      String name,
+      String unit,
+      double quantity,
+      bool isCancelled,
+      String? cancelledBy,
+      String? note,
+      String? by,
+      String? receivedBy,
+      DateTime at,
+    })
+  >
   issues;
 }
 

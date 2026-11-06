@@ -11,4 +11,5 @@ enum StockMovementReason: string
     case Consumption = 'consumption';
     case Count = 'count';
     case Issue = 'issue';
+    case Reversal = 'reversal';
 }

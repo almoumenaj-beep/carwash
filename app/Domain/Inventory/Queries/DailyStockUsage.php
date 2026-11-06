@@ -9,8 +9,9 @@ use Carbon\CarbonImmutable;
 
 /**
  * What left a branch's stock on one day, midnight to midnight in the car wash's time zone: per material, what
- * was issued to staff and anything washes used, valued at today's cost; and each issue with who received it.
- * Differences found by stock counts are not usage, so they are left out.
+ * was issued to staff and anything washes used, valued at today's cost; and each issue with who received it,
+ * including cancelled ones, which no longer count. Differences found by stock counts are not usage, so they are
+ * left out.
  */
 class DailyStockUsage
 {
@@ -24,12 +25,12 @@ class DailyStockUsage
             ->whereIn('reason', [StockMovementReason::Consumption, StockMovementReason::Issue])
             ->where('created_at', '>=', $day->startOfDay()->utc())
             ->where('created_at', '<', $day->startOfDay()->addDay()->utc())
-            ->with(['item', 'user', 'receiver'])
+            ->with(['item', 'user', 'receiver', 'reversal.user'])
             ->latest('created_at')
             ->orderByDesc('id')
             ->get();
 
-        $items = $movements->groupBy('inventory_item_id')->map(function ($group): array {
+        $items = $movements->whereNull('reversal')->groupBy('inventory_item_id')->map(function ($group): array {
             $item = $group->first()->item;
             $used = fn (StockMovementReason $reason): int => -(int) $group->where('reason', $reason)->sum('change_milli');
             $washes = $used(StockMovementReason::Consumption);
@@ -49,8 +50,11 @@ class DailyStockUsage
             'total_cost' => $items->sum('cost'),
             'items' => $items->all(),
             'issues' => $movements->where('reason', StockMovementReason::Issue)->map(fn (StockMovement $movement) => [
+                'id' => $movement->id,
                 'item' => ['id' => $movement->item->id, 'name' => $movement->item->name, 'unit' => $movement->item->unit],
                 'quantity' => Quantity::fromMilli(-$movement->change_milli),
+                'is_cancelled' => $movement->reversal !== null,
+                'cancelled_by' => $movement->reversal?->user?->name,
                 'note' => $movement->note,
                 'by' => $movement->user?->name,
                 'received_by' => $movement->receiver?->name,

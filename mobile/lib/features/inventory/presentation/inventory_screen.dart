@@ -194,6 +194,7 @@ String reasonLabel(AppLocalizations l10n, StockMovementReason reason) => switch 
   StockMovementReason.consumption => l10n.movementConsumption,
   StockMovementReason.count => l10n.movementCount,
   StockMovementReason.issue => l10n.movementIssue,
+  StockMovementReason.reversal => l10n.movementReversal,
 };
 
 /// A material at the branch: its stock, a stock count, and its latest movements.
@@ -373,6 +374,36 @@ class _DailyUsage extends ConsumerStatefulWidget {
 class _DailyUsageState extends ConsumerState<_DailyUsage> {
   DateTime _day = DateUtils.dateOnly(DateTime.now());
 
+  /// Asks first, since it changes the stock; the quantity goes back and the issue stays listed as cancelled.
+  Future<void> _cancelIssue(String movementId, String what) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialog) => AlertDialog(
+        title: Text(l10n.cancelIssueTitle),
+        content: Text(l10n.cancelIssueConfirm(what)),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.back)),
+          FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.cancelIssueTitle)),
+        ],
+      ),
+    );
+    if (confirmed != true) {
+      return;
+    }
+
+    try {
+      await ref.read(inventoryRepositoryProvider).cancelIssue(movementId);
+      ref.invalidate(inventoryItemsProvider);
+      ref.invalidate(stockMovementsProvider);
+      ref.invalidate(dailyStockUsageProvider);
+    } catch (error, stackTrace) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -420,7 +451,7 @@ class _DailyUsageState extends ConsumerState<_DailyUsage> {
             AsyncData(:final value) => Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (value.items.isEmpty)
+                if (value.items.isEmpty && value.issues.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: Text(l10n.noUsageThatDay, textAlign: TextAlign.center),
@@ -459,15 +490,33 @@ class _DailyUsageState extends ConsumerState<_DailyUsage> {
                     for (final issue in value.issues)
                       ListTile(
                         dense: true,
-                        title: Text('${issue.name} × ${formatQuantity(issue.quantity)} ${issue.unit}'),
+                        title: Text(
+                          '${issue.name} × ${formatQuantity(issue.quantity)} ${issue.unit}',
+                          style: issue.isCancelled
+                              ? TextStyle(decoration: TextDecoration.lineThrough, color: theme.disabledColor)
+                              : null,
+                        ),
                         subtitle: Text(
                           [
                             MaterialLocalizations.of(context)
                                 .formatTimeOfDay(TimeOfDay.fromDateTime(issue.at.toLocal())),
                             if (issue.receivedBy != null) l10n.receivedByLabel(issue.receivedBy!),
                             ?issue.note,
+                            if (issue.isCancelled)
+                              issue.cancelledBy == null
+                                  ? l10n.appointmentCancelled
+                                  : l10n.issueCancelledBy(issue.cancelledBy!),
                           ].join(' · '),
                         ),
+                        trailing: widget.canAdjust && !issue.isCancelled
+                            ? TextButton(
+                                onPressed: () => _cancelIssue(
+                                  issue.id,
+                                  '${issue.name} × ${formatQuantity(issue.quantity)} ${issue.unit}',
+                                ),
+                                child: Text(l10n.cancel),
+                              )
+                            : null,
                       ),
                   ],
                 ],

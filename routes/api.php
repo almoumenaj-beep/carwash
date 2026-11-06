@@ -89,6 +89,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::patch('inventory/items/{item}', [InventoryController::class, 'update'])->name('inventory.items.update');
         Route::post('inventory/counts', [InventoryController::class, 'count'])->name('inventory.counts.store');
         Route::post('inventory/issues', [InventoryController::class, 'issue'])->name('inventory.issues.store');
+        Route::post('inventory/issues/{movement}/cancel', [InventoryController::class, 'cancelIssue'])->name('inventory.issues.cancel');
         Route::get('inventory/daily-usage', [InventoryController::class, 'dailyUsage'])->name('inventory.daily-usage');
         Route::get('inventory/movements', [InventoryController::class, 'movements'])->name('inventory.movements.index');
         Route::get('inventory/purchases', [PurchaseController::class, 'index'])->name('inventory.purchases.index');

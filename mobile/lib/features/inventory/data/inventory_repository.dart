@@ -83,6 +83,11 @@ class InventoryRepository {
     );
   }
 
+  /// Cancels materials issued by mistake: the quantity goes back in stock and the issue stays on record.
+  Future<void> cancelIssue(String movementId) async {
+    await sendRequest(() => _dio.post<Map<String, dynamic>>('/inventory/issues/$movementId/cancel'));
+  }
+
   Future<DailyStockUsage> dailyUsage(String branchId, String date) async {
     final response = await sendRequest(
       () => _dio.get<Map<String, dynamic>>(

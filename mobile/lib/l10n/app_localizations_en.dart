@@ -1750,12 +1750,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get issueQuantitiesSection => 'Quantities';
-
-  @override
-  String get issueQuantitiesHint => 'Enter a quantity beside each material issued and leave the rest empty.';
-
-  @override
   String availableQuantity(String value) {
     return 'In stock: $value';
   }
@@ -1769,8 +1763,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseReceiver => 'Choose who receives them';
 
   @override
-  String get enterIssueQuantities => 'Enter a quantity for at least one material';
+  String get materialsIssued => 'Materials issued';
 
   @override
-  String get materialsIssued => 'Materials issued';
+  String get materialField => 'Material';
+
+  @override
+  String get chooseMaterialFirst => 'Choose the material';
+
+  @override
+  String get addOneMaterial => 'Add at least one material to the list';
+
+  @override
+  String issueListSection(int count) {
+    return 'Materials to issue ($count)';
+  }
+
+  @override
+  String get issueListEmpty => 'Choose a material and its quantity, then press «Add material».';
+
+  @override
+  String get movementReversal => 'Issue cancelled';
+
+  @override
+  String get cancelIssueTitle => 'Cancel issue';
+
+  @override
+  String cancelIssueConfirm(String what) {
+    return 'Cancel issuing $what? The quantity goes back in stock, and the issue stays on record as cancelled.';
+  }
+
+  @override
+  String issueCancelledBy(String name) {
+    return 'Cancelled by $name';
+  }
 }

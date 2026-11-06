@@ -935,8 +935,6 @@
       }
     }
   },
-  "issueQuantitiesSection": "Quantities",
-  "issueQuantitiesHint": "Enter a quantity beside each material issued and leave the rest empty.",
   "availableQuantity": "In stock: {value}",
   "@availableQuantity": {
     "placeholders": {
@@ -960,6 +958,35 @@
     }
   },
   "chooseReceiver": "Choose who receives them",
-  "enterIssueQuantities": "Enter a quantity for at least one material",
-  "materialsIssued": "Materials issued"
+  "materialsIssued": "Materials issued",
+  "materialField": "Material",
+  "chooseMaterialFirst": "Choose the material",
+  "addOneMaterial": "Add at least one material to the list",
+  "issueListSection": "Materials to issue ({count})",
+  "issueListEmpty": "Choose a material and its quantity, then press «Add material».",
+  "@issueListSection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "movementReversal": "Issue cancelled",
+  "cancelIssueTitle": "Cancel issue",
+  "cancelIssueConfirm": "Cancel issuing {what}? The quantity goes back in stock, and the issue stays on record as cancelled.",
+  "@cancelIssueConfirm": {
+    "placeholders": {
+      "what": {
+        "type": "String"
+      }
+    }
+  },
+  "issueCancelledBy": "Cancelled by {name}",
+  "@issueCancelledBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

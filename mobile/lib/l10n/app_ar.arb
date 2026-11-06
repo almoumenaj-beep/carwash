@@ -524,11 +524,17 @@
   "stockIssueSubtitle": "صرف مواد اليوم للموظفين",
   "receivedByField": "الموظف المستلم",
   "receivedByLabel": "استلمها {name}",
-  "issueQuantitiesSection": "الكميات",
-  "issueQuantitiesHint": "اكتب الكمية أمام كل مادة تُصرف، واترك الباقي فارغاً.",
   "availableQuantity": "المتوفر: {value}",
   "onlyInStock": "المتوفر من {name} {quantity} {unit} فقط",
   "chooseReceiver": "اختر الموظف المستلم",
-  "enterIssueQuantities": "اكتب كمية مادة واحدة على الأقل",
-  "materialsIssued": "تم صرف المواد"
+  "materialsIssued": "تم صرف المواد",
+  "materialField": "المادة",
+  "chooseMaterialFirst": "اختر المادة",
+  "addOneMaterial": "أضف مادة واحدة على الأقل إلى القائمة",
+  "issueListSection": "المواد المراد صرفها ({count})",
+  "issueListEmpty": "اختر مادة واكتب كميتها، ثم اضغط «إضافة مادة».",
+  "movementReversal": "إلغاء صرف",
+  "cancelIssueTitle": "إلغاء الصرف",
+  "cancelIssueConfirm": "إلغاء صرف {what}؟ تعود الكمية إلى المخزون، ويبقى الصرف في السجل كملغى.",
+  "issueCancelledBy": "ألغاه {name}"
 }

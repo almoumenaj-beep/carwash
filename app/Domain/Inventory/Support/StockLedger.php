@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
 class StockLedger
 {
     /**
-     * @param  array{order_id?: string, purchase_id?: string, note?: ?string, issued_to?: string}  $context
+     * @param  array{order_id?: string, purchase_id?: string, note?: ?string, issued_to?: string, reverses_movement_id?: string}  $context
      */
     public function move(string $branchId, string $itemId, int $changeMilli, StockMovementReason $reason, ?string $userId, array $context = []): StockMovement
     {
@@ -36,6 +36,7 @@ class StockLedger
             'note' => $context['note'] ?? null,
             'user_id' => $userId,
             'issued_to' => $context['issued_to'] ?? null,
+            'reverses_movement_id' => $context['reverses_movement_id'] ?? null,
             'created_at' => now(),
         ])->save();
 
