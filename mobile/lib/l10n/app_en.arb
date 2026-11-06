@@ -854,9 +854,9 @@
   "confirmBooking": "Confirm booking",
   "confirmBookingHint": "Once the customer says they are coming",
   "allFilter": "All",
-  "graceMinutesField": "Grace time for late bookings",
+  "graceMinutesField": "Wait for late bookings (minutes)",
   "minutesUnit": "min",
-  "graceMinutesHint": "If the car has not come this long after its time, the booking becomes a no-show. Leave empty to switch this off.",
+  "graceMinutesHint": "Minutes after the booked time, e.g. 30 is half an hour. If the car has not come by then, the booking becomes a no-show. Leave empty to switch this off.",
   "graceMinutesInvalid": "Enter 5 to 720 minutes, or leave it empty",
   "checkedInWithBooking": "{reference} checked in and linked to its {time} booking",
   "@checkedInWithBooking": {

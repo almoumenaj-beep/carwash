@@ -1629,14 +1629,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allFilter => 'All';
 
   @override
-  String get graceMinutesField => 'Grace time for late bookings';
+  String get graceMinutesField => 'Wait for late bookings (minutes)';
 
   @override
   String get minutesUnit => 'min';
 
   @override
   String get graceMinutesHint =>
-      'If the car has not come this long after its time, the booking becomes a no-show. Leave empty to switch this off.';
+      'Minutes after the booked time, e.g. 30 is half an hour. If the car has not come by then, the booking becomes a no-show. Leave empty to switch this off.';
 
   @override
   String get graceMinutesInvalid => 'Enter 5 to 720 minutes, or leave it empty';

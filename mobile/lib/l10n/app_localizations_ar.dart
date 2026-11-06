@@ -1677,17 +1677,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allFilter => 'الكل';
 
   @override
-  String get graceMinutesField => 'مهلة السماح للحجز المتأخر';
+  String get graceMinutesField => 'مهلة انتظار الحجز المتأخر (بالدقائق)';
 
   @override
   String get minutesUnit => 'دقيقة';
 
   @override
   String get graceMinutesHint =>
-      'إذا لم تصل السيارة خلال هذه المدة بعد موعدها يصير الحجز «لم يحضر» تلقائياً. اتركه فارغاً لإيقاف ذلك.';
+      'عدد الدقائق بعد موعد الحجز، مثلاً 30 تعني نصف ساعة. إذا لم تصل السيارة خلالها يصير الحجز «لم يحضر» تلقائياً. اتركه فارغاً لإيقاف ذلك.';
 
   @override
-  String get graceMinutesInvalid => 'اكتب من 5 إلى 720 دقيقة، أو اتركه فارغاً';
+  String get graceMinutesInvalid => 'اكتب عدد الدقائق من 5 إلى 720، أو اتركه فارغاً';
 
   @override
   String checkedInWithBooking(String reference, String time) {

@@ -3023,7 +3023,7 @@ abstract class AppLocalizations {
   /// No description provided for @graceMinutesField.
   ///
   /// In en, this message translates to:
-  /// **'Grace time for late bookings'**
+  /// **'Wait for late bookings (minutes)'**
   String get graceMinutesField;
 
   /// No description provided for @minutesUnit.
@@ -3035,7 +3035,7 @@ abstract class AppLocalizations {
   /// No description provided for @graceMinutesHint.
   ///
   /// In en, this message translates to:
-  /// **'If the car has not come this long after its time, the booking becomes a no-show. Leave empty to switch this off.'**
+  /// **'Minutes after the booked time, e.g. 30 is half an hour. If the car has not come by then, the booking becomes a no-show. Leave empty to switch this off.'**
   String get graceMinutesHint;
 
   /// No description provided for @graceMinutesInvalid.
