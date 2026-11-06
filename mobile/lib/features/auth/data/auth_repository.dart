@@ -95,10 +95,10 @@ class AuthRepository {
     );
   }
 
-  /// Updates the signed-in staff member's own name, email or phone.
-  Future<Me> updateProfile({String? name, String? email, String? phone}) async {
+  /// Updates the signed-in staff member's own email or phone.
+  Future<Me> updateProfile({String? email, String? phone}) async {
     final response = await _send(
-      () => _dio.put<Map<String, dynamic>>('/me/profile', data: {'name': ?name, 'email': ?email, 'phone': ?phone}),
+      () => _dio.put<Map<String, dynamic>>('/me/profile', data: {'email': ?email, 'phone': ?phone}),
     );
     return Me.fromJson(unwrapData(response));
   }

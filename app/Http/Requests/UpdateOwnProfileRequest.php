@@ -10,7 +10,8 @@ use Illuminate\Validation\Validator;
 class UpdateOwnProfileRequest extends FormRequest
 {
     /**
-     * Every signed-in staff member may edit their own name, email and phone.
+     * Every signed-in staff member may edit their own email and phone. Their name is set by whoever
+     * manages staff, so it stays recognisable to everyone else.
      */
     public function authorize(): bool
     {
@@ -27,7 +28,6 @@ class UpdateOwnProfileRequest extends FormRequest
         $user = $this->user();
 
         return [
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
             'email' => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('users')->ignore($user)],
             'phone' => ['sometimes', 'nullable', 'string', 'max:32', Rule::unique('users')->ignore($user)],
         ];

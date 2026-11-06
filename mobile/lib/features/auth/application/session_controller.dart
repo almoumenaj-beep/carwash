@@ -23,8 +23,8 @@ class SessionController extends AsyncNotifier<Me?> {
     state = AsyncData(await _repository.pinSignIn(userId: userId, pin: pin));
   }
 
-  Future<void> updateProfile({String? name, String? email, String? phone}) async {
-    state = AsyncData(await _repository.updateProfile(name: name, email: email, phone: phone));
+  Future<void> updateProfile({String? email, String? phone}) async {
+    state = AsyncData(await _repository.updateProfile(email: email, phone: phone));
   }
 
   Future<void> signOut() async {

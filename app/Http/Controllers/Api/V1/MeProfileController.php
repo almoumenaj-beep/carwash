@@ -10,7 +10,7 @@ use App\Http\Resources\MeResource;
 class MeProfileController extends Controller
 {
     /**
-     * Updates the signed-in staff member's own name, email or phone.
+     * Updates the signed-in staff member's own email or phone.
      */
     public function update(UpdateOwnProfileRequest $request, UpdateStaffMember $updateStaffMember): MeResource
     {

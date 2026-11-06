@@ -7,7 +7,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
 
-/// Lets the signed-in staff member edit their own name, email and phone.
+/// Lets the signed-in staff member edit their own email and phone. Their name is set by whoever
+/// manages staff, so it stays recognisable to everyone else; it shows here read-only.
 class EditProfileDialog extends ConsumerStatefulWidget {
   const EditProfileDialog({super.key, required this.me});
 
@@ -19,7 +20,6 @@ class EditProfileDialog extends ConsumerStatefulWidget {
 
 class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
   final _formKey = GlobalKey<FormState>();
-  late final _name = TextEditingController(text: widget.me.name);
   late final _email = TextEditingController(text: widget.me.email ?? '');
   late final _phone = TextEditingController(text: widget.me.phone ?? '');
   bool _submitting = false;
@@ -27,7 +27,6 @@ class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
 
   @override
   void dispose() {
-    _name.dispose();
     _email.dispose();
     _phone.dispose();
     super.dispose();
@@ -47,7 +46,6 @@ class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
       await ref
           .read(sessionProvider.notifier)
           .updateProfile(
-            name: _name.text.trim(),
             email: _email.text.trim().isEmpty ? null : _email.text.trim(),
             phone: _phone.text.trim().isEmpty ? null : _phone.text.trim(),
           );
@@ -69,10 +67,9 @@ class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final problem = _error is ApiProblem ? _error as ApiProblem : null;
-    final nameError = problem?.fieldError('name');
     final emailError = problem?.fieldError('email');
     final phoneError = problem?.fieldError('phone');
-    final showGeneralError = _error != null && nameError == null && emailError == null && phoneError == null;
+    final showGeneralError = _error != null && emailError == null && phoneError == null;
 
     return AlertDialog(
       title: Text(l10n.editProfile),
@@ -82,9 +79,9 @@ class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              controller: _name,
-              decoration: InputDecoration(labelText: l10n.nameField, errorText: nameError),
-              validator: (value) => (value == null || value.trim().isEmpty) ? l10n.fieldRequired : null,
+              initialValue: widget.me.name,
+              enabled: false,
+              decoration: InputDecoration(labelText: l10n.nameField),
             ),
             const SizedBox(height: 12),
             TextFormField(
