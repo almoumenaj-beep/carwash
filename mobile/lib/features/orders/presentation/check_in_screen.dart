@@ -244,10 +244,19 @@ class _CheckInFormState extends ConsumerState<_CheckInForm> {
         done = l10n.bookedAt(material.formatTimeOfDay(TimeOfDay.fromDateTime(booked.startsAt.toLocal())));
       } else {
         final order = {...details, 'bay_id': _bayId, 'staff_ids': _staffIds.toList()};
-        final checkedIn = widget.appointment == null
-            ? await ref.read(ordersRepositoryProvider).checkIn(order)
-            : await ref.read(appointmentsRepositoryProvider).checkIn(widget.appointment!.id, order);
-        done = l10n.checkedIn(checkedIn.reference);
+        if (widget.appointment == null) {
+          final result = await ref.read(ordersRepositoryProvider).checkIn(order);
+          final bookedFor = result.bookedFor;
+          done = bookedFor == null
+              ? l10n.checkedIn(result.order.reference)
+              : l10n.checkedInWithBooking(
+                  result.order.reference,
+                  material.formatTimeOfDay(TimeOfDay.fromDateTime(bookedFor.toLocal())),
+                );
+        } else {
+          final checkedIn = await ref.read(appointmentsRepositoryProvider).checkIn(widget.appointment!.id, order);
+          done = l10n.checkedIn(checkedIn.reference);
+        }
       }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(done)));

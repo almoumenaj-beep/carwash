@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Domain\Appointments\Models\Appointment;
+use App\Domain\Crm\Models\Vehicle;
 use App\Domain\Identity\Enums\DefaultRole;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Models\Bay;
@@ -215,6 +216,52 @@ class AppointmentTest extends TestCase
             'items' => [['service_id' => $this->wash->id]],
             'staff_ids' => [$this->washer->id],
         ])->assertCreated();
+    }
+
+    public function test_a_booked_car_checked_in_at_the_counter_closes_its_booking(): void
+    {
+        $byPlateId = $this->book()->json('data.id');
+        $byCarId = $this->book(['starts_at' => '2026-11-04T11:00', 'vehicle_id' => $this->vehicle->id, 'customer_phone' => null])->json('data.id');
+        $otherId = $this->book(['starts_at' => '2026-11-04T12:00', 'customer_phone' => '39992222', 'plate_number' => '99-999'])->json('data.id');
+
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 10:05', 'Asia/Bahrain'));
+        $orderId = $this->checkIn(['vehicle_id' => null, 'plate_number' => '55777', 'vehicle_size_id' => $this->sedan->id])
+            ->assertCreated()
+            ->assertJsonPath('meta.appointment.id', $byPlateId)
+            ->json('data.id');
+        $this->checkIn()->assertCreated()->assertJsonPath('meta.appointment.id', $byCarId);
+        $this->checkIn(['vehicle_id' => null, 'plate_number' => '11-111', 'vehicle_size_id' => $this->sedan->id])->assertCreated()->assertJsonPath('meta.appointment', null);
+
+        $statuses = $this->inTenant(fn () => Appointment::query()->pluck('status', 'id')->map->value);
+        $this->assertSame(['checked_in', 'checked_in', 'booked'], [$statuses[$byPlateId], $statuses[$byCarId], $statuses[$otherId]]);
+        $this->assertSame($orderId, $this->inTenant(fn () => Appointment::query()->find($byPlateId)->order_id));
+    }
+
+    public function test_a_car_arriving_after_the_grace_time_turns_the_no_show_into_arrived(): void
+    {
+        $this->tenant->update(['appointment_grace_minutes' => 20]);
+        $appointmentId = $this->book()->json('data.id');
+
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 11:00', 'Asia/Bahrain'));
+        $this->artisan('appointments:mark-no-shows')->assertSuccessful();
+        $this->assertSame('no_show', $this->inTenant(fn () => Appointment::query()->find($appointmentId)->status->value));
+
+        $this->checkIn(['vehicle_id' => null, 'plate_number' => '55777', 'vehicle_size_id' => $this->sedan->id])
+            ->assertCreated()
+            ->assertJsonPath('meta.appointment.id', $appointmentId);
+        $this->assertSame('checked_in', $this->inTenant(fn () => Appointment::query()->find($appointmentId)->status->value));
+    }
+
+    public function test_another_car_of_the_customer_leaves_a_booking_for_a_named_car_open(): void
+    {
+        $forThisCar = $this->book(['vehicle_id' => $this->vehicle->id, 'customer_phone' => null])->json('data.id');
+        $byPhoneOnly = $this->book(['starts_at' => '2026-11-04T11:00', 'customer_phone' => $this->customer->phone, 'plate_number' => null])->json('data.id');
+
+        $this->travelTo(CarbonImmutable::parse('2026-11-04 10:50', 'Asia/Bahrain'));
+        $otherCar = $this->inTenant(fn () => Vehicle::factory()->for($this->customer)->create(['plate_number' => '77777', 'vehicle_size_id' => $this->sedan->id]));
+
+        $this->checkIn(['vehicle_id' => $otherCar->id])->assertCreated()->assertJsonPath('meta.appointment.id', $byPhoneOnly);
+        $this->assertSame('booked', $this->inTenant(fn () => Appointment::query()->find($forThisCar)->status->value));
     }
 
     public function test_a_late_booking_becomes_a_no_show_after_the_grace_time_set(): void

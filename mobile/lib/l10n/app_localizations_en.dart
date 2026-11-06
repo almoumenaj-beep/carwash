@@ -1640,4 +1640,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get graceMinutesInvalid => 'Enter 5 to 720 minutes, or leave it empty';
+
+  @override
+  String checkedInWithBooking(String reference, String time) {
+    return '$reference checked in and linked to its $time booking';
+  }
 }

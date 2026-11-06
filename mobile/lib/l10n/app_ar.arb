@@ -491,5 +491,6 @@
   "graceMinutesField": "مهلة السماح للحجز المتأخر",
   "minutesUnit": "دقيقة",
   "graceMinutesHint": "إذا لم تصل السيارة خلال هذه المدة بعد موعدها يصير الحجز «لم يحضر» تلقائياً. اتركه فارغاً لإيقاف ذلك.",
-  "graceMinutesInvalid": "اكتب من 5 إلى 720 دقيقة، أو اتركه فارغاً"
+  "graceMinutesInvalid": "اكتب من 5 إلى 720 دقيقة، أو اتركه فارغاً",
+  "checkedInWithBooking": "تم استقبال {reference} وربطه بحجز الساعة {time}"
 }

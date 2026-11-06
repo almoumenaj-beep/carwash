@@ -47,9 +47,14 @@ class OrdersRepository {
     return Order.fromJson(unwrapData(response));
   }
 
-  Future<Order> checkIn(Map<String, dynamic> data) async {
+  /// Checks a car in at the counter; [bookedFor] is the time of the booking it had today, which is closed with it.
+  Future<({Order order, DateTime? bookedFor})> checkIn(Map<String, dynamic> data) async {
     final response = await sendRequest(() => _dio.post<Map<String, dynamic>>('/orders', data: data));
-    return Order.fromJson(unwrapData(response));
+    final booking = (response.data!['meta'] as Map<String, dynamic>?)?['appointment'] as Map<String, dynamic>?;
+    return (
+      order: Order.fromJson(unwrapData(response)),
+      bookedFor: booking == null ? null : DateTime.parse(booking['starts_at'] as String),
+    );
   }
 
   Future<Order> update(String id, Map<String, dynamic> changes) async {

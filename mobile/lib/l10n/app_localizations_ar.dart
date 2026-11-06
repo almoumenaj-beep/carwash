@@ -1688,4 +1688,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get graceMinutesInvalid => 'اكتب من 5 إلى 720 دقيقة، أو اتركه فارغاً';
+
+  @override
+  String checkedInWithBooking(String reference, String time) {
+    return 'تم استقبال $reference وربطه بحجز الساعة $time';
+  }
 }

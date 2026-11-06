@@ -3043,6 +3043,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter 5 to 720 minutes, or leave it empty'**
   String get graceMinutesInvalid;
+
+  /// No description provided for @checkedInWithBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'{reference} checked in and linked to its {time} booking'**
+  String checkedInWithBooking(String reference, String time);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

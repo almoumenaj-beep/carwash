@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Domain\Appointments\Actions\MatchBookingOnArrival;
 use App\Domain\Orders\Actions\CheckInVehicle;
 use App\Domain\Orders\Actions\UpdateOrder;
 use App\Domain\Orders\Enums\OrderStatus;
@@ -61,11 +62,19 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    public function store(StoreOrderRequest $request, CheckInVehicle $checkInVehicle): JsonResponse
+    /**
+     * Checks a car in; a booking it had today is marked as arrived (`meta.appointment`).
+     */
+    public function store(StoreOrderRequest $request, CheckInVehicle $checkInVehicle, MatchBookingOnArrival $matchBookingOnArrival): JsonResponse
     {
         $order = $checkInVehicle->handle($request->user(), $request->validated());
+        $appointment = $matchBookingOnArrival->handle($request->user(), $order->load('customer'));
 
         return OrderResource::make($order->load(self::RELATIONS))
+            ->additional(['meta' => ['appointment' => $appointment === null ? null : [
+                'id' => $appointment->id,
+                'starts_at' => $appointment->starts_at->setTimezone($request->user()->tenant->timezone)->toIso8601String(),
+            ]]])
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
