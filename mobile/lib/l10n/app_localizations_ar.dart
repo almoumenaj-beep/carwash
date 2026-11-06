@@ -1644,7 +1644,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get groupMore => 'الإدارة';
 
   @override
-  String get groupFinance => 'المال والتقارير';
+  String get groupFinance => 'الشؤون المالية';
 
   @override
   String get groupResources => 'المخزون والمعدات';

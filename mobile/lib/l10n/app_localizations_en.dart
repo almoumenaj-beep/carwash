@@ -1596,7 +1596,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupMore => 'Management';
 
   @override
-  String get groupFinance => 'Money and reports';
+  String get groupFinance => 'Finance';
 
   @override
   String get groupResources => 'Stock and equipment';

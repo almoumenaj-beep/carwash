@@ -2957,7 +2957,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupFinance.
   ///
   /// In en, this message translates to:
-  /// **'Money and reports'**
+  /// **'Finance'**
   String get groupFinance;
 
   /// No description provided for @groupResources.
