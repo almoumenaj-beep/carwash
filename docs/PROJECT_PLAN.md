@@ -100,7 +100,7 @@
 **تشغيل التطبيق عبر الواي فاي (بدون كابل):** الجوال والكمبيوتر على نفس الشبكة.
 1. مرة واحدة، في PowerShell **كمسؤول (Run as administrator)**: `Set-NetConnectionProfile -InterfaceAlias "Wi-Fi" -NetworkCategory Private; New-NetFirewallRule -DisplayName "CarWash dev server (8000)" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow -Profile Private` — يجعل شبكة البيت «خاصة» ويفتح المنفذ 8000 عليها فقط (لا تفعل ذلك على شبكة عامة).
 2. شغّل الخادم للشبكة: `php artisan serve --host=0.0.0.0 --port=8000`.
-   - للمصروفات الدورية والانصراف التلقائي ومهلة الحجوزات: شغّل أيضاً `php artisan schedule:work` (أو `php artisan expenses:generate-recurring` و`php artisan attendance:close-forgotten` و`php artisan appointments:mark-no-shows` يدوياً).
+   - للمصروفات الدورية والانصراف التلقائي ومهلة الحجوزات: شغّل أيضاً في PowerShell: `while ($true) { php artisan schedule:run; Start-Sleep 60 }` (وليس `schedule:work`، الذي يتوقف نهائياً إذا تأخرت دورة واحدة أكثر من 60 ثانية). وعلى السيرفر يكفي cron كل دقيقة.
 3. وصّل الجوال بالكابل مرة واحدة وشغّل `.\mobile\run-on-wifi` — يثبّت التطبيق بعنوان الكمبيوتر على الواي فاي (مثل `http://192.168.100.120:8000`)، وبعدها افصل الكابل. إذا تغيّر عنوان الكمبيوتر أعد الخطوة 3 (أو ثبّت العنوان من الراوتر).
 
 **النشر والتجربة الحقيقية (Pilot):**
