@@ -19,7 +19,7 @@ use Illuminate\Validation\ValidationException;
 /**
  * Takes payment for an order at the till: applies a discount within the cashier's limit, works out
  * the VAT from the car wash's settings, issues the invoice with the branch's next number and records
- * the cash received on the cashier's open shift at the branch. With `deliver`, a ready car is handed
+ * the payment on the cashier's open shift at the branch. With `deliver`, a ready car is handed
  * over in the same step.
  */
 class CheckoutOrder
@@ -41,9 +41,10 @@ class CheckoutOrder
             $discount = $this->discount($actor, $subtotal, $data);
             $tenant = $actor->tenant;
             $vat = Vat::of($subtotal - $discount, $tenant->vat_rate_bps, $tenant->prices_include_vat);
-            $tendered = $data['tendered'] ?? $vat['total'];
+            $method = PaymentMethod::tryFrom($data['method'] ?? '') ?? PaymentMethod::Cash;
+            $tendered = $method === PaymentMethod::Cash ? ($data['tendered'] ?? $vat['total']) : null;
 
-            if ($tendered < $vat['total']) {
+            if ($tendered !== null && $tendered < $vat['total']) {
                 throw ValidationException::withMessages(['tendered' => __('The cash received is less than the total.')]);
             }
 
@@ -79,10 +80,10 @@ class CheckoutOrder
             $invoice->payments()->create([
                 'branch_id' => $order->branch_id,
                 'cash_shift_id' => $shift->id,
-                'method' => PaymentMethod::tryFrom($data['method'] ?? '') ?? PaymentMethod::Cash,
+                'method' => $method,
                 'amount' => $vat['total'],
                 'tendered' => $tendered,
-                'change_given' => $tendered - $vat['total'],
+                'change_given' => $tendered === null ? 0 : $tendered - $vat['total'],
                 'received_by' => $actor->id,
                 'received_at' => now(),
             ]);

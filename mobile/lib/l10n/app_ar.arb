@@ -556,5 +556,9 @@
   "purchaseListSection": "المواد المضافة ({count})",
   "purchaseListEmpty": "اختر مادة واكتب كميتها وسعرها، ثم اضغط «إضافة المادة».",
   "savePurchase": "حفظ المشتريات",
-  "payBenefit": "بنفت"
+  "payBenefit": "بنفت",
+  "shiftCardTaken": "مدفوعات البطاقة",
+  "shiftBenefitTaken": "مدفوعات بنفت",
+  "cardPaymentHint": "سجّل الدفع بعد نجاح العملية على جهاز البطاقة.",
+  "benefitPaymentHint": "سجّل الدفع بعد أن تتأكد من وصول المبلغ إلى حساب المغسلة."
 }

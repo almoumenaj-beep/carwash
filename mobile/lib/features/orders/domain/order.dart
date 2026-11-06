@@ -100,6 +100,7 @@ class OrderInvoice {
     required this.vatAmount,
     required this.tendered,
     required this.changeGiven,
+    this.paymentMethod = 'cash',
   });
 
   factory OrderInvoice.fromJson(Map<String, dynamic> json) {
@@ -115,6 +116,7 @@ class OrderInvoice {
       vatAmount: json['vat_amount'] as int,
       tendered: payments.fold(0, (sum, payment) => sum + ((payment['tendered'] as int?) ?? (payment['amount'] as int))),
       changeGiven: payments.fold(0, (sum, payment) => sum + (payment['change_given'] as int)),
+      paymentMethod: payments.isEmpty ? 'cash' : payments.first['method'] as String? ?? 'cash',
     );
   }
 
@@ -128,6 +130,9 @@ class OrderInvoice {
   final int vatAmount;
   final int tendered;
   final int changeGiven;
+
+  /// How the invoice was paid (`cash`, `card` or `benefit`).
+  final String paymentMethod;
 }
 
 /// One inspection at the quality check: whether each service on the order was done properly.

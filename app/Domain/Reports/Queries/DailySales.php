@@ -35,6 +35,12 @@ class DailySales
         $count = $invoices()->count();
         $sales = (int) $invoices()->sum('total');
         $expenses = (int) Expense::query()->whereIn('branch_id', $branchIds)->whereDate('spent_on', $day->toDateString())->sum('amount');
+        $collected = fn (PaymentMethod $method): int => (int) Payment::query()
+            ->whereIn('branch_id', $branchIds)
+            ->where('method', $method->value)
+            ->where('received_at', '>=', $from)
+            ->where('received_at', '<', $to)
+            ->sum('amount');
 
         return [
             'date' => $day->toDateString(),
@@ -44,12 +50,9 @@ class DailySales
                 'discounts' => (int) $invoices()->sum('discount_total'),
                 'sales' => $sales,
                 'vat' => (int) $invoices()->sum('vat_amount'),
-                'cash_collected' => (int) Payment::query()
-                    ->whereIn('branch_id', $branchIds)
-                    ->where('method', PaymentMethod::Cash->value)
-                    ->where('received_at', '>=', $from)
-                    ->where('received_at', '<', $to)
-                    ->sum('amount'),
+                'cash_collected' => $collected(PaymentMethod::Cash),
+                'card_collected' => $collected(PaymentMethod::Card),
+                'benefit_collected' => $collected(PaymentMethod::Benefit),
                 'average_ticket' => $count === 0 ? 0 : intdiv($sales, $count),
                 'expenses' => $expenses,
                 'net' => $sales - $expenses,

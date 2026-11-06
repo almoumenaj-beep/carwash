@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Domain\Sales\Enums\PaymentMethod;
 use App\Domain\Sales\Models\CashShift;
 use App\Domain\Sales\Models\Invoice;
 use Illuminate\Http\Request;
@@ -35,6 +36,8 @@ class CashShiftResource extends JsonResource
             'discounts_total' => (int) (clone $invoices)->sum('discount_total'),
             'vat_total' => (int) (clone $invoices)->sum('vat_amount'),
             'cash_taken' => $this->cashTaken(),
+            'card_taken' => $this->takenBy(PaymentMethod::Card),
+            'benefit_taken' => $this->takenBy(PaymentMethod::Benefit),
             'cash_paid_out' => $this->cashPaidOut(),
             'expected_cash' => $this->expected_cash ?? $this->expectedCash(),
             'counted_cash' => $this->counted_cash,

@@ -1911,4 +1911,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get payBenefit => 'بنفت';
+
+  @override
+  String get shiftCardTaken => 'مدفوعات البطاقة';
+
+  @override
+  String get shiftBenefitTaken => 'مدفوعات بنفت';
+
+  @override
+  String get cardPaymentHint => 'سجّل الدفع بعد نجاح العملية على جهاز البطاقة.';
+
+  @override
+  String get benefitPaymentHint => 'سجّل الدفع بعد أن تتأكد من وصول المبلغ إلى حساب المغسلة.';
 }

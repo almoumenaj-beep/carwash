@@ -1863,4 +1863,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get payBenefit => 'BenefitPay';
+
+  @override
+  String get shiftCardTaken => 'Card payments';
+
+  @override
+  String get shiftBenefitTaken => 'BenefitPay payments';
+
+  @override
+  String get cardPaymentHint => 'Record the payment after it succeeds on the card machine.';
+
+  @override
+  String get benefitPaymentHint => 'Record the payment after confirming the money reached the car wash account.';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/money/money_format.dart';
+import '../../../core/money/money_method_label.dart';
 import '../../../core/money/percent_format.dart';
 import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
@@ -12,16 +13,6 @@ import '../../expenses/domain/expense.dart';
 import '../data/reports_repository.dart';
 import '../domain/financial_reports.dart';
 import 'daily_sales_screen.dart';
-
-/// A payment method from the API (`cash`, `cash_drawer`...) in words.
-String moneyMethodLabel(AppLocalizations l10n, String method) => switch (method) {
-  'cash' => l10n.payCash,
-  'cash_drawer' => l10n.payFromDrawer,
-  'card' => l10n.payCard,
-  'bank_transfer' => l10n.payBankTransfer,
-  'benefit' => l10n.payBenefit,
-  _ => method,
-};
 
 /// The quick periods offered above the reports.
 enum _Period { thisMonth, lastMonth, thisYear, custom }

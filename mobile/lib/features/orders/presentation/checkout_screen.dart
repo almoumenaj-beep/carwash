@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
+import '../../../core/money/money_method_label.dart';
 import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
@@ -18,8 +19,9 @@ import '../domain/checkout_totals.dart';
 import '../domain/order.dart';
 import 'order_widgets.dart';
 
-/// Takes cash for an order: the services and total with VAT, a discount within the cashier's limit, the cash
-/// received and the change. A ready car can be handed over in the same step.
+/// Takes payment for an order: the services and total with VAT, a discount within the cashier's limit, and cash
+/// (with the amount received and the change), card or Benefit. Card and Benefit are recorded by hand once the cashier
+/// has confirmed the money arrived. A ready car can be handed over in the same step.
 class CheckoutScreen extends ConsumerWidget {
   const CheckoutScreen({super.key, required this.orderId});
 
@@ -70,6 +72,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
   final _reason = TextEditingController();
   final _tendered = TextEditingController();
   String _discountType = 'percent';
+  String _method = 'cash';
   bool _saving = false;
   ApiProblem? _problem;
 
@@ -104,7 +107,8 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
   Future<void> _pay({required bool deliver}) async {
     final money = ref.read(moneyFormatProvider);
     final totals = _totals(money);
-    final tendered = _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
+    final isCash = _method == 'cash';
+    final tendered = !isCash || _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
 
     setState(() {
       _saving = true;
@@ -119,7 +123,8 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
             discountAmount: totals.discount > 0 && _discountType == 'amount' ? totals.discount : null,
             discountPercentBps: totals.discount > 0 && _discountType == 'percent' ? _discountValue(money) : null,
             discountReason: totals.discount > 0 ? _reason.text.trim() : null,
-            tendered: tendered,
+            method: _method,
+            tendered: isCash ? tendered : null,
             deliver: deliver,
           );
       ref.invalidate(orderProvider(widget.order.id));
@@ -158,7 +163,8 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     final overLimit = totals.discountBps > limitBps;
     final reasonMissing = totals.discount > 0 && _reason.text.trim().isEmpty;
     final tendered = _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
-    final shortOfCash = tendered == null || tendered < totals.total;
+    final isCash = _method == 'cash';
+    final shortOfCash = isCash && (tendered == null || tendered < totals.total);
     final canDeliver = order.status == OrderStatus.ready && canMoveTo(ref, OrderStatus.delivered);
     final shift = ref.watch(currentShiftProvider(order.branchId));
     final hasShift = shift.value != null;
@@ -272,33 +278,58 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
             ],
           ],
           const SizedBox(height: 16),
-          Text(l10n.cashReceivedField, style: theme.textTheme.titleSmall),
+          Text(l10n.paymentMethodField, style: theme.textTheme.titleSmall),
           const SizedBox(height: 8),
-          TextField(
-            controller: _tendered,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,٠-٩٫٬]'))],
-            decoration: InputDecoration(
-              hintText: money.toInput(totals.total),
-              suffixText: money.currency,
-              errorText: shortOfCash ? l10n.cashTooLittle : null,
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<String>(
+              showSelectedIcon: false,
+              segments: [
+                for (final method in const ['cash', 'card', 'benefit'])
+                  ButtonSegment(value: method, label: Text(moneyMethodLabel(l10n, method))),
+              ],
+              selected: {_method},
+              onSelectionChanged: (selection) => setState(() => _method = selection.single),
             ),
-            onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              for (final note in _cashSuggestions(totals.total, money))
-                ActionChip(
-                  label: Text(money.formatNumber(note)),
-                  onPressed: () => setState(() => _tendered.text = money.toInput(note)),
-                ),
+          const SizedBox(height: 16),
+          if (!isCash)
+            Row(
+              children: [
+                Icon(Icons.info_outline, size: 20, color: theme.colorScheme.primary),
+                const SizedBox(width: 8),
+                Expanded(child: Text(_method == 'card' ? l10n.cardPaymentHint : l10n.benefitPaymentHint)),
+              ],
+            ),
+          if (isCash) ...[
+            Text(l10n.cashReceivedField, style: theme.textTheme.titleSmall),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _tendered,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,٠-٩٫٬]'))],
+              decoration: InputDecoration(
+                hintText: money.toInput(totals.total),
+                suffixText: money.currency,
+                errorText: shortOfCash ? l10n.cashTooLittle : null,
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              children: [
+                for (final note in _cashSuggestions(totals.total, money))
+                  ActionChip(
+                    label: Text(money.formatNumber(note)),
+                    onPressed: () => setState(() => _tendered.text = money.toInput(note)),
+                  ),
+              ],
+            ),
+            if (tendered != null && tendered > totals.total) ...[
+              const SizedBox(height: 12),
+              Text(l10n.changeDue(money.format(tendered - totals.total)), style: theme.textTheme.titleMedium),
             ],
-          ),
-          if (tendered != null && tendered > totals.total) ...[
-            const SizedBox(height: 12),
-            Text(l10n.changeDue(money.format(tendered - totals.total)), style: theme.textTheme.titleMedium),
           ],
           if (problem != null) ...[
             const SizedBox(height: 12),
@@ -379,6 +410,8 @@ class _PaidDialog extends ConsumerWidget {
                 Text(invoice.reference),
                 const SizedBox(height: 8),
                 Text(money.format(invoice.total), style: Theme.of(context).textTheme.headlineSmall),
+                const SizedBox(height: 8),
+                Text('${l10n.paymentMethodField}: ${moneyMethodLabel(l10n, invoice.paymentMethod)}'),
                 if (invoice.changeGiven > 0) ...[
                   const SizedBox(height: 8),
                   Text(

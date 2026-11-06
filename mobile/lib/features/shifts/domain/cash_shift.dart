@@ -12,6 +12,8 @@ class CashShift {
     required this.invoicesCount,
     required this.discountsTotal,
     required this.cashTaken,
+    this.cardTaken = 0,
+    this.benefitTaken = 0,
     this.cashPaidOut = 0,
     required this.expectedCash,
     required this.countedCash,
@@ -30,6 +32,8 @@ class CashShift {
     invoicesCount: json['invoices_count'] as int,
     discountsTotal: json['discounts_total'] as int,
     cashTaken: json['cash_taken'] as int,
+    cardTaken: json['card_taken'] as int? ?? 0,
+    benefitTaken: json['benefit_taken'] as int? ?? 0,
     cashPaidOut: json['cash_paid_out'] as int? ?? 0,
     expectedCash: json['expected_cash'] as int,
     countedCash: json['counted_cash'] as int?,
@@ -51,6 +55,10 @@ class CashShift {
 
   /// Cash taken for invoices, after change was given.
   final int cashTaken;
+
+  /// Collected by card and Benefit: outside the drawer, so not part of [expectedCash].
+  final int cardTaken;
+  final int benefitTaken;
 
   /// Cash taken out of the drawer to pay expenses.
   final int cashPaidOut;

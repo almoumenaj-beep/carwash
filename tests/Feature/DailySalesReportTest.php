@@ -40,6 +40,21 @@ class DailySalesReportTest extends TestCase
         $this->moveTo($cancelled, 'cancelled', $this->owner, ['reason' => 'Left']);
     }
 
+    public function test_the_day_separates_cash_card_and_benefit(): void
+    {
+        $this->pay($this->checkIn()->json('data.id'))->assertCreated();
+        $this->pay($this->checkIn()->json('data.id'), extra: ['method' => 'card'])->assertCreated();
+        $this->pay($this->checkIn()->json('data.id'), extra: ['method' => 'benefit'])->assertCreated();
+        Sanctum::actingAs($this->owner);
+
+        $this->getJson("/api/v1/reports/daily-sales?branch_id={$this->branch->id}")
+            ->assertOk()
+            ->assertJsonPath('data.totals.sales', 6000)
+            ->assertJsonPath('data.totals.cash_collected', 2000)
+            ->assertJsonPath('data.totals.card_collected', 2000)
+            ->assertJsonPath('data.totals.benefit_collected', 2000);
+    }
+
     public function test_the_day_shows_sales_cars_services_cashiers_washers_and_hours(): void
     {
         $this->aDayOfSales();

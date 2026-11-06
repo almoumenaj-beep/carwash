@@ -58,7 +58,15 @@ class CashShift extends Model
      */
     public function cashTaken(): int
     {
-        return (int) $this->payments()->where('method', PaymentMethod::Cash->value)->sum('amount');
+        return $this->takenBy(PaymentMethod::Cash);
+    }
+
+    /**
+     * What was collected during the shift by one payment method.
+     */
+    public function takenBy(PaymentMethod $method): int
+    {
+        return (int) $this->payments()->where('method', $method->value)->sum('amount');
     }
 
     /**

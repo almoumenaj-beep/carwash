@@ -6,6 +6,7 @@ import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
+import '../../../core/money/money_method_label.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
@@ -211,6 +212,7 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                             '${invoice.discountReason == null ? '' : ' (${invoice.discountReason})'}',
                       '${l10n.vatAddedLabel(PercentFormat.format(invoice.vatRateBps))}: '
                           '${money.format(invoice.vatAmount)}',
+                      '${l10n.paymentMethodField}: ${moneyMethodLabel(l10n, invoice.paymentMethod)}',
                       if (invoice.changeGiven > 0) l10n.changeDue(money.format(invoice.changeGiven)),
                     ].join('\n'),
                   ),

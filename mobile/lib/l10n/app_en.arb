@@ -1015,5 +1015,9 @@
     }
   },
   "savePurchase": "Save purchase",
-  "payBenefit": "BenefitPay"
+  "payBenefit": "BenefitPay",
+  "shiftCardTaken": "Card payments",
+  "shiftBenefitTaken": "BenefitPay payments",
+  "cardPaymentHint": "Record the payment after it succeeds on the card machine.",
+  "benefitPaymentHint": "Record the payment after confirming the money reached the car wash account."
 }

@@ -124,6 +124,9 @@ class _Report extends ConsumerWidget {
             (l10n.shiftInvoices, '${report.invoicesCount}', Icons.receipt_long_outlined),
             (l10n.averageTicket, money.format(report.averageTicket), Icons.trending_up),
             (l10n.shiftCashTaken, money.format(report.cashCollected), Icons.point_of_sale_outlined),
+            if (report.cardCollected > 0) (l10n.shiftCardTaken, money.format(report.cardCollected), Icons.credit_card),
+            if (report.benefitCollected > 0)
+              (l10n.shiftBenefitTaken, money.format(report.benefitCollected), Icons.phone_iphone),
             (l10n.shiftDiscounts, money.format(report.discounts), Icons.local_offer_outlined),
             (l10n.vatTotal, money.format(report.vat), Icons.account_balance_outlined),
             (l10n.expensesTotal, money.format(report.expenses), Icons.account_balance_wallet_outlined),

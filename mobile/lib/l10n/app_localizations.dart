@@ -3433,6 +3433,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'BenefitPay'**
   String get payBenefit;
+
+  /// No description provided for @shiftCardTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'Card payments'**
+  String get shiftCardTaken;
+
+  /// No description provided for @shiftBenefitTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'BenefitPay payments'**
+  String get shiftBenefitTaken;
+
+  /// No description provided for @cardPaymentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Record the payment after it succeeds on the card machine.'**
+  String get cardPaymentHint;
+
+  /// No description provided for @benefitPaymentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Record the payment after confirming the money reached the car wash account.'**
+  String get benefitPaymentHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

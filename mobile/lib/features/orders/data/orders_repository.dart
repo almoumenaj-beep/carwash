@@ -82,13 +82,14 @@ class OrdersRepository {
     return Order.fromJson(unwrapData(response));
   }
 
-  /// Takes cash for the order and issues its invoice. A discount is an amount in minor units or a percentage
+  /// Takes payment for the order by [method] and issues its invoice. A discount is an amount in minor units or a percentage
   /// in basis points (with a reason); [deliver] also hands a ready car over.
   Future<Order> checkout(
     String id, {
     int? discountAmount,
     int? discountPercentBps,
     String? discountReason,
+    String method = 'cash',
     int? tendered,
     bool deliver = false,
   }) async {
@@ -96,7 +97,7 @@ class OrdersRepository {
       () => _dio.post<Map<String, dynamic>>(
         '/orders/$id/checkout',
         data: {
-          'method': 'cash',
+          'method': method,
           'discount_amount': ?discountAmount,
           'discount_percent_bps': ?discountPercentBps,
           'discount_reason': ?discountReason,

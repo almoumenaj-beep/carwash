@@ -245,6 +245,9 @@ class _OpenShiftState extends ConsumerState<_OpenShift> {
                 _SummaryRow(label: l10n.openingFloatField, value: money.format(shift.openingFloat)),
                 _SummaryRow(label: l10n.shiftInvoices, value: '${shift.invoicesCount}'),
                 _SummaryRow(label: l10n.shiftCashTaken, value: money.format(shift.cashTaken)),
+                if (shift.cardTaken > 0) _SummaryRow(label: l10n.shiftCardTaken, value: money.format(shift.cardTaken)),
+                if (shift.benefitTaken > 0)
+                  _SummaryRow(label: l10n.shiftBenefitTaken, value: money.format(shift.benefitTaken)),
                 if (shift.cashPaidOut > 0)
                   _SummaryRow(label: l10n.cashPaidOut, value: '- ${money.format(shift.cashPaidOut)}'),
                 if (shift.discountsTotal > 0)
@@ -347,6 +350,9 @@ class _ClosedDialog extends ConsumerWidget {
         children: [
           _SummaryRow(label: l10n.shiftInvoices, value: '${shift.invoicesCount}'),
           _SummaryRow(label: l10n.shiftCashTaken, value: money.format(shift.cashTaken)),
+          if (shift.cardTaken > 0) _SummaryRow(label: l10n.shiftCardTaken, value: money.format(shift.cardTaken)),
+          if (shift.benefitTaken > 0)
+            _SummaryRow(label: l10n.shiftBenefitTaken, value: money.format(shift.benefitTaken)),
           if (shift.cashPaidOut > 0)
             _SummaryRow(label: l10n.cashPaidOut, value: '- ${money.format(shift.cashPaidOut)}'),
           _SummaryRow(label: l10n.expectedCash, value: money.format(shift.expectedCash)),

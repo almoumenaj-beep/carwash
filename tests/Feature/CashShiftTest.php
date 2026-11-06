@@ -38,6 +38,27 @@ class CashShiftTest extends TestCase
             ->assertJsonValidationErrors(['shift' => 'Open your shift before taking payment.']);
     }
 
+    public function test_card_and_benefit_payments_stay_out_of_the_drawer(): void
+    {
+        $shiftId = $this->openShift();
+
+        $this->pay($this->checkIn()->json('data.id'), extra: ['method' => 'card'])->assertCreated();
+        $this->pay($this->checkIn()->json('data.id'), extra: ['method' => 'benefit'])->assertCreated();
+        $this->pay($this->checkIn()->json('data.id'), extra: ['tendered' => 2000])->assertCreated();
+
+        Sanctum::actingAs($this->cashier);
+        $this->getJson("/api/v1/shifts/current?branch_id={$this->branch->id}")
+            ->assertJsonPath('data.invoices_count', 3)
+            ->assertJsonPath('data.cash_taken', 2000)
+            ->assertJsonPath('data.card_taken', 2000)
+            ->assertJsonPath('data.benefit_taken', 2000)
+            ->assertJsonPath('data.expected_cash', 12000);
+
+        $this->postJson("/api/v1/shifts/{$shiftId}/close", ['counted_cash' => 12000])
+            ->assertOk()
+            ->assertJsonPath('data.variance', 0);
+    }
+
     public function test_a_cashier_opens_one_shift_per_branch_and_sees_it_live(): void
     {
         $shiftId = $this->openShift();

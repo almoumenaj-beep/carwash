@@ -26,6 +26,17 @@ class OrderCheckoutTest extends TestCase
         return $this->checkIn(['items' => [['service_id' => $this->wash->id], ['service_id' => $this->freshener->id]]])->json('data.id');
     }
 
+    public function test_a_benefit_payment_needs_no_cash_and_gives_no_change(): void
+    {
+        $this->pay($this->washAndFreshener(), extra: ['method' => 'benefit', 'tendered' => 1])
+            ->assertCreated()
+            ->assertJsonPath('data.is_paid', true)
+            ->assertJsonPath('data.invoice.payments.0.method', 'benefit')
+            ->assertJsonPath('data.invoice.payments.0.amount', 2500)
+            ->assertJsonPath('data.invoice.payments.0.tendered', null)
+            ->assertJsonPath('data.invoice.payments.0.change_given', 0);
+    }
+
     public function test_cash_payment_issues_an_invoice_with_the_vat_included_in_the_price(): void
     {
         $orderId = $this->washAndFreshener();
