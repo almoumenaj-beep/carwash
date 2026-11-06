@@ -31,7 +31,7 @@ return [
         'checkout' => 'تحصيل الدفع',
         'discount' => 'منح خصم',
         'price_override' => 'تغيير السعر',
-        'close_shift' => 'إقفال الوردية',
+        'close_shift' => 'إقفال الكاشير',
     ],
     'appointments' => [
         'manage' => 'إدارة المواعيد',

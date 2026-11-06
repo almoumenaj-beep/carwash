@@ -296,7 +296,7 @@ return [
         'materials.*.quantity' => 'الكمية',
         'counted_cash' => 'النقد المعدود',
         'note' => 'الملاحظة',
-        'shift' => 'الوردية',
+        'shift' => 'الكاشير',
         'package_discount_type' => 'نوع خصم الباقة',
         'package_discount_value' => 'خصم الباقة',
         'package_service_ids' => 'خدمات الباقة',
