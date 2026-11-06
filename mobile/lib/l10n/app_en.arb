@@ -993,7 +993,6 @@
   "cancelPurchase": "Cancel purchase",
   "cancelPurchaseConfirm": "This purchase's quantities leave the stock and its expense is removed. The purchase stays listed as cancelled.",
   "newSupplierButton": "New supplier",
-  "newMaterialButton": "New material",
   "sourcePurchase": "Inventory purchase",
   "sourcePayroll": "Payroll",
   "sourceMaintenance": "Maintenance",
@@ -1003,5 +1002,16 @@
   "cancelMaintenance": "Cancel maintenance",
   "cancelMaintenanceConfirm": "Its expense, if any, is removed, the next maintenance date and the machine's status go back as they were, and the line stays on record as cancelled.",
   "cancelPayrollPayment": "Cancel payroll payment",
-  "cancelPayrollPaymentConfirm": "This month's expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back."
+  "cancelPayrollPaymentConfirm": "This month's expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.",
+  "newMaterialOption": "+ New material…",
+  "addToList": "Add to the list",
+  "purchaseListSection": "Materials bought ({count})",
+  "purchaseListEmpty": "Choose a material, enter its quantity and price, then press «Add to the list».",
+  "@purchaseListSection": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

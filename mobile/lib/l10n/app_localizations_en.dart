@@ -1812,9 +1812,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newSupplierButton => 'New supplier';
 
   @override
-  String get newMaterialButton => 'New material';
-
-  @override
   String get sourcePurchase => 'Inventory purchase';
 
   @override
@@ -1846,4 +1843,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get cancelPayrollPaymentConfirm =>
       'This month\'s expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.';
+
+  @override
+  String get newMaterialOption => '+ New material…';
+
+  @override
+  String get addToList => 'Add to the list';
+
+  @override
+  String purchaseListSection(int count) {
+    return 'Materials bought ($count)';
+  }
+
+  @override
+  String get purchaseListEmpty => 'Choose a material, enter its quantity and price, then press «Add to the list».';
 }

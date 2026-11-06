@@ -3338,12 +3338,6 @@ abstract class AppLocalizations {
   /// **'New supplier'**
   String get newSupplierButton;
 
-  /// No description provided for @newMaterialButton.
-  ///
-  /// In en, this message translates to:
-  /// **'New material'**
-  String get newMaterialButton;
-
   /// No description provided for @sourcePurchase.
   ///
   /// In en, this message translates to:
@@ -3403,6 +3397,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This month\'s expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.'**
   String get cancelPayrollPaymentConfirm;
+
+  /// No description provided for @newMaterialOption.
+  ///
+  /// In en, this message translates to:
+  /// **'+ New material…'**
+  String get newMaterialOption;
+
+  /// No description provided for @addToList.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to the list'**
+  String get addToList;
+
+  /// No description provided for @purchaseListSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials bought ({count})'**
+  String purchaseListSection(int count);
+
+  /// No description provided for @purchaseListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a material, enter its quantity and price, then press «Add to the list».'**
+  String get purchaseListEmpty;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

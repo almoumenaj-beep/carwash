@@ -1860,9 +1860,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newSupplierButton => 'مورد جديد';
 
   @override
-  String get newMaterialButton => 'مادة جديدة';
-
-  @override
   String get sourcePurchase => 'مشتريات مخزون';
 
   @override
@@ -1894,4 +1891,18 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get cancelPayrollPaymentConfirm =>
       'يُحذف مصروف هذا الشهر من المصروفات ويرجع المسير مسودة، فتراجعه وتدفعه من جديد. إذا كان المال قد صُرف فعلاً للموظفين فهذا لا يسترده.';
+
+  @override
+  String get newMaterialOption => '+ مادة جديدة…';
+
+  @override
+  String get addToList => 'إضافة إلى القائمة';
+
+  @override
+  String purchaseListSection(int count) {
+    return 'المواد المضافة ($count)';
+  }
+
+  @override
+  String get purchaseListEmpty => 'اختر مادة واكتب كميتها وسعرها، ثم اضغط «إضافة إلى القائمة».';
 }
