@@ -492,5 +492,7 @@
   "minutesUnit": "دقيقة",
   "graceMinutesHint": "إذا لم تصل السيارة خلال هذه المدة بعد موعدها يصير الحجز «لم يحضر» تلقائياً. اتركه فارغاً لإيقاف ذلك.",
   "graceMinutesInvalid": "اكتب من 5 إلى 720 دقيقة، أو اتركه فارغاً",
-  "checkedInWithBooking": "تم استقبال {reference} وربطه بحجز الساعة {time}"
+  "checkedInWithBooking": "تم استقبال {reference} وربطه بحجز الساعة {time}",
+  "manageServiceCategoriesHint": "إضافة تصنيف للخدمات أو تعديله أو إيقافه",
+  "manageVehicleSizesHint": "الأحجام التي تختلف الأسعار حسبها، مثل صالون ودفع رباعي"
 }

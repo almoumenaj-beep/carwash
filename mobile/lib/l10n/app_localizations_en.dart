@@ -1645,4 +1645,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String checkedInWithBooking(String reference, String time) {
     return '$reference checked in and linked to its $time booking';
   }
+
+  @override
+  String get manageServiceCategoriesHint => 'Add, rename or switch off service categories';
+
+  @override
+  String get manageVehicleSizesHint => 'The sizes prices depend on, such as sedan and SUV';
 }

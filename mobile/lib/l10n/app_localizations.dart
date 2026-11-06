@@ -3049,6 +3049,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{reference} checked in and linked to its {time} booking'**
   String checkedInWithBooking(String reference, String time);
+
+  /// No description provided for @manageServiceCategoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add, rename or switch off service categories'**
+  String get manageServiceCategoriesHint;
+
+  /// No description provided for @manageVehicleSizesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The sizes prices depend on, such as sedan and SUV'**
+  String get manageVehicleSizesHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

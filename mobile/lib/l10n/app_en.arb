@@ -868,5 +868,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "manageServiceCategoriesHint": "Add, rename or switch off service categories",
+  "manageVehicleSizesHint": "The sizes prices depend on, such as sedan and SUV"
 }

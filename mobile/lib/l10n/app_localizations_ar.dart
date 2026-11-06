@@ -1693,4 +1693,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String checkedInWithBooking(String reference, String time) {
     return 'تم استقبال $reference وربطه بحجز الساعة $time';
   }
+
+  @override
+  String get manageServiceCategoriesHint => 'إضافة تصنيف للخدمات أو تعديله أو إيقافه';
+
+  @override
+  String get manageVehicleSizesHint => 'الأحجام التي تختلف الأسعار حسبها، مثل صالون ودفع رباعي';
 }

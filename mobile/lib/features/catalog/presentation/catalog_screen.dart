@@ -25,32 +25,22 @@ class CatalogScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.catalogTitle),
-        actions: [
-          IconButton(
-            tooltip: l10n.categoriesTitle,
-            icon: const Icon(Icons.category_outlined),
-            onPressed: () => context.push('/catalog/categories'),
-          ),
-          IconButton(
-            tooltip: l10n.sizesTitle,
-            icon: const Icon(Icons.directions_car_outlined),
-            onPressed: () => context.push('/catalog/sizes'),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.catalogTitle)),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/catalog/services/new'),
         icon: const Icon(Icons.add),
         label: Text(l10n.newService),
       ),
       body: switch ((services, categories)) {
-        (AsyncData(value: final services), AsyncData()) when services.isEmpty => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(l10n.noServices, textAlign: TextAlign.center),
-          ),
+        (AsyncData(value: final services), AsyncData()) when services.isEmpty => ListView(
+          padding: const EdgeInsets.only(bottom: 96),
+          children: [
+            const _CatalogSetup(),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(l10n.noServices, textAlign: TextAlign.center),
+            ),
+          ],
         ),
         (AsyncData(value: final services), AsyncData(value: final categories)) => RefreshIndicator(
           onRefresh: () async => refresh(),
@@ -59,6 +49,39 @@ class CatalogScreen extends ConsumerWidget {
         (AsyncError(:final error), _) || (_, AsyncError(:final error)) => ErrorView(error: error, onRetry: refresh),
         _ => const Center(child: CircularProgressIndicator()),
       },
+    );
+  }
+}
+
+/// What the menu is built from: the service categories and the vehicle sizes prices depend on.
+class _CatalogSetup extends StatelessWidget {
+  const _CatalogSetup();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Card(
+      margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+      child: Column(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.category_outlined),
+            title: Text(l10n.categoriesTitle),
+            subtitle: Text(l10n.manageServiceCategoriesHint),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/catalog/categories'),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.directions_car_outlined),
+            title: Text(l10n.sizesTitle),
+            subtitle: Text(l10n.manageVehicleSizesHint),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => context.push('/catalog/sizes'),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -87,6 +110,7 @@ class _Menu extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.only(bottom: 96),
       children: [
+        const _CatalogSetup(),
         for (final (title, items) in sections) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
