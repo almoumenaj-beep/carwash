@@ -1938,4 +1938,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get autoClosedShiftWarning =>
       'كاشير سابق أُقفل تلقائياً عند وقت الإغلاق. تأكد من مطابقة الدرج قبل فتح كاشير جديد.';
+
+  @override
+  String get noBookingActions => 'لا تتوفر إجراءات على هذا الحجز.';
 }

@@ -299,6 +299,12 @@ class _AppointmentTile extends ConsumerWidget {
     final canManage = me?.can(Permissions.appointmentsManage) ?? false;
     final canCheckIn = me?.can(Permissions.ordersCreate) ?? false;
     final orderId = appointment.orderId;
+    final hasActions =
+        (appointment.isOpen && canCheckIn) ||
+        (appointment.status == AppointmentStatus.booked && canManage) ||
+        (appointment.isOpen && canManage) ||
+        (appointment.isLateAt(DateTime.now()) && canManage) ||
+        orderId != null;
 
     showModalBottomSheet<void>(
       context: context,
@@ -307,6 +313,11 @@ class _AppointmentTile extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (!hasActions)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                child: Text(l10n.noBookingActions, textAlign: TextAlign.center),
+              ),
             if (appointment.isOpen && canCheckIn)
               ListTile(
                 leading: const Icon(Icons.local_car_wash_outlined),

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Domain\Appointments\Models\Appointment;
+use App\Domain\Crm\Models\Customer;
 use App\Domain\Crm\Models\Vehicle;
 use App\Domain\Identity\Enums\DefaultRole;
 use App\Domain\Orders\Models\Order;
@@ -60,7 +61,7 @@ class AppointmentTest extends TestCase
             ->assertJsonPath('data.ends_at', '2026-11-04T10:15:00+03:00')
             ->assertJsonPath('data.status', 'booked')
             ->assertJsonPath('data.customer_phone', '+97339991111')
-            ->assertJsonPath('data.customer', null)
+            ->assertJsonPath('data.customer.name', 'Hassan')
             ->assertJsonPath('data.plate_number', '55777')
             ->assertJsonPath('data.items.0.name', 'Exterior wash')
             ->assertJsonPath('data.estimated_total', 2000);
@@ -70,7 +71,19 @@ class AppointmentTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.customer_name', 'Hassan');
         $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}")->assertOk()->assertJsonCount(0, 'data');
+        $this->getJson('/api/v1/customers')->assertJsonPath('data.0.name', 'Hassan')->assertJsonPath('data.0.vehicles.0.plate_number', '55777');
         $this->assertDatabaseHas('activity_log', ['event' => 'appointment.booked', 'tenant_id' => $this->tenant->id]);
+        $this->assertDatabaseHas('activity_log', ['event' => 'customer.created', 'tenant_id' => $this->tenant->id]);
+    }
+
+    public function test_booking_the_same_new_phone_twice_registers_the_customer_only_once(): void
+    {
+        $this->book()->assertCreated();
+        $this->book(['starts_at' => '2026-11-04T11:00', 'plate_number' => '66-888'])->assertCreated();
+
+        $this->assertSame(1, $this->inTenant(fn () => Customer::query()->where('phone', '+97339991111')->count()));
+        $vehicles = $this->getJson('/api/v1/customers')->assertOk()->json('data.0.vehicles');
+        $this->assertCount(2, $vehicles);
     }
 
     public function test_a_known_phone_or_car_is_linked_to_its_customer(): void

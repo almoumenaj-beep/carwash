@@ -1030,5 +1030,6 @@
     }
   },
   "goToShift": "Go to the cashier",
-  "autoClosedShiftWarning": "A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one."
+  "autoClosedShiftWarning": "A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.",
+  "noBookingActions": "No actions are available on this booking."
 }

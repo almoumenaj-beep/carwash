@@ -6,6 +6,8 @@ use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Appointments\Models\Appointment;
 use App\Domain\Appointments\Support\AppointmentSchedule;
 use App\Domain\Catalog\Models\VehicleSize;
+use App\Domain\Crm\Actions\SaveCustomer;
+use App\Domain\Crm\Actions\SaveVehicle;
 use App\Domain\Crm\Models\Customer;
 use App\Domain\Crm\Models\Vehicle;
 use App\Domain\Orders\Support\OrderPricing;
@@ -18,9 +20,10 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Books a car in at a branch, or changes a booking: a registered car, or a customer's phone (linked to
- * the customer when the number is known) with the car's plate and size when known. The services are
- * priced and timed as at check-in, and the visit must fit the branch's hours and free bays. Bookings at a
- * branch are made one at a time so two counters never take the last place together.
+ * the customer when the number is known, else registering a new one, with a new car too when the plate
+ * is given) with the car's plate and size when known. The services are priced and timed as at check-in,
+ * and the visit must fit the branch's hours and free bays. Bookings at a branch are made one at a time
+ * so two counters never take the last place together.
  */
 class BookAppointment
 {
@@ -33,6 +36,8 @@ class BookAppointment
         private OrderPricing $pricing,
         private AppointmentSchedule $schedule,
         private AuditTrail $auditTrail,
+        private SaveCustomer $saveCustomer,
+        private SaveVehicle $saveVehicle,
     ) {}
 
     /**
@@ -61,6 +66,18 @@ class BookAppointment
         return DB::transaction(function () use ($actor, $data, $appointment, $branch, $vehicle, $customer, $size, $priced, $start, $end): Appointment {
             Branch::query()->whereKey($branch->id)->lockForUpdate()->first();
             $this->schedule->ensureBookable($branch, $start, $end, $appointment?->id);
+
+            // The first time a customer is booked by phone, register them (and their car, if its plate is given)
+            // just as a walk-in is registered at check-in.
+            if ($customer === null && filled($data['customer_phone'] ?? null)) {
+                $customer = $this->saveCustomer->create($actor, ['phone' => $data['customer_phone'], 'name' => $data['customer_name'] ?? null]);
+            } elseif ($customer !== null && blank($customer->name) && filled($data['customer_name'] ?? null)) {
+                $this->saveCustomer->update($actor, $customer, ['name' => $data['customer_name']]);
+            }
+
+            if ($vehicle === null && $customer !== null && filled($data['plate_number'] ?? null)) {
+                $vehicle = $this->saveVehicle->create($actor, $customer, ['plate_number' => $data['plate_number'], 'vehicle_size_id' => $size?->id]);
+            }
 
             $isNew = $appointment === null;
             $appointment ??= new Appointment;

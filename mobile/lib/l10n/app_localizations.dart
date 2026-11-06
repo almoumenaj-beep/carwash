@@ -3481,6 +3481,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.'**
   String get autoClosedShiftWarning;
+
+  /// No description provided for @noBookingActions.
+  ///
+  /// In en, this message translates to:
+  /// **'No actions are available on this booking.'**
+  String get noBookingActions;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

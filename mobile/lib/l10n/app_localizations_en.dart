@@ -1890,4 +1890,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get autoClosedShiftWarning =>
       'A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.';
+
+  @override
+  String get noBookingActions => 'No actions are available on this booking.';
 }
