@@ -5,18 +5,18 @@ import '../storage/session_storage.dart';
 
 final themeModeProvider = NotifierProvider<ThemeModeController, ThemeMode>(ThemeModeController.new);
 
-/// Light (the default) or dark, remembered on this device.
+/// Dark (the default, shown to users as "night mode") or light, remembered on this device.
 class ThemeModeController extends Notifier<ThemeMode> {
   @override
   ThemeMode build() {
     _restore();
-    return ThemeMode.light;
+    return ThemeMode.dark;
   }
 
   Future<void> _restore() async {
     final saved = await ref.read(sessionStorageProvider).themeMode();
-    if (saved == ThemeMode.dark.name) {
-      state = ThemeMode.dark;
+    if (saved == ThemeMode.light.name) {
+      state = ThemeMode.light;
     }
   }
 

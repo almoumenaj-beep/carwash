@@ -777,7 +777,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get done => 'تم';
 
   @override
-  String get darkMode => 'الوضع الداكن';
+  String get darkMode => 'الوضع الليلي';
 
   @override
   String get inventoryTitle => 'المخزون';

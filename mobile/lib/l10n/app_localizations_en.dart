@@ -766,7 +766,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get done => 'Done';
 
   @override
-  String get darkMode => 'Dark mode';
+  String get darkMode => 'Night mode';
 
   @override
   String get inventoryTitle => 'Inventory';

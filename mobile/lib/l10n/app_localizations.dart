@@ -1451,7 +1451,7 @@ abstract class AppLocalizations {
   /// No description provided for @darkMode.
   ///
   /// In en, this message translates to:
-  /// **'Dark mode'**
+  /// **'Night mode'**
   String get darkMode;
 
   /// No description provided for @inventoryTitle.
