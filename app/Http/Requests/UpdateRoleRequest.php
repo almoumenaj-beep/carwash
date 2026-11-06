@@ -29,6 +29,7 @@ class UpdateRoleRequest extends FormRequest
                 Rule::unique('roles')->where('tenant_id', $this->user()->tenant_id)->ignore($this->route('role')),
             ],
             'max_discount_bps' => ['sometimes', 'integer', 'between:0,10000'],
+            'requires_attendance' => ['sometimes', 'boolean'],
         ];
     }
 }

@@ -160,11 +160,11 @@ class StaffApiTest extends TestCase
         $this->patchJson("/api/v1/users/{$washer->id}", ['pin' => '12'])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('pin');
-        $this->patchJson("/api/v1/users/{$washer->id}", ['pin' => '4321'])
+        $this->patchJson("/api/v1/users/{$washer->id}", ['pin' => '5827'])
             ->assertOk()
             ->assertJsonPath('data.has_pin', true);
 
-        $this->assertTrue(Hash::check('4321', $washer->fresh()->pin_hash));
+        $this->assertTrue(Hash::check('5827', $washer->fresh()->pin_hash));
         $this->assertDatabaseHas('activity_log', ['event' => 'user.updated', 'subject_id' => $washer->id]);
     }
 

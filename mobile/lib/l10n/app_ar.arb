@@ -371,7 +371,7 @@
   "noCommissionShort": "بدون",
   "perCarShort": "للسيارة",
   "perCarField": "المبلغ عن كل سيارة",
-  "percentOfCarField": "النسبة من قيمة السيارة",
+  "percentOfCarField": "النسبة من المبلغ النهائي للفاتورة",
   "commissionSplitHint": "إذا غسل السيارة أكثر من عامل تُقسم العمولة بينهم",
   "noAttendance": "لا يوجد حضور في هذا اليوم",
   "stillAtWork": "منذ {time} – ما زال في الدوام",
@@ -494,5 +494,18 @@
   "graceMinutesInvalid": "اكتب عدد الدقائق من 5 إلى 720، أو اتركه فارغاً",
   "checkedInWithBooking": "تم استقبال {reference} وربطه بحجز الساعة {time}",
   "manageServiceCategoriesHint": "إضافة تصنيف للخدمات أو تعديله أو إيقافه",
-  "manageVehicleSizesHint": "الأحجام التي تختلف الأسعار حسبها، مثل صالون ودفع رباعي"
+  "manageVehicleSizesHint": "الأحجام التي تختلف الأسعار حسبها، مثل صالون ودفع رباعي",
+  "clockInToStart": "سجّل حضورك لتبدأ العمل",
+  "clockInToStartHint": "تظهر أقسام التطبيق بعد الضغط على «حضور» في الأعلى.",
+  "endOfDayQuestion": "هل انتهى دوامك؟",
+  "endOfDayHint": "ما زلت مسجّلاً في الدوام. الخروج من التطبيق وحده لا يسجّل انصرافك.",
+  "signOutOnly": "خروج فقط",
+  "clockOutAndSignOut": "انصراف وخروج",
+  "requiresAttendanceField": "يلزم تسجيل الحضور قبل العمل",
+  "requiresAttendanceHint": "لا تظهر أقسام التطبيق لهذا الدور قبل تسجيل الحضور",
+  "sharedDeviceField": "جهاز مشترك",
+  "sharedDeviceHint": "فعّله لجهاز يستخدمه أكثر من موظف، فيظهر عليه «تبديل المستخدم» بالرمز السري",
+  "sharedDeviceAllBranches": "تبديل المستخدم مفعّل لموظفي كل الفروع",
+  "sharedDeviceBranch": "تبديل المستخدم مفعّل لموظفي {branch}",
+  "sharedDeviceWhichBranch": "موظفو أي فرع يستخدمون هذا الجهاز؟"
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SafePin;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -32,7 +33,7 @@ class UpdateStaffRequest extends FormRequest
             'email' => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('users')->ignore($staff)],
             'phone' => ['sometimes', 'nullable', 'string', 'max:32', Rule::unique('users')->ignore($staff)],
             'password' => ['sometimes', 'nullable', 'string', Password::defaults()],
-            'pin' => ['sometimes', 'nullable', 'digits_between:4,6'],
+            'pin' => ['sometimes', 'nullable', 'digits_between:4,6', new SafePin],
             'is_active' => ['sometimes', 'boolean'],
             'all_branches' => ['sometimes', 'boolean'],
             'branch_ids' => ['sometimes', 'array'],

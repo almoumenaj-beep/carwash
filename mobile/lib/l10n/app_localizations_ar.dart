@@ -1262,7 +1262,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get perCarField => 'المبلغ عن كل سيارة';
 
   @override
-  String get percentOfCarField => 'النسبة من قيمة السيارة';
+  String get percentOfCarField => 'النسبة من المبلغ النهائي للفاتورة';
 
   @override
   String get commissionSplitHint => 'إذا غسل السيارة أكثر من عامل تُقسم العمولة بينهم';
@@ -1699,4 +1699,45 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get manageVehicleSizesHint => 'الأحجام التي تختلف الأسعار حسبها، مثل صالون ودفع رباعي';
+
+  @override
+  String get clockInToStart => 'سجّل حضورك لتبدأ العمل';
+
+  @override
+  String get clockInToStartHint => 'تظهر أقسام التطبيق بعد الضغط على «حضور» في الأعلى.';
+
+  @override
+  String get endOfDayQuestion => 'هل انتهى دوامك؟';
+
+  @override
+  String get endOfDayHint => 'ما زلت مسجّلاً في الدوام. الخروج من التطبيق وحده لا يسجّل انصرافك.';
+
+  @override
+  String get signOutOnly => 'خروج فقط';
+
+  @override
+  String get clockOutAndSignOut => 'انصراف وخروج';
+
+  @override
+  String get requiresAttendanceField => 'يلزم تسجيل الحضور قبل العمل';
+
+  @override
+  String get requiresAttendanceHint => 'لا تظهر أقسام التطبيق لهذا الدور قبل تسجيل الحضور';
+
+  @override
+  String get sharedDeviceField => 'جهاز مشترك';
+
+  @override
+  String get sharedDeviceHint => 'فعّله لجهاز يستخدمه أكثر من موظف، فيظهر عليه «تبديل المستخدم» بالرمز السري';
+
+  @override
+  String get sharedDeviceAllBranches => 'تبديل المستخدم مفعّل لموظفي كل الفروع';
+
+  @override
+  String sharedDeviceBranch(String branch) {
+    return 'تبديل المستخدم مفعّل لموظفي $branch';
+  }
+
+  @override
+  String get sharedDeviceWhichBranch => 'موظفو أي فرع يستخدمون هذا الجهاز؟';
 }

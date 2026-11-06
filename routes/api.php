@@ -125,6 +125,6 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('customers', CustomerController::class);
         Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);
 
-        Route::apiResource('devices', DeviceController::class)->only(['index', 'destroy']);
+        Route::apiResource('devices', DeviceController::class)->only(['index', 'update', 'destroy']);
     });
 });

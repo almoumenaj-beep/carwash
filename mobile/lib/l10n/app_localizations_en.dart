@@ -1238,7 +1238,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get perCarField => 'Amount per car';
 
   @override
-  String get percentOfCarField => 'Share of the car\'s value';
+  String get percentOfCarField => 'Share of the final invoice amount';
 
   @override
   String get commissionSplitHint => 'Split equally when several washers share a car';
@@ -1651,4 +1651,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manageVehicleSizesHint => 'The sizes prices depend on, such as sedan and SUV';
+
+  @override
+  String get clockInToStart => 'Clock in to start work';
+
+  @override
+  String get clockInToStartHint => 'The sections appear once you press «Clock in» above.';
+
+  @override
+  String get endOfDayQuestion => 'Has your day ended?';
+
+  @override
+  String get endOfDayHint => 'You are still clocked in. Signing out alone does not clock you out.';
+
+  @override
+  String get signOutOnly => 'Sign out only';
+
+  @override
+  String get clockOutAndSignOut => 'Clock out and sign out';
+
+  @override
+  String get requiresAttendanceField => 'Must clock in before working';
+
+  @override
+  String get requiresAttendanceHint => 'This role sees the app sections only after clocking in';
+
+  @override
+  String get sharedDeviceField => 'Shared device';
+
+  @override
+  String get sharedDeviceHint => 'Turn on for a device several staff use, to switch users on it by PIN';
+
+  @override
+  String get sharedDeviceAllBranches => 'Switching users is on for staff of every branch';
+
+  @override
+  String sharedDeviceBranch(String branch) {
+    return 'Switching users is on for staff of $branch';
+  }
+
+  @override
+  String get sharedDeviceWhichBranch => 'Staff of which branch use this device?';
 }

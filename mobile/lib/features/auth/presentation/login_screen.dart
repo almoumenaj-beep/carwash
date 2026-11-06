@@ -9,6 +9,7 @@ import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../application/session_controller.dart';
 import '../data/auth_repository.dart';
+import 'pin_screen.dart';
 
 final isTrustedDeviceProvider = FutureProvider.autoDispose<bool>(
   (ref) => ref.watch(authRepositoryProvider).isTrustedDevice(),
@@ -131,7 +132,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ? const SizedBox.square(dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
                           : Text(l10n.signInButton),
                     ),
-                    if (ref.watch(isTrustedDeviceProvider).value ?? false) ...[
+                    if ((ref.watch(isTrustedDeviceProvider).value ?? false) &&
+                        (ref.watch(deviceStaffProvider).value?.isNotEmpty ?? false)) ...[
                       const SizedBox(height: 8),
                       TextButton.icon(
                         onPressed: () => context.go('/pin'),

@@ -28,7 +28,10 @@ class SessionResource extends JsonResource
                 'name' => $this->resource->device->name,
                 'secret' => $this->when($this->resource->deviceSecret !== null, $this->resource->deviceSecret),
             ],
-            'user' => MeResource::make($this->resource->user->load('tenant', 'roles')),
+            'user' => [
+                ...MeResource::make($this->resource->user->load('tenant', 'roles'))->toArray($request),
+                'device_is_shared' => $this->resource->device->is_shared,
+            ],
         ];
     }
 }

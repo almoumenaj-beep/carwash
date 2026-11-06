@@ -132,17 +132,17 @@ class PasswordLoginTest extends TestCase
     {
         Sanctum::actingAs($this->cashier);
 
-        $this->putJson('/api/v1/me/pin', ['current_password' => 'password', 'pin' => '4321', 'pin_confirmation' => '4321'])
+        $this->putJson('/api/v1/me/pin', ['current_password' => 'password', 'pin' => '5827', 'pin_confirmation' => '5827'])
             ->assertNoContent();
 
-        $this->assertTrue(Hash::check('4321', $this->cashier->fresh()->pin_hash));
+        $this->assertTrue(Hash::check('5827', $this->cashier->fresh()->pin_hash));
     }
 
     public function test_setting_a_pin_requires_the_current_password(): void
     {
         Sanctum::actingAs($this->cashier);
 
-        $this->putJson('/api/v1/me/pin', ['current_password' => 'wrong-password', 'pin' => '4321', 'pin_confirmation' => '4321'])
+        $this->putJson('/api/v1/me/pin', ['current_password' => 'wrong-password', 'pin' => '5827', 'pin_confirmation' => '5827'])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('current_password');
         $this->assertNull($this->cashier->fresh()->pin_hash);

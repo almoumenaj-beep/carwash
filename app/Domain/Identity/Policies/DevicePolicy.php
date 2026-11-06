@@ -13,6 +13,11 @@ class DevicePolicy
         return $user->can(Permission::UsersManage->value);
     }
 
+    public function update(User $user, Device $device): bool
+    {
+        return $user->can(Permission::UsersManage->value) && $device->tenant_id === $user->tenant_id;
+    }
+
     public function delete(User $user, Device $device): bool
     {
         return $user->can(Permission::UsersManage->value) && $device->tenant_id === $user->tenant_id;

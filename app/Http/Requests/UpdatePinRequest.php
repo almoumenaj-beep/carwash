@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\SafePin;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,7 +25,7 @@ class UpdatePinRequest extends FormRequest
     {
         return [
             'current_password' => ['required', 'string', 'current_password'],
-            'pin' => ['required', 'digits_between:4,6', 'confirmed'],
+            'pin' => ['required', 'digits_between:4,6', 'confirmed', new SafePin],
         ];
     }
 }

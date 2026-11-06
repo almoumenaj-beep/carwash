@@ -16,7 +16,7 @@ enum CommissionType: string
      * One washer's share of a car's commission, in minor units, rounded half up.
      *
      * @param  int  $value  Minor units per car (`per_car`) or basis points of the car's value (`percent`).
-     * @param  int  $carValue  What the car's services came to, in minor units.
+     * @param  int  $carValue  The final amount on the car's invoice, in minor units.
      * @param  int  $washers  How many staff worked on the car.
      */
     public function shareOf(int $value, int $carValue, int $washers): int

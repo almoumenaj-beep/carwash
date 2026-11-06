@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 class DeviceStaffController extends Controller
 {
     /**
-     * Staff who can switch in on this trusted device with a PIN.
+     * Staff who can switch in on this device with a PIN; nobody unless the device is marked as shared.
      *
      * @unauthenticated
      */
@@ -19,12 +19,19 @@ class DeviceStaffController extends Controller
     {
         $device = $resolveTrustedDevice->handle($request->validated('device_identifier'), $request->validated('device_secret'));
 
+        if (! $device->is_shared) {
+            return response()->json(['data' => []]);
+        }
+
         $staff = User::query()
             ->where('tenant_id', $device->tenant_id)
             ->where('is_active', true)
             ->whereNotNull('pin_hash')
+            ->with('roles')
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get()
+            ->filter(fn (User $user) => $device->allowsPinSignIn($user))
+            ->values();
 
         return response()->json(['data' => $staff->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name])]);
     }

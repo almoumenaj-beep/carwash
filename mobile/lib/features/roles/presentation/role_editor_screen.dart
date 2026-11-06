@@ -66,6 +66,7 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
   late final _name = TextEditingController(text: widget.role?.name ?? '');
   late final Set<String> _selected = {...?widget.role?.permissions};
   late final _maxDiscount = TextEditingController(text: PercentFormat.format(widget.role?.maxDiscountBps ?? 0));
+  late bool _requiresAttendance = widget.role?.requiresAttendance ?? true;
   bool _saving = false;
   bool _nameMissing = false;
   bool _maxDiscountInvalid = false;
@@ -108,16 +109,23 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
     try {
       if (_isNew) {
         final role = await repository.create(name: name, permissions: _selected);
-        if (maxDiscountBps > 0) {
-          await repository.update(role.id, maxDiscountBps: maxDiscountBps);
+        if (maxDiscountBps > 0 || !_requiresAttendance) {
+          await repository.update(
+            role.id,
+            maxDiscountBps: maxDiscountBps > 0 ? maxDiscountBps : null,
+            requiresAttendance: _requiresAttendance ? null : false,
+          );
         }
       } else {
         final role = widget.role!;
-        if (name != role.name || maxDiscountBps != role.maxDiscountBps) {
+        if (name != role.name ||
+            maxDiscountBps != role.maxDiscountBps ||
+            _requiresAttendance != role.requiresAttendance) {
           await repository.update(
             role.id,
             name: name != role.name ? name : null,
             maxDiscountBps: maxDiscountBps != role.maxDiscountBps ? maxDiscountBps : null,
+            requiresAttendance: _requiresAttendance != role.requiresAttendance ? _requiresAttendance : null,
           );
         }
         if (!_sameSet(_selected, role.permissions)) {
@@ -226,6 +234,15 @@ class _RoleFormState extends ConsumerState<_RoleForm> {
               ),
             ),
           ],
+          if (!_isOwnerRole)
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              secondary: const Icon(Icons.lock_clock_outlined),
+              title: Text(l10n.requiresAttendanceField),
+              subtitle: Text(l10n.requiresAttendanceHint),
+              value: _requiresAttendance,
+              onChanged: _canEdit ? (value) => setState(() => _requiresAttendance = value) : null,
+            ),
           if (generalError != null) ...[
             const SizedBox(height: 12),
             Text(generalError, style: TextStyle(color: theme.colorScheme.error)),

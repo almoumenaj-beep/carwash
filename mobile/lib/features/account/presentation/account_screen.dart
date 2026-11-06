@@ -7,11 +7,57 @@ import '../../../core/theme/theme_mode_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/presentation/set_pin_dialog.dart';
+import '../../expenses/presentation/expense_widgets.dart';
+import '../../staff_affairs/data/staff_affairs_repository.dart';
+import '../../staff_affairs/domain/staff_affairs.dart';
 
 /// The signed-in staff member's own account, kept to one line per item; the full
 /// permission list opens in a sheet on demand.
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
+
+  /// Signs out; someone still clocked in is first asked whether their day has ended.
+  Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+    final session = ref.read(sessionProvider.notifier);
+    AttendanceRecord? open;
+    try {
+      open = await ref.read(myAttendanceProvider.future);
+    } catch (_) {
+      // Attendance could not be read: signing out must still work.
+    }
+
+    if (open != null && context.mounted) {
+      final l10n = AppLocalizations.of(context);
+      final clockOut = await showDialog<bool>(
+        context: context,
+        builder: (dialog) => AlertDialog(
+          title: Text(l10n.endOfDayQuestion),
+          content: Text(l10n.endOfDayHint),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(dialog).pop(), child: Text(l10n.back)),
+            OutlinedButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.signOutOnly)),
+            FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.clockOutAndSignOut)),
+          ],
+        ),
+      );
+      if (clockOut == null) {
+        return;
+      }
+      if (clockOut) {
+        try {
+          await ref.read(staffAffairsRepositoryProvider).clockOut();
+        } catch (error, stackTrace) {
+          if (context.mounted) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+          }
+          return;
+        }
+      }
+    }
+
+    await session.signOut();
+  }
 
   Future<void> _setPin(BuildContext context) async {
     final saved = await showDialog<bool>(context: context, builder: (_) => const SetPinDialog());
@@ -89,12 +135,18 @@ class AccountScreen extends ConsumerWidget {
               onTap: () => _showPermissions(context, me.permissions),
             ),
             const Divider(height: 1),
-            ListTile(leading: const Icon(Icons.pin_outlined), title: Text(l10n.setPin), onTap: () => _setPin(context)),
-            ListTile(
-              leading: const Icon(Icons.switch_account_outlined),
-              title: Text(l10n.switchUser),
-              onTap: () => context.push('/pin'),
-            ),
+            if (me.deviceIsShared) ...[
+              ListTile(
+                leading: const Icon(Icons.pin_outlined),
+                title: Text(l10n.setPin),
+                onTap: () => _setPin(context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.switch_account_outlined),
+                title: Text(l10n.switchUser),
+                onTap: () => context.push('/pin'),
+              ),
+            ],
             ListTile(
               leading: const Icon(Icons.translate),
               title: Text(l10n.languageField),
@@ -113,7 +165,7 @@ class AccountScreen extends ConsumerWidget {
             ListTile(
               leading: Icon(Icons.logout, color: theme.colorScheme.error),
               title: Text(l10n.signOut, style: TextStyle(color: theme.colorScheme.error)),
-              onTap: () => ref.read(sessionProvider.notifier).signOut(),
+              onTap: () => _signOut(context, ref),
             ),
           ],
         ),

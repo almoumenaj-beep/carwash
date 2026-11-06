@@ -667,7 +667,7 @@
   "noCommissionShort": "None",
   "perCarShort": "Per car",
   "perCarField": "Amount per car",
-  "percentOfCarField": "Share of the car's value",
+  "percentOfCarField": "Share of the final invoice amount",
   "commissionSplitHint": "Split equally when several washers share a car",
   "noAttendance": "No one clocked in on this day",
   "stillAtWork": "Since {time}, still at work",
@@ -870,5 +870,25 @@
     }
   },
   "manageServiceCategoriesHint": "Add, rename or switch off service categories",
-  "manageVehicleSizesHint": "The sizes prices depend on, such as sedan and SUV"
+  "manageVehicleSizesHint": "The sizes prices depend on, such as sedan and SUV",
+  "clockInToStart": "Clock in to start work",
+  "clockInToStartHint": "The sections appear once you press «Clock in» above.",
+  "endOfDayQuestion": "Has your day ended?",
+  "endOfDayHint": "You are still clocked in. Signing out alone does not clock you out.",
+  "signOutOnly": "Sign out only",
+  "clockOutAndSignOut": "Clock out and sign out",
+  "requiresAttendanceField": "Must clock in before working",
+  "requiresAttendanceHint": "This role sees the app sections only after clocking in",
+  "sharedDeviceField": "Shared device",
+  "sharedDeviceHint": "Turn on for a device several staff use, to switch users on it by PIN",
+  "sharedDeviceAllBranches": "Switching users is on for staff of every branch",
+  "sharedDeviceBranch": "Switching users is on for staff of {branch}",
+  "@sharedDeviceBranch": {
+    "placeholders": {
+      "branch": {
+        "type": "String"
+      }
+    }
+  },
+  "sharedDeviceWhichBranch": "Staff of which branch use this device?"
 }

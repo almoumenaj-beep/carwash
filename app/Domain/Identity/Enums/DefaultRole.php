@@ -42,6 +42,15 @@ enum DefaultRole: string
     }
 
     /**
+     * Whether the role's staff must clock in before working. The owner and accountant may open the app from
+     * anywhere without that counting as attendance.
+     */
+    public function requiresAttendance(): bool
+    {
+        return ! in_array($this, [self::Owner, self::Accountant], true);
+    }
+
+    /**
      * The permissions the role starts with. The owner is granted everything by a gate check instead,
      * so it keeps full access when the catalog grows.
      *

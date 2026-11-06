@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
+import '../../staff_affairs/data/staff_affairs_repository.dart';
 import '../../staff_affairs/presentation/attendance_card.dart';
 import 'home_sections.dart';
 
@@ -21,6 +22,9 @@ class HomeScreen extends ConsumerWidget {
     }
 
     final l10n = AppLocalizations.of(context);
+    final attendance = ref.watch(myAttendanceProvider);
+    // Only once the answer is known: a failed request must not lock anyone out of the app.
+    final mustClockIn = me.requiresAttendance && attendance.hasValue && attendance.value == null;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,11 +48,12 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: l10n.switchUser,
-            icon: const Icon(Icons.switch_account_outlined),
-            onPressed: () => context.push('/pin'),
-          ),
+          if (me.deviceIsShared)
+            IconButton(
+              tooltip: l10n.switchUser,
+              icon: const Icon(Icons.switch_account_outlined),
+              onPressed: () => context.push('/pin'),
+            ),
           IconButton(
             tooltip: l10n.accountTitle,
             icon: const Icon(Icons.account_circle_outlined),
@@ -71,7 +76,25 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             const AttendanceCard(),
-            const HomeSectionsMenu(),
+            if (mustClockIn)
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  children: [
+                    Icon(Icons.lock_clock_outlined, size: 56, color: Theme.of(context).colorScheme.primary),
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.clockInToStart,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(l10n.clockInToStartHint, textAlign: TextAlign.center),
+                  ],
+                ),
+              )
+            else
+              const HomeSectionsMenu(),
           ],
         ),
       ),

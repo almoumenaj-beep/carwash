@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Domain\Expenses\Models\Expense;
 use App\Domain\Expenses\Models\ExpenseCategory;
 use App\Domain\Identity\Enums\DefaultRole;
+use App\Domain\Identity\Models\Role;
 use App\Domain\Orders\Models\Order;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -131,6 +132,48 @@ class StaffAffairsTest extends TestCase
 
         Sanctum::actingAs($this->manager);
         $this->getJson('/api/v1/payroll-runs')->assertForbidden();
+    }
+
+    public function test_a_percentage_commission_is_taken_of_the_final_invoice_amount(): void
+    {
+        $this->setPayTerms($this->washer, ['monthly_salary' => 0, 'commission_type' => 'percent', 'commission_value' => 1000]);
+
+        $orderId = $this->checkIn(['staff_ids' => [$this->washer->id]])->json('data.id');
+        $this->pay($orderId, extra: ['discount_percent_bps' => 1000, 'discount_reason' => 'Regular'])->assertCreated();
+        $this->washAndPass($orderId, $this->washer);
+        $this->moveTo($orderId, 'delivered', $this->cashier)->assertOk();
+
+        Sanctum::actingAs($this->owner);
+        $now = now($this->tenant->timezone);
+
+        // 10% of the 1.800 paid after 10% off the 2.000 wash, with no salary.
+        $this->postJson('/api/v1/payroll-runs', ['year' => $now->year, 'month' => $now->month])
+            ->assertJsonPath('data.lines.0.base_salary', 0)
+            ->assertJsonPath('data.lines.0.commission', 180)
+            ->assertJsonPath('data.lines.0.net', 180);
+    }
+
+    public function test_roles_say_who_must_clock_in_before_working(): void
+    {
+        Sanctum::actingAs($this->washer);
+        $this->getJson('/api/v1/me')->assertJsonPath('data.requires_attendance', true);
+
+        Sanctum::actingAs($this->owner);
+        $this->getJson('/api/v1/me')->assertJsonPath('data.requires_attendance', false);
+
+        $accountant = $this->createStaff($this->tenant, DefaultRole::Accountant, [$this->branch]);
+        Sanctum::actingAs($accountant);
+        $this->getJson('/api/v1/me')->assertJsonPath('data.requires_attendance', false);
+
+        $washerRole = $this->inTenant(fn () => Role::query()->where('key', DefaultRole::Washer->value)->sole());
+        Sanctum::actingAs($this->owner);
+        $this->patchJson("/api/v1/roles/{$washerRole->id}", ['requires_attendance' => false])
+            ->assertOk()
+            ->assertJsonPath('data.requires_attendance', false);
+        $this->assertDatabaseHas('activity_log', ['event' => 'role.attendance_requirement_changed']);
+
+        Sanctum::actingAs($this->washer->fresh());
+        $this->getJson('/api/v1/me')->assertJsonPath('data.requires_attendance', false);
     }
 
     public function test_a_draft_follows_new_deliveries_until_it_is_paid(): void

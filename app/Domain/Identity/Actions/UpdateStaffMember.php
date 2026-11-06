@@ -48,7 +48,7 @@ class UpdateStaffMember
             }
 
             if (! empty($data['pin'])) {
-                $staff->forceFill(['pin_hash' => Hash::make($data['pin'])]);
+                $staff->forceFill(['pin_hash' => Hash::make($data['pin']), 'pin_failed_attempts' => 0, 'pin_locked_until' => null]);
             }
 
             if (array_key_exists('is_active', $data)) {

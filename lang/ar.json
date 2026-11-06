@@ -83,6 +83,9 @@
     "Check the car in at the branch it was booked at.": "استقبل السيارة في الفرع المحجوز فيه.",
     "A booking can be marked as a no-show once its time has come.": "لا يُسجَّل «لم يحضر» قبل موعد الحجز.",
     "Only a booking not confirmed yet can be confirmed.": "هذا الحجز ليس بانتظار التأكيد.",
+    "Switching users is not on for this device. Sign in with your password.": "تبديل المستخدم غير مفعّل على هذا الجهاز. سجّل الدخول بكلمة المرور.",
+    "Too many wrong attempts. Try again in :minutes minutes.": "محاولات خاطئة كثيرة. حاول مرة أخرى بعد :minutes دقيقة.",
+    "This PIN is too easy to guess. Choose another.": "هذا الرمز سهل التخمين. اختر رمزاً آخر.",
     "Enter the customer's phone so the car wash can reach them.": "اكتب جوال العميل للتواصل معه.",
     "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."

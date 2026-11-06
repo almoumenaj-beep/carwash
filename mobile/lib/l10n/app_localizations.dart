@@ -2321,7 +2321,7 @@ abstract class AppLocalizations {
   /// No description provided for @percentOfCarField.
   ///
   /// In en, this message translates to:
-  /// **'Share of the car\'s value'**
+  /// **'Share of the final invoice amount'**
   String get percentOfCarField;
 
   /// No description provided for @commissionSplitHint.
@@ -3061,6 +3061,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The sizes prices depend on, such as sedan and SUV'**
   String get manageVehicleSizesHint;
+
+  /// No description provided for @clockInToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock in to start work'**
+  String get clockInToStart;
+
+  /// No description provided for @clockInToStartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The sections appear once you press «Clock in» above.'**
+  String get clockInToStartHint;
+
+  /// No description provided for @endOfDayQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Has your day ended?'**
+  String get endOfDayQuestion;
+
+  /// No description provided for @endOfDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You are still clocked in. Signing out alone does not clock you out.'**
+  String get endOfDayHint;
+
+  /// No description provided for @signOutOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out only'**
+  String get signOutOnly;
+
+  /// No description provided for @clockOutAndSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock out and sign out'**
+  String get clockOutAndSignOut;
+
+  /// No description provided for @requiresAttendanceField.
+  ///
+  /// In en, this message translates to:
+  /// **'Must clock in before working'**
+  String get requiresAttendanceField;
+
+  /// No description provided for @requiresAttendanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This role sees the app sections only after clocking in'**
+  String get requiresAttendanceHint;
+
+  /// No description provided for @sharedDeviceField.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared device'**
+  String get sharedDeviceField;
+
+  /// No description provided for @sharedDeviceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on for a device several staff use, to switch users on it by PIN'**
+  String get sharedDeviceHint;
+
+  /// No description provided for @sharedDeviceAllBranches.
+  ///
+  /// In en, this message translates to:
+  /// **'Switching users is on for staff of every branch'**
+  String get sharedDeviceAllBranches;
+
+  /// No description provided for @sharedDeviceBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Switching users is on for staff of {branch}'**
+  String sharedDeviceBranch(String branch);
+
+  /// No description provided for @sharedDeviceWhichBranch.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff of which branch use this device?'**
+  String get sharedDeviceWhichBranch;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

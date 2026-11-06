@@ -6,6 +6,8 @@ import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../auth/application/session_controller.dart';
+import '../../auth/domain/me.dart';
 import '../data/devices_repository.dart';
 
 /// Devices signed in to the car wash; a lost one can be revoked to end its session immediately.
@@ -73,13 +75,67 @@ class _DeviceTile extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final lastLogin = device.lastLoginAt == null ? null : DateFormat.yMMMd(locale).add_jm().format(device.lastLoginAt!);
 
-    return ListTile(
-      leading: Icon(device.platform == 'web' ? Icons.laptop : Icons.smartphone),
-      title: Text(device.name),
-      subtitle: lastLogin == null ? null : Text(l10n.lastSignIn(lastLogin)),
-      trailing: device.isRevoked
-          ? Chip(label: Text(l10n.revoked))
-          : TextButton(onPressed: () => _revoke(context, ref), child: Text(l10n.revokeDevice)),
+    final branches = ref.watch(sessionProvider).value?.branches ?? const <BranchSummary>[];
+    final sharedBranch = branches.where((branch) => branch.id == device.sharedBranchId).firstOrNull;
+
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(device.platform == 'web' ? Icons.laptop : Icons.smartphone),
+          title: Text(device.name),
+          subtitle: lastLogin == null ? null : Text(l10n.lastSignIn(lastLogin)),
+          trailing: device.isRevoked
+              ? Chip(label: Text(l10n.revoked))
+              : TextButton(onPressed: () => _revoke(context, ref), child: Text(l10n.revokeDevice)),
+        ),
+        if (!device.isRevoked)
+          SwitchListTile(
+            dense: true,
+            title: Text(l10n.sharedDeviceField),
+            subtitle: Text(
+              !device.isShared
+                  ? l10n.sharedDeviceHint
+                  : (sharedBranch == null ? l10n.sharedDeviceAllBranches : l10n.sharedDeviceBranch(sharedBranch.name)),
+            ),
+            value: device.isShared,
+            onChanged: (isShared) => _setShared(context, ref, branches, isShared),
+          ),
+      ],
     );
+  }
+
+  /// Marks the device as shared or personal; a car wash with several branches says whose staff may switch in.
+  Future<void> _setShared(BuildContext context, WidgetRef ref, List<BranchSummary> branches, bool isShared) async {
+    final l10n = AppLocalizations.of(context);
+    String? branchId;
+    if (isShared && branches.length > 1) {
+      final choice = await showDialog<String>(
+        context: context,
+        builder: (dialog) => SimpleDialog(
+          title: Text(l10n.sharedDeviceWhichBranch),
+          children: [
+            SimpleDialogOption(onPressed: () => Navigator.of(dialog).pop(''), child: Text(l10n.allBranches)),
+            for (final branch in branches)
+              SimpleDialogOption(onPressed: () => Navigator.of(dialog).pop(branch.id), child: Text(branch.name)),
+          ],
+        ),
+      );
+      if (choice == null) {
+        return;
+      }
+      branchId = choice.isEmpty ? null : choice;
+    }
+
+    try {
+      await ref.read(devicesRepositoryProvider).setShared(device.id, isShared: isShared, branchId: branchId);
+      ref.invalidate(devicesProvider);
+      // This device may be the one changed, which shows or hides switching users.
+      ref.invalidate(sessionProvider);
+    } catch (error, stackTrace) {
+      if (context.mounted) {
+        final problem = ApiProblem.from(error, stackTrace);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(problemMessage(context, problem))));
+      }
+    }
   }
 }

@@ -13,8 +13,8 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Works out a month's pay for every active staff member with pay terms: salary and commission on the cars
- * delivered that month (a car's commission split between its washers). Creates the month's draft, or
- * recalculates it; a paid month is final.
+ * delivered that month (a car's commission split between its washers, a percentage taken of the final amount
+ * on its invoice). Creates the month's draft, or recalculates it; a paid month is final.
  */
 class CalculatePayroll
 {
@@ -54,7 +54,7 @@ class CalculatePayroll
             ->where('status', OrderStatus::Delivered)
             ->where('delivered_at', '>=', $start->utc())
             ->where('delivered_at', '<=', $end->utc())
-            ->with('staff:id')
+            ->with(['staff:id', 'invoice:id,order_id,total'])
             ->get(['id', 'subtotal']);
 
         $cars = [];
@@ -68,7 +68,7 @@ class CalculatePayroll
 
                 if ($profile !== null) {
                     $commission[$washer->id] = ($commission[$washer->id] ?? 0)
-                        + $profile->commission_type->shareOf($profile->commission_value, $order->subtotal, $washers);
+                        + $profile->commission_type->shareOf($profile->commission_value, $order->invoice?->total ?? $order->subtotal, $washers);
                 }
             }
         }

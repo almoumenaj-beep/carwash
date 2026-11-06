@@ -18,6 +18,8 @@ class RegisteredDevice {
     required this.platform,
     required this.lastLoginAt,
     required this.isRevoked,
+    this.isShared = false,
+    this.sharedBranchId,
   });
 
   factory RegisteredDevice.fromJson(Map<String, dynamic> json) => RegisteredDevice(
@@ -26,6 +28,8 @@ class RegisteredDevice {
     platform: json['platform'] as String?,
     lastLoginAt: DateTime.tryParse(json['last_login_at'] as String? ?? '')?.toLocal(),
     isRevoked: json['is_revoked'] as bool,
+    isShared: json['is_shared'] as bool? ?? false,
+    sharedBranchId: json['shared_branch_id'] as String?,
   );
 
   final String id;
@@ -33,6 +37,12 @@ class RegisteredDevice {
   final String? platform;
   final DateTime? lastLoginAt;
   final bool isRevoked;
+
+  /// A device staff share, switching users on it by PIN; personal devices have no switching.
+  final bool isShared;
+
+  /// The branch whose staff may switch in; null for every branch.
+  final String? sharedBranchId;
 }
 
 class DevicesRepository {
@@ -43,6 +53,13 @@ class DevicesRepository {
   Future<List<RegisteredDevice>> list() async {
     final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/devices'));
     return [for (final device in unwrapData<List>(response)) RegisteredDevice.fromJson(device as Map<String, dynamic>)];
+  }
+
+  Future<void> setShared(String id, {required bool isShared, String? branchId}) async {
+    await sendRequest(
+      () =>
+          _dio.patch<Map<String, dynamic>>('/devices/$id', data: {'is_shared': isShared, 'shared_branch_id': branchId}),
+    );
   }
 
   Future<void> revoke(String id) async {

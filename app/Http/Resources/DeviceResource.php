@@ -22,6 +22,8 @@ class DeviceResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'platform' => $this->platform,
+            'is_shared' => $this->is_shared,
+            'shared_branch_id' => $this->shared_branch_id,
             'last_login_at' => $this->last_login_at?->toIso8601String(),
             'revoked_at' => $this->revoked_at?->toIso8601String(),
             'is_revoked' => $this->isRevoked(),
