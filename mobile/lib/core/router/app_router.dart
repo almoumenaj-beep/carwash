@@ -22,6 +22,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/home_sections.dart';
 import '../../features/equipment/presentation/equipment_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
+import '../../features/inventory/presentation/stock_issue_screen.dart';
 import '../../features/staff_affairs/presentation/staff_affairs_screen.dart';
 import '../../features/orders/presentation/check_in_screen.dart';
 import '../../features/orders/presentation/checkout_screen.dart';
@@ -119,6 +120,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, state) => ShiftScreen(branchId: state.uri.queryParameters['branch']),
       ),
       GoRoute(path: '/inventory', builder: (_, _) => const InventoryScreen()),
+      GoRoute(
+        path: '/stock-issue',
+        builder: (_, state) => StockIssueScreen(branchId: state.uri.queryParameters['branch']),
+      ),
       GoRoute(
         path: '/equipment',
         builder: (_, _) => const EquipmentScreen(),

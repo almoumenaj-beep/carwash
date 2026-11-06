@@ -9,10 +9,7 @@ import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../core/auth/route_permissions.dart';
-import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
-import '../../inventory/presentation/service_materials_screen.dart';
 import '../../settings/data/settings_repository.dart';
 import '../../staff/data/staff_repository.dart';
 import '../data/catalog_repository.dart';
@@ -426,24 +423,6 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
-            if (!_isNew &&
-                !widget.service!.isPackage &&
-                (ref.watch(sessionProvider).value?.can(Permissions.inventoryView) ?? false))
-              Card(
-                margin: const EdgeInsets.only(bottom: 16),
-                child: ListTile(
-                  leading: const Icon(Icons.science_outlined),
-                  title: Text(l10n.serviceMaterials),
-                  subtitle: Text(l10n.serviceMaterialsRowHint),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (_) =>
-                          ServiceMaterialsScreen(serviceId: widget.service!.id, serviceName: widget.service!.name),
-                    ),
-                  ),
-                ),
-              ),
             TextFormField(
               controller: _name,
               decoration: InputDecoration(labelText: l10n.serviceName, errorText: _problem?.fieldError('name')),

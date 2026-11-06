@@ -1748,29 +1748,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get issueMaterials => 'صرف مواد';
 
   @override
-  String get movementIssue => 'صرف يدوي';
-
-  @override
-  String get materialField => 'المادة';
-
-  @override
-  String get issueQuantityField => 'الكمية المصروفة';
+  String get movementIssue => 'صرف مواد';
 
   @override
   String get issueNoteField => 'الغرض (اختياري)';
 
   @override
-  String get issueNoteHint => 'مثال: تنظيف المكان';
+  String get issueNoteHint => 'مثال: مواد اليوم';
 
   @override
   String get nothingInStock => 'لا توجد مواد متوفرة في هذا الفرع. سجّل مشتريات أولاً.';
-
-  @override
-  String get materialsNotSetUp => 'الغسيل لا يخصم من المخزون بعد';
-
-  @override
-  String get materialsNotSetUpHint =>
-      'حدّد ما تستهلكه كل خدمة من: الإعدادات ← الخدمات والأسعار ← افتح الخدمة ← المواد المستهلكة. بعدها يُخصم تلقائياً عند بدء الغسيل.';
 
   @override
   String get noUsageThatDay => 'لم يُصرف شيء من المخزون في هذا اليوم';
@@ -1782,7 +1769,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String issuedByHand(String value) {
-    return 'صرف يدوي: $value';
+    return 'مصروف: $value';
   }
 
   @override
@@ -1792,7 +1779,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get usageCostHint => 'تقديرية بأسعار المواد الحالية، ومسجّلة أصلاً كمصروف عند الشراء';
 
   @override
-  String get issuesByHandSection => 'الصرف اليدوي';
+  String get issuesByHandSection => 'عمليات الصرف';
 
   @override
   String supplierLabel(String value) {
@@ -1800,5 +1787,38 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get serviceMaterialsRowHint => 'تُخصم من المخزون تلقائياً عند بدء الغسيل';
+  String get stockIssueSubtitle => 'صرف مواد اليوم للموظفين';
+
+  @override
+  String get receivedByField => 'الموظف المستلم';
+
+  @override
+  String receivedByLabel(String name) {
+    return 'استلمها $name';
+  }
+
+  @override
+  String get issueQuantitiesSection => 'الكميات';
+
+  @override
+  String get issueQuantitiesHint => 'اكتب الكمية أمام كل مادة تُصرف، واترك الباقي فارغاً.';
+
+  @override
+  String availableQuantity(String value) {
+    return 'المتوفر: $value';
+  }
+
+  @override
+  String onlyInStock(String name, String quantity, String unit) {
+    return 'المتوفر من $name $quantity $unit فقط';
+  }
+
+  @override
+  String get chooseReceiver => 'اختر الموظف المستلم';
+
+  @override
+  String get enterIssueQuantities => 'اكتب كمية مادة واحدة على الأقل';
+
+  @override
+  String get materialsIssued => 'تم صرف المواد';
 }

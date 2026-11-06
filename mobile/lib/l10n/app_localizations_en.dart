@@ -1700,29 +1700,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get issueMaterials => 'Issue materials';
 
   @override
-  String get movementIssue => 'Issued by hand';
-
-  @override
-  String get materialField => 'Material';
-
-  @override
-  String get issueQuantityField => 'Quantity issued';
+  String get movementIssue => 'Issued';
 
   @override
   String get issueNoteField => 'What for (optional)';
 
   @override
-  String get issueNoteHint => 'e.g. cleaning the site';
+  String get issueNoteHint => 'e.g. today\'s supply';
 
   @override
   String get nothingInStock => 'Nothing is in stock at this branch. Record a purchase first.';
-
-  @override
-  String get materialsNotSetUp => 'Washes do not take from stock yet';
-
-  @override
-  String get materialsNotSetUpHint =>
-      'Set what each service uses: Setup → Services and prices → open the service → Materials used. It is then taken automatically when a wash starts.';
 
   @override
   String get noUsageThatDay => 'Nothing left the stock on this day';
@@ -1734,7 +1721,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String issuedByHand(String value) {
-    return 'By hand: $value';
+    return 'Issued: $value';
   }
 
   @override
@@ -1744,7 +1731,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get usageCostHint => 'An estimate at today\'s costs, already an expense when bought';
 
   @override
-  String get issuesByHandSection => 'Issued by hand';
+  String get issuesByHandSection => 'Issues';
 
   @override
   String supplierLabel(String value) {
@@ -1752,5 +1739,38 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get serviceMaterialsRowHint => 'Taken from stock automatically when a wash starts';
+  String get stockIssueSubtitle => 'Issue the day\'s materials to staff';
+
+  @override
+  String get receivedByField => 'Received by';
+
+  @override
+  String receivedByLabel(String name) {
+    return 'Received by $name';
+  }
+
+  @override
+  String get issueQuantitiesSection => 'Quantities';
+
+  @override
+  String get issueQuantitiesHint => 'Enter a quantity beside each material issued and leave the rest empty.';
+
+  @override
+  String availableQuantity(String value) {
+    return 'In stock: $value';
+  }
+
+  @override
+  String onlyInStock(String name, String quantity, String unit) {
+    return 'Only $quantity $unit of $name is in stock';
+  }
+
+  @override
+  String get chooseReceiver => 'Choose who receives them';
+
+  @override
+  String get enterIssueQuantities => 'Enter a quantity for at least one material';
+
+  @override
+  String get materialsIssued => 'Materials issued';
 }

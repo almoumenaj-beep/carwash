@@ -86,7 +86,8 @@
     "Switching users is not on for this device. Sign in with your password.": "تبديل المستخدم غير مفعّل على هذا الجهاز. سجّل الدخول بكلمة المرور.",
     "Too many wrong attempts. Try again in :minutes minutes.": "محاولات خاطئة كثيرة. حاول مرة أخرى بعد :minutes دقيقة.",
     "This PIN is too easy to guess. Choose another.": "هذا الرمز سهل التخمين. اختر رمزاً آخر.",
-    "Only :quantity :unit is in stock at this branch.": "المتوفر في هذا الفرع :quantity :unit فقط.",
+    "Only :quantity :unit of :name is in stock at this branch.": "المتوفر من :name في هذا الفرع :quantity :unit فقط.",
+    "Choose an active staff member of this branch.": "اختر موظفاً نشطاً في هذا الفرع.",
     "Enter the customer's phone so the car wash can reach them.": "اكتب جوال العميل للتواصل معه.",
     "Payroll :month/:year": "رواتب :month/:year",
     "A package uses the materials of the services it includes.": "الباقة تستهلك مواد خدماتها، فلا تُحدَّد لها مواد."

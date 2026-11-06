@@ -61,12 +61,24 @@ class InventoryRepository {
     );
   }
 
-  /// Takes materials out of the branch's stock by hand.
-  Future<void> issue(String branchId, String itemId, double quantity, {String? note}) async {
+  /// Issues materials from the branch's stock to a staff member: all of them, or none if one falls short.
+  Future<void> issue(
+    String branchId,
+    String receiverId,
+    List<({String itemId, double quantity})> lines, {
+    String? note,
+  }) async {
     await sendRequest(
       () => _dio.post<Map<String, dynamic>>(
         '/inventory/issues',
-        data: {'branch_id': branchId, 'inventory_item_id': itemId, 'quantity': quantity, 'note': ?note},
+        data: {
+          'branch_id': branchId,
+          'issued_to': receiverId,
+          'lines': [
+            for (final line in lines) {'inventory_item_id': line.itemId, 'quantity': line.quantity},
+          ],
+          'note': ?note,
+        },
       ),
     );
   }

@@ -46,6 +46,7 @@ const routePermissions = <String, List<String>>{
   '/finance': [Permissions.reportsProfit],
   '/expenses': [Permissions.expensesView],
   '/inventory': [Permissions.inventoryView],
+  '/stock-issue': [Permissions.inventoryAdjust],
   '/equipment': [Permissions.equipmentView],
   '/staff-affairs': [Permissions.employeesView, Permissions.payrollView],
   '/roles': [Permissions.rolesManage, Permissions.usersManage],

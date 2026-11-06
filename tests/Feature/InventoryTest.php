@@ -149,31 +149,49 @@ class InventoryTest extends TestCase
         $this->assertEquals(-0.5, $this->stockByName($this->branch->id)['Shampoo']['quantity']);
     }
 
-    public function test_materials_issued_by_hand_leave_the_stock_and_show_in_the_days_usage(): void
+    /**
+     * @param  list<array{0: InventoryItem, 1: int|float}>  $lines
+     * @param  array<string, mixed>  $overrides
+     */
+    private function issue(array $lines, array $overrides = [], ?User $as = null): TestResponse
+    {
+        Sanctum::actingAs($as ?? $this->keeper);
+
+        return $this->postJson('/api/v1/inventory/issues', [
+            'branch_id' => $this->branch->id,
+            'issued_to' => $this->washer->id,
+            'lines' => array_map(fn (array $line) => ['inventory_item_id' => $line[0]->id, 'quantity' => $line[1]], $lines),
+            ...$overrides,
+        ]);
+    }
+
+    public function test_several_materials_are_issued_to_a_staff_member_and_show_in_the_days_usage(): void
     {
         $this->purchase()->assertCreated();
-        Sanctum::actingAs($this->keeper);
 
-        $this->postJson('/api/v1/inventory/issues', [
-            'branch_id' => $this->branch->id,
-            'inventory_item_id' => $this->shampoo->id,
-            'quantity' => 1.5,
-            'note' => 'Cleaning the bays',
-        ])->assertCreated()->assertJsonPath('data.quantity', 8.5);
+        $this->issue([[$this->shampoo, 1.5], [$this->towels, 20]], ['note' => 'Morning supply'])->assertCreated()->assertJsonCount(2, 'data');
 
         $this->assertSame(1, $this->inTenant(fn () => Expense::query()->count()), 'the purchase was the only expense');
 
+        $this->getJson("/api/v1/inventory/items?branch_id={$this->branch->id}")
+            ->assertJsonFragment(['name' => 'Shampoo', 'quantity' => 8.5])
+            ->assertJsonFragment(['name' => 'Towels', 'quantity' => 80]);
+
         $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")
             ->assertOk()
+            ->assertJsonCount(2, 'data.items')
             ->assertJsonPath('data.items.0.item.name', 'Shampoo')
             ->assertJsonPath('data.items.0.issued', 1.5)
             ->assertJsonPath('data.items.0.washes', 0)
-            ->assertJsonPath('data.items.0.total', 1.5)
             ->assertJsonPath('data.items.0.cost', 1875)
-            ->assertJsonPath('data.total_cost', 1875)
-            ->assertJsonPath('data.issues.0.note', 'Cleaning the bays')
+            ->assertJsonCount(2, 'data.issues')
+            ->assertJsonPath('data.issues.0.note', 'Morning supply')
             ->assertJsonPath('data.issues.0.by', $this->keeper->name)
-            ->assertJsonPath('data.materials_set_up', false);
+            ->assertJsonPath('data.issues.0.received_by', $this->washer->name);
+
+        $this->getJson("/api/v1/inventory/movements?branch_id={$this->branch->id}&inventory_item_id={$this->towels->id}")
+            ->assertJsonPath('data.0.reason', 'issue')
+            ->assertJsonPath('data.0.received_by', $this->washer->name);
 
         $yesterday = now($this->tenant->timezone)->subDay()->toDateString();
         $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}&date={$yesterday}")
@@ -181,13 +199,41 @@ class InventoryTest extends TestCase
             ->assertJsonPath('data.items', []);
     }
 
-    public function test_washes_show_in_the_days_usage_and_counts_do_not(): void
+    public function test_an_issue_is_all_or_nothing_and_never_more_than_the_stock(): void
+    {
+        $this->purchase()->assertCreated();
+
+        $this->issue([[$this->shampoo, 1], [$this->towels, 101]])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('lines.1.quantity');
+
+        $this->getJson("/api/v1/inventory/items?branch_id={$this->branch->id}")->assertJsonFragment(['name' => 'Shampoo', 'quantity' => 10]);
+        $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")->assertJsonPath('data.items', []);
+
+        $this->issue([[$this->shampoo, 0]])->assertUnprocessable();
+        $this->issue([])->assertUnprocessable()->assertJsonValidationErrors('lines');
+        $this->issue([[$this->shampoo, 1], [$this->shampoo, 1]])->assertUnprocessable();
+    }
+
+    public function test_the_receiver_must_work_at_the_branch_and_issuing_needs_the_permission(): void
+    {
+        $this->purchase()->assertCreated();
+        $elsewhere = $this->createStaff($this->tenant, DefaultRole::Washer, [$this->otherBranch]);
+
+        $this->issue([[$this->shampoo, 1]], ['issued_to' => null])->assertUnprocessable()->assertJsonValidationErrors('issued_to');
+        $this->issue([[$this->shampoo, 1]], ['issued_to' => $elsewhere->id])->assertUnprocessable()->assertJsonValidationErrors('issued_to');
+        $this->issue([[$this->shampoo, 1]], ['branch_id' => $this->otherBranch->id])->assertForbidden();
+
+        $this->issue([[$this->shampoo, 1]], as: $this->cashier)->assertForbidden();
+        $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")->assertForbidden();
+    }
+
+    public function test_materials_set_on_a_service_still_show_in_the_days_usage(): void
     {
         $this->purchase()->assertCreated();
         $this->inTenant(fn () => $this->wash->materials()->attach($this->shampoo->id, ['quantity_milli' => 250]));
 
-        $orderId = $this->checkIn()->json('data.id');
-        $this->moveTo($orderId, 'in_progress', $this->washer)->assertOk();
+        $this->moveTo($this->checkIn()->json('data.id'), 'in_progress', $this->washer)->assertOk();
 
         Sanctum::actingAs($this->keeper);
         $this->postJson('/api/v1/inventory/counts', ['branch_id' => $this->branch->id, 'inventory_item_id' => $this->towels->id, 'quantity' => 90])->assertSuccessful();
@@ -195,26 +241,8 @@ class InventoryTest extends TestCase
         $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")
             ->assertOk()
             ->assertJsonCount(1, 'data.items')
-            ->assertJsonPath('data.items.0.item.name', 'Shampoo')
             ->assertJsonPath('data.items.0.washes', 0.25)
-            ->assertJsonPath('data.items.0.issued', 0)
-            ->assertJsonPath('data.issues', [])
-            ->assertJsonPath('data.materials_set_up', true);
-    }
-
-    public function test_more_than_the_stock_cannot_be_issued_and_needs_the_permission(): void
-    {
-        $this->purchase()->assertCreated();
-        $issue = ['branch_id' => $this->branch->id, 'inventory_item_id' => $this->shampoo->id, 'quantity' => 11];
-
-        Sanctum::actingAs($this->keeper);
-        $this->postJson('/api/v1/inventory/issues', $issue)->assertUnprocessable()->assertJsonValidationErrors('quantity');
-        $this->postJson('/api/v1/inventory/issues', [...$issue, 'quantity' => 0])->assertUnprocessable();
-        $this->postJson('/api/v1/inventory/issues', [...$issue, 'branch_id' => $this->otherBranch->id, 'quantity' => 1])->assertForbidden();
-
-        Sanctum::actingAs($this->cashier);
-        $this->postJson('/api/v1/inventory/issues', [...$issue, 'quantity' => 1])->assertForbidden();
-        $this->getJson("/api/v1/inventory/daily-usage?branch_id={$this->branch->id}")->assertForbidden();
+            ->assertJsonPath('data.issues', []);
     }
 
     public function test_a_stock_count_records_the_difference(): void

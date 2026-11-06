@@ -37,18 +37,18 @@ void main() {
           'item': {'id': 'i1', 'name': 'Shampoo', 'unit': 'L'},
           'quantity': 1.5,
           'note': 'Cleaning the bays',
-          'by': 'Mahmood',
+          'by': 'Ali',
+          'received_by': 'Mahmood',
           'at': '2026-11-06T09:00:00+00:00',
         },
       ],
-      'materials_set_up': false,
     });
 
     expect(usage.totalCost, 1875);
     expect(usage.items.single.washes, 0.25);
     expect(usage.items.single.total, 1.75);
     expect(usage.issues.single.note, 'Cleaning the bays');
-    expect(usage.materialsSetUp, isFalse);
+    expect(usage.issues.single.receivedBy, 'Mahmood');
   });
 
   test('a stock movement can be an issue by hand', () {

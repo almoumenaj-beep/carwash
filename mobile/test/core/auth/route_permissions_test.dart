@@ -37,6 +37,12 @@ void main() {
     expect(canOpen('/roles', meWith({'orders.view'})), isFalse);
   });
 
+  test('issuing materials needs inventory.adjust, more than seeing the stock', () {
+    expect(canOpen('/stock-issue', meWith({'inventory.adjust'})), isTrue);
+    expect(canOpen('/stock-issue', meWith({'inventory.view'})), isFalse);
+    expect(canOpen('/inventory', meWith({'inventory.view'})), isTrue);
+  });
+
   test('settings and branches need settings.manage', () {
     expect(canOpen('/settings', meWith({'users.manage'})), isFalse);
     expect(canOpen('/branches/b1', meWith({'orders.view'})), isFalse);

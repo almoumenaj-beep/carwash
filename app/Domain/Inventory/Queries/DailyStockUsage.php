@@ -6,11 +6,10 @@ use App\Domain\Inventory\Enums\StockMovementReason;
 use App\Domain\Inventory\Models\StockMovement;
 use App\Domain\Inventory\Support\Quantity;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Facades\DB;
 
 /**
  * What left a branch's stock on one day, midnight to midnight in the car wash's time zone: per material, what
- * the washes used and what was issued by hand, valued at today's cost; and each hand issue with who made it.
+ * was issued to staff and anything washes used, valued at today's cost; and each issue with who received it.
  * Differences found by stock counts are not usage, so they are left out.
  */
 class DailyStockUsage
@@ -25,7 +24,7 @@ class DailyStockUsage
             ->whereIn('reason', [StockMovementReason::Consumption, StockMovementReason::Issue])
             ->where('created_at', '>=', $day->startOfDay()->utc())
             ->where('created_at', '<', $day->startOfDay()->addDay()->utc())
-            ->with(['item', 'user'])
+            ->with(['item', 'user', 'receiver'])
             ->latest('created_at')
             ->orderByDesc('id')
             ->get();
@@ -54,17 +53,9 @@ class DailyStockUsage
                 'quantity' => Quantity::fromMilli(-$movement->change_milli),
                 'note' => $movement->note,
                 'by' => $movement->user?->name,
+                'received_by' => $movement->receiver?->name,
                 'at' => $movement->created_at->toIso8601String(),
             ])->values()->all(),
-            'materials_set_up' => DB::table('service_materials')
-                ->join('services', 'services.id', '=', 'service_materials.service_id')
-                ->where('services.tenant_id', $this->tenantId($branchId))
-                ->exists(),
         ];
-    }
-
-    private function tenantId(string $branchId): string
-    {
-        return (string) DB::table('branches')->where('id', $branchId)->value('tenant_id');
     }
 }

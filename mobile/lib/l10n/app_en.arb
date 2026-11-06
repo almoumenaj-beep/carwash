@@ -893,14 +893,10 @@
   "sharedDeviceWhichBranch": "Staff of which branch use this device?",
   "dailyUsageTab": "Daily usage",
   "issueMaterials": "Issue materials",
-  "movementIssue": "Issued by hand",
-  "materialField": "Material",
-  "issueQuantityField": "Quantity issued",
+  "movementIssue": "Issued",
   "issueNoteField": "What for (optional)",
-  "issueNoteHint": "e.g. cleaning the site",
+  "issueNoteHint": "e.g. today's supply",
   "nothingInStock": "Nothing is in stock at this branch. Record a purchase first.",
-  "materialsNotSetUp": "Washes do not take from stock yet",
-  "materialsNotSetUpHint": "Set what each service uses: Setup → Services and prices → open the service → Materials used. It is then taken automatically when a wash starts.",
   "noUsageThatDay": "Nothing left the stock on this day",
   "usedByWashes": "Washes: {value}",
   "@usedByWashes": {
@@ -910,7 +906,7 @@
       }
     }
   },
-  "issuedByHand": "By hand: {value}",
+  "issuedByHand": "Issued: {value}",
   "@issuedByHand": {
     "placeholders": {
       "value": {
@@ -920,7 +916,7 @@
   },
   "usageCostTotal": "Cost of what was used",
   "usageCostHint": "An estimate at today's costs, already an expense when bought",
-  "issuesByHandSection": "Issued by hand",
+  "issuesByHandSection": "Issues",
   "supplierLabel": "Supplier: {value}",
   "@supplierLabel": {
     "placeholders": {
@@ -929,5 +925,41 @@
       }
     }
   },
-  "serviceMaterialsRowHint": "Taken from stock automatically when a wash starts"
+  "stockIssueSubtitle": "Issue the day's materials to staff",
+  "receivedByField": "Received by",
+  "receivedByLabel": "Received by {name}",
+  "@receivedByLabel": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "issueQuantitiesSection": "Quantities",
+  "issueQuantitiesHint": "Enter a quantity beside each material issued and leave the rest empty.",
+  "availableQuantity": "In stock: {value}",
+  "@availableQuantity": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "onlyInStock": "Only {quantity} {unit} of {name} is in stock",
+  "@onlyInStock": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "quantity": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseReceiver": "Choose who receives them",
+  "enterIssueQuantities": "Enter a quantity for at least one material",
+  "materialsIssued": "Materials issued"
 }

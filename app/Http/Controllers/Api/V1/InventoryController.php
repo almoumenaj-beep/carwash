@@ -14,6 +14,7 @@ use App\Domain\Platform\Audit\AuditTrail;
 use App\Domain\Platform\Models\Branch;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveInventoryItemRequest;
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -91,26 +92,31 @@ class InventoryController extends Controller
     }
 
     /**
-     * Take materials out of a branch's stock by hand; the response is the new quantity.
+     * Issue materials from a branch's stock to a staff member; the response is the materials' new quantities.
      */
     public function issue(Request $request, IssueStock $issueStock): JsonResponse
     {
         Gate::authorize(Permission::InventoryAdjust->value);
 
+        $tenantId = $request->user()->tenant_id;
         $request->validate([
             'branch_id' => ['required', 'uuid'],
-            'inventory_item_id' => ['required', 'uuid', Rule::exists('inventory_items', 'id')->where('tenant_id', $request->user()->tenant_id)],
-            'quantity' => ['required', 'numeric', 'gt:0', 'max:1000000', 'decimal:0,3'],
+            'issued_to' => ['required', 'uuid', Rule::exists('users', 'id')->where('tenant_id', $tenantId)],
+            'lines' => ['required', 'array', 'min:1', 'max:50'],
+            'lines.*.inventory_item_id' => ['required', 'uuid', 'distinct', Rule::exists('inventory_items', 'id')->where('tenant_id', $tenantId)->where('is_active', true)],
+            'lines.*.quantity' => ['required', 'numeric', 'gt:0', 'max:1000000', 'decimal:0,3'],
             'note' => ['nullable', 'string', 'max:255'],
         ]);
 
         $branch = Branch::query()->findOrFail($request->input('branch_id'));
         Gate::authorize('view', $branch);
-        $item = InventoryItem::query()->findOrFail($request->input('inventory_item_id'));
+        $receiver = User::query()->findOrFail($request->input('issued_to'));
 
-        $issueStock->handle($request->user(), $branch, $item, Quantity::toMilli($request->input('quantity')), $request->input('note'));
+        $movements = $issueStock->handle($request->user(), $branch, $receiver, $request->input('lines'), $request->input('note'));
 
-        return response()->json(['data' => $this->present($item, (int) $item->stock()->where('branch_id', $branch->id)->value('quantity_milli'))], Response::HTTP_CREATED);
+        return response()->json(['data' => $movements->map(
+            fn (StockMovement $movement) => $this->present($movement->loadMissing('item')->item, $movement->balance_milli),
+        )], Response::HTTP_CREATED);
     }
 
     /**
@@ -150,7 +156,7 @@ class InventoryController extends Controller
         $movements = StockMovement::query()
             ->whereIn('branch_id', $this->branchIds($request))
             ->when($request->filled('inventory_item_id'), fn ($query) => $query->where('inventory_item_id', $request->input('inventory_item_id')))
-            ->with(['item', 'user'])
+            ->with(['item', 'user', 'receiver'])
             ->latest('created_at')
             ->orderByDesc('id')
             ->limit(100)
@@ -167,6 +173,7 @@ class InventoryController extends Controller
             'purchase_id' => $movement->purchase_id,
             'note' => $movement->note,
             'by' => $movement->user?->name,
+            'received_by' => $movement->receiver?->name,
             'at' => $movement->created_at->toIso8601String(),
         ])]);
     }

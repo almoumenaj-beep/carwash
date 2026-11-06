@@ -58,6 +58,7 @@ class StockMovement {
     required this.balance,
     required this.note,
     required this.by,
+    required this.receivedBy,
     required this.at,
   });
 
@@ -71,6 +72,7 @@ class StockMovement {
       balance: (json['balance'] as num).toDouble(),
       note: json['note'] as String?,
       by: json['by'] as String?,
+      receivedBy: json['received_by'] as String?,
       at: DateTime.parse(json['at'] as String),
     );
   }
@@ -82,6 +84,9 @@ class StockMovement {
   final double balance;
   final String? note;
   final String? by;
+
+  /// Who received materials issued by hand.
+  final String? receivedBy;
   final DateTime at;
 }
 
@@ -126,12 +131,7 @@ class Purchase {
 
 /// What left a branch's stock on one day.
 class DailyStockUsage {
-  const DailyStockUsage({
-    required this.totalCost,
-    required this.items,
-    required this.issues,
-    required this.materialsSetUp,
-  });
+  const DailyStockUsage({required this.totalCost, required this.items, required this.issues});
 
   factory DailyStockUsage.fromJson(Map<String, dynamic> json) => DailyStockUsage(
     totalCost: json['total_cost'] as int,
@@ -154,23 +154,21 @@ class DailyStockUsage {
           quantity: (row['quantity'] as num).toDouble(),
           note: row['note'] as String?,
           by: row['by'] as String?,
+          receivedBy: row['received_by'] as String?,
           at: DateTime.parse(row['at'] as String),
         ),
     ],
-    materialsSetUp: json['materials_set_up'] as bool,
   );
 
   /// At today's material costs, in minor units.
   final int totalCost;
 
-  /// Per material: what the washes used and what was issued by hand.
+  /// Per material: what was issued to staff and anything washes used.
   final List<({String name, String unit, double washes, double issued, double total, int cost})> items;
 
-  /// Each issue made by hand, latest first.
-  final List<({String name, String unit, double quantity, String? note, String? by, DateTime at})> issues;
-
-  /// Whether any service says which materials it uses; washes take nothing from stock until one does.
-  final bool materialsSetUp;
+  /// Each material issued to staff, latest first.
+  final List<({String name, String unit, double quantity, String? note, String? by, String? receivedBy, DateTime at})>
+  issues;
 }
 
 /// How much of a material one sale of a service uses.

@@ -24,6 +24,7 @@ List<HomeSection> dailySections(AppLocalizations l10n) => [
   ),
   (path: '/shift', icon: Icons.point_of_sale_outlined, title: l10n.shiftTitle, subtitle: l10n.shiftSubtitle),
   (path: '/customers', icon: Icons.people_alt_outlined, title: l10n.customersTitle, subtitle: l10n.customersSubtitle),
+  (path: '/stock-issue', icon: Icons.outbox_outlined, title: l10n.issueMaterials, subtitle: l10n.stockIssueSubtitle),
 ];
 
 /// The other sections, grouped by what they are about.

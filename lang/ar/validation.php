@@ -193,6 +193,7 @@ return [
         'cost' => 'التكلفة',
         'kind' => 'النوع',
         'starts_at' => 'الموعد',
+        'issued_to' => 'الموظف المستلم',
         'appointment_grace_minutes' => 'مهلة السماح للحجز',
         'email' => 'البريد الإلكتروني',
         'phone' => 'رقم الجوال',

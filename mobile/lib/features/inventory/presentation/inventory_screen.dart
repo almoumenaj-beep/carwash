@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
@@ -14,7 +15,7 @@ import '../data/inventory_repository.dart';
 import '../domain/inventory.dart';
 import 'purchase_editor_screen.dart';
 
-/// Stock at a branch, with low materials flagged, stock counts, issues by hand and each material's history; what
+/// Stock at a branch, with low materials flagged, stock counts, issuing to staff and each material's history; what
 /// left the stock each day; and the purchases received there.
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key});
@@ -43,18 +44,35 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     final canAdjust = me?.can(Permissions.inventoryAdjust) ?? false;
     final canPurchase = me?.can(Permissions.inventoryPurchase) ?? false;
 
+    final tabs = TabBar(
+      tabs: [
+        Tab(text: l10n.stockTab),
+        Tab(text: l10n.dailyUsageTab),
+        Tab(text: l10n.purchasesTab),
+      ],
+    );
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.inventoryTitle),
-          bottom: TabBar(
-            tabs: [
-              Tab(text: l10n.stockTab),
-              Tab(text: l10n.dailyUsageTab),
-              Tab(text: l10n.purchasesTab),
-            ],
-          ),
+          // The branch comes before the tabs showing it; a car wash with one branch has nothing to choose.
+          bottom: branches.length < 2
+              ? tabs
+              : PreferredSize(
+                  preferredSize: Size.fromHeight(tabs.preferredSize.height + 56),
+                  child: Column(
+                    children: [
+                      BranchChips(
+                        selected: branch.id,
+                        includeAll: false,
+                        onChanged: (id) => setState(() => _branchId = id),
+                      ),
+                      tabs,
+                    ],
+                  ),
+                ),
         ),
         floatingActionButton: canPurchase
             ? FloatingActionButton.extended(
@@ -70,18 +88,11 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 label: Text(l10n.newPurchase),
               )
             : null,
-        body: Column(
+        body: TabBarView(
           children: [
-            BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  _Stock(branchId: branch.id, canAdjust: canAdjust),
-                  _DailyUsage(branchId: branch.id, canAdjust: canAdjust),
-                  _Purchases(branchId: branch.id),
-                ],
-              ),
-            ),
+            _Stock(branchId: branch.id, canAdjust: canAdjust),
+            _DailyUsage(branchId: branch.id, canAdjust: canAdjust),
+            _Purchases(branchId: branch.id),
           ],
         ),
       ),
@@ -124,7 +135,7 @@ class _Stock extends ConsumerWidget {
                   runSpacing: 8,
                   children: [
                     FilledButton.tonalIcon(
-                      onPressed: value.isEmpty ? null : () => issueMaterials(context, ref, branchId, value),
+                      onPressed: () => context.push('/stock-issue?branch=$branchId'),
                       icon: const Icon(Icons.outbox_outlined),
                       label: Text(l10n.issueMaterials),
                     ),
@@ -269,12 +280,9 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
             if (widget.canAdjust) ...[
               const SizedBox(height: 12),
               FilledButton.tonalIcon(
-                onPressed: () async {
-                  final navigator = Navigator.of(context);
-                  final issued = await issueMaterials(context, ref, widget.branchId, [item], initial: item);
-                  if (issued && mounted) {
-                    navigator.pop();
-                  }
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.push('/stock-issue?branch=${widget.branchId}');
                 },
                 icon: const Icon(Icons.outbox_outlined),
                 label: Text(l10n.issueMaterials),
@@ -324,6 +332,7 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                         [
                           MaterialLocalizations.of(context).formatMediumDate(movement.at.toLocal()),
                           ?movement.by,
+                          if (movement.receivedBy != null) l10n.receivedByLabel(movement.receivedBy!),
                           ?movement.note,
                         ].join(' · '),
                       ),
@@ -350,136 +359,7 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
   }
 }
 
-/// Asks what to take out of the branch's stock by hand, and does it. True once something was issued.
-Future<bool> issueMaterials(
-  BuildContext context,
-  WidgetRef ref,
-  String branchId,
-  List<InventoryItem> items, {
-  InventoryItem? initial,
-}) async {
-  final issued = await showDialog<bool>(
-    context: context,
-    builder: (_) => _IssueDialog(branchId: branchId, items: items, initial: initial),
-  );
-  return issued ?? false;
-}
-
-class _IssueDialog extends ConsumerStatefulWidget {
-  const _IssueDialog({required this.branchId, required this.items, required this.initial});
-
-  final String branchId;
-  final List<InventoryItem> items;
-  final InventoryItem? initial;
-
-  @override
-  ConsumerState<_IssueDialog> createState() => _IssueDialogState();
-}
-
-class _IssueDialogState extends ConsumerState<_IssueDialog> {
-  final _quantity = TextEditingController();
-  final _note = TextEditingController();
-  late final List<InventoryItem> _available = widget.items.where((item) => item.isActive && item.quantity > 0).toList();
-  late InventoryItem? _item = widget.initial ?? _available.firstOrNull;
-  bool _saving = false;
-  String? _error;
-
-  @override
-  void dispose() {
-    _quantity.dispose();
-    _note.dispose();
-    super.dispose();
-  }
-
-  Future<void> _save() async {
-    final l10n = AppLocalizations.of(context);
-    final item = _item;
-    final quantity = parseQuantity(_quantity.text);
-    if (item == null || quantity == null || quantity <= 0) {
-      setState(() => _error = l10n.quantityInvalid);
-      return;
-    }
-
-    setState(() {
-      _saving = true;
-      _error = null;
-    });
-    try {
-      final note = _note.text.trim();
-      await ref
-          .read(inventoryRepositoryProvider)
-          .issue(widget.branchId, item.id, quantity, note: note.isEmpty ? null : note);
-      ref.invalidate(inventoryItemsProvider);
-      ref.invalidate(stockMovementsProvider);
-      ref.invalidate(dailyStockUsageProvider);
-      if (mounted) {
-        Navigator.of(context).pop(true);
-      }
-    } catch (error, stackTrace) {
-      if (mounted) {
-        setState(() {
-          _saving = false;
-          _error = changeError(context, error, stackTrace);
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final item = _item;
-
-    return AlertDialog(
-      title: Text(l10n.issueMaterials),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_available.isEmpty)
-              Text(l10n.nothingInStock)
-            else ...[
-              DropdownButtonFormField<String>(
-                initialValue: item?.id,
-                isExpanded: true,
-                decoration: InputDecoration(labelText: l10n.materialField),
-                items: [
-                  for (final option in _available)
-                    DropdownMenuItem(
-                      value: option.id,
-                      child: Text('${option.name} (${formatQuantity(option.quantity)} ${option.unit})'),
-                    ),
-                ],
-                onChanged: (id) => setState(() => _item = _available.firstWhere((option) => option.id == id)),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _quantity,
-                autofocus: true,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: l10n.issueQuantityField, suffixText: item?.unit),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _note,
-                maxLength: 255,
-                decoration: InputDecoration(labelText: l10n.issueNoteField, hintText: l10n.issueNoteHint),
-              ),
-            ],
-            if (_error != null) Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(l10n.cancel)),
-        FilledButton(onPressed: _saving || _available.isEmpty ? null : _save, child: Text(l10n.issueMaterials)),
-      ],
-    );
-  }
-}
-
-/// What left the branch's stock day by day: what the washes used, what was issued by hand, and each hand issue.
+/// What left the branch's stock day by day: what was issued to staff, anything washes used, and each issue.
 class _DailyUsage extends ConsumerStatefulWidget {
   const _DailyUsage({required this.branchId, required this.canAdjust});
 
@@ -500,7 +380,6 @@ class _DailyUsageState extends ConsumerState<_DailyUsage> {
     final money = ref.watch(moneyFormatProvider);
     final isToday = DateUtils.isSameDay(_day, DateTime.now());
     final query = (branchId: widget.branchId, date: apiDate(_day));
-    final items = ref.watch(inventoryItemsProvider(widget.branchId)).value ?? const <InventoryItem>[];
 
     return RefreshIndicator(
       onRefresh: () => ref.refresh(dailyStockUsageProvider(query).future),
@@ -532,7 +411,7 @@ class _DailyUsageState extends ConsumerState<_DailyUsage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: FilledButton.tonalIcon(
-                onPressed: items.isEmpty ? null : () => issueMaterials(context, ref, widget.branchId, items),
+                onPressed: () => context.push('/stock-issue?branch=${widget.branchId}'),
                 icon: const Icon(Icons.outbox_outlined),
                 label: Text(l10n.issueMaterials),
               ),
@@ -541,16 +420,6 @@ class _DailyUsageState extends ConsumerState<_DailyUsage> {
             AsyncData(:final value) => Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (!value.materialsSetUp)
-                  Card(
-                    margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                    color: theme.colorScheme.secondaryContainer,
-                    child: ListTile(
-                      leading: const Icon(Icons.info_outline),
-                      title: Text(l10n.materialsNotSetUp),
-                      subtitle: Text(l10n.materialsNotSetUpHint),
-                    ),
-                  ),
                 if (value.items.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(32),
@@ -595,7 +464,7 @@ class _DailyUsageState extends ConsumerState<_DailyUsage> {
                           [
                             MaterialLocalizations.of(context)
                                 .formatTimeOfDay(TimeOfDay.fromDateTime(issue.at.toLocal())),
-                            ?issue.by,
+                            if (issue.receivedBy != null) l10n.receivedByLabel(issue.receivedBy!),
                             ?issue.note,
                           ].join(' · '),
                         ),

@@ -3155,20 +3155,8 @@ abstract class AppLocalizations {
   /// No description provided for @movementIssue.
   ///
   /// In en, this message translates to:
-  /// **'Issued by hand'**
+  /// **'Issued'**
   String get movementIssue;
-
-  /// No description provided for @materialField.
-  ///
-  /// In en, this message translates to:
-  /// **'Material'**
-  String get materialField;
-
-  /// No description provided for @issueQuantityField.
-  ///
-  /// In en, this message translates to:
-  /// **'Quantity issued'**
-  String get issueQuantityField;
 
   /// No description provided for @issueNoteField.
   ///
@@ -3179,7 +3167,7 @@ abstract class AppLocalizations {
   /// No description provided for @issueNoteHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. cleaning the site'**
+  /// **'e.g. today\'s supply'**
   String get issueNoteHint;
 
   /// No description provided for @nothingInStock.
@@ -3187,18 +3175,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nothing is in stock at this branch. Record a purchase first.'**
   String get nothingInStock;
-
-  /// No description provided for @materialsNotSetUp.
-  ///
-  /// In en, this message translates to:
-  /// **'Washes do not take from stock yet'**
-  String get materialsNotSetUp;
-
-  /// No description provided for @materialsNotSetUpHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Set what each service uses: Setup → Services and prices → open the service → Materials used. It is then taken automatically when a wash starts.'**
-  String get materialsNotSetUpHint;
 
   /// No description provided for @noUsageThatDay.
   ///
@@ -3215,7 +3191,7 @@ abstract class AppLocalizations {
   /// No description provided for @issuedByHand.
   ///
   /// In en, this message translates to:
-  /// **'By hand: {value}'**
+  /// **'Issued: {value}'**
   String issuedByHand(String value);
 
   /// No description provided for @usageCostTotal.
@@ -3233,7 +3209,7 @@ abstract class AppLocalizations {
   /// No description provided for @issuesByHandSection.
   ///
   /// In en, this message translates to:
-  /// **'Issued by hand'**
+  /// **'Issues'**
   String get issuesByHandSection;
 
   /// No description provided for @supplierLabel.
@@ -3242,11 +3218,65 @@ abstract class AppLocalizations {
   /// **'Supplier: {value}'**
   String supplierLabel(String value);
 
-  /// No description provided for @serviceMaterialsRowHint.
+  /// No description provided for @stockIssueSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Taken from stock automatically when a wash starts'**
-  String get serviceMaterialsRowHint;
+  /// **'Issue the day\'s materials to staff'**
+  String get stockIssueSubtitle;
+
+  /// No description provided for @receivedByField.
+  ///
+  /// In en, this message translates to:
+  /// **'Received by'**
+  String get receivedByField;
+
+  /// No description provided for @receivedByLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Received by {name}'**
+  String receivedByLabel(String name);
+
+  /// No description provided for @issueQuantitiesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantities'**
+  String get issueQuantitiesSection;
+
+  /// No description provided for @issueQuantitiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a quantity beside each material issued and leave the rest empty.'**
+  String get issueQuantitiesHint;
+
+  /// No description provided for @availableQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'In stock: {value}'**
+  String availableQuantity(String value);
+
+  /// No description provided for @onlyInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {quantity} {unit} of {name} is in stock'**
+  String onlyInStock(String name, String quantity, String unit);
+
+  /// No description provided for @chooseReceiver.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose who receives them'**
+  String get chooseReceiver;
+
+  /// No description provided for @enterIssueQuantities.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a quantity for at least one material'**
+  String get enterIssueQuantities;
+
+  /// No description provided for @materialsIssued.
+  ///
+  /// In en, this message translates to:
+  /// **'Materials issued'**
+  String get materialsIssued;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

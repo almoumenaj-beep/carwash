@@ -47,6 +47,16 @@ class StockMovement extends Model
     }
 
     /**
+     * The staff member who received materials issued by hand.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function receiver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'issued_to');
+    }
+
+    /**
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
