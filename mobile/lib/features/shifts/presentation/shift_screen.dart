@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/money/money_format.dart';
 import '../../../core/network/api_problem.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
@@ -43,29 +44,23 @@ class _ShiftScreenState extends ConsumerState<ShiftScreen> {
     final shift = ref.watch(currentShiftProvider(branch.id));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(branches.length > 1 ? '${l10n.shiftTitle} · ${branch.name}' : l10n.shiftTitle),
-        actions: [
-          if (branches.length > 1)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.store_outlined),
-              initialValue: branch.id,
-              onSelected: (id) => setState(() => _branchId = id),
-              itemBuilder: (_) => [
-                for (final option in branches) PopupMenuItem(value: option.id, child: Text(option.name)),
-              ],
-            ),
+      appBar: AppBar(title: Text(l10n.shiftTitle)),
+      body: Column(
+        children: [
+          BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
+          Expanded(
+            child: switch (shift) {
+              AsyncData(value: null) => _OpenShiftForm(key: ValueKey('open-${branch.id}'), branchId: branch.id),
+              AsyncData(value: final CashShift shift) => _OpenShift(key: ValueKey(shift.id), shift: shift),
+              AsyncError(:final error) => ErrorView(
+                error: error,
+                onRetry: () => ref.invalidate(currentShiftProvider(branch.id)),
+              ),
+              _ => const Center(child: CircularProgressIndicator()),
+            },
+          ),
         ],
       ),
-      body: switch (shift) {
-        AsyncData(value: null) => _OpenShiftForm(key: ValueKey('open-${branch.id}'), branchId: branch.id),
-        AsyncData(value: final CashShift shift) => _OpenShift(key: ValueKey(shift.id), shift: shift),
-        AsyncError(:final error) => ErrorView(
-          error: error,
-          onRetry: () => ref.invalidate(currentShiftProvider(branch.id)),
-        ),
-        _ => const Center(child: CircularProgressIndicator()),
-      },
     );
   }
 }

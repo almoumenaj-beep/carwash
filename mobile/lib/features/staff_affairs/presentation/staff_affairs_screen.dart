@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -249,6 +250,7 @@ class _AttendanceState extends ConsumerState<_Attendance> {
     return ListView(
       padding: const EdgeInsets.only(bottom: 32),
       children: [
+        BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
         Row(
           children: [
             IconButton(
@@ -268,15 +270,6 @@ class _AttendanceState extends ConsumerState<_Attendance> {
                   ? null
                   : () => setState(() => _day = _day.add(const Duration(days: 1))),
             ),
-            if (branches.length > 1)
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.store_outlined),
-                initialValue: branch.id,
-                onSelected: (id) => setState(() => _branchId = id),
-                itemBuilder: (_) => [
-                  for (final option in branches) PopupMenuItem(value: option.id, child: Text(option.name)),
-                ],
-              ),
           ],
         ),
         switch (records) {

@@ -3139,6 +3139,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Staff of which branch use this device?'**
   String get sharedDeviceWhichBranch;
+
+  /// No description provided for @dailyUsageTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily usage'**
+  String get dailyUsageTab;
+
+  /// No description provided for @issueMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'Issue materials'**
+  String get issueMaterials;
+
+  /// No description provided for @movementIssue.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued by hand'**
+  String get movementIssue;
+
+  /// No description provided for @materialField.
+  ///
+  /// In en, this message translates to:
+  /// **'Material'**
+  String get materialField;
+
+  /// No description provided for @issueQuantityField.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity issued'**
+  String get issueQuantityField;
+
+  /// No description provided for @issueNoteField.
+  ///
+  /// In en, this message translates to:
+  /// **'What for (optional)'**
+  String get issueNoteField;
+
+  /// No description provided for @issueNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. cleaning the site'**
+  String get issueNoteHint;
+
+  /// No description provided for @nothingInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing is in stock at this branch. Record a purchase first.'**
+  String get nothingInStock;
+
+  /// No description provided for @materialsNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Washes do not take from stock yet'**
+  String get materialsNotSetUp;
+
+  /// No description provided for @materialsNotSetUpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Set what each service uses: Setup → Services and prices → open the service → Materials used. It is then taken automatically when a wash starts.'**
+  String get materialsNotSetUpHint;
+
+  /// No description provided for @noUsageThatDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing left the stock on this day'**
+  String get noUsageThatDay;
+
+  /// No description provided for @usedByWashes.
+  ///
+  /// In en, this message translates to:
+  /// **'Washes: {value}'**
+  String usedByWashes(String value);
+
+  /// No description provided for @issuedByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'By hand: {value}'**
+  String issuedByHand(String value);
+
+  /// No description provided for @usageCostTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost of what was used'**
+  String get usageCostTotal;
+
+  /// No description provided for @usageCostHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An estimate at today\'s costs, already an expense when bought'**
+  String get usageCostHint;
+
+  /// No description provided for @issuesByHandSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued by hand'**
+  String get issuesByHandSection;
+
+  /// No description provided for @supplierLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Supplier: {value}'**
+  String supplierLabel(String value);
+
+  /// No description provided for @serviceMaterialsRowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Taken from stock automatically when a wash starts'**
+  String get serviceMaterialsRowHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

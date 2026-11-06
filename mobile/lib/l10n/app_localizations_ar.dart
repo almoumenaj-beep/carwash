@@ -1740,4 +1740,65 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get sharedDeviceWhichBranch => 'موظفو أي فرع يستخدمون هذا الجهاز؟';
+
+  @override
+  String get dailyUsageTab => 'الصرف اليومي';
+
+  @override
+  String get issueMaterials => 'صرف مواد';
+
+  @override
+  String get movementIssue => 'صرف يدوي';
+
+  @override
+  String get materialField => 'المادة';
+
+  @override
+  String get issueQuantityField => 'الكمية المصروفة';
+
+  @override
+  String get issueNoteField => 'الغرض (اختياري)';
+
+  @override
+  String get issueNoteHint => 'مثال: تنظيف المكان';
+
+  @override
+  String get nothingInStock => 'لا توجد مواد متوفرة في هذا الفرع. سجّل مشتريات أولاً.';
+
+  @override
+  String get materialsNotSetUp => 'الغسيل لا يخصم من المخزون بعد';
+
+  @override
+  String get materialsNotSetUpHint =>
+      'حدّد ما تستهلكه كل خدمة من: الإعدادات ← الخدمات والأسعار ← افتح الخدمة ← المواد المستهلكة. بعدها يُخصم تلقائياً عند بدء الغسيل.';
+
+  @override
+  String get noUsageThatDay => 'لم يُصرف شيء من المخزون في هذا اليوم';
+
+  @override
+  String usedByWashes(String value) {
+    return 'الغسيل: $value';
+  }
+
+  @override
+  String issuedByHand(String value) {
+    return 'صرف يدوي: $value';
+  }
+
+  @override
+  String get usageCostTotal => 'تكلفة ما صُرف';
+
+  @override
+  String get usageCostHint => 'تقديرية بأسعار المواد الحالية، ومسجّلة أصلاً كمصروف عند الشراء';
+
+  @override
+  String get issuesByHandSection => 'الصرف اليدوي';
+
+  @override
+  String supplierLabel(String value) {
+    return 'المورد: $value';
+  }
+
+  @override
+  String get serviceMaterialsRowHint => 'تُخصم من المخزون تلقائياً عند بدء الغسيل';
 }

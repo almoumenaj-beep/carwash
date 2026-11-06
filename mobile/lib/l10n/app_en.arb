@@ -890,5 +890,44 @@
       }
     }
   },
-  "sharedDeviceWhichBranch": "Staff of which branch use this device?"
+  "sharedDeviceWhichBranch": "Staff of which branch use this device?",
+  "dailyUsageTab": "Daily usage",
+  "issueMaterials": "Issue materials",
+  "movementIssue": "Issued by hand",
+  "materialField": "Material",
+  "issueQuantityField": "Quantity issued",
+  "issueNoteField": "What for (optional)",
+  "issueNoteHint": "e.g. cleaning the site",
+  "nothingInStock": "Nothing is in stock at this branch. Record a purchase first.",
+  "materialsNotSetUp": "Washes do not take from stock yet",
+  "materialsNotSetUpHint": "Set what each service uses: Setup → Services and prices → open the service → Materials used. It is then taken automatically when a wash starts.",
+  "noUsageThatDay": "Nothing left the stock on this day",
+  "usedByWashes": "Washes: {value}",
+  "@usedByWashes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "issuedByHand": "By hand: {value}",
+  "@issuedByHand": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "usageCostTotal": "Cost of what was used",
+  "usageCostHint": "An estimate at today's costs, already an expense when bought",
+  "issuesByHandSection": "Issued by hand",
+  "supplierLabel": "Supplier: {value}",
+  "@supplierLabel": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "serviceMaterialsRowHint": "Taken from stock automatically when a wash starts"
 }

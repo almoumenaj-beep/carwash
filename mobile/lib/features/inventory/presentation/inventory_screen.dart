@@ -3,17 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
+import '../../expenses/domain/expense.dart' show apiDate;
 import '../../expenses/presentation/expense_widgets.dart';
 import '../data/inventory_repository.dart';
 import '../domain/inventory.dart';
 import 'purchase_editor_screen.dart';
 
-/// Stock at a branch, with low materials flagged, stock counts and each material's history; and the
-/// purchases received there.
+/// Stock at a branch, with low materials flagged, stock counts, issues by hand and each material's history; what
+/// left the stock each day; and the purchases received there.
 class InventoryScreen extends ConsumerStatefulWidget {
   const InventoryScreen({super.key});
 
@@ -42,24 +44,14 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     final canPurchase = me?.can(Permissions.inventoryPurchase) ?? false;
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(branches.length > 1 ? '${l10n.inventoryTitle} · ${branch.name}' : l10n.inventoryTitle),
-          actions: [
-            if (branches.length > 1)
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.store_outlined),
-                initialValue: branch.id,
-                onSelected: (id) => setState(() => _branchId = id),
-                itemBuilder: (_) => [
-                  for (final option in branches) PopupMenuItem(value: option.id, child: Text(option.name)),
-                ],
-              ),
-          ],
+          title: Text(l10n.inventoryTitle),
           bottom: TabBar(
             tabs: [
               Tab(text: l10n.stockTab),
+              Tab(text: l10n.dailyUsageTab),
               Tab(text: l10n.purchasesTab),
             ],
           ),
@@ -78,10 +70,18 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 label: Text(l10n.newPurchase),
               )
             : null,
-        body: TabBarView(
+        body: Column(
           children: [
-            _Stock(branchId: branch.id, canAdjust: canAdjust),
-            _Purchases(branchId: branch.id),
+            BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  _Stock(branchId: branch.id, canAdjust: canAdjust),
+                  _DailyUsage(branchId: branch.id, canAdjust: canAdjust),
+                  _Purchases(branchId: branch.id),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -117,7 +117,25 @@ class _Stock extends ConsumerWidget {
           padding: const EdgeInsets.only(bottom: 96),
           children: [
             if (canAdjust)
-              ListTile(leading: const Icon(Icons.add), title: Text(l10n.addMaterial), onTap: () => editItem(null)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    FilledButton.tonalIcon(
+                      onPressed: value.isEmpty ? null : () => issueMaterials(context, ref, branchId, value),
+                      icon: const Icon(Icons.outbox_outlined),
+                      label: Text(l10n.issueMaterials),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => editItem(null),
+                      icon: const Icon(Icons.add),
+                      label: Text(l10n.addMaterial),
+                    ),
+                  ],
+                ),
+              ),
             if (value.isEmpty)
               Padding(
                 padding: const EdgeInsets.all(32),
@@ -164,6 +182,7 @@ String reasonLabel(AppLocalizations l10n, StockMovementReason reason) => switch 
   StockMovementReason.purchase => l10n.movementPurchase,
   StockMovementReason.consumption => l10n.movementConsumption,
   StockMovementReason.count => l10n.movementCount,
+  StockMovementReason.issue => l10n.movementIssue,
 };
 
 /// A material at the branch: its stock, a stock count, and its latest movements.
@@ -248,6 +267,18 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
                 style: theme.textTheme.bodySmall,
               ),
             if (widget.canAdjust) ...[
+              const SizedBox(height: 12),
+              FilledButton.tonalIcon(
+                onPressed: () async {
+                  final navigator = Navigator.of(context);
+                  final issued = await issueMaterials(context, ref, widget.branchId, [item], initial: item);
+                  if (issued && mounted) {
+                    navigator.pop();
+                  }
+                },
+                icon: const Icon(Icons.outbox_outlined),
+                label: Text(l10n.issueMaterials),
+              ),
               const SizedBox(height: 16),
               Text(l10n.stockCount, style: theme.textTheme.titleSmall),
               const SizedBox(height: 8),
@@ -314,6 +345,275 @@ class _ItemSheetState extends ConsumerState<_ItemSheet> {
             },
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Asks what to take out of the branch's stock by hand, and does it. True once something was issued.
+Future<bool> issueMaterials(
+  BuildContext context,
+  WidgetRef ref,
+  String branchId,
+  List<InventoryItem> items, {
+  InventoryItem? initial,
+}) async {
+  final issued = await showDialog<bool>(
+    context: context,
+    builder: (_) => _IssueDialog(branchId: branchId, items: items, initial: initial),
+  );
+  return issued ?? false;
+}
+
+class _IssueDialog extends ConsumerStatefulWidget {
+  const _IssueDialog({required this.branchId, required this.items, required this.initial});
+
+  final String branchId;
+  final List<InventoryItem> items;
+  final InventoryItem? initial;
+
+  @override
+  ConsumerState<_IssueDialog> createState() => _IssueDialogState();
+}
+
+class _IssueDialogState extends ConsumerState<_IssueDialog> {
+  final _quantity = TextEditingController();
+  final _note = TextEditingController();
+  late final List<InventoryItem> _available = widget.items.where((item) => item.isActive && item.quantity > 0).toList();
+  late InventoryItem? _item = widget.initial ?? _available.firstOrNull;
+  bool _saving = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _quantity.dispose();
+    _note.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final l10n = AppLocalizations.of(context);
+    final item = _item;
+    final quantity = parseQuantity(_quantity.text);
+    if (item == null || quantity == null || quantity <= 0) {
+      setState(() => _error = l10n.quantityInvalid);
+      return;
+    }
+
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    try {
+      final note = _note.text.trim();
+      await ref
+          .read(inventoryRepositoryProvider)
+          .issue(widget.branchId, item.id, quantity, note: note.isEmpty ? null : note);
+      ref.invalidate(inventoryItemsProvider);
+      ref.invalidate(stockMovementsProvider);
+      ref.invalidate(dailyStockUsageProvider);
+      if (mounted) {
+        Navigator.of(context).pop(true);
+      }
+    } catch (error, stackTrace) {
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _error = changeError(context, error, stackTrace);
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final item = _item;
+
+    return AlertDialog(
+      title: Text(l10n.issueMaterials),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_available.isEmpty)
+              Text(l10n.nothingInStock)
+            else ...[
+              DropdownButtonFormField<String>(
+                initialValue: item?.id,
+                isExpanded: true,
+                decoration: InputDecoration(labelText: l10n.materialField),
+                items: [
+                  for (final option in _available)
+                    DropdownMenuItem(
+                      value: option.id,
+                      child: Text('${option.name} (${formatQuantity(option.quantity)} ${option.unit})'),
+                    ),
+                ],
+                onChanged: (id) => setState(() => _item = _available.firstWhere((option) => option.id == id)),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _quantity,
+                autofocus: true,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(labelText: l10n.issueQuantityField, suffixText: item?.unit),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _note,
+                maxLength: 255,
+                decoration: InputDecoration(labelText: l10n.issueNoteField, hintText: l10n.issueNoteHint),
+              ),
+            ],
+            if (_error != null) Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(l10n.cancel)),
+        FilledButton(onPressed: _saving || _available.isEmpty ? null : _save, child: Text(l10n.issueMaterials)),
+      ],
+    );
+  }
+}
+
+/// What left the branch's stock day by day: what the washes used, what was issued by hand, and each hand issue.
+class _DailyUsage extends ConsumerStatefulWidget {
+  const _DailyUsage({required this.branchId, required this.canAdjust});
+
+  final String branchId;
+  final bool canAdjust;
+
+  @override
+  ConsumerState<_DailyUsage> createState() => _DailyUsageState();
+}
+
+class _DailyUsageState extends ConsumerState<_DailyUsage> {
+  DateTime _day = DateUtils.dateOnly(DateTime.now());
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final money = ref.watch(moneyFormatProvider);
+    final isToday = DateUtils.isSameDay(_day, DateTime.now());
+    final query = (branchId: widget.branchId, date: apiDate(_day));
+    final items = ref.watch(inventoryItemsProvider(widget.branchId)).value ?? const <InventoryItem>[];
+
+    return RefreshIndicator(
+      onRefresh: () => ref.refresh(dailyStockUsageProvider(query).future),
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 96),
+        children: [
+          Row(
+            children: [
+              IconButton(
+                tooltip: l10n.previousDay,
+                icon: const Icon(Icons.chevron_left),
+                onPressed: () => setState(() => _day = _day.subtract(const Duration(days: 1))),
+              ),
+              Expanded(
+                child: Text(
+                  isToday ? l10n.today : MaterialLocalizations.of(context).formatMediumDate(_day),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+              IconButton(
+                tooltip: l10n.nextDay,
+                icon: const Icon(Icons.chevron_right),
+                onPressed: isToday ? null : () => setState(() => _day = _day.add(const Duration(days: 1))),
+              ),
+            ],
+          ),
+          if (widget.canAdjust && isToday)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: FilledButton.tonalIcon(
+                onPressed: items.isEmpty ? null : () => issueMaterials(context, ref, widget.branchId, items),
+                icon: const Icon(Icons.outbox_outlined),
+                label: Text(l10n.issueMaterials),
+              ),
+            ),
+          switch (ref.watch(dailyStockUsageProvider(query))) {
+            AsyncData(:final value) => Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (!value.materialsSetUp)
+                  Card(
+                    margin: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                    color: theme.colorScheme.secondaryContainer,
+                    child: ListTile(
+                      leading: const Icon(Icons.info_outline),
+                      title: Text(l10n.materialsNotSetUp),
+                      subtitle: Text(l10n.materialsNotSetUpHint),
+                    ),
+                  ),
+                if (value.items.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Text(l10n.noUsageThatDay, textAlign: TextAlign.center),
+                  )
+                else ...[
+                  for (final row in value.items)
+                    ListTile(
+                      leading: const Icon(Icons.water_drop_outlined),
+                      title: Text(row.name),
+                      subtitle: Text(
+                        [
+                          if (row.washes > 0) l10n.usedByWashes('${formatQuantity(row.washes)} ${row.unit}'),
+                          if (row.issued > 0) l10n.issuedByHand('${formatQuantity(row.issued)} ${row.unit}'),
+                        ].join(' · '),
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text('${formatQuantity(row.total)} ${row.unit}', style: theme.textTheme.titleSmall),
+                          if (row.cost > 0) Text(money.format(row.cost), style: theme.textTheme.bodySmall),
+                        ],
+                      ),
+                    ),
+                  if (value.totalCost > 0)
+                    ListTile(
+                      title: Text(l10n.usageCostTotal),
+                      subtitle: Text(l10n.usageCostHint),
+                      trailing: Text(money.format(value.totalCost), style: theme.textTheme.titleMedium),
+                    ),
+                  if (value.issues.isNotEmpty) ...[
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                      child: Text(l10n.issuesByHandSection, style: theme.textTheme.titleSmall),
+                    ),
+                    for (final issue in value.issues)
+                      ListTile(
+                        dense: true,
+                        title: Text('${issue.name} × ${formatQuantity(issue.quantity)} ${issue.unit}'),
+                        subtitle: Text(
+                          [
+                            MaterialLocalizations.of(context)
+                                .formatTimeOfDay(TimeOfDay.fromDateTime(issue.at.toLocal())),
+                            ?issue.by,
+                            ?issue.note,
+                          ].join(' · '),
+                        ),
+                      ),
+                  ],
+                ],
+              ],
+            ),
+            AsyncError(:final error) => ErrorView(
+              error: error,
+              onRetry: () => ref.invalidate(dailyStockUsageProvider(query)),
+            ),
+            _ => const Padding(
+              padding: EdgeInsets.all(32),
+              child: Center(child: CircularProgressIndicator()),
+            ),
+          },
+        ],
       ),
     );
   }
@@ -435,17 +735,28 @@ class _Purchases extends ConsumerWidget {
                   purchase.isPaid ? Icons.receipt_outlined : Icons.schedule,
                   color: purchase.isPaid ? null : Theme.of(context).colorScheme.error,
                 ),
-                title: Text(purchase.supplierName ?? l10n.noSupplier),
+                // What was bought names the row: the supplier alone does not tell two purchases apart.
+                title: Text(
+                  purchase.lines
+                      .map((line) => '${line.name} × ${formatQuantity(line.quantity)} ${line.unit}')
+                      .join('، '),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 subtitle: Text(
-                  '${MaterialLocalizations.of(context).formatMediumDate(purchase.purchasedOn)} · '
-                  '${purchase.isPaid ? l10n.paidBadge : l10n.notPaidYet}',
+                  [
+                    MaterialLocalizations.of(context).formatMediumDate(purchase.purchasedOn),
+                    l10n.supplierLabel(purchase.supplierName ?? l10n.noSupplier),
+                    if (purchase.isPaid) l10n.paidBadge else l10n.notPaidYet,
+                  ].join(' · '),
                 ),
                 trailing: Text(money.format(purchase.total)),
                 children: [
                   for (final line in purchase.lines)
                     ListTile(
                       dense: true,
-                      title: Text('${line.name} × ${formatQuantity(line.quantity)} ${line.unit}'),
+                      title: Text(line.name),
+                      subtitle: Text('${formatQuantity(line.quantity)} ${line.unit} × ${money.format(line.unitCost)}'),
                       trailing: Text(money.format(line.lineTotal)),
                     ),
                 ],

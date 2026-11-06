@@ -1692,4 +1692,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sharedDeviceWhichBranch => 'Staff of which branch use this device?';
+
+  @override
+  String get dailyUsageTab => 'Daily usage';
+
+  @override
+  String get issueMaterials => 'Issue materials';
+
+  @override
+  String get movementIssue => 'Issued by hand';
+
+  @override
+  String get materialField => 'Material';
+
+  @override
+  String get issueQuantityField => 'Quantity issued';
+
+  @override
+  String get issueNoteField => 'What for (optional)';
+
+  @override
+  String get issueNoteHint => 'e.g. cleaning the site';
+
+  @override
+  String get nothingInStock => 'Nothing is in stock at this branch. Record a purchase first.';
+
+  @override
+  String get materialsNotSetUp => 'Washes do not take from stock yet';
+
+  @override
+  String get materialsNotSetUpHint =>
+      'Set what each service uses: Setup → Services and prices → open the service → Materials used. It is then taken automatically when a wash starts.';
+
+  @override
+  String get noUsageThatDay => 'Nothing left the stock on this day';
+
+  @override
+  String usedByWashes(String value) {
+    return 'Washes: $value';
+  }
+
+  @override
+  String issuedByHand(String value) {
+    return 'By hand: $value';
+  }
+
+  @override
+  String get usageCostTotal => 'Cost of what was used';
+
+  @override
+  String get usageCostHint => 'An estimate at today\'s costs, already an expense when bought';
+
+  @override
+  String get issuesByHandSection => 'Issued by hand';
+
+  @override
+  String supplierLabel(String value) {
+    return 'Supplier: $value';
+  }
+
+  @override
+  String get serviceMaterialsRowHint => 'Taken from stock automatically when a wash starts';
 }

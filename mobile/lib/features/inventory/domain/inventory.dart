@@ -42,7 +42,8 @@ class InventoryItem {
 enum StockMovementReason {
   purchase,
   consumption,
-  count;
+  count,
+  issue;
 
   static StockMovementReason fromApi(String value) => values.firstWhere((reason) => reason.name == value);
 }
@@ -107,6 +108,7 @@ class Purchase {
           name: ((line as Map<String, dynamic>)['item'] as Map<String, dynamic>)['name'] as String,
           unit: (line['item'] as Map<String, dynamic>)['unit'] as String,
           quantity: (line['quantity'] as num).toDouble(),
+          unitCost: line['unit_cost'] as int,
           lineTotal: line['line_total'] as int,
         ),
     ],
@@ -119,7 +121,56 @@ class Purchase {
 
   /// False while it is owed to the supplier.
   final bool isPaid;
-  final List<({String name, String unit, double quantity, int lineTotal})> lines;
+  final List<({String name, String unit, double quantity, int unitCost, int lineTotal})> lines;
+}
+
+/// What left a branch's stock on one day.
+class DailyStockUsage {
+  const DailyStockUsage({
+    required this.totalCost,
+    required this.items,
+    required this.issues,
+    required this.materialsSetUp,
+  });
+
+  factory DailyStockUsage.fromJson(Map<String, dynamic> json) => DailyStockUsage(
+    totalCost: json['total_cost'] as int,
+    items: [
+      for (final row in json['items'] as List)
+        (
+          name: ((row as Map<String, dynamic>)['item'] as Map<String, dynamic>)['name'] as String,
+          unit: (row['item'] as Map<String, dynamic>)['unit'] as String,
+          washes: (row['washes'] as num).toDouble(),
+          issued: (row['issued'] as num).toDouble(),
+          total: (row['total'] as num).toDouble(),
+          cost: row['cost'] as int,
+        ),
+    ],
+    issues: [
+      for (final row in json['issues'] as List)
+        (
+          name: ((row as Map<String, dynamic>)['item'] as Map<String, dynamic>)['name'] as String,
+          unit: (row['item'] as Map<String, dynamic>)['unit'] as String,
+          quantity: (row['quantity'] as num).toDouble(),
+          note: row['note'] as String?,
+          by: row['by'] as String?,
+          at: DateTime.parse(row['at'] as String),
+        ),
+    ],
+    materialsSetUp: json['materials_set_up'] as bool,
+  );
+
+  /// At today's material costs, in minor units.
+  final int totalCost;
+
+  /// Per material: what the washes used and what was issued by hand.
+  final List<({String name, String unit, double washes, double issued, double total, int cost})> items;
+
+  /// Each issue made by hand, latest first.
+  final List<({String name, String unit, double quantity, String? note, String? by, DateTime at})> issues;
+
+  /// Whether any service says which materials it uses; washes take nothing from stock until one does.
+  final bool materialsSetUp;
 }
 
 /// How much of a material one sale of a service uses.

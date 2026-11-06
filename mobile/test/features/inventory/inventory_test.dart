@@ -19,6 +19,42 @@ void main() {
     expect(item.isLow, isTrue);
   });
 
+  test('reads a day of stock usage', () {
+    final usage = DailyStockUsage.fromJson({
+      'date': '2026-11-06',
+      'total_cost': 1875,
+      'items': [
+        {
+          'item': {'id': 'i1', 'name': 'Shampoo', 'unit': 'L'},
+          'washes': 0.25,
+          'issued': 1.5,
+          'total': 1.75,
+          'cost': 1875,
+        },
+      ],
+      'issues': [
+        {
+          'item': {'id': 'i1', 'name': 'Shampoo', 'unit': 'L'},
+          'quantity': 1.5,
+          'note': 'Cleaning the bays',
+          'by': 'Mahmood',
+          'at': '2026-11-06T09:00:00+00:00',
+        },
+      ],
+      'materials_set_up': false,
+    });
+
+    expect(usage.totalCost, 1875);
+    expect(usage.items.single.washes, 0.25);
+    expect(usage.items.single.total, 1.75);
+    expect(usage.issues.single.note, 'Cleaning the bays');
+    expect(usage.materialsSetUp, isFalse);
+  });
+
+  test('a stock movement can be an issue by hand', () {
+    expect(StockMovementReason.fromApi('issue'), StockMovementReason.issue);
+  });
+
   test('reads a stock movement', () {
     final movement = StockMovement.fromJson({
       'id': 'm1',

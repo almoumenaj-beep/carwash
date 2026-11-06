@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/auth/can.dart';
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
+import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -85,18 +86,7 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
       length: 5,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(branches.length > 1 ? '${l10n.queueTitle} · ${branch.name}' : l10n.queueTitle),
-          actions: [
-            if (branches.length > 1)
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.store_outlined),
-                initialValue: branch.id,
-                onSelected: (id) => setState(() => _branchId = id),
-                itemBuilder: (_) => [
-                  for (final option in branches) PopupMenuItem(value: option.id, child: Text(option.name)),
-                ],
-              ),
-          ],
+          title: Text(l10n.queueTitle),
           bottom: TabBar(
             isScrollable: true,
             tabAlignment: TabAlignment.start,
@@ -120,13 +110,20 @@ class _QueueScreenState extends ConsumerState<QueueScreen> {
             label: Text(l10n.checkIn),
           ),
         ),
-        body: TabBarView(
+        body: Column(
           children: [
-            activeList(waiting),
-            activeList(washing),
-            activeList(inQualityCheck),
-            activeList(ready),
-            _TodayList(branchId: branch.id, onReload: _reload),
+            BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  activeList(waiting),
+                  activeList(washing),
+                  activeList(inQualityCheck),
+                  activeList(ready),
+                  _TodayList(branchId: branch.id, onReload: _reload),
+                ],
+              ),
+            ),
           ],
         ),
       ),

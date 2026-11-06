@@ -413,19 +413,6 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
       appBar: AppBar(
         title: Text(_isNew ? l10n.newService : widget.service!.name),
         actions: [
-          if (!_isNew &&
-              !widget.service!.isPackage &&
-              (ref.watch(sessionProvider).value?.can(Permissions.inventoryView) ?? false))
-            IconButton(
-              tooltip: l10n.serviceMaterials,
-              icon: const Icon(Icons.science_outlined),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) =>
-                      ServiceMaterialsScreen(serviceId: widget.service!.id, serviceName: widget.service!.name),
-                ),
-              ),
-            ),
           if (!_isNew) IconButton(tooltip: l10n.delete, icon: const Icon(Icons.delete_outline), onPressed: _delete),
         ],
       ),
@@ -439,6 +426,24 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
+            if (!_isNew &&
+                !widget.service!.isPackage &&
+                (ref.watch(sessionProvider).value?.can(Permissions.inventoryView) ?? false))
+              Card(
+                margin: const EdgeInsets.only(bottom: 16),
+                child: ListTile(
+                  leading: const Icon(Icons.science_outlined),
+                  title: Text(l10n.serviceMaterials),
+                  subtitle: Text(l10n.serviceMaterialsRowHint),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) =>
+                          ServiceMaterialsScreen(serviceId: widget.service!.id, serviceName: widget.service!.name),
+                    ),
+                  ),
+                ),
+              ),
             TextFormField(
               controller: _name,
               decoration: InputDecoration(labelText: l10n.serviceName, errorText: _problem?.fieldError('name')),

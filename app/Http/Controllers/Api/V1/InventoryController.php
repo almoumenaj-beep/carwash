@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Identity\Enums\Permission;
 use App\Domain\Inventory\Actions\CountStock;
+use App\Domain\Inventory\Actions\IssueStock;
 use App\Domain\Inventory\Models\InventoryItem;
 use App\Domain\Inventory\Models\InventoryStock;
 use App\Domain\Inventory\Models\StockMovement;
+use App\Domain\Inventory\Queries\DailyStockUsage;
 use App\Domain\Inventory\Support\Quantity;
 use App\Domain\Platform\Audit\AuditTrail;
 use App\Domain\Platform\Models\Branch;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveInventoryItemRequest;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -85,6 +88,52 @@ class InventoryController extends Controller
         $countStock->handle($request->user(), $branch, $item, Quantity::toMilli($request->input('quantity')), $request->input('note'));
 
         return response()->json(['data' => $this->present($item, (int) $item->stock()->where('branch_id', $branch->id)->value('quantity_milli'))]);
+    }
+
+    /**
+     * Take materials out of a branch's stock by hand; the response is the new quantity.
+     */
+    public function issue(Request $request, IssueStock $issueStock): JsonResponse
+    {
+        Gate::authorize(Permission::InventoryAdjust->value);
+
+        $request->validate([
+            'branch_id' => ['required', 'uuid'],
+            'inventory_item_id' => ['required', 'uuid', Rule::exists('inventory_items', 'id')->where('tenant_id', $request->user()->tenant_id)],
+            'quantity' => ['required', 'numeric', 'gt:0', 'max:1000000', 'decimal:0,3'],
+            'note' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $branch = Branch::query()->findOrFail($request->input('branch_id'));
+        Gate::authorize('view', $branch);
+        $item = InventoryItem::query()->findOrFail($request->input('inventory_item_id'));
+
+        $issueStock->handle($request->user(), $branch, $item, Quantity::toMilli($request->input('quantity')), $request->input('note'));
+
+        return response()->json(['data' => $this->present($item, (int) $item->stock()->where('branch_id', $branch->id)->value('quantity_milli'))], Response::HTTP_CREATED);
+    }
+
+    /**
+     * What left a branch's stock on a day (`date`, default today in the car wash's time zone).
+     */
+    public function dailyUsage(Request $request, DailyStockUsage $dailyStockUsage): JsonResponse
+    {
+        Gate::authorize(Permission::InventoryView->value);
+
+        $request->validate([
+            'branch_id' => ['required', 'uuid'],
+            'date' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
+        ]);
+
+        $branch = Branch::query()->findOrFail($request->input('branch_id'));
+        Gate::authorize('view', $branch);
+
+        $timezone = $request->user()->tenant->timezone;
+        $day = $request->filled('date')
+            ? CarbonImmutable::createFromFormat('Y-m-d', $request->input('date'), $timezone)
+            : CarbonImmutable::now($timezone);
+
+        return response()->json(['data' => $dailyStockUsage->for($branch->id, $day)]);
     }
 
     /**

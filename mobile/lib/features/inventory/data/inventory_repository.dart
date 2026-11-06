@@ -18,6 +18,11 @@ final stockMovementsProvider = FutureProvider.autoDispose
       (ref, query) => ref.watch(inventoryRepositoryProvider).movements(query.branchId, query.itemId),
     );
 
+/// What left a branch's stock on a day (`YYYY-MM-DD`).
+final dailyStockUsageProvider = FutureProvider.autoDispose.family<DailyStockUsage, ({String branchId, String date})>(
+  (ref, query) => ref.watch(inventoryRepositoryProvider).dailyUsage(query.branchId, query.date),
+);
+
 final purchasesProvider = FutureProvider.autoDispose.family<List<Purchase>, String?>(
   (ref, branchId) => ref.watch(inventoryRepositoryProvider).purchases(branchId),
 );
@@ -54,6 +59,26 @@ class InventoryRepository {
         data: {'branch_id': branchId, 'inventory_item_id': itemId, 'quantity': quantity, 'note': ?note},
       ),
     );
+  }
+
+  /// Takes materials out of the branch's stock by hand.
+  Future<void> issue(String branchId, String itemId, double quantity, {String? note}) async {
+    await sendRequest(
+      () => _dio.post<Map<String, dynamic>>(
+        '/inventory/issues',
+        data: {'branch_id': branchId, 'inventory_item_id': itemId, 'quantity': quantity, 'note': ?note},
+      ),
+    );
+  }
+
+  Future<DailyStockUsage> dailyUsage(String branchId, String date) async {
+    final response = await sendRequest(
+      () => _dio.get<Map<String, dynamic>>(
+        '/inventory/daily-usage',
+        queryParameters: {'branch_id': branchId, 'date': date},
+      ),
+    );
+    return DailyStockUsage.fromJson(unwrapData(response));
   }
 
   Future<List<StockMovement>> movements(String? branchId, String? itemId) async {
