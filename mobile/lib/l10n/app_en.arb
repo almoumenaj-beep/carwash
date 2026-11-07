@@ -1213,5 +1213,47 @@
         "type": "String"
       }
     }
+  },
+  "whatsAppButton": "Message on WhatsApp",
+  "whatsAppRemind": "Remind on WhatsApp",
+  "whatsAppNotOpened": "WhatsApp could not be opened.",
+  "whatsAppGreeting": "Hello {name}",
+  "whatsAppCarReady": "Hello {name}, your car {plate} is ready to collect. {carWash}",
+  "whatsAppBookingReminder": "Hello {name}, a reminder of your booking on {date} at {time}. {carWash}",
+  "@whatsAppGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@whatsAppCarReady": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "plate": {
+        "type": "String"
+      },
+      "carWash": {
+        "type": "String"
+      }
+    }
+  },
+  "@whatsAppBookingReminder": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      },
+      "carWash": {
+        "type": "String"
+      }
+    }
   }
 }

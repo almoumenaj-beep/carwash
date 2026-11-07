@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/widgets/branch_chips.dart';
+import '../../../core/whatsapp/open_whatsapp.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -299,6 +300,7 @@ class _AppointmentTile extends ConsumerWidget {
     final hasActions =
         (appointment.isOpen && canCheckIn) ||
         (appointment.isOpen && canManage) ||
+        (appointment.isOpen && appointment.customerPhone != null) ||
         (appointment.isLateAt(DateTime.now()) && canManage) ||
         orderId != null;
 
@@ -321,6 +323,26 @@ class _AppointmentTile extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(sheet).pop();
                   onCheckIn();
+                },
+              ),
+            if (appointment.isOpen && appointment.customerPhone != null)
+              ListTile(
+                leading: const Icon(Icons.chat_outlined),
+                title: Text(l10n.whatsAppRemind),
+                onTap: () {
+                  final material = MaterialLocalizations.of(context);
+                  final startsAt = appointment.startsAt.toLocal();
+                  Navigator.of(sheet).pop();
+                  openWhatsApp(
+                    context,
+                    appointment.customerPhone!,
+                    l10n.whatsAppBookingReminder(
+                      appointment.customerName ?? '',
+                      material.formatMediumDate(startsAt),
+                      material.formatTimeOfDay(TimeOfDay.fromDateTime(startsAt)),
+                      me?.carWashName ?? '',
+                    ),
+                  );
                 },
               ),
             if (appointment.isOpen && canManage)

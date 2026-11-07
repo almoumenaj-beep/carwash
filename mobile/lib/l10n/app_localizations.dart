@@ -3919,6 +3919,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Memberships sold'**
   String get membershipsSoldTile;
+
+  /// No description provided for @whatsAppButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Message on WhatsApp'**
+  String get whatsAppButton;
+
+  /// No description provided for @whatsAppRemind.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind on WhatsApp'**
+  String get whatsAppRemind;
+
+  /// No description provided for @whatsAppNotOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp could not be opened.'**
+  String get whatsAppNotOpened;
+
+  /// No description provided for @whatsAppGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}'**
+  String whatsAppGreeting(String name);
+
+  /// No description provided for @whatsAppCarReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}, your car {plate} is ready to collect. {carWash}'**
+  String whatsAppCarReady(String name, String plate, String carWash);
+
+  /// No description provided for @whatsAppBookingReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello {name}, a reminder of your booking on {date} at {time}. {carWash}'**
+  String whatsAppBookingReminder(String name, String date, String time, String carWash);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -2142,4 +2142,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get membershipsSoldTile => 'Memberships sold';
+
+  @override
+  String get whatsAppButton => 'Message on WhatsApp';
+
+  @override
+  String get whatsAppRemind => 'Remind on WhatsApp';
+
+  @override
+  String get whatsAppNotOpened => 'WhatsApp could not be opened.';
+
+  @override
+  String whatsAppGreeting(String name) {
+    return 'Hello $name';
+  }
+
+  @override
+  String whatsAppCarReady(String name, String plate, String carWash) {
+    return 'Hello $name, your car $plate is ready to collect. $carWash';
+  }
+
+  @override
+  String whatsAppBookingReminder(String name, String date, String time, String carWash) {
+    return 'Hello $name, a reminder of your booking on $date at $time. $carWash';
+  }
 }

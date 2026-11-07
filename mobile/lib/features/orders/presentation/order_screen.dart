@@ -7,6 +7,7 @@ import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/money/money_method_label.dart';
+import '../../../core/whatsapp/open_whatsapp.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
@@ -137,8 +138,18 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                 subtitle: customer?.name == null
                     ? null
                     : Text(formatPhone(customer!.phone), textDirection: TextDirection.ltr, textAlign: TextAlign.start),
-                trailing: customer != null && me != null && canOpen('/customers/${customer.id}', me)
-                    ? const Icon(Icons.chevron_right)
+                trailing: customer != null
+                    ? IconButton(
+                        tooltip: l10n.whatsAppButton,
+                        icon: const Icon(Icons.chat_outlined),
+                        onPressed: () => openWhatsApp(
+                          context,
+                          customer.phone,
+                          order.status == OrderStatus.ready
+                              ? l10n.whatsAppCarReady(customer.name ?? '', order.plateNumber, me?.carWashName ?? '')
+                              : l10n.whatsAppGreeting(customer.name ?? ''),
+                        ),
+                      )
                     : null,
                 onTap: customer != null && me != null && canOpen('/customers/${customer.id}', me)
                     ? () => context.push('/customers/${customer.id}')

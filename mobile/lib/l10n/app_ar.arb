@@ -637,5 +637,11 @@
   "membershipStopExplained": "لن يمكن أخذ غسلات منها بعد الآن. لا يُرجع البرنامج أي مبلغ، فاتفق مع العميل على ذلك بنفسك.",
   "membershipStopped": "موقوفة",
   "membershipUse": "استخدام {name}",
-  "membershipsSoldTile": "مبيعات العضويات"
+  "membershipsSoldTile": "مبيعات العضويات",
+  "whatsAppButton": "مراسلة على واتساب",
+  "whatsAppRemind": "تذكير على واتساب",
+  "whatsAppNotOpened": "تعذّر فتح واتساب.",
+  "whatsAppGreeting": "مرحباً {name}",
+  "whatsAppCarReady": "مرحباً {name}، سيارتك {plate} جاهزة للاستلام. {carWash}",
+  "whatsAppBookingReminder": "مرحباً {name}، نذكّرك بموعدك يوم {date} الساعة {time}. {carWash}"
 }

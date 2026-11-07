@@ -2188,4 +2188,28 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get membershipsSoldTile => 'مبيعات العضويات';
+
+  @override
+  String get whatsAppButton => 'مراسلة على واتساب';
+
+  @override
+  String get whatsAppRemind => 'تذكير على واتساب';
+
+  @override
+  String get whatsAppNotOpened => 'تعذّر فتح واتساب.';
+
+  @override
+  String whatsAppGreeting(String name) {
+    return 'مرحباً $name';
+  }
+
+  @override
+  String whatsAppCarReady(String name, String plate, String carWash) {
+    return 'مرحباً $name، سيارتك $plate جاهزة للاستلام. $carWash';
+  }
+
+  @override
+  String whatsAppBookingReminder(String name, String date, String time, String carWash) {
+    return 'مرحباً $name، نذكّرك بموعدك يوم $date الساعة $time. $carWash';
+  }
 }

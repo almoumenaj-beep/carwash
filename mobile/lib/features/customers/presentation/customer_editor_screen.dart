@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/network/api_problem.dart';
+import '../../../core/whatsapp/open_whatsapp.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
@@ -243,6 +244,13 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
       appBar: AppBar(
         title: Text(_isNew ? l10n.newCustomer : widget.customer!.displayName),
         actions: [
+          if (!_isNew)
+            IconButton(
+              tooltip: l10n.whatsAppButton,
+              icon: const Icon(Icons.chat_outlined),
+              onPressed: () =>
+                  openWhatsApp(context, widget.customer!.phone, l10n.whatsAppGreeting(widget.customer!.name ?? '')),
+            ),
           if (canDelete) IconButton(tooltip: l10n.delete, icon: const Icon(Icons.delete_outline), onPressed: _delete),
         ],
       ),
