@@ -13,6 +13,8 @@ import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../customers/domain/customer.dart';
+import '../../settings/data/settings_repository.dart';
+import '../../settings/domain/message_templates.dart';
 import '../data/orders_repository.dart';
 import '../domain/order.dart';
 import 'order_widgets.dart';
@@ -86,6 +88,8 @@ class _OrderViewState extends ConsumerState<_OrderView> {
     final me = ref.watch(sessionProvider).value;
     final order = widget.order;
     final customer = order.customer;
+    // Loads the message templates ahead of the WhatsApp button.
+    ref.watch(settingsProvider);
     final canEdit = order.status.isActive && (me?.can(Permissions.ordersUpdate) ?? false);
     final actions = order.allowedNext.where((next) => canMoveTo(ref, next)).toList();
 
@@ -145,9 +149,16 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                         onPressed: () => openWhatsApp(
                           context,
                           customer.phone,
-                          order.status == OrderStatus.ready
-                              ? l10n.whatsAppCarReady(customer.name ?? '', order.plateNumber, me?.carWashName ?? '')
-                              : l10n.whatsAppGreeting(customer.name ?? ''),
+                          (ref.read(settingsProvider).value?.messageTemplates ?? const MessageTemplates()).render(
+                            order.status == OrderStatus.ready
+                                ? MessageTemplateKind.ready
+                                : MessageTemplateKind.greeting,
+                            {
+                              MessageToken.name: customer.name ?? '',
+                              MessageToken.plate: order.plateNumber,
+                              MessageToken.carWash: me?.carWashName ?? '',
+                            },
+                          ),
                         ),
                       )
                     : null,

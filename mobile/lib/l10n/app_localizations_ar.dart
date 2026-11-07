@@ -2199,17 +2199,30 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whatsAppNotOpened => 'تعذّر فتح واتساب.';
 
   @override
-  String whatsAppGreeting(String name) {
-    return 'مرحباً $name';
-  }
+  String get messageTemplatesTitle => 'قوالب الرسائل';
 
   @override
-  String whatsAppCarReady(String name, String plate, String carWash) {
-    return 'مرحباً $name، سيارتك $plate جاهزة للاستلام. $carWash';
-  }
+  String get messageTemplatesSubtitle => 'رسائل واتساب التي يرسلها الموظفون';
 
   @override
-  String whatsAppBookingReminder(String name, String date, String time, String carWash) {
-    return 'مرحباً $name، نذكّرك بموعدك يوم $date الساعة $time. $carWash';
-  }
+  String get messageTemplatesHint =>
+      'اكتب كل رسالة بالطريقة التي تناسبك. اضغط كلمة تحتها لإضافتها مكان المؤشر، وتتحول إلى بيانات العميل عند الإرسال.';
+
+  @override
+  String get messageTemplateReady => 'سيارتك جاهزة';
+
+  @override
+  String get messageTemplateReminder => 'تذكير الموعد';
+
+  @override
+  String get messageTemplateGreeting => 'ترحيب';
+
+  @override
+  String get messageTemplatePreview => 'معاينة';
+
+  @override
+  String get messageTemplateRestore => 'استعادة النص الافتراضي';
+
+  @override
+  String get messageSampleName => 'حسين';
 }

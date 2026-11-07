@@ -641,7 +641,13 @@
   "whatsAppButton": "مراسلة على واتساب",
   "whatsAppRemind": "تذكير على واتساب",
   "whatsAppNotOpened": "تعذّر فتح واتساب.",
-  "whatsAppGreeting": "مرحباً {name}",
-  "whatsAppCarReady": "مرحباً {name}، سيارتك {plate} جاهزة للاستلام. {carWash}",
-  "whatsAppBookingReminder": "مرحباً {name}، نذكّرك بموعدك يوم {date} الساعة {time}. {carWash}"
+  "messageTemplatesTitle": "قوالب الرسائل",
+  "messageTemplatesSubtitle": "رسائل واتساب التي يرسلها الموظفون",
+  "messageTemplatesHint": "اكتب كل رسالة بالطريقة التي تناسبك. اضغط كلمة تحتها لإضافتها مكان المؤشر، وتتحول إلى بيانات العميل عند الإرسال.",
+  "messageTemplateReady": "سيارتك جاهزة",
+  "messageTemplateReminder": "تذكير الموعد",
+  "messageTemplateGreeting": "ترحيب",
+  "messageTemplatePreview": "معاينة",
+  "messageTemplateRestore": "استعادة النص الافتراضي",
+  "messageSampleName": "حسين"
 }

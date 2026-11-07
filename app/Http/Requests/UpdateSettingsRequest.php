@@ -32,6 +32,8 @@ class UpdateSettingsRequest extends FormRequest
             'vat_number' => ['sometimes', 'nullable', 'string', 'max:30'],
             'points_enabled' => ['sometimes', 'boolean'],
             'memberships_enabled' => ['sometimes', 'boolean'],
+            'message_templates' => ['sometimes', 'array:ready,reminder,greeting'],
+            'message_templates.*' => ['nullable', 'string', 'max:1000'],
             'points_earn_amount' => ['sometimes', 'integer', 'between:1,100000000'],
             'points_redeem_points' => ['sometimes', 'integer', 'between:1,1000000'],
             'points_redeem_value' => ['sometimes', 'integer', 'between:1,100000000'],

@@ -34,6 +34,7 @@ class SettingsResource extends JsonResource
             'appointment_grace_minutes' => $this->appointment_grace_minutes,
             'points_enabled' => $this->points_enabled,
             'memberships_enabled' => $this->memberships_enabled,
+            'message_templates' => $this->message_templates ?? (object) [],
             'points_earn_amount' => $this->points_earn_amount,
             'points_redeem_points' => $this->points_redeem_points,
             'points_redeem_value' => $this->points_redeem_value,

@@ -1217,43 +1217,13 @@
   "whatsAppButton": "Message on WhatsApp",
   "whatsAppRemind": "Remind on WhatsApp",
   "whatsAppNotOpened": "WhatsApp could not be opened.",
-  "whatsAppGreeting": "Hello {name}",
-  "whatsAppCarReady": "Hello {name}, your car {plate} is ready to collect. {carWash}",
-  "whatsAppBookingReminder": "Hello {name}, a reminder of your booking on {date} at {time}. {carWash}",
-  "@whatsAppGreeting": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
-  "@whatsAppCarReady": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "plate": {
-        "type": "String"
-      },
-      "carWash": {
-        "type": "String"
-      }
-    }
-  },
-  "@whatsAppBookingReminder": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      },
-      "date": {
-        "type": "String"
-      },
-      "time": {
-        "type": "String"
-      },
-      "carWash": {
-        "type": "String"
-      }
-    }
-  }
+  "messageTemplatesTitle": "Message templates",
+  "messageTemplatesSubtitle": "The WhatsApp messages staff send",
+  "messageTemplatesHint": "Write each message as you like. Tap a word below it to insert it where the cursor is; it becomes the customer's details when the message is sent.",
+  "messageTemplateReady": "Car ready",
+  "messageTemplateReminder": "Booking reminder",
+  "messageTemplateGreeting": "Greeting",
+  "messageTemplatePreview": "Preview",
+  "messageTemplateRestore": "Restore the default text",
+  "messageSampleName": "Hussain"
 }

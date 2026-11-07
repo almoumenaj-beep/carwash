@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../memberships/presentation/membership_plans_screen.dart';
 import '../data/settings_repository.dart';
 import '../domain/app_settings.dart';
+import 'message_templates_screen.dart';
 
 /// Time zones offered for Gulf car washes; the saved one is always included.
 const _gulfTimezones = ['Asia/Bahrain', 'Asia/Riyadh', 'Asia/Kuwait', 'Asia/Qatar', 'Asia/Dubai', 'Asia/Muscat'];
@@ -206,6 +207,16 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
                     ? l10n.graceMinutesInvalid
                     : null;
               },
+            ),
+            const SizedBox(height: 24),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.chat_outlined),
+              title: Text(l10n.messageTemplatesTitle),
+              subtitle: Text(l10n.messageTemplatesSubtitle),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () =>
+                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const MessageTemplatesScreen())),
             ),
             const SizedBox(height: 24),
             Text(l10n.membershipsTitle, style: theme.textTheme.titleMedium),

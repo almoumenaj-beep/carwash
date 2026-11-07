@@ -84,6 +84,27 @@ class SettingsApiTest extends TestCase
             ->assertJsonValidationErrors(['vat_rate', 'timezone', 'locale']);
     }
 
+    public function test_the_owner_writes_the_message_templates_and_all_staff_read_them(): void
+    {
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::Owner));
+
+        $this->patchJson('/api/v1/settings', ['message_templates' => ['ready' => 'هلا {الاسم}', 'greeting' => null]])
+            ->assertOk()
+            ->assertJsonPath('data.message_templates.ready', 'هلا {الاسم}')
+            ->assertJsonPath('data.message_templates.greeting', null);
+
+        $this->patchJson('/api/v1/settings', ['message_templates' => ['other' => 'x']])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('message_templates');
+        $this->patchJson('/api/v1/settings', ['message_templates' => ['ready' => str_repeat('x', 1001)]])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('message_templates.ready');
+
+        Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::Washer));
+        $this->getJson('/api/v1/settings')->assertJsonPath('data.message_templates.ready', 'هلا {الاسم}');
+        $this->patchJson('/api/v1/settings', ['message_templates' => ['ready' => 'x']])->assertForbidden();
+    }
+
     public function test_staff_without_settings_permission_cannot_change_settings(): void
     {
         Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::BranchManager, allBranches: true));

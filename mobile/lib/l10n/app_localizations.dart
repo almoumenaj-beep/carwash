@@ -3938,23 +3938,59 @@ abstract class AppLocalizations {
   /// **'WhatsApp could not be opened.'**
   String get whatsAppNotOpened;
 
-  /// No description provided for @whatsAppGreeting.
+  /// No description provided for @messageTemplatesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Hello {name}'**
-  String whatsAppGreeting(String name);
+  /// **'Message templates'**
+  String get messageTemplatesTitle;
 
-  /// No description provided for @whatsAppCarReady.
+  /// No description provided for @messageTemplatesSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Hello {name}, your car {plate} is ready to collect. {carWash}'**
-  String whatsAppCarReady(String name, String plate, String carWash);
+  /// **'The WhatsApp messages staff send'**
+  String get messageTemplatesSubtitle;
 
-  /// No description provided for @whatsAppBookingReminder.
+  /// No description provided for @messageTemplatesHint.
   ///
   /// In en, this message translates to:
-  /// **'Hello {name}, a reminder of your booking on {date} at {time}. {carWash}'**
-  String whatsAppBookingReminder(String name, String date, String time, String carWash);
+  /// **'Write each message as you like. Tap a word below it to insert it where the cursor is; it becomes the customer\'s details when the message is sent.'**
+  String get messageTemplatesHint;
+
+  /// No description provided for @messageTemplateReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Car ready'**
+  String get messageTemplateReady;
+
+  /// No description provided for @messageTemplateReminder.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking reminder'**
+  String get messageTemplateReminder;
+
+  /// No description provided for @messageTemplateGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Greeting'**
+  String get messageTemplateGreeting;
+
+  /// No description provided for @messageTemplatePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get messageTemplatePreview;
+
+  /// No description provided for @messageTemplateRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore the default text'**
+  String get messageTemplateRestore;
+
+  /// No description provided for @messageSampleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Hussain'**
+  String get messageSampleName;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

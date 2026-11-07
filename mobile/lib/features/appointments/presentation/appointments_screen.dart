@@ -12,6 +12,8 @@ import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
 import '../../customers/domain/customer.dart';
 import '../../expenses/domain/expense.dart';
+import '../../settings/data/settings_repository.dart';
+import '../../settings/domain/message_templates.dart';
 import '../../expenses/presentation/expense_widgets.dart';
 import '../../orders/presentation/check_in_screen.dart';
 import '../data/appointments_repository.dart';
@@ -336,11 +338,15 @@ class _AppointmentTile extends ConsumerWidget {
                   openWhatsApp(
                     context,
                     appointment.customerPhone!,
-                    l10n.whatsAppBookingReminder(
-                      appointment.customerName ?? '',
-                      material.formatMediumDate(startsAt),
-                      material.formatTimeOfDay(TimeOfDay.fromDateTime(startsAt)),
-                      me?.carWashName ?? '',
+                    (ref.read(settingsProvider).value?.messageTemplates ?? const MessageTemplates()).render(
+                      MessageTemplateKind.reminder,
+                      {
+                        MessageToken.name: appointment.customerName ?? '',
+                        MessageToken.plate: appointment.plateNumber ?? '',
+                        MessageToken.date: material.formatMediumDate(startsAt),
+                        MessageToken.time: material.formatTimeOfDay(TimeOfDay.fromDateTime(startsAt)),
+                        MessageToken.carWash: me?.carWashName ?? '',
+                      },
                     ),
                   );
                 },
@@ -391,6 +397,8 @@ class _AppointmentTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final money = ref.watch(moneyFormatProvider);
+    // Loads the message templates ahead of the WhatsApp reminder.
+    ref.watch(settingsProvider);
     final theme = Theme.of(context);
     final time = MaterialLocalizations.of(context)
         .formatTimeOfDay(TimeOfDay.fromDateTime(appointment.startsAt.toLocal()));

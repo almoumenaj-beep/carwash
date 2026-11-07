@@ -15,7 +15,7 @@ class UpdateTenantSettings
     public function __construct(private AuditTrail $auditTrail) {}
 
     /**
-     * @param  array{name?: string, locale?: string, timezone?: string, vat_rate?: float|int, prices_include_vat?: bool, vat_number?: ?string, appointment_grace_minutes?: ?int, points_enabled?: bool, points_earn_amount?: int, points_redeem_points?: int, points_redeem_value?: int, points_expiry_months?: ?int, memberships_enabled?: bool}  $data
+     * @param  array{name?: string, locale?: string, timezone?: string, vat_rate?: float|int, prices_include_vat?: bool, vat_number?: ?string, appointment_grace_minutes?: ?int, points_enabled?: bool, points_earn_amount?: int, points_redeem_points?: int, points_redeem_value?: int, points_expiry_months?: ?int, memberships_enabled?: bool, message_templates?: array<string, ?string>}  $data
      */
     public function handle(User $actor, Tenant $tenant, array $data): Tenant
     {

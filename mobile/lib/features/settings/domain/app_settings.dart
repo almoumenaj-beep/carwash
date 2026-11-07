@@ -1,3 +1,5 @@
+import 'message_templates.dart';
+
 /// The car wash's settings, from `/settings`.
 class AppSettings {
   const AppSettings({
@@ -16,6 +18,7 @@ class AppSettings {
     this.pointsRedeemValue = 2000,
     this.pointsExpiryMonths,
     this.membershipsEnabled = false,
+    this.messageTemplates = const MessageTemplates(),
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -34,6 +37,7 @@ class AppSettings {
     pointsRedeemValue: json['points_redeem_value'] as int? ?? 2000,
     pointsExpiryMonths: json['points_expiry_months'] as int?,
     membershipsEnabled: json['memberships_enabled'] as bool? ?? false,
+    messageTemplates: MessageTemplates.fromJson(json['message_templates'] as Map<String, dynamic>?),
   );
 
   final String name;
@@ -63,4 +67,7 @@ class AppSettings {
 
   /// Whether memberships can be sold and used; the plans are set on their own screen.
   final bool membershipsEnabled;
+
+  /// The WhatsApp messages staff send, as the owner wrote them.
+  final MessageTemplates messageTemplates;
 }

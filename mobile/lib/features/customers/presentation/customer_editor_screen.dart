@@ -13,6 +13,7 @@ import '../../catalog/data/catalog_repository.dart';
 import '../../catalog/domain/catalog.dart';
 import '../../memberships/presentation/customer_memberships_card.dart';
 import '../../settings/data/settings_repository.dart';
+import '../../settings/domain/message_templates.dart';
 import '../data/customers_repository.dart';
 import '../domain/customer.dart';
 import 'points_card.dart';
@@ -248,8 +249,17 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
             IconButton(
               tooltip: l10n.whatsAppButton,
               icon: const Icon(Icons.chat_outlined),
-              onPressed: () =>
-                  openWhatsApp(context, widget.customer!.phone, l10n.whatsAppGreeting(widget.customer!.name ?? '')),
+              onPressed: () => openWhatsApp(
+                context,
+                widget.customer!.phone,
+                (ref.read(settingsProvider).value?.messageTemplates ?? const MessageTemplates()).render(
+                  MessageTemplateKind.greeting,
+                  {
+                    MessageToken.name: widget.customer!.name ?? '',
+                    MessageToken.carWash: ref.read(sessionProvider).value?.carWashName ?? '',
+                  },
+                ),
+              ),
             ),
           if (canDelete) IconButton(tooltip: l10n.delete, icon: const Icon(Icons.delete_outline), onPressed: _delete),
         ],

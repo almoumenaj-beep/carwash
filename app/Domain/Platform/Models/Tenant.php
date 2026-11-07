@@ -17,7 +17,7 @@ use NumberFormatter;
 /**
  * A car wash business subscribed to the platform. Every operational record belongs to one tenant.
  */
-#[Fillable(['name', 'slug', 'locale', 'currency', 'timezone', 'vat_rate_bps', 'prices_include_vat', 'vat_number', 'appointment_grace_minutes', 'points_enabled', 'points_earn_amount', 'points_redeem_points', 'points_redeem_value', 'points_expiry_months', 'memberships_enabled'])]
+#[Fillable(['name', 'slug', 'locale', 'currency', 'timezone', 'vat_rate_bps', 'prices_include_vat', 'vat_number', 'appointment_grace_minutes', 'points_enabled', 'points_earn_amount', 'points_redeem_points', 'points_redeem_value', 'points_expiry_months', 'memberships_enabled', 'message_templates'])]
 #[UseFactory(TenantFactory::class)]
 class Tenant extends Model
 {
@@ -56,6 +56,7 @@ class Tenant extends Model
             'appointment_grace_minutes' => 'integer',
             'points_enabled' => 'boolean',
             'memberships_enabled' => 'boolean',
+            'message_templates' => 'array',
             'points_earn_amount' => 'integer',
             'points_redeem_points' => 'integer',
             'points_redeem_value' => 'integer',

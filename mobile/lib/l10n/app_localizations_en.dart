@@ -2153,17 +2153,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whatsAppNotOpened => 'WhatsApp could not be opened.';
 
   @override
-  String whatsAppGreeting(String name) {
-    return 'Hello $name';
-  }
+  String get messageTemplatesTitle => 'Message templates';
 
   @override
-  String whatsAppCarReady(String name, String plate, String carWash) {
-    return 'Hello $name, your car $plate is ready to collect. $carWash';
-  }
+  String get messageTemplatesSubtitle => 'The WhatsApp messages staff send';
 
   @override
-  String whatsAppBookingReminder(String name, String date, String time, String carWash) {
-    return 'Hello $name, a reminder of your booking on $date at $time. $carWash';
-  }
+  String get messageTemplatesHint =>
+      'Write each message as you like. Tap a word below it to insert it where the cursor is; it becomes the customer\'s details when the message is sent.';
+
+  @override
+  String get messageTemplateReady => 'Car ready';
+
+  @override
+  String get messageTemplateReminder => 'Booking reminder';
+
+  @override
+  String get messageTemplateGreeting => 'Greeting';
+
+  @override
+  String get messageTemplatePreview => 'Preview';
+
+  @override
+  String get messageTemplateRestore => 'Restore the default text';
+
+  @override
+  String get messageSampleName => 'Hussain';
 }
