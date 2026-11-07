@@ -130,34 +130,44 @@ class AccountScreen extends ConsumerWidget {
         onRefresh: () => ref.refresh(sessionProvider.future),
         child: ListView(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 36,
-                    child: Text(me.name.characters.first, style: theme.textTheme.headlineMedium),
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 36,
+                          child: Text(me.name.characters.first, style: theme.textTheme.headlineMedium),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(me.name, style: theme.textTheme.titleLarge),
+                        if (me.email != null) Text(me.email!, style: theme.textTheme.bodyMedium),
+                        if (me.phone != null)
+                          Text(me.phone!, style: theme.textTheme.bodyMedium, textDirection: TextDirection.ltr),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${me.roles.map((role) => role.label).join(l10n.listSeparator)} · ${me.carWashName}',
+                          style: theme.textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Text(me.name, style: theme.textTheme.titleLarge),
-                  if (me.email != null) Text(me.email!, style: theme.textTheme.bodyMedium),
-                  if (me.phone != null)
-                    Text(me.phone!, style: theme.textTheme.bodyMedium, textDirection: TextDirection.ltr),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${me.roles.map((role) => role.label).join(l10n.listSeparator)} · ${me.carWashName}',
-                    style: theme.textTheme.bodySmall,
-                    textAlign: TextAlign.center,
+                ),
+                PositionedDirectional(
+                  top: 8,
+                  end: 8,
+                  child: IconButton(
+                    tooltip: l10n.editProfile,
+                    icon: const Icon(Icons.edit_outlined),
+                    onPressed: () => _editProfile(context, me),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.edit_outlined),
-              title: Text(l10n.editProfile),
-              onTap: () => _editProfile(context, me),
-            ),
             ListTile(
               leading: const Icon(Icons.store_outlined),
               title: Text(l10n.branchesSection),
