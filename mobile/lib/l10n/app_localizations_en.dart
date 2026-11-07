@@ -1614,16 +1614,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get manageCategoriesHint => 'Add, rename or switch off categories';
 
   @override
-  String get appointmentConfirmed => 'Confirmed';
-
-  @override
   String get appointmentLate => 'Late';
-
-  @override
-  String get confirmBooking => 'Confirm booking';
-
-  @override
-  String get confirmBookingHint => 'Once the customer says they are coming';
 
   @override
   String get allFilter => 'All';

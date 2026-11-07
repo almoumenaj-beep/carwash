@@ -92,22 +92,6 @@ class AppointmentController extends Controller
         return response()->json(['data' => $this->presentAll(collect([$appointment->load(self::RELATIONS)]), $request)[0]]);
     }
 
-    /**
-     * The customer said they are coming.
-     */
-    public function confirm(Request $request, Appointment $appointment): JsonResponse
-    {
-        $this->authorizeManaging($request, $appointment);
-        if ($appointment->status !== AppointmentStatus::Booked) {
-            throw ValidationException::withMessages(['appointment' => __('Only a booking not confirmed yet can be confirmed.')]);
-        }
-
-        $appointment->forceFill(['status' => AppointmentStatus::Confirmed])->save();
-        $this->auditTrail->record('appointment.confirmed', $appointment, $request->user(), 'Appointment confirmed');
-
-        return response()->json(['data' => $this->presentAll(collect([$appointment->load(self::RELATIONS)]), $request)[0]]);
-    }
-
     public function cancel(Request $request, Appointment $appointment): JsonResponse
     {
         $this->authorizeManaging($request, $appointment);

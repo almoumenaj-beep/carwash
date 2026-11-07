@@ -198,39 +198,6 @@ class AppointmentTest extends TestCase
         $this->assertSame(1, $this->inTenant(fn () => Appointment::query()->count()));
     }
 
-    public function test_a_confirmed_booking_keeps_its_place_until_it_is_moved(): void
-    {
-        $appointmentId = $this->book()->json('data.id');
-
-        Sanctum::actingAs($this->cashier);
-        $this->postJson("/api/v1/appointments/{$appointmentId}/confirm")->assertForbidden();
-
-        Sanctum::actingAs($this->receptionist);
-        $this->postJson("/api/v1/appointments/{$appointmentId}/confirm")->assertOk()->assertJsonPath('data.status', 'confirmed');
-        $this->postJson("/api/v1/appointments/{$appointmentId}/confirm")->assertUnprocessable();
-        $this->book()->assertUnprocessable()->assertJsonValidationErrors('starts_at');
-
-        $moved = [
-            'branch_id' => $this->branch->id,
-            'customer_phone' => '39991111',
-            'vehicle_size_id' => $this->sedan->id,
-            'items' => [['service_id' => $this->wash->id]],
-        ];
-        $this->patchJson("/api/v1/appointments/{$appointmentId}", [...$moved, 'starts_at' => '2026-11-04T10:00', 'notes' => 'Same time'])
-            ->assertJsonPath('data.status', 'confirmed');
-        $this->patchJson("/api/v1/appointments/{$appointmentId}", [...$moved, 'starts_at' => '2026-11-04T12:00'])
-            ->assertJsonPath('data.status', 'booked');
-
-        $this->postJson("/api/v1/appointments/{$appointmentId}/confirm")->assertOk();
-        $this->postJson("/api/v1/appointments/{$appointmentId}/check-in", [
-            'branch_id' => $this->branch->id,
-            'plate_number' => '55-777',
-            'vehicle_size_id' => $this->sedan->id,
-            'items' => [['service_id' => $this->wash->id]],
-            'staff_ids' => [$this->washer->id],
-        ])->assertCreated();
-    }
-
     public function test_a_booked_car_checked_in_at_the_counter_closes_its_booking(): void
     {
         $byPlateId = $this->book()->json('data.id');

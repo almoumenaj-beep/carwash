@@ -2990,29 +2990,11 @@ abstract class AppLocalizations {
   /// **'Add, rename or switch off categories'**
   String get manageCategoriesHint;
 
-  /// No description provided for @appointmentConfirmed.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirmed'**
-  String get appointmentConfirmed;
-
   /// No description provided for @appointmentLate.
   ///
   /// In en, this message translates to:
   /// **'Late'**
   String get appointmentLate;
-
-  /// No description provided for @confirmBooking.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm booking'**
-  String get confirmBooking;
-
-  /// No description provided for @confirmBookingHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Once the customer says they are coming'**
-  String get confirmBookingHint;
 
   /// No description provided for @allFilter.
   ///

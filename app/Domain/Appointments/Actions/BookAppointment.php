@@ -2,7 +2,6 @@
 
 namespace App\Domain\Appointments\Actions;
 
-use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Appointments\Models\Appointment;
 use App\Domain\Appointments\Support\AppointmentSchedule;
 use App\Domain\Catalog\Models\VehicleSize;
@@ -81,10 +80,6 @@ class BookAppointment
 
             $isNew = $appointment === null;
             $appointment ??= new Appointment;
-            // A booking moved to another time needs confirming again.
-            if (! $isNew && ! $appointment->starts_at->equalTo($start)) {
-                $appointment->status = AppointmentStatus::Booked;
-            }
             $appointment->forceFill([
                 'branch_id' => $branch->id,
                 'customer_id' => $customer?->id,

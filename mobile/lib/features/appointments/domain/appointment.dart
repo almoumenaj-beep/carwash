@@ -1,7 +1,6 @@
-/// Where a booking stands; while booked or confirmed it can still be changed, checked in, cancelled or marked a no-show.
+/// Where a booking stands; while booked it can still be changed, checked in, cancelled or marked a no-show.
 enum AppointmentStatus {
   booked('booked'),
-  confirmed('confirmed'),
   checkedIn('checked_in'),
   cancelled('cancelled'),
   noShow('no_show');
@@ -95,8 +94,8 @@ class Appointment {
   final String? orderId;
   final int? orderNumber;
 
-  /// Still waiting for the car: booked or confirmed.
-  bool get isOpen => status == AppointmentStatus.booked || status == AppointmentStatus.confirmed;
+  /// Still waiting for the car.
+  bool get isOpen => status == AppointmentStatus.booked;
 
   /// Still waiting for the car after its time.
   bool isLateAt(DateTime now) => isOpen && startsAt.isBefore(now);

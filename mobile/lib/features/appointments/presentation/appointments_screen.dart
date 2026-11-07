@@ -18,7 +18,6 @@ import '../domain/appointment.dart';
 
 String appointmentStatusLabel(AppLocalizations l10n, AppointmentStatus status) => switch (status) {
   AppointmentStatus.booked => l10n.appointmentBooked,
-  AppointmentStatus.confirmed => l10n.appointmentConfirmed,
   AppointmentStatus.checkedIn => l10n.appointmentCheckedIn,
   AppointmentStatus.cancelled => l10n.appointmentCancelled,
   AppointmentStatus.noShow => l10n.appointmentNoShow,
@@ -31,7 +30,6 @@ Color appointmentStatusColor(BuildContext context, AppointmentStatus status, {bo
       ? Colors.orange
       : switch (status) {
           AppointmentStatus.booked => Colors.blue,
-          AppointmentStatus.confirmed => Colors.indigo,
           AppointmentStatus.checkedIn => Colors.green,
           AppointmentStatus.cancelled => Colors.grey,
           AppointmentStatus.noShow => Colors.red,
@@ -216,10 +214,9 @@ class _DayList extends StatelessWidget {
           child: Row(
             children: [
               chip(l10n.allFilter, appointments.length, (status: null, late: false), null),
-              // In the order a booking moves through: booked, confirmed, late, arrived, then the two ways it ends early.
+              // In the order a booking moves through: booked, late, arrived, then the two ways it ends early.
               for (final (status, isLate) in [
                 (AppointmentStatus.booked, false),
-                (AppointmentStatus.confirmed, false),
                 (null, true),
                 (AppointmentStatus.checkedIn, false),
                 (AppointmentStatus.noShow, false),
@@ -301,7 +298,6 @@ class _AppointmentTile extends ConsumerWidget {
     final orderId = appointment.orderId;
     final hasActions =
         (appointment.isOpen && canCheckIn) ||
-        (appointment.status == AppointmentStatus.booked && canManage) ||
         (appointment.isOpen && canManage) ||
         (appointment.isLateAt(DateTime.now()) && canManage) ||
         orderId != null;
@@ -325,16 +321,6 @@ class _AppointmentTile extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(sheet).pop();
                   onCheckIn();
-                },
-              ),
-            if (appointment.status == AppointmentStatus.booked && canManage)
-              ListTile(
-                leading: Icon(Icons.task_alt, color: appointmentStatusColor(context, AppointmentStatus.confirmed)),
-                title: Text(l10n.confirmBooking),
-                subtitle: Text(l10n.confirmBookingHint),
-                onTap: () {
-                  Navigator.of(sheet).pop();
-                  _run(context, ref, () => ref.read(appointmentsRepositoryProvider).confirm(appointment.id));
                 },
               ),
             if (appointment.isOpen && canManage)

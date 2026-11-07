@@ -67,11 +67,6 @@ class AppointmentsRepository {
     return Appointment.fromJson(unwrapData(response));
   }
 
-  /// The customer said they are coming.
-  Future<void> confirm(String id) async {
-    await sendRequest(() => _dio.post<Map<String, dynamic>>('/appointments/$id/confirm'));
-  }
-
   Future<void> cancel(String id, String? reason) async {
     await sendRequest(() => _dio.post<Map<String, dynamic>>('/appointments/$id/cancel', data: {'reason': reason}));
   }

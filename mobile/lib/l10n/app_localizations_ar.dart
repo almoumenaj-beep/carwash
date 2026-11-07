@@ -1662,16 +1662,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get manageCategoriesHint => 'إضافة تصنيف أو تعديله أو إيقافه';
 
   @override
-  String get appointmentConfirmed => 'مؤكد';
-
-  @override
   String get appointmentLate => 'متأخر';
-
-  @override
-  String get confirmBooking => 'تأكيد الحجز';
-
-  @override
-  String get confirmBookingHint => 'بعد التواصل مع العميل وتأكيده الحضور';
 
   @override
   String get allFilter => 'الكل';
