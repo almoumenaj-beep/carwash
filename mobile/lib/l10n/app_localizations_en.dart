@@ -2216,4 +2216,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointsMovementRefund => 'Points put right after a refund';
+
+  @override
+  String get settingsGeneralSection => 'Car wash details';
+
+  @override
+  String get settingsRewardsSection => 'Memberships and points';
 }

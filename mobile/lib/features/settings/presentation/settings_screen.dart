@@ -169,186 +169,240 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
-            TextFormField(
-              controller: _name,
-              decoration: InputDecoration(labelText: l10n.carWashName, errorText: _problem?.fieldError('name')),
-              validator: (value) => (value == null || value.trim().isEmpty) ? l10n.fieldRequired : null,
-            ),
-            const SizedBox(height: 16),
-            InputDecorator(
-              decoration: InputDecoration(labelText: l10n.currency, helperText: l10n.currencyLocked),
-              child: Text('${widget.settings.currency} · ${l10n.currencyDecimals(widget.settings.currencyDecimals)}'),
-            ),
-            const SizedBox(height: 24),
-            Text(l10n.vatSection, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _vatRate,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
-              decoration: InputDecoration(
-                labelText: l10n.vatRate,
-                suffixText: '%',
-                errorText: _problem?.fieldError('vat_rate'),
-              ),
-              validator: (value) {
-                final rate = double.tryParse(value?.trim() ?? '');
-                return rate == null || rate < 0 || rate > 100 ? l10n.vatRateInvalid : null;
-              },
-            ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.pricesIncludeVat),
-              value: _pricesIncludeVat,
-              onChanged: (value) => setState(() => _pricesIncludeVat = value),
-            ),
-            TextFormField(
-              controller: _vatNumber,
-              decoration: InputDecoration(labelText: l10n.vatNumber, errorText: _problem?.fieldError('vat_number')),
-            ),
-            const SizedBox(height: 24),
-            Text(l10n.appointmentsTitle, style: theme.textTheme.titleMedium),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _graceMinutes,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              decoration: InputDecoration(
-                labelText: l10n.graceMinutesField,
-                suffixText: l10n.minutesUnit,
-                helperText: l10n.graceMinutesHint,
-                helperMaxLines: 3,
-                errorText: _problem?.fieldError('appointment_grace_minutes'),
-              ),
-              validator: (value) {
-                final minutes = int.tryParse(value?.trim() ?? '');
-                return (value ?? '').trim().isNotEmpty && (minutes == null || minutes < 5 || minutes > 720)
-                    ? l10n.graceMinutesInvalid
-                    : null;
-              },
-            ),
-            const SizedBox(height: 24),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.chat_outlined),
-              title: Text(l10n.messageTemplatesTitle),
-              subtitle: Text(l10n.messageTemplatesSubtitle),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () =>
-                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const MessageTemplatesScreen())),
-            ),
-            const SizedBox(height: 24),
-            Text(l10n.membershipsTitle, style: theme.textTheme.titleMedium),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.membershipsEnabledField),
-              subtitle: Text(l10n.membershipsEnabledHint),
-              value: _membershipsEnabled,
-              onChanged: _setMemberships,
-            ),
-            if (_membershipsEnabled)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.card_membership_outlined),
-                title: Text(l10n.membershipPlansTitle),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () =>
-                    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const MembershipPlansScreen())),
-              ),
-            const SizedBox(height: 24),
-            Text(l10n.pointsTitle, style: theme.textTheme.titleMedium),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(l10n.pointsEnabledField),
-              subtitle: Text(l10n.pointsEnabledHint),
-              value: _pointsEnabled,
-              onChanged: (value) => setState(() => _pointsEnabled = value),
-            ),
-            if (_pointsEnabled) ...[
-              TextFormField(
-                controller: _pointsEarnAmount,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: l10n.pointsEarnField,
-                  suffixText: money.currency,
-                  errorText: _problem?.fieldError('points_earn_amount'),
+            _Section(
+              title: l10n.settingsGeneralSection,
+              children: [
+                TextFormField(
+                  controller: _name,
+                  decoration: InputDecoration(labelText: l10n.carWashName, errorText: _problem?.fieldError('name')),
+                  validator: (value) => (value == null || value.trim().isEmpty) ? l10n.fieldRequired : null,
                 ),
-                validator: positiveMoney,
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _pointsRedeemPoints,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
-                  labelText: l10n.pointsRedeemPointsField,
-                  errorText: _problem?.fieldError('points_redeem_points'),
+                const SizedBox(height: 16),
+                InputDecorator(
+                  decoration: InputDecoration(labelText: l10n.currency, helperText: l10n.currencyLocked),
+                  child: Text(
+                    '${widget.settings.currency} · ${l10n.currencyDecimals(widget.settings.currencyDecimals)}',
+                  ),
                 ),
-                validator: (value) => (int.tryParse(value?.trim() ?? '') ?? 0) < 1 ? l10n.pointsFieldInvalid : null,
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _pointsRedeemValue,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: l10n.pointsRedeemValueField,
-                  suffixText: money.currency,
-                  errorText: _problem?.fieldError('points_redeem_value'),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: _locale,
+                  decoration: InputDecoration(labelText: l10n.languageField),
+                  items: [
+                    DropdownMenuItem(value: 'ar', child: Text(l10n.arabicLanguage)),
+                    DropdownMenuItem(value: 'en', child: Text(l10n.englishLanguage)),
+                  ],
+                  onChanged: (value) => setState(() => _locale = value ?? _locale),
                 ),
-                validator: positiveMoney,
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _pointsExpiryMonths,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: InputDecoration(
-                  labelText: l10n.pointsExpiryField,
-                  suffixText: l10n.pointsMonthsUnit,
-                  helperText: l10n.pointsExpiryHint,
-                  helperMaxLines: 2,
-                  errorText: _problem?.fieldError('points_expiry_months'),
-                ),
-                validator: (value) {
-                  final text = value?.trim() ?? '';
-                  final months = int.tryParse(text);
-                  return text.isNotEmpty && (months == null || months < 1 || months > 120)
-                      ? l10n.pointsExpiryInvalid
-                      : null;
-                },
-              ),
-              if (earnPreview != null && redeemPreview != null && redeemPointsPreview != null) ...[
-                const SizedBox(height: 12),
-                Text(
-                  l10n.pointsRuleSummary(money.format(earnPreview), redeemPointsPreview, money.format(redeemPreview)),
-                  style: theme.textTheme.bodySmall,
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: _timezone,
+                  decoration: InputDecoration(
+                    labelText: l10n.timezoneField,
+                    errorText: _problem?.fieldError('timezone'),
+                  ),
+                  items: [for (final zone in timezones) DropdownMenuItem(value: zone, child: Text(zone))],
+                  onChanged: (value) => setState(() => _timezone = value ?? _timezone),
                 ),
               ],
-            ],
-            const SizedBox(height: 24),
-            DropdownButtonFormField<String>(
-              initialValue: _locale,
-              decoration: InputDecoration(labelText: l10n.languageField),
-              items: [
-                DropdownMenuItem(value: 'ar', child: Text(l10n.arabicLanguage)),
-                DropdownMenuItem(value: 'en', child: Text(l10n.englishLanguage)),
-              ],
-              onChanged: (value) => setState(() => _locale = value ?? _locale),
             ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _timezone,
-              decoration: InputDecoration(labelText: l10n.timezoneField, errorText: _problem?.fieldError('timezone')),
-              items: [for (final zone in timezones) DropdownMenuItem(value: zone, child: Text(zone))],
-              onChanged: (value) => setState(() => _timezone = value ?? _timezone),
+            _Section(
+              title: l10n.vatSection,
+              children: [
+                TextFormField(
+                  controller: _vatRate,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                  decoration: InputDecoration(
+                    labelText: l10n.vatRate,
+                    suffixText: '%',
+                    errorText: _problem?.fieldError('vat_rate'),
+                  ),
+                  validator: (value) {
+                    final rate = double.tryParse(value?.trim() ?? '');
+                    return rate == null || rate < 0 || rate > 100 ? l10n.vatRateInvalid : null;
+                  },
+                ),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.pricesIncludeVat),
+                  value: _pricesIncludeVat,
+                  onChanged: (value) => setState(() => _pricesIncludeVat = value),
+                ),
+                TextFormField(
+                  controller: _vatNumber,
+                  decoration: InputDecoration(labelText: l10n.vatNumber, errorText: _problem?.fieldError('vat_number')),
+                ),
+              ],
+            ),
+            _Section(
+              title: l10n.appointmentsTitle,
+              children: [
+                TextFormField(
+                  controller: _graceMinutes,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(
+                    labelText: l10n.graceMinutesField,
+                    suffixText: l10n.minutesUnit,
+                    helperText: l10n.graceMinutesHint,
+                    helperMaxLines: 3,
+                    errorText: _problem?.fieldError('appointment_grace_minutes'),
+                  ),
+                  validator: (value) {
+                    final minutes = int.tryParse(value?.trim() ?? '');
+                    return (value ?? '').trim().isNotEmpty && (minutes == null || minutes < 5 || minutes > 720)
+                        ? l10n.graceMinutesInvalid
+                        : null;
+                  },
+                ),
+              ],
+            ),
+            _Section(
+              title: l10n.settingsRewardsSection,
+              children: [
+                Text(l10n.membershipsTitle, style: theme.textTheme.titleSmall),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.membershipsEnabledField),
+                  subtitle: Text(l10n.membershipsEnabledHint),
+                  value: _membershipsEnabled,
+                  onChanged: _setMemberships,
+                ),
+                if (_membershipsEnabled)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.card_membership_outlined),
+                    title: Text(l10n.membershipPlansTitle),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () =>
+                        Navigator.of(context)
+                            .push(MaterialPageRoute<void>(builder: (_) => const MembershipPlansScreen())),
+                  ),
+                const Divider(height: 32),
+                Text(l10n.pointsTitle, style: theme.textTheme.titleSmall),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.pointsEnabledField),
+                  subtitle: Text(l10n.pointsEnabledHint),
+                  value: _pointsEnabled,
+                  onChanged: (value) => setState(() => _pointsEnabled = value),
+                ),
+                if (_pointsEnabled) ...[
+                  TextFormField(
+                    controller: _pointsEarnAmount,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: l10n.pointsEarnField,
+                      suffixText: money.currency,
+                      errorText: _problem?.fieldError('points_earn_amount'),
+                    ),
+                    validator: positiveMoney,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _pointsRedeemPoints,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      labelText: l10n.pointsRedeemPointsField,
+                      errorText: _problem?.fieldError('points_redeem_points'),
+                    ),
+                    validator: (value) => (int.tryParse(value?.trim() ?? '') ?? 0) < 1 ? l10n.pointsFieldInvalid : null,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _pointsRedeemValue,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: l10n.pointsRedeemValueField,
+                      suffixText: money.currency,
+                      errorText: _problem?.fieldError('points_redeem_value'),
+                    ),
+                    validator: positiveMoney,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: _pointsExpiryMonths,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      labelText: l10n.pointsExpiryField,
+                      suffixText: l10n.pointsMonthsUnit,
+                      helperText: l10n.pointsExpiryHint,
+                      helperMaxLines: 2,
+                      errorText: _problem?.fieldError('points_expiry_months'),
+                    ),
+                    validator: (value) {
+                      final text = value?.trim() ?? '';
+                      final months = int.tryParse(text);
+                      return text.isNotEmpty && (months == null || months < 1 || months > 120)
+                          ? l10n.pointsExpiryInvalid
+                          : null;
+                    },
+                  ),
+                  if (earnPreview != null && redeemPreview != null && redeemPointsPreview != null) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.pointsRuleSummary(
+                        money.format(earnPreview),
+                        redeemPointsPreview,
+                        money.format(redeemPreview),
+                      ),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
+                ],
+              ],
+            ),
+            _Section(
+              title: l10n.messageTemplatesTitle,
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.chat_outlined),
+                  title: Text(l10n.messageTemplatesTitle),
+                  subtitle: Text(l10n.messageTemplatesSubtitle),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () =>
+                      Navigator.of(context)
+                          .push(MaterialPageRoute<void>(builder: (_) => const MessageTemplatesScreen())),
+                ),
+              ],
             ),
             if (generalError != null) ...[
               const SizedBox(height: 12),
               Text(generalError, style: TextStyle(color: theme.colorScheme.error)),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One topic of the settings, in its own card.
+class _Section extends StatelessWidget {
+  const _Section({required this.title, required this.children});
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 12),
+            ...children,
           ],
         ),
       ),

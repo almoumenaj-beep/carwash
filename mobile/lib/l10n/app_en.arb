@@ -1246,5 +1246,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "settingsGeneralSection": "Car wash details",
+  "settingsRewardsSection": "Memberships and points"
 }

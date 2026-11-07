@@ -4057,6 +4057,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Points put right after a refund'**
   String get pointsMovementRefund;
+
+  /// No description provided for @settingsGeneralSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Car wash details'**
+  String get settingsGeneralSection;
+
+  /// No description provided for @settingsRewardsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Memberships and points'**
+  String get settingsRewardsSection;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

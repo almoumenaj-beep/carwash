@@ -2262,4 +2262,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get pointsMovementRefund => 'تصحيح نقاط بعد استرداد';
+
+  @override
+  String get settingsGeneralSection => 'بيانات المغسلة';
+
+  @override
+  String get settingsRewardsSection => 'العضويات والنقاط';
 }
