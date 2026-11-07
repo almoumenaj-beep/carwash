@@ -2208,7 +2208,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get refundCashHint =>
-      'Take the cash from your drawer and hand it to the customer. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.';
+      'Take the cash from the drawer of the cashier who collected it if still open, otherwise from your own. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.';
 
   @override
   String get refundHint =>

@@ -4043,7 +4043,7 @@ abstract class AppLocalizations {
   /// No description provided for @refundCashHint.
   ///
   /// In en, this message translates to:
-  /// **'Take the cash from your drawer and hand it to the customer. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.'**
+  /// **'Take the cash from the drawer of the cashier who collected it if still open, otherwise from your own. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.'**
   String get refundCashHint;
 
   /// No description provided for @refundHint.

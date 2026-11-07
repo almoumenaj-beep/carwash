@@ -146,9 +146,24 @@ class InvoiceRefundTest extends TestCase
         $this->assertDatabaseCount('refunds', 1);
     }
 
-    public function test_cash_cannot_be_refunded_from_a_drawer_without_it_or_without_a_shift(): void
+    public function test_while_the_shift_that_took_the_money_is_open_the_refund_comes_from_its_drawer(): void
     {
         ['invoice' => $invoiceId] = $this->paidWash();
+
+        // The owner has no shift of their own; the money is in the manager's drawer.
+        $this->refund($invoiceId, $this->owner)->assertOk();
+
+        $this->shift()
+            ->assertJsonPath('data.cash_refunded', 2000)
+            ->assertJsonPath('data.expected_cash', 10000);
+        $this->assertDatabaseCount('cash_shifts', 1);
+    }
+
+    public function test_once_that_shift_is_closed_the_refund_needs_the_staff_members_own_drawer(): void
+    {
+        ['invoice' => $invoiceId] = $this->paidWash();
+        $shiftId = $this->shift()->json('data.id');
+        $this->postJson("/api/v1/shifts/{$shiftId}/close", ['counted_cash' => 12000])->assertOk();
 
         // The owner has no shift open.
         $this->refund($invoiceId, $this->owner)->assertUnprocessable()->assertJsonValidationErrors('shift');
