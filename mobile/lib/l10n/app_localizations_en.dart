@@ -1917,4 +1917,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordChanged => 'Password changed';
+
+  @override
+  String get confirmAction => 'Confirm';
+
+  @override
+  String get returnToService => 'Return to service';
+
+  @override
+  String get reportBreakdownExplained =>
+      'The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.';
+
+  @override
+  String get retireEquipmentExplained =>
+      'No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.';
+
+  @override
+  String get thisWeek => 'This week';
+
+  @override
+  String get noAttendanceInPeriod => 'No attendance in this period';
+
+  @override
+  String get totalHoursLabel => 'Total hours';
+
+  @override
+  String attendanceDays(int count) {
+    return 'Days present: $count';
+  }
+
+  @override
+  String autoClockedOutCount(int count) {
+    return 'Automatic clock-outs: $count';
+  }
 }

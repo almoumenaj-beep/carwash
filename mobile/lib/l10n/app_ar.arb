@@ -573,5 +573,14 @@
   "confirmPasswordField": "تأكيد كلمة المرور الجديدة",
   "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
   "passwordTooShort": "8 أحرف على الأقل",
-  "passwordChanged": "تم تغيير كلمة المرور"
+  "passwordChanged": "تم تغيير كلمة المرور",
+  "confirmAction": "تأكيد",
+  "returnToService": "إرجاعه إلى الخدمة",
+  "reportBreakdownExplained": "سيظهر الجهاز «معطّل» باللون الأحمر في قائمة المعدات. يعود للعمل بزر «عاد للعمل» أو عند تسجيل إصلاح له.",
+  "retireEquipmentExplained": "لن تُطلب له صيانة بعد الآن ولن تستطيع تسجيل صيانة له. تبقى بياناته وسجله محفوظة، ويمكنك إرجاعه إلى الخدمة لاحقاً.",
+  "thisWeek": "هذا الأسبوع",
+  "noAttendanceInPeriod": "لا يوجد حضور في هذه الفترة",
+  "totalHoursLabel": "مجموع الساعات",
+  "attendanceDays": "أيام الحضور: {count}",
+  "autoClockedOutCount": "انصراف تلقائي: {count}"
 }

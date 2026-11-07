@@ -15,7 +15,7 @@ import '../../expenses/presentation/expense_widgets.dart';
 import '../data/staff_affairs_repository.dart';
 import '../domain/staff_affairs.dart';
 
-/// Staff affairs: pay terms, a branch's attendance for a day, and monthly payroll. Each tab shows
+/// Staff affairs: pay terms, a branch's attendance for a day or a period, and monthly payroll. Each tab shows
 /// only to staff with the permission behind it.
 class StaffAffairsScreen extends ConsumerWidget {
   const StaffAffairsScreen({super.key});
@@ -224,6 +224,9 @@ ExpenseCategory? wagesCategory(List<ExpenseCategory> categories) {
       active.firstOrNull;
 }
 
+/// The quick periods offered above the attendance.
+enum _AttendancePeriod { today, thisWeek, thisMonth, lastMonth, custom }
+
 class _Attendance extends ConsumerStatefulWidget {
   const _Attendance();
 
@@ -234,6 +237,45 @@ class _Attendance extends ConsumerStatefulWidget {
 class _AttendanceState extends ConsumerState<_Attendance> {
   String? _branchId;
   DateTime _day = DateUtils.dateOnly(DateTime.now());
+  _AttendancePeriod _period = _AttendancePeriod.today;
+  DateTimeRange? _range;
+
+  Future<void> _choose(_AttendancePeriod period) async {
+    final today = DateUtils.dateOnly(DateTime.now());
+    if (period == _AttendancePeriod.custom) {
+      final picked = await showDateRangePicker(
+        context: context,
+        initialDateRange: _range,
+        firstDate: DateTime(2024),
+        lastDate: today,
+      );
+      if (picked != null) {
+        setState(() {
+          _period = period;
+          _range = picked;
+        });
+      }
+      return;
+    }
+
+    setState(() {
+      _period = period;
+      _day = today;
+      _range = switch (period) {
+        // The week starts on Sunday in Bahrain.
+        _AttendancePeriod.thisWeek => DateTimeRange(
+          start: DateTime(today.year, today.month, today.day - today.weekday % 7),
+          end: today,
+        ),
+        _AttendancePeriod.thisMonth => DateTimeRange(start: DateTime(today.year, today.month), end: today),
+        _AttendancePeriod.lastMonth => DateTimeRange(
+          start: DateTime(today.year, today.month - 1),
+          end: DateTime(today.year, today.month, 0),
+        ),
+        _ => null,
+      };
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -244,6 +286,38 @@ class _AttendanceState extends ConsumerState<_Attendance> {
       return Center(child: Text(l10n.noBranchAssigned));
     }
 
+    final periodChips = SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          for (final (option, label) in [
+            (_AttendancePeriod.today, l10n.today),
+            (_AttendancePeriod.thisWeek, l10n.thisWeek),
+            (_AttendancePeriod.thisMonth, l10n.thisMonth),
+            (_AttendancePeriod.lastMonth, l10n.lastMonth),
+            (_AttendancePeriod.custom, l10n.customPeriod),
+          ])
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              child: ChoiceChip(label: Text(label), selected: _period == option, onSelected: (_) => _choose(option)),
+            ),
+        ],
+      ),
+    );
+
+    final range = _range;
+    if (_period != _AttendancePeriod.today && range != null) {
+      return ListView(
+        padding: const EdgeInsets.only(bottom: 32),
+        children: [
+          BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
+          periodChips,
+          _AttendancePeriodView(branchId: branch.id, range: range),
+        ],
+      );
+    }
+
     final records = ref.watch(branchAttendanceProvider((branchId: branch.id, date: apiDate(_day))));
     String time(DateTime at) => MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(at.toLocal()));
 
@@ -251,6 +325,7 @@ class _AttendanceState extends ConsumerState<_Attendance> {
       padding: const EdgeInsets.only(bottom: 32),
       children: [
         BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
+        periodChips,
         Row(
           children: [
             IconButton(
@@ -301,6 +376,109 @@ class _AttendanceState extends ConsumerState<_Attendance> {
           AsyncError(:final error) => ErrorView(
             error: error,
             onRetry: () => ref.invalidate(branchAttendanceProvider((branchId: branch.id, date: apiDate(_day)))),
+          ),
+          _ => const Padding(
+            padding: EdgeInsets.all(32),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        },
+      ],
+    );
+  }
+}
+
+/// A period's attendance: the total hours, then a line per employee that opens their days.
+class _AttendancePeriodView extends ConsumerWidget {
+  const _AttendancePeriodView({required this.branchId, required this.range});
+
+  final String branchId;
+  final DateTimeRange range;
+
+  void _showDays(BuildContext context, AttendanceStaffSummary member) {
+    final l10n = AppLocalizations.of(context);
+    final material = MaterialLocalizations.of(context);
+    String time(DateTime at) => material.formatTimeOfDay(TimeOfDay.fromDateTime(at.toLocal()));
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheet) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.6,
+        maxChildSize: 0.9,
+        builder: (sheet, controller) => ListView(
+          controller: controller,
+          padding: const EdgeInsets.only(bottom: 24),
+          children: [
+            ListTile(
+              title: Text(member.userName, style: Theme.of(sheet).textTheme.titleMedium),
+              trailing: Text(l10n.hoursWorked((member.minutes / 60).toStringAsFixed(1))),
+            ),
+            const Divider(height: 1),
+            for (final record in member.records)
+              ListTile(
+                title: Text(material.formatMediumDate(record.clockInAt.toLocal())),
+                subtitle: Text(
+                  record.clockOutAt == null
+                      ? l10n.stillAtWork(time(record.clockInAt))
+                      : '${time(record.clockInAt)} → ${time(record.clockOutAt!)}'
+                            '${record.autoClockedOut ? ' · ${l10n.autoClockedOut}' : ''}',
+                ),
+                trailing: Text(l10n.hoursWorked((record.minutes / 60).toStringAsFixed(1))),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final date = MaterialLocalizations.of(context).formatMediumDate;
+    final query = (branchId: branchId, from: apiDate(range.start), to: apiDate(range.end));
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text('${date(range.start)} – ${date(range.end)}', style: Theme.of(context).textTheme.bodySmall),
+        ),
+        switch (ref.watch(attendanceSummaryProvider(query))) {
+          AsyncData(:final value) when value.staff.isEmpty => Padding(
+            padding: const EdgeInsets.all(32),
+            child: Text(l10n.noAttendanceInPeriod, textAlign: TextAlign.center),
+          ),
+          AsyncData(:final value) => Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.schedule_outlined),
+                title: Text(l10n.totalHoursLabel),
+                trailing: Text(
+                  l10n.hoursWorked((value.totalMinutes / 60).toStringAsFixed(1)),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              const Divider(height: 1),
+              for (final member in value.staff)
+                ListTile(
+                  leading: CircleAvatar(child: Text(member.userName.characters.first)),
+                  title: Text(member.userName),
+                  subtitle: Text(
+                    [
+                      l10n.attendanceDays(member.days),
+                      if (member.autoClockedOutCount > 0) l10n.autoClockedOutCount(member.autoClockedOutCount),
+                    ].join(' · '),
+                  ),
+                  trailing: Text(l10n.hoursWorked((member.minutes / 60).toStringAsFixed(1))),
+                  onTap: () => _showDays(context, member),
+                ),
+            ],
+          ),
+          AsyncError(:final error) => ErrorView(
+            error: error,
+            onRetry: () => ref.invalidate(attendanceSummaryProvider(query)),
           ),
           _ => const Padding(
             padding: EdgeInsets.all(32),

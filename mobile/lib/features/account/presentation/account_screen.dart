@@ -13,7 +13,6 @@ import '../../shifts/data/shifts_repository.dart';
 import '../../shifts/domain/cash_shift.dart';
 import '../../staff_affairs/data/staff_affairs_repository.dart';
 import '../../staff_affairs/domain/staff_affairs.dart';
-import 'change_password_dialog.dart';
 import 'edit_profile_dialog.dart';
 
 /// The signed-in staff member's own account, kept to one line per item; the full
@@ -105,13 +104,6 @@ class AccountScreen extends ConsumerWidget {
     }
   }
 
-  Future<void> _changePassword(BuildContext context) async {
-    final saved = await showDialog<bool>(context: context, builder: (_) => const ChangePasswordDialog());
-    if ((saved ?? false) && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context).passwordChanged)));
-    }
-  }
-
   Future<void> _setPin(BuildContext context) async {
     final saved = await showDialog<bool>(context: context, builder: (_) => const SetPinDialog());
     if ((saved ?? false) && context.mounted) {
@@ -181,11 +173,6 @@ class AccountScreen extends ConsumerWidget {
               leading: const Icon(Icons.edit_outlined),
               title: Text(l10n.editProfile),
               onTap: () => _editProfile(context, me),
-            ),
-            ListTile(
-              leading: const Icon(Icons.lock_outlined),
-              title: Text(l10n.changePassword),
-              onTap: () => _changePassword(context),
             ),
             ListTile(
               leading: const Icon(Icons.store_outlined),

@@ -1039,5 +1039,28 @@
   "confirmPasswordField": "Confirm new password",
   "passwordsDoNotMatch": "Passwords do not match",
   "passwordTooShort": "At least 8 characters",
-  "passwordChanged": "Password changed"
+  "passwordChanged": "Password changed",
+  "confirmAction": "Confirm",
+  "returnToService": "Return to service",
+  "reportBreakdownExplained": "The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.",
+  "retireEquipmentExplained": "No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.",
+  "thisWeek": "This week",
+  "noAttendanceInPeriod": "No attendance in this period",
+  "totalHoursLabel": "Total hours",
+  "attendanceDays": "Days present: {count}",
+  "autoClockedOutCount": "Automatic clock-outs: {count}",
+  "@attendanceDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@autoClockedOutCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

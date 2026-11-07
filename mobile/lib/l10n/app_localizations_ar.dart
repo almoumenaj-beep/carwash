@@ -1965,4 +1965,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordChanged => 'تم تغيير كلمة المرور';
+
+  @override
+  String get confirmAction => 'تأكيد';
+
+  @override
+  String get returnToService => 'إرجاعه إلى الخدمة';
+
+  @override
+  String get reportBreakdownExplained =>
+      'سيظهر الجهاز «معطّل» باللون الأحمر في قائمة المعدات. يعود للعمل بزر «عاد للعمل» أو عند تسجيل إصلاح له.';
+
+  @override
+  String get retireEquipmentExplained =>
+      'لن تُطلب له صيانة بعد الآن ولن تستطيع تسجيل صيانة له. تبقى بياناته وسجله محفوظة، ويمكنك إرجاعه إلى الخدمة لاحقاً.';
+
+  @override
+  String get thisWeek => 'هذا الأسبوع';
+
+  @override
+  String get noAttendanceInPeriod => 'لا يوجد حضور في هذه الفترة';
+
+  @override
+  String get totalHoursLabel => 'مجموع الساعات';
+
+  @override
+  String attendanceDays(int count) {
+    return 'أيام الحضور: $count';
+  }
+
+  @override
+  String autoClockedOutCount(int count) {
+    return 'انصراف تلقائي: $count';
+  }
 }

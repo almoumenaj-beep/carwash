@@ -6,9 +6,10 @@ import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
+import 'change_password_dialog.dart';
 
-/// Lets the signed-in staff member edit their own email and phone. Their name is set by whoever
-/// manages staff, so it stays recognisable to everyone else; it shows here read-only.
+/// Lets the signed-in staff member edit their own email and phone, and change their password. Their name is set
+/// by whoever manages staff, so it stays recognisable to everyone else; it shows here read-only.
 class EditProfileDialog extends ConsumerStatefulWidget {
   const EditProfileDialog({super.key, required this.me});
 
@@ -63,6 +64,15 @@ class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
     }
   }
 
+  Future<void> _changePassword() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final message = AppLocalizations.of(context).passwordChanged;
+    final saved = await showDialog<bool>(context: context, builder: (_) => const ChangePasswordDialog());
+    if (saved ?? false) {
+      messenger.showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -96,6 +106,15 @@ class _EditProfileDialogState extends ConsumerState<EditProfileDialog> {
               keyboardType: TextInputType.phone,
               textDirection: TextDirection.ltr,
               decoration: InputDecoration(labelText: l10n.phoneField, errorText: phoneError),
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton.icon(
+                onPressed: _changePassword,
+                icon: const Icon(Icons.lock_outlined),
+                label: Text(l10n.changePassword),
+              ),
             ),
             if (showGeneralError)
               Text(problemMessage(context, _error!), style: TextStyle(color: Theme.of(context).colorScheme.error)),

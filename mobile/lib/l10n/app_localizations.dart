@@ -3535,6 +3535,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password changed'**
   String get passwordChanged;
+
+  /// No description provided for @confirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirmAction;
+
+  /// No description provided for @returnToService.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to service'**
+  String get returnToService;
+
+  /// No description provided for @reportBreakdownExplained.
+  ///
+  /// In en, this message translates to:
+  /// **'The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.'**
+  String get reportBreakdownExplained;
+
+  /// No description provided for @retireEquipmentExplained.
+  ///
+  /// In en, this message translates to:
+  /// **'No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.'**
+  String get retireEquipmentExplained;
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get thisWeek;
+
+  /// No description provided for @noAttendanceInPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'No attendance in this period'**
+  String get noAttendanceInPeriod;
+
+  /// No description provided for @totalHoursLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total hours'**
+  String get totalHoursLabel;
+
+  /// No description provided for @attendanceDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Days present: {count}'**
+  String attendanceDays(int count);
+
+  /// No description provided for @autoClockedOutCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic clock-outs: {count}'**
+  String autoClockedOutCount(int count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

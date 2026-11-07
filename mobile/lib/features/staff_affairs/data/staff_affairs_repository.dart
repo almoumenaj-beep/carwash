@@ -26,6 +26,12 @@ final branchAttendanceProvider = FutureProvider.autoDispose
       (ref, query) => ref.watch(staffAffairsRepositoryProvider).attendance(query.branchId, query.date),
     );
 
+/// A branch's attendance per staff member over a period. Dates are `YYYY-MM-DD`.
+final attendanceSummaryProvider = FutureProvider.autoDispose
+    .family<AttendanceSummary, ({String branchId, String from, String to})>(
+      (ref, query) => ref.watch(staffAffairsRepositoryProvider).attendanceSummary(query.branchId, query.from, query.to),
+    );
+
 final payrollRunsProvider = FutureProvider.autoDispose<List<PayrollRun>>(
   (ref) => ref.watch(staffAffairsRepositoryProvider).payrollRuns(),
 );
@@ -66,6 +72,16 @@ class StaffAffairsRepository {
 
   Future<void> clockOut() async {
     await sendRequest(() => _dio.post<Map<String, dynamic>>('/attendance/clock-out'));
+  }
+
+  Future<AttendanceSummary> attendanceSummary(String branchId, String from, String to) async {
+    final response = await sendRequest(
+      () => _dio.get<Map<String, dynamic>>(
+        '/attendance/summary',
+        queryParameters: {'branch_id': branchId, 'from': from, 'to': to},
+      ),
+    );
+    return AttendanceSummary.fromJson(unwrapData(response));
   }
 
   Future<List<AttendanceRecord>> attendance(String branchId, String date) async {

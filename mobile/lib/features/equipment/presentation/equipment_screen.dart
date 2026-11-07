@@ -94,7 +94,7 @@ class _EquipmentTile extends StatelessWidget {
     final retired = equipment.status == EquipmentStatus.retired;
 
     return ListTile(
-      enabled: !retired,
+      textColor: retired ? Theme.of(context).disabledColor : null,
       leading: Icon(
         equipment.status == EquipmentStatus.outOfService
             ? Icons.report_problem_outlined
@@ -151,6 +151,31 @@ class EquipmentDetailScreen extends ConsumerWidget {
     }
   }
 
+  /// Says what the change does and asks first; a slip of the finger must not change the equipment's status.
+  Future<void> _confirmStatus(
+    BuildContext context,
+    WidgetRef ref,
+    EquipmentStatus status, {
+    required String title,
+    required String explanation,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialog) => AlertDialog(
+        title: Text(title),
+        content: Text(explanation),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.back)),
+          FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.confirmAction)),
+        ],
+      ),
+    );
+    if ((confirmed ?? false) && context.mounted) {
+      await _setStatus(context, ref, status);
+    }
+  }
+
   Future<void> _setStatus(BuildContext context, WidgetRef ref, EquipmentStatus status) async {
     try {
       await ref.read(equipmentRepositoryProvider).update(equipmentId, {'status': status.apiValue});
@@ -194,17 +219,6 @@ class EquipmentDetailScreen extends ConsumerWidget {
                   Navigator.of(context)
                       .push(MaterialPageRoute<void>(builder: (_) => EquipmentEditorScreen(equipment: equipment))),
             ),
-          if (canManage && equipment.status != EquipmentStatus.retired)
-            PopupMenuButton<EquipmentStatus>(
-              onSelected: (status) => _setStatus(context, ref, status),
-              itemBuilder: (_) => [
-                if (equipment.status == EquipmentStatus.inService)
-                  PopupMenuItem(value: EquipmentStatus.outOfService, child: Text(l10n.reportBreakdown)),
-                if (equipment.status == EquipmentStatus.outOfService)
-                  PopupMenuItem(value: EquipmentStatus.inService, child: Text(l10n.backInService)),
-                PopupMenuItem(value: EquipmentStatus.retired, child: Text(l10n.retireEquipment)),
-              ],
-            ),
         ],
       ),
       floatingActionButton: canManage && equipment.status != EquipmentStatus.retired
@@ -233,6 +247,53 @@ class EquipmentDetailScreen extends ConsumerWidget {
                     title: Text(equipmentStatusLabel(l10n, equipment.status)),
                     subtitle: Text(equipment.branchName),
                   ),
+                  if (canManage)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          if (equipment.status == EquipmentStatus.inService)
+                            OutlinedButton.icon(
+                              icon: const Icon(Icons.report_problem_outlined),
+                              label: Text(l10n.reportBreakdown),
+                              onPressed: () => _confirmStatus(
+                                context,
+                                ref,
+                                EquipmentStatus.outOfService,
+                                title: l10n.reportBreakdown,
+                                explanation: l10n.reportBreakdownExplained,
+                              ),
+                            ),
+                          if (equipment.status == EquipmentStatus.outOfService)
+                            OutlinedButton.icon(
+                              icon: const Icon(Icons.check_circle_outline),
+                              label: Text(l10n.backInService),
+                              onPressed: () => _setStatus(context, ref, EquipmentStatus.inService),
+                            ),
+                          if (equipment.status == EquipmentStatus.retired)
+                            OutlinedButton.icon(
+                              icon: const Icon(Icons.restore),
+                              label: Text(l10n.returnToService),
+                              onPressed: () => _setStatus(context, ref, EquipmentStatus.inService),
+                            )
+                          else
+                            TextButton.icon(
+                              style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                              icon: const Icon(Icons.block),
+                              label: Text(l10n.retireEquipment),
+                              onPressed: () => _confirmStatus(
+                                context,
+                                ref,
+                                EquipmentStatus.retired,
+                                title: l10n.retireEquipment,
+                                explanation: l10n.retireEquipmentExplained,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ListTile(
                     leading: Icon(
                       Icons.event_repeat_outlined,
