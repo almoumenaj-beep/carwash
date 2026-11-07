@@ -15,8 +15,7 @@ import '../../staff_affairs/data/staff_affairs_repository.dart';
 import '../../staff_affairs/domain/staff_affairs.dart';
 import 'edit_profile_dialog.dart';
 
-/// The signed-in staff member's own account, kept to one line per item; the full
-/// permission list opens in a sheet on demand.
+/// The signed-in staff member's own account, kept to one line per item.
 class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
@@ -111,21 +110,6 @@ class AccountScreen extends ConsumerWidget {
     }
   }
 
-  void _showPermissions(BuildContext context, Set<String> permissions) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) =>
-            _PermissionsList(permissions: permissions, controller: scrollController),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final me = ref.watch(sessionProvider).value;
@@ -179,13 +163,6 @@ class AccountScreen extends ConsumerWidget {
               title: Text(l10n.branchesSection),
               subtitle: Text(branches),
             ),
-            ListTile(
-              leading: const Icon(Icons.verified_user_outlined),
-              title: Text(l10n.permissionsSection),
-              subtitle: Text(l10n.permissionsCount(me.permissions.length)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => _showPermissions(context, me.permissions),
-            ),
             const Divider(height: 1),
             if (me.deviceIsShared) ...[
               ListTile(
@@ -222,49 +199,6 @@ class AccountScreen extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Permissions grouped by module ("orders.view" → orders: view).
-class _PermissionsList extends StatelessWidget {
-  const _PermissionsList({required this.permissions, required this.controller});
-
-  final Set<String> permissions;
-  final ScrollController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final byModule = <String, List<String>>{};
-    for (final permission in permissions) {
-      final [module, action] = permission.split('.');
-      byModule.putIfAbsent(module, () => []).add(action);
-    }
-
-    return ListView(
-      controller: controller,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      children: [
-        Text(
-          '${l10n.permissionsSection} · ${l10n.permissionsCount(permissions.length)}',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        const SizedBox(height: 12),
-        for (final MapEntry(key: module, value: actions) in byModule.entries)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text(module, style: Theme.of(context).textTheme.labelLarge),
-                for (final action in actions) Chip(label: Text(action), visualDensity: VisualDensity.compact),
-              ],
-            ),
-          ),
-      ],
     );
   }
 }
