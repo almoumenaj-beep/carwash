@@ -6,6 +6,7 @@ use App\Domain\Crm\Models\Customer;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
+use App\Domain\Sales\Support\Vat;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -45,7 +46,19 @@ class Invoice extends Model
             'prices_include_vat' => 'boolean',
             'vat_amount' => 'integer',
             'issued_at' => 'datetime',
+            'loyalty_reward' => 'boolean',
         ];
+    }
+
+    /**
+     * What a percentage commission is taken of: the final amount, except that a free wash is the car wash's own
+     * gift, so the washer is paid as if the customer had paid for it.
+     */
+    public function commissionBase(): int
+    {
+        return $this->loyalty_reward
+            ? Vat::of($this->subtotal, $this->vat_rate_bps, $this->prices_include_vat)['total']
+            : $this->total;
     }
 
     /**
