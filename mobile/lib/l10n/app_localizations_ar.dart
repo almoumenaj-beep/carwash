@@ -2090,4 +2090,102 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noPointsYet => 'لا توجد حركات نقاط بعد';
+
+  @override
+  String get membershipsTitle => 'العضويات';
+
+  @override
+  String get membershipsEnabledField => 'تفعيل العضويات';
+
+  @override
+  String get membershipsEnabledHint => 'بيع باقة غسلات أو اشتراك بالشروط التي تحددها. إيقافها يحفظ ما اشتراه العملاء.';
+
+  @override
+  String get membershipPlansTitle => 'خطط العضويات';
+
+  @override
+  String get addMembershipPlan => 'إضافة خطة';
+
+  @override
+  String get noMembershipPlans => 'لا توجد خطط بعد. يضيفها المالك من الإعدادات.';
+
+  @override
+  String get membershipNameHint => 'مثال: باقة 10 غسلات';
+
+  @override
+  String get membershipPriceField => 'السعر';
+
+  @override
+  String get membershipUnlimited => 'غسلات بلا حد';
+
+  @override
+  String get membershipWashesField => 'عدد الغسلات';
+
+  @override
+  String get membershipValidityField => 'الصلاحية بالأيام';
+
+  @override
+  String get membershipScopeField => 'لمن العضوية';
+
+  @override
+  String get membershipForCustomer => 'كل سيارات العميل';
+
+  @override
+  String get membershipForOneCar => 'سيارة واحدة';
+
+  @override
+  String get membershipServicesField => 'الخدمات المشمولة';
+
+  @override
+  String get membershipChooseServices => 'اختر خدمة واحدة على الأقل';
+
+  @override
+  String get membershipPlanOn => 'متاحة للبيع';
+
+  @override
+  String get membershipPlanOff => 'غير متاحة للبيع';
+
+  @override
+  String membershipWashes(int count) {
+    return '$count غسلات';
+  }
+
+  @override
+  String membershipValidity(int days) {
+    return '$days يوم';
+  }
+
+  @override
+  String membershipWashesLeft(int count) {
+    return 'باقي $count غسلات';
+  }
+
+  @override
+  String membershipUntil(String date) {
+    return 'حتى $date';
+  }
+
+  @override
+  String get membershipSell => 'بيع عضوية';
+
+  @override
+  String get membershipCarField => 'أي سيارة';
+
+  @override
+  String get membershipStop => 'إيقاف العضوية';
+
+  @override
+  String get membershipStopExplained =>
+      'لن يمكن أخذ غسلات منها بعد الآن. لا يُرجع البرنامج أي مبلغ، فاتفق مع العميل على ذلك بنفسك.';
+
+  @override
+  String get membershipStopped => 'موقوفة';
+
+  @override
+  String membershipUse(String name) {
+    return 'استخدام $name';
+  }
+
+  @override
+  String get membershipsSoldTile => 'مبيعات العضويات';
 }

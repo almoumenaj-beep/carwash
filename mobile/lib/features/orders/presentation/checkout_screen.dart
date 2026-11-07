@@ -12,6 +12,8 @@ import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
+import '../../memberships/data/memberships_repository.dart';
+import '../../memberships/domain/membership.dart';
 import '../../settings/data/settings_repository.dart';
 import '../../settings/domain/app_settings.dart';
 import '../../shifts/data/shifts_repository.dart';
@@ -39,6 +41,7 @@ class CheckoutScreen extends ConsumerWidget {
         vatRateBps: (settings.vatRate * 100).round(),
         pricesIncludeVat: settings.pricesIncludeVat,
         points: settings.pointsEnabled ? settings : null,
+        membershipsOn: settings.membershipsEnabled,
       ),
       (AsyncError(:final error), _) || (_, AsyncError(:final error)) => Scaffold(
         appBar: AppBar(),
@@ -64,6 +67,7 @@ class _CheckoutForm extends ConsumerStatefulWidget {
     required this.vatRateBps,
     required this.pricesIncludeVat,
     required this.points,
+    required this.membershipsOn,
   });
 
   final Order order;
@@ -72,6 +76,7 @@ class _CheckoutForm extends ConsumerStatefulWidget {
 
   /// The points rules; null while points are off.
   final AppSettings? points;
+  final bool membershipsOn;
 
   @override
   ConsumerState<_CheckoutForm> createState() => _CheckoutFormState();
@@ -84,6 +89,8 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
   String _discountType = 'percent';
   String _method = 'cash';
   int _redeemSteps = 0;
+  String? _membershipId;
+  int _membershipPrice = 0;
   bool _saving = false;
   ApiProblem? _problem;
 
@@ -106,6 +113,24 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
 
   bool get _redeeming => _redeemSteps > 0;
 
+  bool get _usingMembership => _membershipId != null;
+
+  /// Points and memberships replace the cashier's discount, and need no discount limit or reason.
+  bool get _specialDiscount => _redeeming || _usingMembership;
+
+  /// What a membership would take off this order, like the server: the dearest service it covers. Null when it
+  /// cannot be used here.
+  int? _membershipValue(CustomerMembership membership) {
+    if (!membership.isUsable || (membership.vehicleId != null && membership.vehicleId != widget.order.vehicleId)) {
+      return null;
+    }
+    final prices = [
+      for (final item in widget.order.items)
+        if (membership.serviceIds.contains(item.serviceId) && item.unitPrice > 0) item.unitPrice,
+    ];
+    return prices.isEmpty ? null : prices.reduce((dearest, price) => price > dearest ? price : dearest);
+  }
+
   /// How many steps of the points rate this customer can spend on this order: never more than they hold or the
   /// order is worth.
   int get _maxRedeemSteps {
@@ -123,10 +148,10 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     final value = _discountValue(money) ?? 0;
     return CheckoutTotals.of(
       subtotal: widget.order.subtotal,
-      discountAmount: _redeeming
-          ? _redeemSteps * widget.points!.pointsRedeemValue
-          : (_discountType == 'amount' ? value : 0),
-      discountPercentBps: !_redeeming && _discountType == 'percent' ? value : null,
+      discountAmount: _usingMembership
+          ? _membershipPrice
+          : (_redeeming ? _redeemSteps * widget.points!.pointsRedeemValue : (_discountType == 'amount' ? value : 0)),
+      discountPercentBps: !_specialDiscount && _discountType == 'percent' ? value : null,
       vatRateBps: widget.vatRateBps,
       pricesIncludeVat: widget.pricesIncludeVat,
     );
@@ -148,12 +173,15 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
           .read(ordersRepositoryProvider)
           .checkout(
             widget.order.id,
-            discountAmount: !_redeeming && totals.discount > 0 && _discountType == 'amount' ? totals.discount : null,
-            discountPercentBps: !_redeeming && totals.discount > 0 && _discountType == 'percent'
+            discountAmount: !_specialDiscount && totals.discount > 0 && _discountType == 'amount'
+                ? totals.discount
+                : null,
+            discountPercentBps: !_specialDiscount && totals.discount > 0 && _discountType == 'percent'
                 ? _discountValue(money)
                 : null,
-            discountReason: !_redeeming && totals.discount > 0 ? _reason.text.trim() : null,
+            discountReason: !_specialDiscount && totals.discount > 0 ? _reason.text.trim() : null,
             redeemPoints: _redeeming ? _redeemSteps * widget.points!.pointsRedeemPoints : null,
+            membershipId: _membershipId,
             method: _method,
             tendered: isCash ? tendered : null,
             deliver: deliver,
@@ -191,8 +219,8 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     final limitBps = me?.maxDiscountBps ?? 0;
     final canDiscount = (me?.can(Permissions.posDiscount) ?? false) && limitBps > 0;
     final discountInvalid = _discountValue(money) == null;
-    final overLimit = !_redeeming && totals.discountBps > limitBps;
-    final reasonMissing = !_redeeming && totals.discount > 0 && _reason.text.trim().isEmpty;
+    final overLimit = !_specialDiscount && totals.discountBps > limitBps;
+    final reasonMissing = !_specialDiscount && totals.discount > 0 && _reason.text.trim().isEmpty;
     final tendered = _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
     final nothingToPay = totals.total == 0;
     final isCash = _method == 'cash';
@@ -262,6 +290,30 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
               ),
             ),
           ),
+          if (widget.membershipsOn && order.customer != null)
+            for (final membership
+                in ref.watch(customerMembershipsProvider(order.customer!.id)).value ?? const <CustomerMembership>[])
+              if (_membershipValue(membership) case final value?)
+                Card(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: SwitchListTile(
+                    secondary: const Icon(Icons.card_membership_outlined),
+                    title: Text(l10n.membershipUse(membership.name)),
+                    subtitle: Text(
+                      membership.washesLeft == null
+                          ? l10n.membershipUnlimited
+                          : l10n.membershipWashesLeft(membership.washesLeft!),
+                    ),
+                    value: _membershipId == membership.id,
+                    onChanged: (on) => setState(() {
+                      _membershipId = on ? membership.id : null;
+                      _membershipPrice = on ? value : 0;
+                      _redeemSteps = 0;
+                      _discount.clear();
+                      _reason.clear();
+                    }),
+                  ),
+                ),
           if (points != null && pointsBalance != null)
             Card(
               margin: const EdgeInsets.only(top: 16),
@@ -280,7 +332,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
                         child: Text(l10n.pointsNeedMore(points.pointsRedeemPoints), style: theme.textTheme.bodySmall),
                       ),
                     )
-                  else if (_discount.text.trim().isEmpty)
+                  else if (_discount.text.trim().isEmpty && !_usingMembership)
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
                       child: Row(
@@ -315,7 +367,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
                 ],
               ),
             ),
-          if (canDiscount && !_redeeming) ...[
+          if (canDiscount && !_specialDiscount) ...[
             const SizedBox(height: 16),
             Text(l10n.discountLabel, style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),

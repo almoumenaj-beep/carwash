@@ -33,6 +33,7 @@ class SettingsResource extends JsonResource
             'vat_number' => $this->vat_number,
             'appointment_grace_minutes' => $this->appointment_grace_minutes,
             'points_enabled' => $this->points_enabled,
+            'memberships_enabled' => $this->memberships_enabled,
             'points_earn_amount' => $this->points_earn_amount,
             'points_redeem_points' => $this->points_redeem_points,
             'points_redeem_value' => $this->points_redeem_value,

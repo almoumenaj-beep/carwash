@@ -3745,6 +3745,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No points movements yet'**
   String get noPointsYet;
+
+  /// No description provided for @membershipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Memberships'**
+  String get membershipsTitle;
+
+  /// No description provided for @membershipsEnabledField.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on memberships'**
+  String get membershipsEnabledField;
+
+  /// No description provided for @membershipsEnabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell a wash pack or a subscription, with the terms you set. Turning it off keeps what customers bought.'**
+  String get membershipsEnabledHint;
+
+  /// No description provided for @membershipPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership plans'**
+  String get membershipPlansTitle;
+
+  /// No description provided for @addMembershipPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a plan'**
+  String get addMembershipPlan;
+
+  /// No description provided for @noMembershipPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans yet. The owner adds them in settings.'**
+  String get noMembershipPlans;
+
+  /// No description provided for @membershipNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 10 washes'**
+  String get membershipNameHint;
+
+  /// No description provided for @membershipPriceField.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get membershipPriceField;
+
+  /// No description provided for @membershipUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit on washes'**
+  String get membershipUnlimited;
+
+  /// No description provided for @membershipWashesField.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of washes'**
+  String get membershipWashesField;
+
+  /// No description provided for @membershipValidityField.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid for how many days'**
+  String get membershipValidityField;
+
+  /// No description provided for @membershipScopeField.
+  ///
+  /// In en, this message translates to:
+  /// **'Who it is for'**
+  String get membershipScopeField;
+
+  /// No description provided for @membershipForCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Any of the customer\'s cars'**
+  String get membershipForCustomer;
+
+  /// No description provided for @membershipForOneCar.
+  ///
+  /// In en, this message translates to:
+  /// **'One car'**
+  String get membershipForOneCar;
+
+  /// No description provided for @membershipServicesField.
+  ///
+  /// In en, this message translates to:
+  /// **'Services covered'**
+  String get membershipServicesField;
+
+  /// No description provided for @membershipChooseServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least one service'**
+  String get membershipChooseServices;
+
+  /// No description provided for @membershipPlanOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Offered for sale'**
+  String get membershipPlanOn;
+
+  /// No description provided for @membershipPlanOff.
+  ///
+  /// In en, this message translates to:
+  /// **'not for sale'**
+  String get membershipPlanOff;
+
+  /// No description provided for @membershipWashes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} washes'**
+  String membershipWashes(int count);
+
+  /// No description provided for @membershipValidity.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days'**
+  String membershipValidity(int days);
+
+  /// No description provided for @membershipWashesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} washes left'**
+  String membershipWashesLeft(int count);
+
+  /// No description provided for @membershipUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'until {date}'**
+  String membershipUntil(String date);
+
+  /// No description provided for @membershipSell.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell'**
+  String get membershipSell;
+
+  /// No description provided for @membershipCarField.
+  ///
+  /// In en, this message translates to:
+  /// **'Which car'**
+  String get membershipCarField;
+
+  /// No description provided for @membershipStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop membership'**
+  String get membershipStop;
+
+  /// No description provided for @membershipStopExplained.
+  ///
+  /// In en, this message translates to:
+  /// **'No more washes can be taken from it. No money is returned here, so settle that with the customer yourself.'**
+  String get membershipStopExplained;
+
+  /// No description provided for @membershipStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'stopped'**
+  String get membershipStopped;
+
+  /// No description provided for @membershipUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Use {name}'**
+  String membershipUse(String name);
+
+  /// No description provided for @membershipsSoldTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Memberships sold'**
+  String get membershipsSoldTile;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

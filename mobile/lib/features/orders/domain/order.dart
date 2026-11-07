@@ -192,6 +192,7 @@ class Order {
     required this.allowedNext,
     required this.customer,
     required this.plateNumber,
+    this.vehicleId,
     required this.bay,
     required this.staff,
     required this.items,
@@ -220,6 +221,7 @@ class Order {
       allowedNext: [for (final status in json['allowed_next'] as List) OrderStatus.fromApi(status as String)],
       customer: json['customer'] == null ? null : OrderCustomer.fromJson(json['customer'] as Map<String, dynamic>),
       plateNumber: json['plate_number'] as String,
+      vehicleId: json['vehicle_id'] as String?,
       bay: json['bay'] == null ? null : NamedRef.fromJson(json['bay'] as Map<String, dynamic>),
       staff: [for (final member in json['staff'] as List) NamedRef.fromJson(member as Map<String, dynamic>)],
       items: [for (final item in json['items'] as List) OrderItem.fromJson(item as Map<String, dynamic>)],
@@ -257,6 +259,7 @@ class Order {
   /// Null for a walk-in who is not registered.
   final OrderCustomer? customer;
   final String plateNumber;
+  final String? vehicleId;
   final NamedRef? bay;
   final List<NamedRef> staff;
   final List<OrderItem> items;

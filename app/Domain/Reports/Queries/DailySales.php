@@ -56,6 +56,7 @@ class DailySales
                 'cash_collected' => $collected(PaymentMethod::Cash),
                 'card_collected' => $collected(PaymentMethod::Card),
                 'benefit_collected' => $collected(PaymentMethod::Benefit),
+                'memberships_sold' => (int) $invoices()->whereNull('order_id')->sum('total'),
                 'average_ticket' => $count === 0 ? 0 : intdiv($sales, $count),
                 'expenses' => $expenses,
                 'net' => $sales - $expenses,

@@ -40,6 +40,7 @@ class CheckoutOrderRequest extends FormRequest
             'tendered' => ['nullable', 'integer', 'min:0'],
             'deliver' => ['sometimes', 'boolean'],
             'redeem_points' => ['nullable', 'integer', 'min:1'],
+            'membership_id' => ['nullable', 'uuid'],
         ];
     }
 }

@@ -52,12 +52,12 @@ class Invoice extends Model
     }
 
     /**
-     * What a percentage commission is taken of: the final amount, except that points are the car wash's own gift,
-     * so the washer is paid as if the customer had paid in full.
+     * What a percentage commission is taken of: the final amount, except that a wash paid with points or from a
+     * membership pays the washer on the regular price, as neither is the washer's cost to bear.
      */
     public function commissionBase(): int
     {
-        return $this->points_redeemed > 0
+        return $this->points_redeemed > 0 || $this->customer_membership_id !== null
             ? Vat::of($this->subtotal, $this->vat_rate_bps, $this->prices_include_vat)['total']
             : $this->total;
     }

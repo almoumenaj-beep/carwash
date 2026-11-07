@@ -93,6 +93,7 @@ class OrdersRepository {
     int? tendered,
     bool deliver = false,
     int? redeemPoints,
+    String? membershipId,
   }) async {
     final response = await sendRequest(
       () => _dio.post<Map<String, dynamic>>(
@@ -105,6 +106,7 @@ class OrdersRepository {
           'tendered': ?tendered,
           'deliver': deliver,
           'redeem_points': ?redeemPoints,
+          'membership_id': ?membershipId,
         },
       ),
     );

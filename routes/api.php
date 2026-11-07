@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\FinancialReportController;
 use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\MembershipController;
 use App\Http\Controllers\Api\V1\MePasswordController;
 use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\MeProfileController;
@@ -139,6 +140,12 @@ Route::prefix('v1')->name('v1.')->group(function () {
 
         Route::apiResource('customers', CustomerController::class);
         Route::get('customers/{customer}/points', [CustomerPointsController::class, 'show'])->name('customers.points');
+        Route::get('customers/{customer}/memberships', [MembershipController::class, 'index'])->name('customers.memberships.index');
+        Route::post('customers/{customer}/memberships', [MembershipController::class, 'sell'])->name('customers.memberships.store');
+        Route::post('customer-memberships/{membership}/cancel', [MembershipController::class, 'cancel'])->name('customer-memberships.cancel');
+        Route::get('membership-plans', [MembershipController::class, 'plans'])->name('membership-plans.index');
+        Route::post('membership-plans', [MembershipController::class, 'storePlan'])->name('membership-plans.store');
+        Route::patch('membership-plans/{plan}', [MembershipController::class, 'updatePlan'])->name('membership-plans.update');
         Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);
 
         Route::apiResource('devices', DeviceController::class)->only(['index', 'update', 'destroy']);

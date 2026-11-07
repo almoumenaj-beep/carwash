@@ -129,6 +129,8 @@ class _Report extends ConsumerWidget {
           tiles: [
             (l10n.salesTotal, money.format(report.sales), Icons.payments_outlined),
             (l10n.shiftInvoices, '${report.invoicesCount}', Icons.receipt_long_outlined),
+            if (report.membershipsSold > 0)
+              (l10n.membershipsSoldTile, money.format(report.membershipsSold), Icons.card_membership_outlined),
             (l10n.averageTicket, money.format(report.averageTicket), Icons.trending_up),
             (l10n.shiftCashTaken, money.format(report.cashCollected), Icons.point_of_sale_outlined),
             if (report.cardCollected > 0) (l10n.shiftCardTaken, money.format(report.cardCollected), Icons.credit_card),

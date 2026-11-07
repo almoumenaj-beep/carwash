@@ -7,6 +7,7 @@ import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../memberships/presentation/membership_plans_screen.dart';
 import '../data/settings_repository.dart';
 import '../domain/app_settings.dart';
 
@@ -49,6 +50,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
   late final _graceMinutes = TextEditingController(text: widget.settings.appointmentGraceMinutes?.toString());
   late bool _pricesIncludeVat = widget.settings.pricesIncludeVat;
   late bool _pointsEnabled = widget.settings.pointsEnabled;
+  late bool _membershipsEnabled = widget.settings.membershipsEnabled;
   late final _pointsEarnAmount = TextEditingController(
     text: ref.read(moneyFormatProvider).toInput(widget.settings.pointsEarnAmount),
   );
@@ -95,6 +97,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         'prices_include_vat': _pricesIncludeVat,
         'vat_number': _vatNumber.text.trim().isEmpty ? null : _vatNumber.text.trim(),
         'appointment_grace_minutes': int.tryParse(_graceMinutes.text.trim()),
+        'memberships_enabled': _membershipsEnabled,
         'points_enabled': _pointsEnabled,
         if (_pointsEnabled) ...{
           'points_earn_amount': money.parse(_pointsEarnAmount.text),
@@ -204,6 +207,24 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
                     : null;
               },
             ),
+            const SizedBox(height: 24),
+            Text(l10n.membershipsTitle, style: theme.textTheme.titleMedium),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.membershipsEnabledField),
+              subtitle: Text(l10n.membershipsEnabledHint),
+              value: _membershipsEnabled,
+              onChanged: (value) => setState(() => _membershipsEnabled = value),
+            ),
+            if (_membershipsEnabled)
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(Icons.card_membership_outlined),
+                title: Text(l10n.membershipPlansTitle),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () =>
+                    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const MembershipPlansScreen())),
+              ),
             const SizedBox(height: 24),
             Text(l10n.pointsTitle, style: theme.textTheme.titleMedium),
             SwitchListTile(

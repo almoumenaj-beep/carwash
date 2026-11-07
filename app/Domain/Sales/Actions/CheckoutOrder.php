@@ -3,6 +3,7 @@
 namespace App\Domain\Sales\Actions;
 
 use App\Domain\Crm\Models\Customer;
+use App\Domain\Memberships\Actions\UseMembershipWash;
 use App\Domain\Orders\Actions\ChangeOrderStatus;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
@@ -25,14 +26,14 @@ use Illuminate\Validation\ValidationException;
  * the VAT from the car wash's settings, issues the invoice with the branch's next number and records
  * the payment on the cashier's open shift at the branch. With `deliver`, a ready car is handed
  * over in the same step. With points on, a registered customer earns points on what they paid, and can spend
- * points for money off instead of a discount.
+ * points for money off instead of a discount. A wash can also be taken from a membership the customer bought.
  */
 class CheckoutOrder
 {
-    public function __construct(private ChangeOrderStatus $changeOrderStatus, private AuditTrail $auditTrail, private PointsLedger $pointsLedger) {}
+    public function __construct(private ChangeOrderStatus $changeOrderStatus, private AuditTrail $auditTrail, private PointsLedger $pointsLedger, private UseMembershipWash $useMembershipWash) {}
 
     /**
-     * @param  array{discount_amount?: ?int, discount_percent_bps?: ?int, discount_reason?: ?string, method?: string, tendered?: ?int, deliver?: bool, redeem_points?: ?int}  $data
+     * @param  array{discount_amount?: ?int, discount_percent_bps?: ?int, discount_reason?: ?string, method?: string, tendered?: ?int, deliver?: bool, redeem_points?: ?int, membership_id?: ?string}  $data
      *
      * @throws ValidationException
      */
@@ -48,7 +49,12 @@ class CheckoutOrder
             $pointsHolder = $tenant->points_enabled && $order->customer_id !== null
                 ? Customer::query()->whereKey($order->customer_id)->lockForUpdate()->first()
                 : null;
-            $discount = $redeemed > 0 ? $this->pointsDiscount($tenant, $pointsHolder, $subtotal, $redeemed, $data) : $this->discount($actor, $subtotal, $data);
+            $membership = null;
+            if (filled($data['membership_id'] ?? null)) {
+                ['membership' => $membership, 'price' => $discount] = $this->useMembershipWash->handle($tenant, $order, $data['membership_id'], $data);
+            } else {
+                $discount = $redeemed > 0 ? $this->pointsDiscount($tenant, $pointsHolder, $subtotal, $redeemed, $data) : $this->discount($actor, $subtotal, $data);
+            }
             $vat = Vat::of($subtotal - $discount, $tenant->vat_rate_bps, $tenant->prices_include_vat);
             $earned = $pointsHolder === null ? 0 : intdiv($vat['total'], $tenant->points_earn_amount);
             $method = PaymentMethod::tryFrom($data['method'] ?? '') ?? PaymentMethod::Cash;
@@ -70,7 +76,13 @@ class CheckoutOrder
                 'customer_id' => $order->customer_id,
                 'subtotal' => $subtotal,
                 'discount_total' => $discount,
-                'discount_reason' => $discount === 0 ? null : ($redeemed > 0 ? __('Paid with :points points', ['points' => $redeemed]) : $data['discount_reason']),
+                'discount_reason' => match (true) {
+                    $discount === 0 => null,
+                    $membership !== null => __('Membership: :name', ['name' => $membership->name]),
+                    $redeemed > 0 => __('Paid with :points points', ['points' => $redeemed]),
+                    default => $data['discount_reason'],
+                },
+                'customer_membership_id' => $membership?->id,
                 'points_redeemed' => $redeemed,
                 'points_earned' => $earned,
                 'total' => $vat['total'],
@@ -99,6 +111,8 @@ class CheckoutOrder
                 'received_by' => $actor->id,
                 'received_at' => now(),
             ]);
+
+            $membership?->increment('washes_used');
 
             if ($pointsHolder !== null) {
                 if ($redeemed > 0) {

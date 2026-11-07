@@ -4,6 +4,7 @@ namespace App\Domain\Crm\Models;
 
 use App\Domain\Crm\Support\PhoneNumber;
 use App\Domain\Crm\Support\PlateNumber;
+use App\Domain\Memberships\Models\CustomerMembership;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use App\Domain\Sales\Models\PointTransaction;
@@ -87,11 +88,11 @@ class Customer extends Model
     }
 
     /**
-     * Whether the customer has history (work orders; later wallet and loyalty), so they cannot be deleted.
+     * Whether the customer has history (work orders or memberships), so they cannot be deleted.
      */
     public function isInUse(): bool
     {
-        return $this->orders()->exists();
+        return $this->orders()->exists() || CustomerMembership::query()->where('customer_id', $this->id)->exists();
     }
 
     /**

@@ -2043,4 +2043,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPointsYet => 'No points movements yet';
+
+  @override
+  String get membershipsTitle => 'Memberships';
+
+  @override
+  String get membershipsEnabledField => 'Turn on memberships';
+
+  @override
+  String get membershipsEnabledHint =>
+      'Sell a wash pack or a subscription, with the terms you set. Turning it off keeps what customers bought.';
+
+  @override
+  String get membershipPlansTitle => 'Membership plans';
+
+  @override
+  String get addMembershipPlan => 'Add a plan';
+
+  @override
+  String get noMembershipPlans => 'No plans yet. The owner adds them in settings.';
+
+  @override
+  String get membershipNameHint => 'e.g. 10 washes';
+
+  @override
+  String get membershipPriceField => 'Price';
+
+  @override
+  String get membershipUnlimited => 'No limit on washes';
+
+  @override
+  String get membershipWashesField => 'Number of washes';
+
+  @override
+  String get membershipValidityField => 'Valid for how many days';
+
+  @override
+  String get membershipScopeField => 'Who it is for';
+
+  @override
+  String get membershipForCustomer => 'Any of the customer\'s cars';
+
+  @override
+  String get membershipForOneCar => 'One car';
+
+  @override
+  String get membershipServicesField => 'Services covered';
+
+  @override
+  String get membershipChooseServices => 'Choose at least one service';
+
+  @override
+  String get membershipPlanOn => 'Offered for sale';
+
+  @override
+  String get membershipPlanOff => 'not for sale';
+
+  @override
+  String membershipWashes(int count) {
+    return '$count washes';
+  }
+
+  @override
+  String membershipValidity(int days) {
+    return '$days days';
+  }
+
+  @override
+  String membershipWashesLeft(int count) {
+    return '$count washes left';
+  }
+
+  @override
+  String membershipUntil(String date) {
+    return 'until $date';
+  }
+
+  @override
+  String get membershipSell => 'Sell';
+
+  @override
+  String get membershipCarField => 'Which car';
+
+  @override
+  String get membershipStop => 'Stop membership';
+
+  @override
+  String get membershipStopExplained =>
+      'No more washes can be taken from it. No money is returned here, so settle that with the customer yourself.';
+
+  @override
+  String get membershipStopped => 'stopped';
+
+  @override
+  String membershipUse(String name) {
+    return 'Use $name';
+  }
+
+  @override
+  String get membershipsSoldTile => 'Memberships sold';
 }

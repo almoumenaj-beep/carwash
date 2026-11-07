@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../catalog/data/catalog_repository.dart';
 import '../../catalog/domain/catalog.dart';
+import '../../memberships/presentation/customer_memberships_card.dart';
 import '../../settings/data/settings_repository.dart';
 import '../data/customers_repository.dart';
 import '../domain/customer.dart';
@@ -298,6 +299,9 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
             ),
             if (widget.customer case final customer? when ref.watch(settingsProvider).value?.pointsEnabled ?? false)
               PointsCard(customer: customer),
+            if (widget.customer case final customer?
+                when ref.watch(settingsProvider).value?.membershipsEnabled ?? false)
+              CustomerMembershipsCard(customer: customer),
             const Divider(height: 32),
             Row(
               children: [

@@ -15,6 +15,7 @@ class AppSettings {
     this.pointsRedeemPoints = 100,
     this.pointsRedeemValue = 2000,
     this.pointsExpiryMonths,
+    this.membershipsEnabled = false,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -32,6 +33,7 @@ class AppSettings {
     pointsRedeemPoints: json['points_redeem_points'] as int? ?? 100,
     pointsRedeemValue: json['points_redeem_value'] as int? ?? 2000,
     pointsExpiryMonths: json['points_expiry_months'] as int?,
+    membershipsEnabled: json['memberships_enabled'] as bool? ?? false,
   );
 
   final String name;
@@ -58,4 +60,7 @@ class AppSettings {
   final int pointsRedeemPoints;
   final int pointsRedeemValue;
   final int? pointsExpiryMonths;
+
+  /// Whether memberships can be sold and used; the plans are set on their own screen.
+  final bool membershipsEnabled;
 }

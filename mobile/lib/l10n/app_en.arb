@@ -1149,5 +1149,69 @@
         "type": "int"
       }
     }
+  },
+  "membershipsTitle": "Memberships",
+  "membershipsEnabledField": "Turn on memberships",
+  "membershipsEnabledHint": "Sell a wash pack or a subscription, with the terms you set. Turning it off keeps what customers bought.",
+  "membershipPlansTitle": "Membership plans",
+  "addMembershipPlan": "Add a plan",
+  "noMembershipPlans": "No plans yet. The owner adds them in settings.",
+  "membershipNameHint": "e.g. 10 washes",
+  "membershipPriceField": "Price",
+  "membershipUnlimited": "No limit on washes",
+  "membershipWashesField": "Number of washes",
+  "membershipValidityField": "Valid for how many days",
+  "membershipScopeField": "Who it is for",
+  "membershipForCustomer": "Any of the customer's cars",
+  "membershipForOneCar": "One car",
+  "membershipServicesField": "Services covered",
+  "membershipChooseServices": "Choose at least one service",
+  "membershipPlanOn": "Offered for sale",
+  "membershipPlanOff": "not for sale",
+  "membershipWashes": "{count} washes",
+  "membershipValidity": "{days} days",
+  "membershipWashesLeft": "{count} washes left",
+  "membershipUntil": "until {date}",
+  "membershipSell": "Sell",
+  "membershipCarField": "Which car",
+  "membershipStop": "Stop membership",
+  "membershipStopExplained": "No more washes can be taken from it. No money is returned here, so settle that with the customer yourself.",
+  "membershipStopped": "stopped",
+  "membershipUse": "Use {name}",
+  "membershipsSoldTile": "Memberships sold",
+  "@membershipWashes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@membershipValidity": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@membershipWashesLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@membershipUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@membershipUse": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }
