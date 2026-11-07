@@ -310,6 +310,14 @@ class _OrderCardState extends ConsumerState<_OrderCard> {
                   ),
                 ),
               ],
+              if (order.customer != null &&
+                  (order.status == OrderStatus.ready || order.status == OrderStatus.delivered)) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: OrderWhatsAppButton(order: order),
+                ),
+              ],
               if (!widget.showStatus && next != null && canMoveTo(ref, next)) ...[
                 const SizedBox(height: 8),
                 SizedBox(

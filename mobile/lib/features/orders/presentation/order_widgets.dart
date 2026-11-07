@@ -5,6 +5,9 @@ import '../../../core/auth/route_permissions.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/whatsapp/open_whatsapp.dart';
+import '../../settings/data/settings_repository.dart';
+import '../../settings/domain/message_templates.dart';
 import '../../auth/application/session_controller.dart';
 import '../data/orders_repository.dart';
 import '../domain/order.dart';
@@ -281,4 +284,44 @@ class WasherPicker extends ConsumerWidget {
 int minutesSince(DateTime since) {
   final minutes = DateTime.now().difference(since).inMinutes;
   return minutes < 0 ? 0 : minutes;
+}
+
+/// Opens WhatsApp on the order's customer with the message that fits where the car is: ready to collect, thanks
+/// once handed over, otherwise a greeting. Shows nothing for a car with no registered customer.
+class OrderWhatsAppButton extends ConsumerWidget {
+  const OrderWhatsAppButton({super.key, required this.order});
+
+  final Order order;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final customer = order.customer;
+    if (customer == null) {
+      return const SizedBox.shrink();
+    }
+
+    final templates = ref.watch(settingsProvider).value?.messageTemplates ?? const MessageTemplates();
+    final carWash = ref.watch(sessionProvider).value?.carWashName ?? '';
+
+    return OutlinedButton.icon(
+      icon: const Icon(Icons.chat_outlined),
+      label: Text(AppLocalizations.of(context).whatsAppSend),
+      onPressed: () => openWhatsApp(
+        context,
+        customer.phone,
+        templates.render(
+          switch (order.status) {
+            OrderStatus.ready => MessageTemplateKind.ready,
+            OrderStatus.delivered => MessageTemplateKind.thanks,
+            _ => MessageTemplateKind.greeting,
+          },
+          {
+            MessageToken.name: customer.name ?? '',
+            MessageToken.plate: order.plateNumber,
+            MessageToken.carWash: carWash,
+          },
+        ),
+      ),
+    );
+  }
 }

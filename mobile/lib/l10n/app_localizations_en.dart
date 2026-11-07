@@ -2179,4 +2179,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get messageSampleName => 'Hussain';
+
+  @override
+  String get whatsAppSend => 'Send a WhatsApp message';
+
+  @override
+  String get messageTemplateThanks => 'Thanks after handing over';
+
+  @override
+  String get membershipAfterSaving => 'Save the customer first; their page then lets you sell a membership.';
 }

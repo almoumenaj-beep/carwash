@@ -88,7 +88,7 @@ class SettingsApiTest extends TestCase
     {
         Sanctum::actingAs($this->createStaff($this->tenant, DefaultRole::Owner));
 
-        $this->patchJson('/api/v1/settings', ['message_templates' => ['ready' => 'هلا {الاسم}', 'greeting' => null]])
+        $this->patchJson('/api/v1/settings', ['message_templates' => ['ready' => 'هلا {الاسم}', 'thanks' => 'شكراً', 'greeting' => null]])
             ->assertOk()
             ->assertJsonPath('data.message_templates.ready', 'هلا {الاسم}')
             ->assertJsonPath('data.message_templates.greeting', null);

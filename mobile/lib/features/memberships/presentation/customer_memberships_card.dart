@@ -76,25 +76,30 @@ class CustomerMembershipsCard extends ConsumerWidget {
             ListTile(
               textColor: membership.isUsable ? null : theme.disabledColor,
               title: Text(membership.name),
-              subtitle: Text(
-                [
-                  membership.washesLeft == null
-                      ? l10n.membershipUnlimited
-                      : l10n.membershipWashesLeft(membership.washesLeft!),
-                  if (membership.isCancelled)
-                    l10n.membershipStopped
-                  else
-                    l10n.membershipUntil(date(membership.expiresAt.toLocal())),
-                  ?membership.plateNumber,
-                ].join(' · '),
-              ),
-              trailing: canStop && membership.isUsable
-                  ? IconButton(
-                      tooltip: l10n.membershipStop,
-                      icon: const Icon(Icons.block),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    [
+                      membership.washesLeft == null
+                          ? l10n.membershipUnlimited
+                          : l10n.membershipWashesLeft(membership.washesLeft!),
+                      if (membership.isCancelled)
+                        l10n.membershipStopped
+                      else
+                        l10n.membershipUntil(date(membership.expiresAt.toLocal())),
+                      ?membership.plateNumber,
+                    ].join(' · '),
+                  ),
+                  if (canStop && membership.isUsable)
+                    TextButton.icon(
+                      style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error, padding: EdgeInsets.zero),
+                      icon: const Icon(Icons.block, size: 18),
+                      label: Text(l10n.membershipStop),
                       onPressed: () => _stop(context, ref, membership),
-                    )
-                  : null,
+                    ),
+                ],
+              ),
             ),
         ],
       ),

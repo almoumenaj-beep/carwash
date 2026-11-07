@@ -7,14 +7,11 @@ import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/money/money_method_label.dart';
-import '../../../core/whatsapp/open_whatsapp.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../customers/domain/customer.dart';
-import '../../settings/data/settings_repository.dart';
-import '../../settings/domain/message_templates.dart';
 import '../data/orders_repository.dart';
 import '../domain/order.dart';
 import 'order_widgets.dart';
@@ -88,8 +85,6 @@ class _OrderViewState extends ConsumerState<_OrderView> {
     final me = ref.watch(sessionProvider).value;
     final order = widget.order;
     final customer = order.customer;
-    // Loads the message templates ahead of the WhatsApp button.
-    ref.watch(settingsProvider);
     final canEdit = order.status.isActive && (me?.can(Permissions.ordersUpdate) ?? false);
     final actions = order.allowedNext.where((next) => canMoveTo(ref, next)).toList();
 
@@ -142,25 +137,8 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                 subtitle: customer?.name == null
                     ? null
                     : Text(formatPhone(customer!.phone), textDirection: TextDirection.ltr, textAlign: TextAlign.start),
-                trailing: customer != null
-                    ? IconButton(
-                        tooltip: l10n.whatsAppButton,
-                        icon: const Icon(Icons.chat_outlined),
-                        onPressed: () => openWhatsApp(
-                          context,
-                          customer.phone,
-                          (ref.read(settingsProvider).value?.messageTemplates ?? const MessageTemplates()).render(
-                            order.status == OrderStatus.ready
-                                ? MessageTemplateKind.ready
-                                : MessageTemplateKind.greeting,
-                            {
-                              MessageToken.name: customer.name ?? '',
-                              MessageToken.plate: order.plateNumber,
-                              MessageToken.carWash: me?.carWashName ?? '',
-                            },
-                          ),
-                        ),
-                      )
+                trailing: customer != null && me != null && canOpen('/customers/${customer.id}', me)
+                    ? const Icon(Icons.chevron_right)
                     : null,
                 onTap: customer != null && me != null && canOpen('/customers/${customer.id}', me)
                     ? () => context.push('/customers/${customer.id}')
@@ -222,6 +200,11 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                 ],
               ),
             ),
+            if (customer != null && order.status != OrderStatus.cancelled)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: OrderWhatsAppButton(order: order),
+              ),
             if (order.invoice case final invoice?)
               Card(
                 child: ListTile(

@@ -568,7 +568,11 @@ class _PaidDialog extends ConsumerWidget {
                 ],
               ],
             ),
-      actions: [FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.done))],
+      actions: [
+        if (order.status == OrderStatus.ready || order.status == OrderStatus.delivered)
+          OrderWhatsAppButton(order: order),
+        FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.done)),
+      ],
     );
   }
 }

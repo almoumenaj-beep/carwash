@@ -2225,4 +2225,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get messageSampleName => 'حسين';
+
+  @override
+  String get whatsAppSend => 'إرسال رسالة واتساب';
+
+  @override
+  String get messageTemplateThanks => 'شكراً بعد التسليم';
+
+  @override
+  String get membershipAfterSaving => 'احفظ العميل أولاً، وبعدها تقدر تبيعه عضوية من صفحته.';
 }

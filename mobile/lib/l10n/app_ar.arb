@@ -649,5 +649,8 @@
   "messageTemplateGreeting": "ترحيب",
   "messageTemplatePreview": "معاينة",
   "messageTemplateRestore": "استعادة النص الافتراضي",
-  "messageSampleName": "حسين"
+  "messageSampleName": "حسين",
+  "whatsAppSend": "إرسال رسالة واتساب",
+  "messageTemplateThanks": "شكراً بعد التسليم",
+  "membershipAfterSaving": "احفظ العميل أولاً، وبعدها تقدر تبيعه عضوية من صفحته."
 }

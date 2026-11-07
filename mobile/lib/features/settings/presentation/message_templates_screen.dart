@@ -126,6 +126,7 @@ class _TemplatesFormState extends ConsumerState<_TemplatesForm> {
             Text(switch (kind) {
               MessageTemplateKind.ready => l10n.messageTemplateReady,
               MessageTemplateKind.reminder => l10n.messageTemplateReminder,
+              MessageTemplateKind.thanks => l10n.messageTemplateThanks,
               MessageTemplateKind.greeting => l10n.messageTemplateGreeting,
             }, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),

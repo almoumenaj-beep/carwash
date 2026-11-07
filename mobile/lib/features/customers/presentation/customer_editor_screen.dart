@@ -315,6 +315,14 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
               value: _marketingConsent,
               onChanged: canEdit ? (value) => setState(() => _marketingConsent = value) : null,
             ),
+            if (_isNew && (ref.watch(settingsProvider).value?.membershipsEnabled ?? false))
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.card_membership_outlined),
+                  title: Text(l10n.membershipsTitle),
+                  subtitle: Text(l10n.membershipAfterSaving),
+                ),
+              ),
             if (widget.customer case final customer? when ref.watch(settingsProvider).value?.pointsEnabled ?? false)
               PointsCard(customer: customer),
             if (widget.customer case final customer?

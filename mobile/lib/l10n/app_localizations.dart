@@ -3991,6 +3991,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hussain'**
   String get messageSampleName;
+
+  /// No description provided for @whatsAppSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a WhatsApp message'**
+  String get whatsAppSend;
+
+  /// No description provided for @messageTemplateThanks.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks after handing over'**
+  String get messageTemplateThanks;
+
+  /// No description provided for @membershipAfterSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the customer first; their page then lets you sell a membership.'**
+  String get membershipAfterSaving;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

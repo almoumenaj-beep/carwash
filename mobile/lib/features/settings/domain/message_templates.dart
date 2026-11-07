@@ -25,6 +25,11 @@ enum MessageTemplateKind {
     MessageToken.time,
     MessageToken.carWash,
   ], 'مرحباً {الاسم}، نذكّرك بموعدك يوم {التاريخ} الساعة {الوقت}. {المغسلة}'),
+  thanks('thanks', [
+    MessageToken.name,
+    MessageToken.plate,
+    MessageToken.carWash,
+  ], 'شكراً لزيارتك {الاسم}، نتطلع لرؤيتك قريباً. {المغسلة}'),
   greeting('greeting', [MessageToken.name, MessageToken.carWash], 'مرحباً {الاسم}');
 
   const MessageTemplateKind(this.apiKey, this.tokens, this.defaultText);

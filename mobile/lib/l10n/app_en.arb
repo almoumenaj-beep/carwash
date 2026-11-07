@@ -1225,5 +1225,8 @@
   "messageTemplateGreeting": "Greeting",
   "messageTemplatePreview": "Preview",
   "messageTemplateRestore": "Restore the default text",
-  "messageSampleName": "Hussain"
+  "messageSampleName": "Hussain",
+  "whatsAppSend": "Send a WhatsApp message",
+  "messageTemplateThanks": "Thanks after handing over",
+  "membershipAfterSaving": "Save the customer first; their page then lets you sell a membership."
 }
