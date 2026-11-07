@@ -176,6 +176,24 @@ class EquipmentDetailScreen extends ConsumerWidget {
     }
   }
 
+  /// Asks why it broke and says what reporting it does.
+  Future<void> _reportBreakdown(BuildContext context, WidgetRef ref) async {
+    final reason = await showDialog<String>(context: context, builder: (_) => const _BreakdownDialog());
+    if (reason == null) {
+      return;
+    }
+
+    try {
+      await ref.read(equipmentRepositoryProvider).reportBreakdown(equipmentId, reason);
+      ref.invalidate(equipmentProvider);
+      ref.invalidate(breakdownsProvider(equipmentId));
+    } catch (error, stackTrace) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+      }
+    }
+  }
+
   Future<void> _setStatus(BuildContext context, WidgetRef ref, EquipmentStatus status) async {
     try {
       await ref.read(equipmentRepositoryProvider).update(equipmentId, {'status': status.apiValue});
@@ -206,6 +224,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
     final date = MaterialLocalizations.of(context).formatMediumDate;
     final due = maintenanceDueLabel(l10n, equipment);
     final history = ref.watch(maintenancesProvider(equipmentId));
+    final breakdowns = ref.watch(breakdownsProvider(equipmentId)).value ?? const <Breakdown>[];
 
     return Scaffold(
       appBar: AppBar(
@@ -233,6 +252,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () {
           ref.invalidate(equipmentProvider);
+          ref.invalidate(breakdownsProvider(equipmentId));
           return ref.refresh(maintenancesProvider(equipmentId).future);
         },
         child: ListView(
@@ -245,7 +265,12 @@ class EquipmentDetailScreen extends ConsumerWidget {
                   ListTile(
                     leading: const Icon(Icons.info_outline),
                     title: Text(equipmentStatusLabel(l10n, equipment.status)),
-                    subtitle: Text(equipment.branchName),
+                    subtitle: Text(
+                      [
+                        equipment.branchName,
+                        if (equipment.breakdownReason != null) equipment.breakdownReason!,
+                      ].join('\n'),
+                    ),
                   ),
                   if (canManage)
                     Padding(
@@ -258,13 +283,7 @@ class EquipmentDetailScreen extends ConsumerWidget {
                             OutlinedButton.icon(
                               icon: const Icon(Icons.report_problem_outlined),
                               label: Text(l10n.reportBreakdown),
-                              onPressed: () => _confirmStatus(
-                                context,
-                                ref,
-                                EquipmentStatus.outOfService,
-                                title: l10n.reportBreakdown,
-                                explanation: l10n.reportBreakdownExplained,
-                              ),
+                              onPressed: () => _reportBreakdown(context, ref),
                             ),
                           if (equipment.status == EquipmentStatus.outOfService)
                             OutlinedButton.icon(
@@ -333,6 +352,18 @@ class EquipmentDetailScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            if (breakdowns.isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Text(l10n.breakdownHistory, style: Theme.of(context).textTheme.titleMedium),
+              ),
+              for (final breakdown in breakdowns)
+                ListTile(
+                  leading: const Icon(Icons.report_problem_outlined),
+                  title: Text(breakdown.reason),
+                  subtitle: Text('${date(breakdown.reportedAt.toLocal())} · ${breakdown.reportedBy}'),
+                ),
+            ],
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Text(l10n.maintenanceHistory, style: Theme.of(context).textTheme.titleMedium),
@@ -411,6 +442,55 @@ class EquipmentDetailScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Asks why the equipment broke, and returns the reason when confirmed.
+class _BreakdownDialog extends StatefulWidget {
+  const _BreakdownDialog();
+
+  @override
+  State<_BreakdownDialog> createState() => _BreakdownDialogState();
+}
+
+class _BreakdownDialogState extends State<_BreakdownDialog> {
+  final _reason = TextEditingController();
+
+  @override
+  void dispose() {
+    _reason.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final reason = _reason.text.trim();
+
+    return AlertDialog(
+      title: Text(l10n.reportBreakdown),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(l10n.reportBreakdownExplained),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _reason,
+            autofocus: true,
+            maxLength: 255,
+            decoration: InputDecoration(labelText: l10n.breakdownReasonField),
+            onChanged: (_) => setState(() {}),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.back)),
+        FilledButton(
+          onPressed: reason.isEmpty ? null : () => Navigator.of(context).pop(reason),
+          child: Text(l10n.confirmAction),
+        ),
+      ],
     );
   }
 }

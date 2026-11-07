@@ -1937,7 +1937,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get autoClosedShiftWarning =>
-      'كاشير سابق أُقفل تلقائياً عند وقت الإغلاق. تأكد من مطابقة الدرج قبل فتح كاشير جديد.';
+      'آخر كاشير أُقفل تلقائياً عند وقت الإغلاق بدون عدّ. يُدخل المالك أو المدير المبلغ الفعلي.';
 
   @override
   String get noBookingActions => 'لا تتوفر إجراءات على هذا الحجز.';
@@ -1998,4 +1998,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String autoClockedOutCount(int count) {
     return 'انصراف تلقائي: $count';
   }
+
+  @override
+  String equipmentBrokenCount(int count) {
+    return 'أجهزة معطّلة: $count';
+  }
+
+  @override
+  String get breakdownReasonField => 'ما سبب العطل؟';
+
+  @override
+  String get breakdownHistory => 'سجل الأعطال';
+
+  @override
+  String get uncountedShiftsTitle => 'كاشير أُقفل تلقائياً ولم يُعدّ درجه بعد';
+
+  @override
+  String get enterCount => 'إدخال المعدود';
 }

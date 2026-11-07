@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * A machine or tool at a branch, e.g. "Pressure washer 2", with its periodic maintenance schedule.
@@ -85,6 +86,22 @@ class Equipment extends Model
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    /**
+     * @return HasMany<EquipmentBreakdown, $this>
+     */
+    public function breakdowns(): HasMany
+    {
+        return $this->hasMany(EquipmentBreakdown::class);
+    }
+
+    /**
+     * @return HasOne<EquipmentBreakdown, $this>
+     */
+    public function latestBreakdown(): HasOne
+    {
+        return $this->hasOne(EquipmentBreakdown::class)->latestOfMany('reported_at');
     }
 
     /**

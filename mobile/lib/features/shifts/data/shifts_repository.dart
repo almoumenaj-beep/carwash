@@ -55,6 +55,15 @@ class ShiftsRepository {
     return CashShift.fromJson(unwrapData(response));
   }
 
+  /// Enters the cash actually counted for a shift the system closed; [note] is required when it does not match.
+  Future<CashShift> count(String shiftId, int countedCash, {String? note}) async {
+    final response = await sendRequest(
+      () =>
+          _dio.post<Map<String, dynamic>>('/shifts/$shiftId/count', data: {'counted_cash': countedCash, 'note': ?note}),
+    );
+    return CashShift.fromJson(unwrapData(response));
+  }
+
   /// Closes the shift with the cash counted; [note] is required when the drawer does not match.
   Future<CashShift> close(String shiftId, int countedCash, {String? note}) async {
     final response = await sendRequest(

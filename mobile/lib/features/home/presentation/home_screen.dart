@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../core/auth/route_permissions.dart';
 import '../../auth/application/session_controller.dart';
+import '../../equipment/presentation/equipment_alert_card.dart';
 import '../../staff_affairs/data/staff_affairs_repository.dart';
 import '../../staff_affairs/presentation/attendance_card.dart';
 import 'home_sections.dart';
@@ -76,6 +78,7 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             const AttendanceCard(),
+            if (me.can(Permissions.equipmentView) && !mustClockIn) const EquipmentAlertCard(),
             if (mustClockIn)
               Padding(
                 padding: const EdgeInsets.all(32),

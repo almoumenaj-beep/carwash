@@ -16,6 +16,10 @@ final maintenancesProvider = FutureProvider.autoDispose.family<List<Maintenance>
   (ref, equipmentId) => ref.watch(equipmentRepositoryProvider).maintenances(equipmentId),
 );
 
+final breakdownsProvider = FutureProvider.autoDispose.family<List<Breakdown>, String>(
+  (ref, equipmentId) => ref.watch(equipmentRepositoryProvider).breakdowns(equipmentId),
+);
+
 class EquipmentRepository {
   EquipmentRepository(this._dio);
 
@@ -32,6 +36,18 @@ class EquipmentRepository {
 
   Future<void> update(String id, Map<String, dynamic> data) async {
     await sendRequest(() => _dio.patch<Map<String, dynamic>>('/equipment/$id', data: data));
+  }
+
+  Future<List<Breakdown>> breakdowns(String equipmentId) async {
+    final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/equipment/$equipmentId/breakdowns'));
+    return [for (final item in unwrapData<List>(response)) Breakdown.fromJson(item as Map<String, dynamic>)];
+  }
+
+  /// Reports equipment in service as broken, with the reason.
+  Future<void> reportBreakdown(String equipmentId, String reason) async {
+    await sendRequest(
+      () => _dio.post<Map<String, dynamic>>('/equipment/$equipmentId/breakdowns', data: {'reason': reason}),
+    );
   }
 
   Future<List<Maintenance>> maintenances(String equipmentId) async {

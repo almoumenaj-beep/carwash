@@ -23,6 +23,21 @@ enum MaintenanceKind {
   static MaintenanceKind fromApi(String value) => values.firstWhere((kind) => kind.apiValue == value);
 }
 
+/// A report that a piece of equipment broke, and why.
+class Breakdown {
+  const Breakdown({required this.reason, required this.reportedAt, required this.reportedBy});
+
+  factory Breakdown.fromJson(Map<String, dynamic> json) => Breakdown(
+    reason: json['reason'] as String,
+    reportedAt: DateTime.parse(json['reported_at'] as String),
+    reportedBy: (json['reported_by'] as Map<String, dynamic>)['name'] as String,
+  );
+
+  final String reason;
+  final DateTime reportedAt;
+  final String reportedBy;
+}
+
 /// A machine or tool at a branch with its periodic maintenance schedule.
 class Equipment {
   const Equipment({
@@ -40,6 +55,7 @@ class Equipment {
     required this.daysUntilMaintenance,
     required this.isDue,
     required this.notes,
+    this.breakdownReason,
   });
 
   factory Equipment.fromJson(Map<String, dynamic> json) {
@@ -61,6 +77,7 @@ class Equipment {
       daysUntilMaintenance: json['days_until_maintenance'] as int?,
       isDue: json['is_due'] as bool,
       notes: json['notes'] as String?,
+      breakdownReason: json['breakdown_reason'] as String?,
     );
   }
 
@@ -84,6 +101,9 @@ class Equipment {
   final int? daysUntilMaintenance;
   final bool isDue;
   final String? notes;
+
+  /// Why it broke, while it is out of service.
+  final String? breakdownReason;
 }
 
 /// Maintenance done on a piece of equipment.

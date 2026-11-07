@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Domain\Equipment\Actions\CancelMaintenance;
 use App\Domain\Equipment\Actions\RecordMaintenance;
+use App\Domain\Equipment\Actions\ReportBreakdown;
 use App\Domain\Equipment\Enums\EquipmentStatus;
 use App\Domain\Equipment\Models\Equipment;
+use App\Domain\Equipment\Models\EquipmentBreakdown;
 use App\Domain\Equipment\Models\EquipmentMaintenance;
 use App\Domain\Identity\Enums\Permission;
 use App\Domain\Platform\Audit\AuditTrail;
 use App\Domain\Platform\Models\Branch;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveEquipmentRequest;
+use App\Http\Requests\StoreBreakdownRequest;
 use App\Http\Requests\StoreMaintenanceRequest;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
@@ -45,7 +48,7 @@ class EquipmentController extends Controller
         }
 
         $today = $this->today($request);
-        $equipment = Equipment::query()->whereIn('branch_id', $branchIds)->with('branch')->orderBy('name')->get()
+        $equipment = Equipment::query()->whereIn('branch_id', $branchIds)->with(['branch', 'latestBreakdown'])->orderBy('name')->get()
             ->sortBy(fn (Equipment $item) => [
                 $item->status === EquipmentStatus::Retired ? 1 : 0,
                 $item->daysUntilMaintenance($today) ?? PHP_INT_MAX,
@@ -91,6 +94,32 @@ class EquipmentController extends Controller
         $maintenances = $equipment->maintenances()->with(['supplier', 'expense', 'creator', 'canceller'])->latest('performed_on')->latest()->get();
 
         return response()->json(['data' => $maintenances->map($this->presentMaintenance(...))]);
+    }
+
+    /**
+     * The times the equipment was reported broken, latest first.
+     */
+    public function breakdowns(Request $request, Equipment $equipment): JsonResponse
+    {
+        Gate::authorize(Permission::EquipmentView->value);
+        Gate::authorize('view', $equipment->branch);
+
+        $breakdowns = $equipment->breakdowns()->with('reporter')->latest('reported_at')->get();
+
+        return response()->json(['data' => $breakdowns->map($this->presentBreakdown(...))]);
+    }
+
+    /**
+     * Report equipment in service as broken, with the reason.
+     */
+    public function reportBreakdown(StoreBreakdownRequest $request, Equipment $equipment, ReportBreakdown $reportBreakdown): JsonResponse
+    {
+        $breakdown = $reportBreakdown->handle($request->user(), $equipment, $request->validated('reason'));
+
+        return response()->json([
+            'data' => $this->presentBreakdown($breakdown->load('reporter')),
+            'equipment' => $this->present($equipment->fresh()->load('branch'), $this->today($request)),
+        ], Response::HTTP_CREATED);
     }
 
     public function maintain(StoreMaintenanceRequest $request, Equipment $equipment, RecordMaintenance $recordMaintenance): JsonResponse
@@ -151,6 +180,20 @@ class EquipmentController extends Controller
             'days_until_maintenance' => $days,
             'is_due' => $days !== null && $days <= 0,
             'notes' => $equipment->notes,
+            'breakdown_reason' => $equipment->status === EquipmentStatus::OutOfService ? $equipment->latestBreakdown?->reason : null,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function presentBreakdown(EquipmentBreakdown $breakdown): array
+    {
+        return [
+            'id' => $breakdown->id,
+            'reason' => $breakdown->reason,
+            'reported_at' => $breakdown->reported_at->toIso8601String(),
+            'reported_by' => ['id' => $breakdown->reporter->id, 'name' => $breakdown->reporter->name],
         ];
     }
 

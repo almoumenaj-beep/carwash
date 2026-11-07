@@ -3479,7 +3479,7 @@ abstract class AppLocalizations {
   /// No description provided for @autoClosedShiftWarning.
   ///
   /// In en, this message translates to:
-  /// **'A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.'**
+  /// **'Your last cashier closed automatically at closing time without a count. The owner or a manager enters the real count.'**
   String get autoClosedShiftWarning;
 
   /// No description provided for @noBookingActions.
@@ -3589,6 +3589,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Automatic clock-outs: {count}'**
   String autoClockedOutCount(int count);
+
+  /// No description provided for @equipmentBrokenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Broken equipment: {count}'**
+  String equipmentBrokenCount(int count);
+
+  /// No description provided for @breakdownReasonField.
+  ///
+  /// In en, this message translates to:
+  /// **'What is wrong?'**
+  String get breakdownReasonField;
+
+  /// No description provided for @breakdownHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdowns'**
+  String get breakdownHistory;
+
+  /// No description provided for @uncountedShiftsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cashiers closed automatically, not counted yet'**
+  String get uncountedShiftsTitle;
+
+  /// No description provided for @enterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the count'**
+  String get enterCount;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

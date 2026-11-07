@@ -47,7 +47,8 @@ class SaveEquipmentRequest extends FormRequest
             'serial_number' => ['sometimes', 'nullable', 'string', 'max:100'],
             'purchased_on' => ['sometimes', 'nullable', 'date_format:Y-m-d', 'before_or_equal:today'],
             'purchase_cost' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:100000000'],
-            'status' => ['sometimes', Rule::enum(EquipmentStatus::class)],
+            // Reporting a breakdown has its own route, which records the reason.
+            'status' => ['sometimes', Rule::enum(EquipmentStatus::class)->except(EquipmentStatus::OutOfService)],
             'maintenance_interval_days' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:3650'],
             'notes' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];

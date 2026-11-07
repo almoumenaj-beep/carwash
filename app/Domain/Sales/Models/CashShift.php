@@ -64,6 +64,14 @@ class CashShift extends Model
     }
 
     /**
+     * Whether the system closed this shift and nobody has counted its drawer yet.
+     */
+    public function awaitsCount(): bool
+    {
+        return $this->auto_closed && $this->counted_cash === null;
+    }
+
+    /**
      * Cash taken during the shift, after change was given.
      */
     public function cashTaken(): int

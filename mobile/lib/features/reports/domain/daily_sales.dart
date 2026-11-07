@@ -1,3 +1,28 @@
+/// A cashier shift the system closed by itself, whose drawer nobody has counted yet.
+class UncountedShift {
+  const UncountedShift({
+    required this.id,
+    required this.branchName,
+    required this.openedBy,
+    required this.closedAt,
+    required this.expectedCash,
+  });
+
+  factory UncountedShift.fromJson(Map<String, dynamic> json) => UncountedShift(
+    id: json['id'] as String,
+    branchName: json['branch_name'] as String,
+    openedBy: json['opened_by'] as String,
+    closedAt: DateTime.parse(json['closed_at'] as String),
+    expectedCash: json['expected_cash'] as int,
+  );
+
+  final String id;
+  final String branchName;
+  final String openedBy;
+  final DateTime closedAt;
+  final int expectedCash;
+}
+
 /// A day's sales at one branch or all of them, from `/reports/daily-sales`. Amounts are in minor units.
 class DailySales {
   const DailySales({
@@ -21,6 +46,7 @@ class DailySales {
     required this.byCashier,
     required this.byWasher,
     required this.byHour,
+    this.uncountedShifts = const [],
   });
 
   factory DailySales.fromJson(Map<String, dynamic> json) {
@@ -41,6 +67,10 @@ class DailySales {
       averageTicket: totals['average_ticket'] as int,
       expenses: totals['expenses'] as int? ?? 0,
       net: totals['net'] as int? ?? 0,
+      uncountedShifts: [
+        for (final shift in json['uncounted_shifts'] as List? ?? const [])
+          UncountedShift.fromJson(shift as Map<String, dynamic>),
+      ],
       carsCheckedIn: cars['checked_in'] as int,
       carsDelivered: cars['delivered'] as int,
       carsCancelled: cars['cancelled'] as int,
@@ -89,6 +119,9 @@ class DailySales {
 
   /// Hours of the day (local time) that had sales.
   final List<({int hour, int invoices, int total})> byHour;
+
+  /// Shifts closed automatically and still waiting for a count, whichever day they closed.
+  final List<UncountedShift> uncountedShifts;
 
   bool get isEmpty => invoicesCount == 0 && carsCheckedIn == 0;
 }

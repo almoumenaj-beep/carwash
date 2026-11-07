@@ -1889,7 +1889,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoClosedShiftWarning =>
-      'A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.';
+      'Your last cashier closed automatically at closing time without a count. The owner or a manager enters the real count.';
 
   @override
   String get noBookingActions => 'No actions are available on this booking.';
@@ -1950,4 +1950,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String autoClockedOutCount(int count) {
     return 'Automatic clock-outs: $count';
   }
+
+  @override
+  String equipmentBrokenCount(int count) {
+    return 'Broken equipment: $count';
+  }
+
+  @override
+  String get breakdownReasonField => 'What is wrong?';
+
+  @override
+  String get breakdownHistory => 'Breakdowns';
+
+  @override
+  String get uncountedShiftsTitle => 'Cashiers closed automatically, not counted yet';
+
+  @override
+  String get enterCount => 'Enter the count';
 }

@@ -7,6 +7,7 @@ import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/reports_repository.dart';
 import '../domain/daily_sales.dart';
+import 'uncounted_shifts_card.dart';
 
 /// A day's sales for the owner and managers: totals, cars, and the day broken down by service, cashier, washer
 /// and hour. One branch or all of them; any day, today by default.
@@ -79,7 +80,13 @@ class _DailySalesScreenState extends ConsumerState<DailySalesScreen> {
             BranchChips(selected: _branchId, onChanged: (id) => setState(() => _branchId = id)),
             const SizedBox(height: 8),
             switch (report) {
-              AsyncData(:final value) => _Report(report: value),
+              AsyncData(:final value) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (value.uncountedShifts.isNotEmpty) UncountedShiftsCard(shifts: value.uncountedShifts),
+                  _Report(report: value),
+                ],
+              ),
               AsyncError(:final error) => ErrorView(
                 error: error,
                 onRetry: () => ref.invalidate(dailySalesProvider(query)),

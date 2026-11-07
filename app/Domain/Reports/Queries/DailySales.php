@@ -6,6 +6,7 @@ use App\Domain\Expenses\Models\Expense;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Sales\Enums\PaymentMethod;
+use App\Domain\Sales\Models\CashShift;
 use App\Domain\Sales\Models\Invoice;
 use App\Domain\Sales\Models\InvoiceLine;
 use App\Domain\Sales\Models\Payment;
@@ -16,7 +17,9 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * One day's sales at one or more branches: the day runs midnight to midnight in the car wash's time
  * zone. Sales come from the invoices issued that day, cars from the orders checked in that day, and
- * expenses from those dated that day (paid or owed); `net` is sales less expenses.
+ * expenses from those dated that day (paid or owed); `net` is sales less expenses. `uncounted_shifts` are
+ * the shifts closed automatically by the end of that day whose drawer nobody has counted yet, whichever day
+ * they closed, so they stay in sight until counted.
  * Amounts are in minor units (BHD: fils).
  */
 class DailySales
@@ -87,6 +90,23 @@ class DailySales
                 fn ($row) => ['cars' => (int) $row->cars],
             ),
             'by_hour' => $this->byHour($invoices()->get(['issued_at', 'total']), $day),
+            'uncounted_shifts' => CashShift::query()
+                ->whereIn('branch_id', $branchIds)
+                ->where('auto_closed', true)
+                ->whereNull('counted_cash')
+                ->where('closed_at', '<', $to)
+                ->with(['branch', 'opener'])
+                ->orderBy('closed_at')
+                ->get()
+                ->map(fn (CashShift $shift) => [
+                    'id' => $shift->id,
+                    'branch_name' => $shift->branch->name,
+                    'opened_by' => $shift->opener->name,
+                    'opened_at' => $shift->opened_at->toIso8601String(),
+                    'closed_at' => $shift->closed_at->toIso8601String(),
+                    'expected_cash' => $shift->expected_cash,
+                ])
+                ->all(),
         ];
     }
 

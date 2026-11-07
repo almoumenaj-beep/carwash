@@ -564,7 +564,7 @@
   "openShiftBlocksSignOutTitle": "أقفل الكاشير أولاً",
   "openShiftBlocksSignOut": "أقفل الكاشير في: {branches}، قبل تسجيل الخروج، بعد عدّ الدرج.",
   "goToShift": "الذهاب إلى الكاشير",
-  "autoClosedShiftWarning": "كاشير سابق أُقفل تلقائياً عند وقت الإغلاق. تأكد من مطابقة الدرج قبل فتح كاشير جديد.",
+  "autoClosedShiftWarning": "آخر كاشير أُقفل تلقائياً عند وقت الإغلاق بدون عدّ. يُدخل المالك أو المدير المبلغ الفعلي.",
   "noBookingActions": "لا تتوفر إجراءات على هذا الحجز.",
   "editProfile": "تعديل البيانات الشخصية",
   "profileSaved": "تم تعديل البيانات",
@@ -582,5 +582,10 @@
   "noAttendanceInPeriod": "لا يوجد حضور في هذه الفترة",
   "totalHoursLabel": "مجموع الساعات",
   "attendanceDays": "أيام الحضور: {count}",
-  "autoClockedOutCount": "انصراف تلقائي: {count}"
+  "autoClockedOutCount": "انصراف تلقائي: {count}",
+  "equipmentBrokenCount": "أجهزة معطّلة: {count}",
+  "breakdownReasonField": "ما سبب العطل؟",
+  "breakdownHistory": "سجل الأعطال",
+  "uncountedShiftsTitle": "كاشير أُقفل تلقائياً ولم يُعدّ درجه بعد",
+  "enterCount": "إدخال المعدود"
 }

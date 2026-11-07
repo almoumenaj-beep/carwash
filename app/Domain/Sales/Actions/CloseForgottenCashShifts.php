@@ -9,10 +9,11 @@ use App\Domain\Sales\Models\CashShift;
 use Carbon\CarbonImmutable;
 
 /**
- * Closes the cash shifts a cashier forgot to, once their branch has closed: the drawer is "closed" with
- * the expected cash as the count, since nobody counted it, and marked automatic so it still needs a real
- * count. A shift closes at the closing time of the opening hours it was opened during (or, when it was
- * opened outside opening hours, at that day's closing time still to come, else at the end of that day).
+ * Closes the cash shifts a cashier forgot to, once their branch has closed. Nobody counted the drawer, so
+ * no count or variance is recorded: the shift waits for the owner or a manager to enter the real count. A
+ * shift closes at the closing time of the opening hours it was opened during (or, when it was opened outside
+ * opening hours, at that day's closing time still to come, else at the end of that day), and never before
+ * its last payment, in case this did not run for a while.
  */
 class CloseForgottenCashShifts
 {
@@ -34,12 +35,12 @@ class CloseForgottenCashShifts
                 }
 
                 $expected = $shift->expectedCash();
+                $lastPayment = $shift->payments()->max('received_at');
+                $closedAt = $lastPayment === null ? $closesAt->utc() : $closesAt->utc()->max(CarbonImmutable::parse($lastPayment, 'UTC'));
+
                 $shift->forceFill([
-                    'closed_at' => $closesAt->utc(),
+                    'closed_at' => $closedAt,
                     'expected_cash' => $expected,
-                    'counted_cash' => $expected,
-                    'variance' => 0,
-                    'close_note' => __('Closed automatically at closing time; the drawer still needs to be counted.'),
                     'auto_closed' => true,
                 ])->save();
 

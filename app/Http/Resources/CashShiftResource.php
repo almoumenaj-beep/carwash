@@ -10,8 +10,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * A shift with its till summary. Amounts are in minor units; `expected_cash` is live while the shift
- * is open, and `variance` (counted - expected, negative when short) is set once it is closed. `auto_closed`
- * means nobody counted the drawer: the system closed it at closing time because the cashier forgot to.
+ * is open, and `variance` (counted - expected, negative when short) is set once it is counted. `auto_closed`
+ * means the system closed it at closing time because the cashier forgot to; `counted_cash` stays null until
+ * someone enters the real count.
  *
  * @mixin CashShift
  */

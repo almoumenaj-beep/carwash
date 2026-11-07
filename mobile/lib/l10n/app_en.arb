@@ -1030,7 +1030,7 @@
     }
   },
   "goToShift": "Go to the cashier",
-  "autoClosedShiftWarning": "A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.",
+  "autoClosedShiftWarning": "Your last cashier closed automatically at closing time without a count. The owner or a manager enters the real count.",
   "noBookingActions": "No actions are available on this booking.",
   "editProfile": "Edit my profile",
   "profileSaved": "Profile updated",
@@ -1057,6 +1057,18 @@
     }
   },
   "@autoClockedOutCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "equipmentBrokenCount": "Broken equipment: {count}",
+  "breakdownReasonField": "What is wrong?",
+  "breakdownHistory": "Breakdowns",
+  "uncountedShiftsTitle": "Cashiers closed automatically, not counted yet",
+  "enterCount": "Enter the count",
+  "@equipmentBrokenCount": {
     "placeholders": {
       "count": {
         "type": "int"

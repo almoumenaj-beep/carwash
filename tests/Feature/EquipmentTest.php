@@ -118,12 +118,49 @@ class EquipmentTest extends TestCase
         $this->assertSame(1, $this->inTenant(fn () => Expense::query()->count()), 'free maintenance records no expense');
     }
 
+    public function test_a_breakdown_needs_a_reason_and_stays_in_the_equipments_history(): void
+    {
+        $equipmentId = $this->addEquipment()->json('data.id');
+
+        $this->postJson("/api/v1/equipment/{$equipmentId}/breakdowns", ['reason' => ''])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('reason');
+        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'out_of_service'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('status');
+
+        $this->postJson("/api/v1/equipment/{$equipmentId}/breakdowns", ['reason' => 'Pump leaking'])
+            ->assertCreated()
+            ->assertJsonPath('data.reported_by.id', $this->manager->id)
+            ->assertJsonPath('equipment.breakdown_reason', 'Pump leaking');
+        $this->postJson("/api/v1/equipment/{$equipmentId}/breakdowns", ['reason' => 'Again'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('equipment');
+
+        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'in_service'])
+            ->assertOk()
+            ->assertJsonPath('data.breakdown_reason', null);
+        $this->getJson("/api/v1/equipment/{$equipmentId}/breakdowns")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.reason', 'Pump leaking');
+    }
+
+    public function test_retired_equipment_can_return_to_service(): void
+    {
+        $equipmentId = $this->addEquipment(['name' => 'Old compressor', 'status' => 'retired'])->json('data.id');
+
+        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'in_service'])
+            ->assertOk()
+            ->assertJsonPath('data.status', 'in_service');
+    }
+
     public function test_a_repair_puts_broken_equipment_back_in_service_without_moving_the_schedule(): void
     {
         $equipmentId = $this->addEquipment()->json('data.id');
-        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'out_of_service'])
-            ->assertOk()
-            ->assertJsonPath('data.status', 'out_of_service');
+        $this->postJson("/api/v1/equipment/{$equipmentId}/breakdowns", ['reason' => 'Motor burnt out'])
+            ->assertCreated()
+            ->assertJsonPath('equipment.status', 'out_of_service');
 
         $this->maintain($equipmentId, [
             'kind' => 'repair',
@@ -181,7 +218,7 @@ class EquipmentTest extends TestCase
     public function test_cancelling_a_repair_leaves_the_equipment_broken_again_only_if_it_had_been(): void
     {
         $equipmentId = $this->addEquipment()->json('data.id');
-        $this->patchJson("/api/v1/equipment/{$equipmentId}", ['status' => 'out_of_service'])->assertOk();
+        $this->postJson("/api/v1/equipment/{$equipmentId}/breakdowns", ['reason' => 'Motor burnt out'])->assertCreated();
         $repairId = $this->maintain($equipmentId, ['kind' => 'repair'])->assertJsonPath('equipment.status', 'in_service')->json('data.id');
 
         $this->postJson("/api/v1/equipment/{$equipmentId}/maintenances/{$repairId}/cancel")

@@ -140,7 +140,8 @@ class _OpenShiftFormState extends ConsumerState<_OpenShiftForm> {
     final money = ref.watch(moneyFormatProvider);
     final invalid = _float.text.trim().isNotEmpty && money.parse(_float.text) == null;
     final recent = ref.watch(recentShiftsProvider(widget.branchId)).value;
-    final needsReview = recent?.firstOrNull?.autoClosed ?? false;
+    final latest = recent?.firstOrNull;
+    final needsReview = latest != null && latest.autoClosed && latest.countedCash == null;
 
     return ListView(
       padding: const EdgeInsets.all(24),

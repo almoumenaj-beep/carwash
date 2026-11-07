@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Identity\Enums\Permission;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Sales\Actions\CloseCashShift;
+use App\Domain\Sales\Actions\CountClosedShift;
 use App\Domain\Sales\Actions\OpenCashShift;
 use App\Domain\Sales\Models\CashShift;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CloseCashShiftRequest;
+use App\Http\Requests\CountClosedShiftRequest;
 use App\Http\Requests\OpenCashShiftRequest;
 use App\Http\Resources\CashShiftResource;
 use Illuminate\Http\JsonResponse;
@@ -93,6 +95,16 @@ class CashShiftController extends Controller
     public function close(CloseCashShiftRequest $request, CashShift $shift, CloseCashShift $closeCashShift): CashShiftResource
     {
         $shift = $closeCashShift->handle($request->user(), $shift, $request->integer('counted_cash'), $request->validated('note'));
+
+        return CashShiftResource::make($shift->load(['branch', 'opener', 'closer']));
+    }
+
+    /**
+     * Enter the cash actually counted for a shift the system closed by itself.
+     */
+    public function count(CountClosedShiftRequest $request, CashShift $shift, CountClosedShift $countClosedShift): CashShiftResource
+    {
+        $shift = $countClosedShift->handle($request->user(), $shift, $request->integer('counted_cash'), $request->validated('note'));
 
         return CashShiftResource::make($shift->load(['branch', 'opener', 'closer']));
     }

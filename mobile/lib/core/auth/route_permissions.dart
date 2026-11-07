@@ -18,6 +18,7 @@ abstract final class Permissions {
   static const appointmentsManage = 'appointments.manage';
   static const posCheckout = 'pos.checkout';
   static const posDiscount = 'pos.discount';
+  static const posCloseShift = 'pos.close_shift';
   static const reportsSales = 'reports.sales';
   static const reportsProfit = 'reports.profit';
   static const expensesView = 'expenses.view';

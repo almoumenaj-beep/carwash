@@ -110,6 +110,8 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('equipment', [EquipmentController::class, 'index'])->name('equipment.index');
         Route::post('equipment', [EquipmentController::class, 'store'])->name('equipment.store');
         Route::patch('equipment/{equipment}', [EquipmentController::class, 'update'])->name('equipment.update');
+        Route::get('equipment/{equipment}/breakdowns', [EquipmentController::class, 'breakdowns'])->name('equipment.breakdowns.index');
+        Route::post('equipment/{equipment}/breakdowns', [EquipmentController::class, 'reportBreakdown'])->name('equipment.breakdowns.store');
         Route::get('equipment/{equipment}/maintenances', [EquipmentController::class, 'maintenances'])->name('equipment.maintenances.index');
         Route::post('equipment/{equipment}/maintenances', [EquipmentController::class, 'maintain'])->name('equipment.maintenances.store');
         Route::post('equipment/{equipment}/maintenances/{maintenance}/cancel', [EquipmentController::class, 'cancelMaintenance'])->name('equipment.maintenances.cancel');
@@ -133,6 +135,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('shifts/current', [CashShiftController::class, 'current'])->name('shifts.current');
         Route::post('shifts', [CashShiftController::class, 'store'])->name('shifts.store');
         Route::post('shifts/{shift}/close', [CashShiftController::class, 'close'])->name('shifts.close');
+        Route::post('shifts/{shift}/count', [CashShiftController::class, 'count'])->name('shifts.count');
 
         Route::apiResource('customers', CustomerController::class);
         Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);
