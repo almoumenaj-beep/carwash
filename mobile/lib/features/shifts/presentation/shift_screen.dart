@@ -264,6 +264,7 @@ class _OpenShiftState extends ConsumerState<_OpenShift> {
                   _SummaryRow(label: l10n.shiftBenefitTaken, value: money.format(shift.benefitTaken)),
                 if (shift.cashPaidOut > 0)
                   _SummaryRow(label: l10n.cashPaidOut, value: '- ${money.format(shift.cashPaidOut)}'),
+                if (shift.refunds > 0) _SummaryRow(label: l10n.refundsLabel, value: '- ${money.format(shift.refunds)}'),
                 if (shift.discountsTotal > 0)
                   _SummaryRow(label: l10n.shiftDiscounts, value: money.format(shift.discountsTotal)),
                 const Divider(height: 1),
@@ -369,6 +370,7 @@ class _ClosedDialog extends ConsumerWidget {
             _SummaryRow(label: l10n.shiftBenefitTaken, value: money.format(shift.benefitTaken)),
           if (shift.cashPaidOut > 0)
             _SummaryRow(label: l10n.cashPaidOut, value: '- ${money.format(shift.cashPaidOut)}'),
+          if (shift.refunds > 0) _SummaryRow(label: l10n.refundsLabel, value: '- ${money.format(shift.refunds)}'),
           _SummaryRow(label: l10n.expectedCash, value: money.format(shift.expectedCash)),
           _SummaryRow(label: l10n.countedCashField, value: money.format(shift.countedCash ?? 0)),
           _SummaryRow(

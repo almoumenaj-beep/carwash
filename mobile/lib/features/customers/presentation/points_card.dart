@@ -61,6 +61,7 @@ class _PointsHistory extends ConsumerWidget {
                 title: Text(switch (movement.type) {
                   'earned' => l10n.pointsMovementEarned,
                   'redeemed' => l10n.pointsMovementRedeemed,
+                  'refund' => l10n.pointsMovementRefund,
                   _ => l10n.pointsMovementExpired,
                 }),
                 subtitle: Text(

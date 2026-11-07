@@ -36,6 +36,7 @@ class DailySales {
     this.cardCollected = 0,
     this.benefitCollected = 0,
     this.membershipsSold = 0,
+    this.refunds = 0,
     required this.averageTicket,
     this.expenses = 0,
     this.net = 0,
@@ -66,6 +67,7 @@ class DailySales {
       cardCollected: totals['card_collected'] as int? ?? 0,
       benefitCollected: totals['benefit_collected'] as int? ?? 0,
       membershipsSold: totals['memberships_sold'] as int? ?? 0,
+      refunds: totals['refunds'] as int? ?? 0,
       averageTicket: totals['average_ticket'] as int,
       expenses: totals['expenses'] as int? ?? 0,
       net: totals['net'] as int? ?? 0,
@@ -107,6 +109,9 @@ class DailySales {
   final int cardCollected;
   final int benefitCollected;
   final int membershipsSold;
+
+  /// Money given back that day, whichever day the sale was.
+  final int refunds;
   final int averageTicket;
 
   /// Expenses dated that day (paid or owed), and sales less them.

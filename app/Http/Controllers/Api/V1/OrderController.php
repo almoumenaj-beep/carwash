@@ -29,7 +29,7 @@ class OrderController extends Controller
      *
      * @var list<string>
      */
-    public const RELATIONS = ['branch', 'customer', 'bay', 'staff', 'items', 'creator', 'invoice.branch', 'invoice.payments'];
+    public const RELATIONS = ['branch', 'customer', 'bay', 'staff', 'items', 'creator', 'invoice.branch', 'invoice.payments', 'refundedInvoices.branch', 'refundedInvoices.refund'];
 
     /**
      * A branch's queue: `scope=active` (default) is every car still in the wash, oldest first;

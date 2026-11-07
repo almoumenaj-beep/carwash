@@ -7,5 +7,6 @@ String moneyMethodLabel(AppLocalizations l10n, String method) => switch (method)
   'card' => l10n.payCard,
   'bank_transfer' => l10n.payBankTransfer,
   'benefit' => l10n.payBenefit,
+  'refund' => l10n.refundsLabel,
   _ => method,
 };

@@ -2188,4 +2188,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get membershipAfterSaving => 'Save the customer first; their page then lets you sell a membership.';
+
+  @override
+  String get refundTitle => 'Refund';
+
+  @override
+  String get refundsLabel => 'Refunds';
+
+  @override
+  String get refundReasonField => 'Reason for the refund';
+
+  @override
+  String refundAmountBy(String amount, String method) {
+    return '$amount by $method';
+  }
+
+  @override
+  String get refundNothingToPay => 'This invoice had nothing to pay.';
+
+  @override
+  String get refundCashHint =>
+      'Take the cash from your drawer and hand it to the customer. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.';
+
+  @override
+  String get refundHint =>
+      'Return the money yourself the same way it was paid; the app only records it. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.';
+
+  @override
+  String get pointsMovementRefund => 'Points put right after a refund';
 }

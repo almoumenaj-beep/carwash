@@ -138,6 +138,7 @@ class _Report extends ConsumerWidget {
               (l10n.shiftBenefitTaken, money.format(report.benefitCollected), Icons.phone_iphone),
             (l10n.shiftDiscounts, money.format(report.discounts), Icons.local_offer_outlined),
             (l10n.vatTotal, money.format(report.vat), Icons.account_balance_outlined),
+            if (report.refunds > 0) (l10n.refundsLabel, money.format(report.refunds), Icons.undo),
             (l10n.expensesTotal, money.format(report.expenses), Icons.account_balance_wallet_outlined),
             (l10n.netTotal, money.format(report.net), Icons.savings_outlined),
           ],

@@ -212,6 +212,16 @@ class Order extends Model
      */
     public function invoice(): HasOne
     {
-        return $this->hasOne(Invoice::class);
+        return $this->hasOne(Invoice::class)->whereNull('refunded_at');
+    }
+
+    /**
+     * Invoices of this order that were given back, newest first.
+     *
+     * @return HasMany<Invoice, $this>
+     */
+    public function refundedInvoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class)->whereNotNull('refunded_at')->latest('refunded_at');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Domain\Memberships\Models;
 
 use App\Domain\Crm\Models\Vehicle;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
+use App\Domain\Sales\Models\Invoice;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,6 +56,16 @@ class CustomerMembership extends Model
     public function isUsable(): bool
     {
         return $this->cancelled_at === null && $this->expires_at->isFuture() && $this->washesLeft() !== 0;
+    }
+
+    /**
+     * The invoice it was sold on.
+     *
+     * @return BelongsTo<Invoice, $this>
+     */
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 
     /**

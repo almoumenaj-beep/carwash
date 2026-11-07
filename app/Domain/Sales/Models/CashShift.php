@@ -99,11 +99,23 @@ class CashShift extends Model
     }
 
     /**
-     * What should be in the drawer now: the float plus the cash taken, less the expenses paid from it.
+     * Money given back to customers during the shift, by every method or only one.
+     */
+    public function refunded(?PaymentMethod $method = null): int
+    {
+        return (int) Refund::query()
+            ->where('cash_shift_id', $this->id)
+            ->when($method !== null, fn ($query) => $query->where('method', $method->value))
+            ->sum('amount');
+    }
+
+    /**
+     * What should be in the drawer now: the float plus the cash taken, less the expenses paid from it and the cash
+     * given back.
      */
     public function expectedCash(): int
     {
-        return $this->opening_float + $this->cashTaken() - $this->cashPaidOut();
+        return $this->opening_float + $this->cashTaken() - $this->cashPaidOut() - $this->refunded(PaymentMethod::Cash);
     }
 
     /**

@@ -15,6 +15,7 @@ abstract final class Permissions {
   static const ordersUpdate = 'orders.update';
   static const ordersUpdateStatus = 'orders.update_status';
   static const ordersCancel = 'orders.cancel';
+  static const ordersRefund = 'orders.refund';
   static const appointmentsManage = 'appointments.manage';
   static const posCheckout = 'pos.checkout';
   static const posDiscount = 'pos.discount';

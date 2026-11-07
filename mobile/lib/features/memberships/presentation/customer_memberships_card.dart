@@ -8,6 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../customers/domain/customer.dart';
 import '../../expenses/presentation/expense_widgets.dart';
+import '../../orders/presentation/refund_dialog.dart';
 import '../data/memberships_repository.dart';
 import '../domain/membership.dart';
 
@@ -51,6 +52,7 @@ class CustomerMembershipsCard extends ConsumerWidget {
     final me = ref.watch(sessionProvider).value;
     final canSell = me?.can(Permissions.posCheckout) ?? false;
     final canStop = (me?.can(Permissions.posCloseShift) ?? false) && (me?.can(Permissions.reportsSales) ?? false);
+    final canRefund = me?.can(Permissions.ordersRefund) ?? false;
     final memberships = ref.watch(customerMembershipsProvider(customer.id)).value ?? const <CustomerMembership>[];
     final date = MaterialLocalizations.of(context).formatMediumDate;
 
@@ -91,6 +93,25 @@ class CustomerMembershipsCard extends ConsumerWidget {
                       ?membership.plateNumber,
                     ].join(' · '),
                   ),
+                  if (canRefund && membership.canRefund)
+                    TextButton.icon(
+                      style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error, padding: EdgeInsets.zero),
+                      icon: const Icon(Icons.undo, size: 18),
+                      label: Text(l10n.refundTitle),
+                      onPressed: () async {
+                        final refunded = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => RefundDialog(
+                            invoiceId: membership.invoiceId,
+                            amount: membership.invoiceTotal,
+                            method: membership.invoiceMethod,
+                          ),
+                        );
+                        if (refunded ?? false) {
+                          ref.invalidate(customerMembershipsProvider(customer.id));
+                        }
+                      },
+                    ),
                   if (canStop && membership.isUsable)
                     TextButton.icon(
                       style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error, padding: EdgeInsets.zero),

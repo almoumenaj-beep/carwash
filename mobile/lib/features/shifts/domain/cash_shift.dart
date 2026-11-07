@@ -16,6 +16,7 @@ class CashShift {
     this.cardTaken = 0,
     this.benefitTaken = 0,
     this.cashPaidOut = 0,
+    this.refunds = 0,
     required this.expectedCash,
     required this.countedCash,
     required this.variance,
@@ -38,6 +39,7 @@ class CashShift {
     cardTaken: json['card_taken'] as int? ?? 0,
     benefitTaken: json['benefit_taken'] as int? ?? 0,
     cashPaidOut: json['cash_paid_out'] as int? ?? 0,
+    refunds: json['refunds'] as int? ?? 0,
     expectedCash: json['expected_cash'] as int,
     countedCash: json['counted_cash'] as int?,
     variance: json['variance'] as int?,
@@ -67,6 +69,9 @@ class CashShift {
 
   /// Cash taken out of the drawer to pay expenses.
   final int cashPaidOut;
+
+  /// Money given back to customers, by every method; only the cash part comes out of [expectedCash].
+  final int refunds;
 
   /// What should be in the drawer: the float plus the cash taken, less the expenses paid from it.
   final int expectedCash;

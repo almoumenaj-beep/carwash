@@ -46,6 +46,10 @@ class CustomerMembership {
     required this.expiresAt,
     required this.isUsable,
     required this.isCancelled,
+    required this.invoiceId,
+    required this.invoiceTotal,
+    required this.invoiceMethod,
+    required this.canRefund,
   });
 
   factory CustomerMembership.fromJson(Map<String, dynamic> json) {
@@ -61,6 +65,10 @@ class CustomerMembership {
       expiresAt: DateTime.parse(json['expires_at'] as String),
       isUsable: json['is_usable'] as bool,
       isCancelled: json['is_cancelled'] as bool,
+      invoiceId: json['invoice_id'] as String,
+      invoiceTotal: json['invoice_total'] as int,
+      invoiceMethod: json['invoice_method'] as String,
+      canRefund: json['can_refund'] as bool,
     );
   }
 
@@ -75,4 +83,10 @@ class CustomerMembership {
   final DateTime expiresAt;
   final bool isUsable;
   final bool isCancelled;
+  final String invoiceId;
+  final int invoiceTotal;
+  final String invoiceMethod;
+
+  /// Nothing was taken from it yet, so its sale can still be given back.
+  final bool canRefund;
 }

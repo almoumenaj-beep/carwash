@@ -4009,6 +4009,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save the customer first; their page then lets you sell a membership.'**
   String get membershipAfterSaving;
+
+  /// No description provided for @refundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get refundTitle;
+
+  /// No description provided for @refundsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Refunds'**
+  String get refundsLabel;
+
+  /// No description provided for @refundReasonField.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason for the refund'**
+  String get refundReasonField;
+
+  /// No description provided for @refundAmountBy.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} by {method}'**
+  String refundAmountBy(String amount, String method);
+
+  /// No description provided for @refundNothingToPay.
+  ///
+  /// In en, this message translates to:
+  /// **'This invoice had nothing to pay.'**
+  String get refundNothingToPay;
+
+  /// No description provided for @refundCashHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Take the cash from your drawer and hand it to the customer. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.'**
+  String get refundCashHint;
+
+  /// No description provided for @refundHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Return the money yourself the same way it was paid; the app only records it. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.'**
+  String get refundHint;
+
+  /// No description provided for @pointsMovementRefund.
+  ///
+  /// In en, this message translates to:
+  /// **'Points put right after a refund'**
+  String get pointsMovementRefund;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

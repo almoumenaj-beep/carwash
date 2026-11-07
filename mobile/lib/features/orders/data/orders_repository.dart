@@ -113,6 +113,11 @@ class OrdersRepository {
     return Order.fromJson(unwrapData(response));
   }
 
+  /// Gives back a whole invoice, with the reason.
+  Future<void> refund(String invoiceId, String reason) async {
+    await sendRequest(() => _dio.post<Map<String, dynamic>>('/invoices/$invoiceId/refund', data: {'reason': reason}));
+  }
+
   Future<List<Bay>> bays(String branchId) async {
     final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/branches/$branchId/bays'));
     return [for (final bay in unwrapData<List>(response)) Bay.fromJson(bay as Map<String, dynamic>)]

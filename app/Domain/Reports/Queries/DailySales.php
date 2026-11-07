@@ -10,6 +10,7 @@ use App\Domain\Sales\Models\CashShift;
 use App\Domain\Sales\Models\Invoice;
 use App\Domain\Sales\Models\InvoiceLine;
 use App\Domain\Sales\Models\Payment;
+use App\Domain\Sales\Models\Refund;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * One day's sales at one or more branches: the day runs midnight to midnight in the car wash's time
  * zone. Sales come from the invoices issued that day, cars from the orders checked in that day, and
- * expenses from those dated that day (paid or owed); `net` is sales less expenses. `uncounted_shifts` are
+ * expenses from those dated that day (paid or owed); `net` is sales less refunds and expenses, a refund counting
+ * on the day the money was given back. `uncounted_shifts` are
  * the shifts closed automatically by the end of that day whose drawer nobody has counted yet, whichever day
  * they closed, so they stay in sight until counted.
  * Amounts are in minor units (BHD: fils).
@@ -38,6 +40,7 @@ class DailySales
         $count = $invoices()->count();
         $sales = (int) $invoices()->sum('total');
         $expenses = (int) Expense::query()->whereIn('branch_id', $branchIds)->whereDate('spent_on', $day->toDateString())->sum('amount');
+        $refunds = (int) Refund::query()->whereIn('branch_id', $branchIds)->where('created_at', '>=', $from)->where('created_at', '<', $to)->sum('amount');
         $collected = fn (PaymentMethod $method): int => (int) Payment::query()
             ->whereIn('branch_id', $branchIds)
             ->where('method', $method->value)
@@ -59,7 +62,8 @@ class DailySales
                 'memberships_sold' => (int) $invoices()->whereNull('order_id')->sum('total'),
                 'average_ticket' => $count === 0 ? 0 : intdiv($sales, $count),
                 'expenses' => $expenses,
-                'net' => $sales - $expenses,
+                'refunds' => $refunds,
+                'net' => $sales - $refunds - $expenses,
             ],
             'cars' => [
                 'checked_in' => $orders()->count(),

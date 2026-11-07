@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * A tax invoice for a paid order. Issued by CheckoutOrder and never changed afterwards, so
@@ -48,6 +49,7 @@ class Invoice extends Model
             'issued_at' => 'datetime',
             'points_redeemed' => 'integer',
             'points_earned' => 'integer',
+            'refunded_at' => 'datetime',
         ];
     }
 
@@ -108,6 +110,14 @@ class Invoice extends Model
     public function lines(): HasMany
     {
         return $this->hasMany(InvoiceLine::class);
+    }
+
+    /**
+     * @return HasOne<Refund, $this>
+     */
+    public function refund(): HasOne
+    {
+        return $this->hasOne(Refund::class);
     }
 
     /**

@@ -15,6 +15,7 @@ import '../../customers/domain/customer.dart';
 import '../data/orders_repository.dart';
 import '../domain/order.dart';
 import 'order_widgets.dart';
+import 'refund_dialog.dart';
 
 /// One work order: the car, services and total, the next steps the user may take, and its history.
 class OrderScreen extends ConsumerWidget {
@@ -224,7 +225,8 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                   trailing: Text(money.format(invoice.total), style: theme.textTheme.titleMedium),
                 ),
               )
-            else if (order.status.isActive && (me?.can(Permissions.posCheckout) ?? false)) ...[
+            else if ((order.status.isActive || order.status == OrderStatus.delivered) &&
+                (me?.can(Permissions.posCheckout) ?? false)) ...[
               const SizedBox(height: 8),
               FilledButton.icon(
                 onPressed: () async {
@@ -235,6 +237,36 @@ class _OrderViewState extends ConsumerState<_OrderView> {
                 label: Text(order.status == OrderStatus.ready ? l10n.payAndDeliver : l10n.collectPayment),
               ),
             ],
+            if (order.invoice case final invoice? when me?.can(Permissions.ordersRefund) ?? false)
+              Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: TextButton.icon(
+                  style: TextButton.styleFrom(foregroundColor: theme.colorScheme.error),
+                  icon: const Icon(Icons.undo),
+                  label: Text(l10n.refundTitle),
+                  onPressed: () async {
+                    final refunded = await showDialog<bool>(
+                      context: context,
+                      builder: (_) =>
+                          RefundDialog(invoiceId: invoice.id, amount: invoice.total, method: invoice.paymentMethod),
+                    );
+                    if (refunded ?? false) {
+                      ref.invalidate(orderProvider(order.id));
+                    }
+                  },
+                ),
+              ),
+            for (final refund in order.refunds)
+              Card(
+                child: ListTile(
+                  leading: Icon(Icons.undo, color: theme.colorScheme.error),
+                  title: Text('${l10n.refundsLabel} · ${refund.reference}'),
+                  subtitle: Text(
+                    '${MaterialLocalizations.of(context).formatMediumDate(refund.refundedAt.toLocal())}\n${refund.reason}',
+                  ),
+                  trailing: Text(money.format(refund.amount), style: theme.textTheme.titleMedium),
+                ),
+              ),
             if (actions.isNotEmpty) ...[
               const SizedBox(height: 8),
               Wrap(

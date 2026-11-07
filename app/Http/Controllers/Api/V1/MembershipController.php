@@ -61,7 +61,7 @@ class MembershipController extends Controller
 
         $memberships = CustomerMembership::query()
             ->where('customer_id', $customer->id)
-            ->with('vehicle')
+            ->with(['vehicle', 'invoice.payments'])
             ->latest()
             ->get();
 
@@ -135,6 +135,10 @@ class MembershipController extends Controller
             'expires_at' => $membership->expires_at->toIso8601String(),
             'is_usable' => $membership->isUsable(),
             'is_cancelled' => $membership->cancelled_at !== null,
+            'invoice_id' => $membership->invoice_id,
+            'invoice_total' => $membership->invoice->total,
+            'invoice_method' => $membership->invoice->payments->first()?->method,
+            'can_refund' => $membership->cancelled_at === null && $membership->washes_used === 0,
         ];
     }
 }

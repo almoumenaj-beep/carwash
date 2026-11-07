@@ -205,6 +205,7 @@ class _ProfitAndLossView extends ConsumerWidget {
           rows: [
             (l10n.grossSales, money.format(report.gross)),
             (l10n.shiftDiscounts, '− ${money.format(report.discounts)}'),
+            if (report.refunds > 0) (l10n.refundsLabel, '− ${money.format(report.refunds)}'),
             (l10n.vatTotal, '− ${money.format(report.vat)}'),
             (l10n.netSales, money.format(report.netSales)),
           ],

@@ -7,6 +7,7 @@ use App\Domain\Orders\Models\Order;
 use App\Domain\Orders\Models\OrderItem;
 use App\Domain\Orders\Models\OrderQualityCheck;
 use App\Domain\Orders\Models\OrderStatusChange;
+use App\Domain\Sales\Models\Invoice;
 use App\Domain\Sales\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -56,6 +57,13 @@ class OrderResource extends JsonResource
                     'change_given' => $payment->change_given,
                 ])->values(),
             ],
+            'refunds' => $this->refundedInvoices->map(fn (Invoice $invoice) => [
+                'reference' => $invoice->reference(),
+                'amount' => $invoice->refund->amount,
+                'method' => $invoice->refund->method,
+                'reason' => $invoice->refund->reason,
+                'refunded_at' => $invoice->refunded_at->toIso8601String(),
+            ])->values(),
             'customer' => $this->customer === null ? null : [
                 'id' => $this->customer->id,
                 'name' => $this->customer->name,

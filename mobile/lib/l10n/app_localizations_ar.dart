@@ -2234,4 +2234,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get membershipAfterSaving => 'احفظ العميل أولاً، وبعدها تقدر تبيعه عضوية من صفحته.';
+
+  @override
+  String get refundTitle => 'استرداد المبلغ';
+
+  @override
+  String get refundsLabel => 'مرتجعات';
+
+  @override
+  String get refundReasonField => 'سبب الاسترداد';
+
+  @override
+  String refundAmountBy(String amount, String method) {
+    return '$amount بطريقة $method';
+  }
+
+  @override
+  String get refundNothingToPay => 'لا يوجد مبلغ مدفوع في هذه الفاتورة.';
+
+  @override
+  String get refundCashHint =>
+      'أخرج المبلغ من درجك وسلّمه للعميل. تبقى الفاتورة مسجلة كمستردة، ويرجع الطلب غير مدفوع، وترجع النقاط أو غسلة العضوية.';
+
+  @override
+  String get refundHint =>
+      'أرجع المبلغ بنفسك بنفس طريقة الدفع، والبرنامج يسجل ذلك فقط. تبقى الفاتورة مسجلة كمستردة، ويرجع الطلب غير مدفوع، وترجع النقاط أو غسلة العضوية.';
+
+  @override
+  String get pointsMovementRefund => 'تصحيح نقاط بعد استرداد';
 }

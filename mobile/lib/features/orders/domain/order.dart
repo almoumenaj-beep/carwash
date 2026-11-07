@@ -96,6 +96,7 @@ class OrderItem {
 /// The invoice of a paid order, with the cash received.
 class OrderInvoice {
   const OrderInvoice({
+    this.id = '',
     required this.reference,
     required this.subtotal,
     required this.discountTotal,
@@ -113,6 +114,7 @@ class OrderInvoice {
     final payments = [for (final payment in json['payments'] as List) payment as Map<String, dynamic>];
 
     return OrderInvoice(
+      id: json['id'] as String? ?? '',
       reference: json['reference'] as String,
       subtotal: json['subtotal'] as int,
       discountTotal: json['discount_total'] as int,
@@ -126,6 +128,8 @@ class OrderInvoice {
       pointsEarned: json['points_earned'] as int? ?? 0,
     );
   }
+
+  final String id;
 
   /// E.g. "MAIN-INV-12".
   final String reference;
@@ -141,6 +145,23 @@ class OrderInvoice {
   /// How the invoice was paid (`cash`, `card` or `benefit`).
   final String paymentMethod;
   final int pointsEarned;
+}
+
+/// Money given back for an invoice of this order.
+class OrderRefund {
+  const OrderRefund({required this.reference, required this.amount, required this.reason, required this.refundedAt});
+
+  factory OrderRefund.fromJson(Map<String, dynamic> json) => OrderRefund(
+    reference: json['reference'] as String,
+    amount: json['amount'] as int,
+    reason: json['reason'] as String,
+    refundedAt: DateTime.parse(json['refunded_at'] as String),
+  );
+
+  final String reference;
+  final int amount;
+  final String reason;
+  final DateTime refundedAt;
 }
 
 /// One inspection at the quality check: whether each service on the order was done properly.
@@ -193,6 +214,7 @@ class Order {
     required this.customer,
     required this.plateNumber,
     this.vehicleId,
+    this.refunds = const [],
     required this.bay,
     required this.staff,
     required this.items,
@@ -222,6 +244,10 @@ class Order {
       customer: json['customer'] == null ? null : OrderCustomer.fromJson(json['customer'] as Map<String, dynamic>),
       plateNumber: json['plate_number'] as String,
       vehicleId: json['vehicle_id'] as String?,
+      refunds: [
+        for (final refund in (json['refunds'] as List?) ?? const [])
+          OrderRefund.fromJson(refund as Map<String, dynamic>),
+      ],
       bay: json['bay'] == null ? null : NamedRef.fromJson(json['bay'] as Map<String, dynamic>),
       staff: [for (final member in json['staff'] as List) NamedRef.fromJson(member as Map<String, dynamic>)],
       items: [for (final item in json['items'] as List) OrderItem.fromJson(item as Map<String, dynamic>)],
@@ -260,6 +286,7 @@ class Order {
   final OrderCustomer? customer;
   final String plateNumber;
   final String? vehicleId;
+  final List<OrderRefund> refunds;
   final NamedRef? bay;
   final List<NamedRef> staff;
   final List<OrderItem> items;

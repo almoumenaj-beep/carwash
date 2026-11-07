@@ -9,6 +9,7 @@ use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Sales\Models\Invoice;
 use App\Domain\Sales\Models\InvoiceLine;
+use App\Domain\Sales\Models\Refund;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,9 +39,13 @@ class ProfitAndLoss
         $invoices = fn () => Invoice::query()->whereIn('invoices.branch_id', $branchIds)->where('invoices.issued_at', '>=', $start)->where('invoices.issued_at', '<', $end);
         $expenses = fn () => Expense::query()->whereIn('expenses.branch_id', $branchIds)->whereBetween('spent_on', [$from->toDateString(), $to->toDateString()]);
 
+        $refunds = fn () => Refund::query()->whereIn('refunds.branch_id', $branchIds)->where('refunds.created_at', '>=', $start)->where('refunds.created_at', '<', $end);
+
         $sales = (int) $invoices()->sum('total');
-        $vat = (int) $invoices()->sum('vat_amount');
-        $netSales = $sales - $vat;
+        $refunded = (int) $refunds()->sum('amount');
+        // A refund takes back the VAT with it, in the period the money was given back.
+        $vat = (int) $invoices()->sum('vat_amount') - (int) $refunds()->sum('vat_amount');
+        $netSales = $sales - $refunded - $vat;
         $byCategory = $this->byCategory($expenses());
         $totalExpenses = array_sum(array_column($byCategory, 'amount'));
         $profit = $netSales - $totalExpenses;
@@ -53,6 +58,7 @@ class ProfitAndLoss
                 'gross' => (int) $invoices()->sum('subtotal'),
                 'discounts' => (int) $invoices()->sum('discount_total'),
                 'sales' => $sales,
+                'refunds' => $refunded,
                 'vat' => $vat,
                 'net_sales' => $netSales,
             ],
@@ -63,9 +69,10 @@ class ProfitAndLoss
             ],
             'profit' => $profit,
             'margin_bps' => $netSales === 0 ? null : intdiv($profit * 10000, $netSales),
-            'by_branch' => $this->byBranch($branchIds, $invoices(), $expenses()),
-            'by_service' => $this->byService($invoices()),
-            'by_washer' => $this->byWasher($invoices(), $from, $to),
+            'by_branch' => $this->byBranch($branchIds, $invoices(), $refunds(), $expenses()),
+            // What was given back was not really sold or earned.
+            'by_service' => $this->byService($invoices()->whereNull('invoices.refunded_at')),
+            'by_washer' => $this->byWasher($invoices()->whereNull('invoices.refunded_at'), $from, $to),
         ];
     }
 
@@ -88,22 +95,28 @@ class ProfitAndLoss
     /**
      * @param  list<string>  $branchIds
      * @param  Builder<Invoice>  $invoices
+     * @param  Builder<Refund>  $refunds
      * @param  Builder<Expense>  $expenses
      * @return list<array{id: string, name: string, net_sales: int, expenses: int, profit: int}>
      */
-    private function byBranch(array $branchIds, $invoices, $expenses): array
+    private function byBranch(array $branchIds, $invoices, $refunds, $expenses): array
     {
         $sales = $invoices->groupBy('invoices.branch_id')->selectRaw('invoices.branch_id, SUM(total - vat_amount) AS net_sales')->pluck('net_sales', 'branch_id');
+        $givenBack = $refunds->groupBy('refunds.branch_id')->selectRaw('refunds.branch_id, SUM(amount - vat_amount) AS net_refunds')->pluck('net_refunds', 'branch_id');
         $spent = $expenses->groupBy('expenses.branch_id')->selectRaw('expenses.branch_id, SUM(amount) AS amount')->pluck('amount', 'branch_id');
 
         return Branch::query()->whereKey($branchIds)->orderBy('name')->get()
-            ->map(fn (Branch $branch) => [
-                'id' => $branch->id,
-                'name' => $branch->name,
-                'net_sales' => (int) ($sales[$branch->id] ?? 0),
-                'expenses' => (int) ($spent[$branch->id] ?? 0),
-                'profit' => (int) ($sales[$branch->id] ?? 0) - (int) ($spent[$branch->id] ?? 0),
-            ])
+            ->map(function (Branch $branch) use ($sales, $givenBack, $spent): array {
+                $netSales = (int) ($sales[$branch->id] ?? 0) - (int) ($givenBack[$branch->id] ?? 0);
+
+                return [
+                    'id' => $branch->id,
+                    'name' => $branch->name,
+                    'net_sales' => $netSales,
+                    'expenses' => (int) ($spent[$branch->id] ?? 0),
+                    'profit' => $netSales - (int) ($spent[$branch->id] ?? 0),
+                ];
+            })
             ->sortByDesc('profit')
             ->values()
             ->all();

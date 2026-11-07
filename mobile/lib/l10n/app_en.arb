@@ -1228,5 +1228,23 @@
   "messageSampleName": "Hussain",
   "whatsAppSend": "Send a WhatsApp message",
   "messageTemplateThanks": "Thanks after handing over",
-  "membershipAfterSaving": "Save the customer first; their page then lets you sell a membership."
+  "membershipAfterSaving": "Save the customer first; their page then lets you sell a membership.",
+  "refundTitle": "Refund",
+  "refundsLabel": "Refunds",
+  "refundReasonField": "Reason for the refund",
+  "refundAmountBy": "{amount} by {method}",
+  "refundNothingToPay": "This invoice had nothing to pay.",
+  "refundCashHint": "Take the cash from your drawer and hand it to the customer. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.",
+  "refundHint": "Return the money yourself the same way it was paid; the app only records it. The invoice stays on record as refunded, the order goes back to unpaid, and points or a membership wash go back too.",
+  "pointsMovementRefund": "Points put right after a refund",
+  "@refundAmountBy": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "method": {
+        "type": "String"
+      }
+    }
+  }
 }

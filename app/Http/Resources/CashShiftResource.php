@@ -42,6 +42,8 @@ class CashShiftResource extends JsonResource
             'card_taken' => $this->takenBy(PaymentMethod::Card),
             'benefit_taken' => $this->takenBy(PaymentMethod::Benefit),
             'cash_paid_out' => $this->cashPaidOut(),
+            'refunds' => $this->refunded(),
+            'cash_refunded' => $this->refunded(PaymentMethod::Cash),
             'expected_cash' => $this->expected_cash ?? $this->expectedCash(),
             'counted_cash' => $this->counted_cash,
             'variance' => $this->variance,

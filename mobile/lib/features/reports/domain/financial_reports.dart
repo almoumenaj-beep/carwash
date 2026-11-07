@@ -10,6 +10,7 @@ class ProfitAndLoss {
     required this.sales,
     required this.vat,
     required this.netSales,
+    this.refunds = 0,
     required this.expenses,
     required this.owed,
     required this.expensesByCategory,
@@ -32,6 +33,7 @@ class ProfitAndLoss {
       sales: revenue['sales'] as int,
       vat: revenue['vat'] as int,
       netSales: revenue['net_sales'] as int,
+      refunds: revenue['refunds'] as int? ?? 0,
       expenses: expenses['total'] as int,
       owed: expenses['owed'] as int,
       expensesByCategory: [
@@ -78,6 +80,9 @@ class ProfitAndLoss {
   final int sales;
   final int vat;
   final int netSales;
+
+  /// Money given back in the period; already taken out of [netSales].
+  final int refunds;
 
   /// Expenses dated in the period, paid or owed.
   final int expenses;

@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\ExpenseCategoryController;
 use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\FinancialReportController;
 use App\Http\Controllers\Api\V1\InventoryController;
+use App\Http\Controllers\Api\V1\InvoiceRefundController;
 use App\Http\Controllers\Api\V1\MeController;
 use App\Http\Controllers\Api\V1\MembershipController;
 use App\Http\Controllers\Api\V1\MePasswordController;
@@ -137,6 +138,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('shifts', [CashShiftController::class, 'store'])->name('shifts.store');
         Route::post('shifts/{shift}/close', [CashShiftController::class, 'close'])->name('shifts.close');
         Route::post('shifts/{shift}/count', [CashShiftController::class, 'count'])->name('shifts.count');
+        Route::post('invoices/{invoice}/refund', [InvoiceRefundController::class, 'store'])->name('invoices.refund');
 
         Route::apiResource('customers', CustomerController::class);
         Route::get('customers/{customer}/points', [CustomerPointsController::class, 'show'])->name('customers.points');
