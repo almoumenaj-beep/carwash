@@ -142,13 +142,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get listSeparator => '، ';
 
   @override
-  String get rolesTitle => 'الأدوار';
+  String get rolesTitle => 'الأدوار والصلاحيات';
 
   @override
   String get rolesSubtitle => 'الأدوار وصلاحياتها';
 
   @override
-  String get staffTitle => 'الموظفون';
+  String get staffTitle => 'حسابات الموظفين';
 
   @override
   String get staffSubtitle => 'الحسابات والأدوار والفروع';
@@ -1220,7 +1220,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get staffAffairsSubtitle => 'الرواتب والعمولات والحضور';
 
   @override
-  String get employeesTab => 'الموظفون';
+  String get employeesTab => 'الأجور والعمولات';
 
   @override
   String get attendanceTab => 'الحضور';
@@ -1650,7 +1650,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get groupResources => 'المخزون والمعدات';
 
   @override
-  String get groupPeople => 'الموظفون';
+  String get groupPeople => 'الموارد البشرية';
 
   @override
   String get groupSetup => 'الإعدادات';

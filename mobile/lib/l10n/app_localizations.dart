@@ -329,7 +329,7 @@ abstract class AppLocalizations {
   /// No description provided for @rolesTitle.
   ///
   /// In en, this message translates to:
-  /// **'Roles'**
+  /// **'Roles and permissions'**
   String get rolesTitle;
 
   /// No description provided for @rolesSubtitle.
@@ -341,7 +341,7 @@ abstract class AppLocalizations {
   /// No description provided for @staffTitle.
   ///
   /// In en, this message translates to:
-  /// **'Staff'**
+  /// **'Staff accounts'**
   String get staffTitle;
 
   /// No description provided for @staffSubtitle.
@@ -2249,7 +2249,7 @@ abstract class AppLocalizations {
   /// No description provided for @employeesTab.
   ///
   /// In en, this message translates to:
-  /// **'Employees'**
+  /// **'Pay and commission'**
   String get employeesTab;
 
   /// No description provided for @attendanceTab.
@@ -2969,7 +2969,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupPeople.
   ///
   /// In en, this message translates to:
-  /// **'Staff'**
+  /// **'Human resources'**
   String get groupPeople;
 
   /// No description provided for @groupSetup.

@@ -139,13 +139,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get listSeparator => ', ';
 
   @override
-  String get rolesTitle => 'Roles';
+  String get rolesTitle => 'Roles and permissions';
 
   @override
   String get rolesSubtitle => 'Roles and their permissions';
 
   @override
-  String get staffTitle => 'Staff';
+  String get staffTitle => 'Staff accounts';
 
   @override
   String get staffSubtitle => 'Accounts, roles and branches';
@@ -1196,7 +1196,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get staffAffairsSubtitle => 'Pay, commission, attendance and payroll';
 
   @override
-  String get employeesTab => 'Employees';
+  String get employeesTab => 'Pay and commission';
 
   @override
   String get attendanceTab => 'Attendance';
@@ -1602,7 +1602,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupResources => 'Stock and equipment';
 
   @override
-  String get groupPeople => 'Staff';
+  String get groupPeople => 'Human resources';
 
   @override
   String get groupSetup => 'Setup';
