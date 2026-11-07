@@ -37,6 +37,7 @@ class CheckoutScreen extends ConsumerWidget {
         order: order,
         vatRateBps: (settings.vatRate * 100).round(),
         pricesIncludeVat: settings.pricesIncludeVat,
+        loyaltyWashesRequired: settings.loyaltyEnabled ? settings.loyaltyWashesRequired : null,
       ),
       (AsyncError(:final error), _) || (_, AsyncError(:final error)) => Scaffold(
         appBar: AppBar(),
@@ -57,11 +58,19 @@ class CheckoutScreen extends ConsumerWidget {
 }
 
 class _CheckoutForm extends ConsumerStatefulWidget {
-  const _CheckoutForm({required this.order, required this.vatRateBps, required this.pricesIncludeVat});
+  const _CheckoutForm({
+    required this.order,
+    required this.vatRateBps,
+    required this.pricesIncludeVat,
+    required this.loyaltyWashesRequired,
+  });
 
   final Order order;
   final int vatRateBps;
   final bool pricesIncludeVat;
+
+  /// Stamps needed for a free wash; null while the loyalty card is off.
+  final int? loyaltyWashesRequired;
 
   @override
   ConsumerState<_CheckoutForm> createState() => _CheckoutFormState();
@@ -73,6 +82,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
   final _tendered = TextEditingController();
   String _discountType = 'percent';
   String _method = 'cash';
+  bool _useFreeWash = false;
   bool _saving = false;
   ApiProblem? _problem;
 
@@ -93,12 +103,22 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     return _discountType == 'amount' ? money.parse(text) : PercentFormat.parse(text);
   }
 
+  /// What the free wash takes off, like the server: the cheapest wash on the order. Add-ons and packages are not
+  /// covered, so an order with neither wash has nothing to take off.
+  int? get _freeWashPrice {
+    final prices = [
+      for (final item in widget.order.items)
+        if (!item.isAddon && !item.isPackage && item.unitPrice > 0) item.unitPrice,
+    ];
+    return prices.isEmpty ? null : prices.reduce((cheapest, price) => price < cheapest ? price : cheapest);
+  }
+
   CheckoutTotals _totals(MoneyFormat money) {
     final value = _discountValue(money) ?? 0;
     return CheckoutTotals.of(
       subtotal: widget.order.subtotal,
-      discountAmount: _discountType == 'amount' ? value : 0,
-      discountPercentBps: _discountType == 'percent' ? value : null,
+      discountAmount: _useFreeWash ? (_freeWashPrice ?? 0) : (_discountType == 'amount' ? value : 0),
+      discountPercentBps: !_useFreeWash && _discountType == 'percent' ? value : null,
       vatRateBps: widget.vatRateBps,
       pricesIncludeVat: widget.pricesIncludeVat,
     );
@@ -120,9 +140,12 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
           .read(ordersRepositoryProvider)
           .checkout(
             widget.order.id,
-            discountAmount: totals.discount > 0 && _discountType == 'amount' ? totals.discount : null,
-            discountPercentBps: totals.discount > 0 && _discountType == 'percent' ? _discountValue(money) : null,
-            discountReason: totals.discount > 0 ? _reason.text.trim() : null,
+            discountAmount: !_useFreeWash && totals.discount > 0 && _discountType == 'amount' ? totals.discount : null,
+            discountPercentBps: !_useFreeWash && totals.discount > 0 && _discountType == 'percent'
+                ? _discountValue(money)
+                : null,
+            discountReason: !_useFreeWash && totals.discount > 0 ? _reason.text.trim() : null,
+            useLoyaltyReward: _useFreeWash,
             method: _method,
             tendered: isCash ? tendered : null,
             deliver: deliver,
@@ -131,7 +154,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
       if (mounted) {
         await showDialog<void>(
           context: context,
-          builder: (_) => _PaidDialog(order: paid),
+          builder: (_) => _PaidDialog(order: paid, loyaltyWashesRequired: widget.loyaltyWashesRequired),
         );
       }
       if (mounted) {
@@ -160,10 +183,13 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     final limitBps = me?.maxDiscountBps ?? 0;
     final canDiscount = (me?.can(Permissions.posDiscount) ?? false) && limitBps > 0;
     final discountInvalid = _discountValue(money) == null;
-    final overLimit = totals.discountBps > limitBps;
-    final reasonMissing = totals.discount > 0 && _reason.text.trim().isEmpty;
+    final overLimit = !_useFreeWash && totals.discountBps > limitBps;
+    final reasonMissing = !_useFreeWash && totals.discount > 0 && _reason.text.trim().isEmpty;
     final tendered = _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
+    final nothingToPay = totals.total == 0;
     final isCash = _method == 'cash';
+    final washesRequired = widget.loyaltyWashesRequired;
+    final stamps = order.customer?.loyaltyStamps;
     final shortOfCash = isCash && (tendered == null || tendered < totals.total);
     final canDeliver = order.status == OrderStatus.ready && canMoveTo(ref, OrderStatus.delivered);
     final shift = ref.watch(currentShiftProvider(order.branchId));
@@ -228,7 +254,30 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
               ),
             ),
           ),
-          if (canDiscount) ...[
+          if (washesRequired != null && stamps != null)
+            Card(
+              margin: const EdgeInsets.only(top: 16),
+              child: stamps >= washesRequired
+                  ? SwitchListTile(
+                      secondary: const Icon(Icons.loyalty_outlined),
+                      title: Text(l10n.loyaltyUseFreeWash),
+                      subtitle: Text(l10n.loyaltyFreeWashHint),
+                      value: _useFreeWash,
+                      onChanged: _freeWashPrice == null
+                          ? null
+                          : (value) => setState(() {
+                              _useFreeWash = value;
+                              _discount.clear();
+                              _reason.clear();
+                            }),
+                    )
+                  : ListTile(
+                      leading: const Icon(Icons.loyalty_outlined),
+                      title: Text(l10n.loyaltyCardTitle),
+                      subtitle: Text(l10n.loyaltyProgress(stamps, washesRequired)),
+                    ),
+            ),
+          if (canDiscount && !_useFreeWash) ...[
             const SizedBox(height: 16),
             Text(l10n.discountLabel, style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
@@ -278,57 +327,59 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
             ],
           ],
           const SizedBox(height: 16),
-          Text(l10n.paymentMethodField, style: theme.textTheme.titleSmall),
-          const SizedBox(height: 8),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<String>(
-              showSelectedIcon: false,
-              segments: [
-                for (final method in const ['cash', 'card', 'benefit'])
-                  ButtonSegment(value: method, label: Text(moneyMethodLabel(l10n, method))),
-              ],
-              selected: {_method},
-              onSelectionChanged: (selection) => setState(() => _method = selection.single),
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (!isCash)
-            Row(
-              children: [
-                Icon(Icons.info_outline, size: 20, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Expanded(child: Text(_method == 'card' ? l10n.cardPaymentHint : l10n.benefitPaymentHint)),
-              ],
-            ),
-          if (isCash) ...[
-            Text(l10n.cashReceivedField, style: theme.textTheme.titleSmall),
+          if (!nothingToPay) ...[
+            Text(l10n.paymentMethodField, style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
-            TextField(
-              controller: _tendered,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,٠-٩٫٬]'))],
-              decoration: InputDecoration(
-                hintText: money.toInput(totals.total),
-                suffixText: money.currency,
-                errorText: shortOfCash ? l10n.cashTooLittle : null,
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<String>(
+                showSelectedIcon: false,
+                segments: [
+                  for (final method in const ['cash', 'card', 'benefit'])
+                    ButtonSegment(value: method, label: Text(moneyMethodLabel(l10n, method))),
+                ],
+                selected: {_method},
+                onSelectionChanged: (selection) => setState(() => _method = selection.single),
               ),
-              onChanged: (_) => setState(() {}),
             ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [
-                for (final note in _cashSuggestions(totals.total, money))
-                  ActionChip(
-                    label: Text(money.formatNumber(note)),
-                    onPressed: () => setState(() => _tendered.text = money.toInput(note)),
-                  ),
+            const SizedBox(height: 16),
+            if (!isCash)
+              Row(
+                children: [
+                  Icon(Icons.info_outline, size: 20, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(_method == 'card' ? l10n.cardPaymentHint : l10n.benefitPaymentHint)),
+                ],
+              ),
+            if (isCash) ...[
+              Text(l10n.cashReceivedField, style: theme.textTheme.titleSmall),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _tendered,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.,٠-٩٫٬]'))],
+                decoration: InputDecoration(
+                  hintText: money.toInput(totals.total),
+                  suffixText: money.currency,
+                  errorText: shortOfCash ? l10n.cashTooLittle : null,
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final note in _cashSuggestions(totals.total, money))
+                    ActionChip(
+                      label: Text(money.formatNumber(note)),
+                      onPressed: () => setState(() => _tendered.text = money.toInput(note)),
+                    ),
+                ],
+              ),
+              if (tendered != null && tendered > totals.total) ...[
+                const SizedBox(height: 12),
+                Text(l10n.changeDue(money.format(tendered - totals.total)), style: theme.textTheme.titleMedium),
               ],
-            ),
-            if (tendered != null && tendered > totals.total) ...[
-              const SizedBox(height: 12),
-              Text(l10n.changeDue(money.format(tendered - totals.total)), style: theme.textTheme.titleMedium),
             ],
           ],
           if (problem != null) ...[
@@ -389,9 +440,10 @@ List<int> _cashSuggestions(int total, MoneyFormat money) {
 }
 
 class _PaidDialog extends ConsumerWidget {
-  const _PaidDialog({required this.order});
+  const _PaidDialog({required this.order, required this.loyaltyWashesRequired});
 
   final Order order;
+  final int? loyaltyWashesRequired;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -420,6 +472,14 @@ class _PaidDialog extends ConsumerWidget {
                   ),
                 ],
                 if (order.status == OrderStatus.delivered) ...[const SizedBox(height: 8), Text(l10n.statusDelivered)],
+                if (loyaltyWashesRequired != null && order.customer != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    order.customer!.loyaltyStamps >= loyaltyWashesRequired!
+                        ? l10n.loyaltyEarned
+                        : '${l10n.loyaltyCardTitle}: ${l10n.loyaltyProgress(order.customer!.loyaltyStamps, loyaltyWashesRequired!)}',
+                  ),
+                ],
               ],
             ),
       actions: [FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.done))],

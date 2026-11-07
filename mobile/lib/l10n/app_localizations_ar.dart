@@ -2006,4 +2006,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterCount => 'إدخال المعدود';
+
+  @override
+  String get loyaltyCardTitle => 'بطاقة الولاء';
+
+  @override
+  String get loyaltyEnabledField => 'تفعيل بطاقة الولاء';
+
+  @override
+  String get loyaltyEnabledHint =>
+      'يكسب العميل المسجّل ختماً عن كل زيارة مدفوعة، وغسلة مجانية عند اكتمال البطاقة. إيقافها يحفظ أختام العملاء.';
+
+  @override
+  String get loyaltyWashesField => 'عدد الزيارات للحصول على غسلة مجانية';
+
+  @override
+  String get loyaltyWashesInvalid => 'من 2 إلى 100';
+
+  @override
+  String loyaltyProgress(int stamps, int required) {
+    return '$stamps من $required زيارات';
+  }
+
+  @override
+  String get loyaltyEarned => 'يستحق هذا العميل غسلة مجانية';
+
+  @override
+  String get loyaltyUseFreeWash => 'استخدام الغسلة المجانية';
+
+  @override
+  String get loyaltyFreeWashHint => 'تشمل أرخص غسلة في الطلب. الإضافات تبقى مدفوعة، والباقات غير مشمولة.';
 }

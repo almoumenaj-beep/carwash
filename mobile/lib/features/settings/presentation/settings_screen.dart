@@ -47,6 +47,8 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
   late final _vatNumber = TextEditingController(text: widget.settings.vatNumber);
   late final _graceMinutes = TextEditingController(text: widget.settings.appointmentGraceMinutes?.toString());
   late bool _pricesIncludeVat = widget.settings.pricesIncludeVat;
+  late bool _loyaltyEnabled = widget.settings.loyaltyEnabled;
+  late final _loyaltyWashes = TextEditingController(text: '${widget.settings.loyaltyWashesRequired}');
   late String _locale = widget.settings.locale;
   late String _timezone = widget.settings.timezone;
   bool _saving = false;
@@ -60,6 +62,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
     _vatRate.dispose();
     _vatNumber.dispose();
     _graceMinutes.dispose();
+    _loyaltyWashes.dispose();
     super.dispose();
   }
 
@@ -80,6 +83,8 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         'prices_include_vat': _pricesIncludeVat,
         'vat_number': _vatNumber.text.trim().isEmpty ? null : _vatNumber.text.trim(),
         'appointment_grace_minutes': int.tryParse(_graceMinutes.text.trim()),
+        'loyalty_enabled': _loyaltyEnabled,
+        if (_loyaltyEnabled) 'loyalty_washes_required': int.parse(_loyaltyWashes.text.trim()),
         'locale': _locale,
         'timezone': _timezone,
       });
@@ -177,6 +182,29 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
                     : null;
               },
             ),
+            const SizedBox(height: 24),
+            Text(l10n.loyaltyCardTitle, style: theme.textTheme.titleMedium),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(l10n.loyaltyEnabledField),
+              subtitle: Text(l10n.loyaltyEnabledHint),
+              value: _loyaltyEnabled,
+              onChanged: (value) => setState(() => _loyaltyEnabled = value),
+            ),
+            if (_loyaltyEnabled)
+              TextFormField(
+                controller: _loyaltyWashes,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  labelText: l10n.loyaltyWashesField,
+                  errorText: _problem?.fieldError('loyalty_washes_required'),
+                ),
+                validator: (value) {
+                  final washes = int.tryParse(value?.trim() ?? '');
+                  return washes == null || washes < 2 || washes > 100 ? l10n.loyaltyWashesInvalid : null;
+                },
+              ),
             const SizedBox(height: 24),
             DropdownButtonFormField<String>(
               initialValue: _locale,

@@ -1958,4 +1958,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enterCount => 'Enter the count';
+
+  @override
+  String get loyaltyCardTitle => 'Loyalty card';
+
+  @override
+  String get loyaltyEnabledField => 'Turn on the loyalty card';
+
+  @override
+  String get loyaltyEnabledHint =>
+      'A registered customer earns a stamp for each paid visit, and a free wash when the card is full. Turning it off keeps their stamps.';
+
+  @override
+  String get loyaltyWashesField => 'Visits needed for a free wash';
+
+  @override
+  String get loyaltyWashesInvalid => 'From 2 to 100';
+
+  @override
+  String loyaltyProgress(int stamps, int required) {
+    return '$stamps of $required visits';
+  }
+
+  @override
+  String get loyaltyEarned => 'This customer has earned a free wash';
+
+  @override
+  String get loyaltyUseFreeWash => 'Use the free wash';
+
+  @override
+  String get loyaltyFreeWashHint =>
+      'Covers the cheapest wash on the order. Add-ons are still paid for, and packages are not covered.';
 }

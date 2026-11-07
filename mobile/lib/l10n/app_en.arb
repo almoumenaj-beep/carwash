@@ -1071,5 +1071,24 @@
         "type": "int"
       }
     }
+  },
+  "loyaltyCardTitle": "Loyalty card",
+  "loyaltyEnabledField": "Turn on the loyalty card",
+  "loyaltyEnabledHint": "A registered customer earns a stamp for each paid visit, and a free wash when the card is full. Turning it off keeps their stamps.",
+  "loyaltyWashesField": "Visits needed for a free wash",
+  "loyaltyWashesInvalid": "From 2 to 100",
+  "loyaltyProgress": "{stamps} of {required} visits",
+  "loyaltyEarned": "This customer has earned a free wash",
+  "loyaltyUseFreeWash": "Use the free wash",
+  "loyaltyFreeWashHint": "Covers the cheapest wash on the order. Add-ons are still paid for, and packages are not covered.",
+  "@loyaltyProgress": {
+    "placeholders": {
+      "stamps": {
+        "type": "int"
+      },
+      "required": {
+        "type": "int"
+      }
+    }
   }
 }

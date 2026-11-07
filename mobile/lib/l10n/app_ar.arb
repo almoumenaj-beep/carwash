@@ -584,5 +584,14 @@
   "breakdownReasonField": "ما سبب العطل؟",
   "breakdownHistory": "سجل الأعطال",
   "uncountedShiftsTitle": "كاشير أُقفل تلقائياً ولم يُعدّ درجه بعد",
-  "enterCount": "إدخال المعدود"
+  "enterCount": "إدخال المعدود",
+  "loyaltyCardTitle": "بطاقة الولاء",
+  "loyaltyEnabledField": "تفعيل بطاقة الولاء",
+  "loyaltyEnabledHint": "يكسب العميل المسجّل ختماً عن كل زيارة مدفوعة، وغسلة مجانية عند اكتمال البطاقة. إيقافها يحفظ أختام العملاء.",
+  "loyaltyWashesField": "عدد الزيارات للحصول على غسلة مجانية",
+  "loyaltyWashesInvalid": "من 2 إلى 100",
+  "loyaltyProgress": "{stamps} من {required} زيارات",
+  "loyaltyEarned": "يستحق هذا العميل غسلة مجانية",
+  "loyaltyUseFreeWash": "استخدام الغسلة المجانية",
+  "loyaltyFreeWashHint": "تشمل أرخص غسلة في الطلب. الإضافات تبقى مدفوعة، والباقات غير مشمولة."
 }

@@ -35,14 +35,19 @@ class NamedRef {
 }
 
 class OrderCustomer {
-  const OrderCustomer({required this.id, required this.name, required this.phone});
+  const OrderCustomer({required this.id, required this.name, required this.phone, this.loyaltyStamps = 0});
 
-  factory OrderCustomer.fromJson(Map<String, dynamic> json) =>
-      OrderCustomer(id: json['id'] as String, name: json['name'] as String?, phone: json['phone'] as String);
+  factory OrderCustomer.fromJson(Map<String, dynamic> json) => OrderCustomer(
+    id: json['id'] as String,
+    name: json['name'] as String?,
+    phone: json['phone'] as String,
+    loyaltyStamps: json['loyalty_stamps'] as int? ?? 0,
+  );
 
   final String id;
   final String? name;
   final String phone;
+  final int loyaltyStamps;
 }
 
 /// A service on an order, priced when the car was checked in.

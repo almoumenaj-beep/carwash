@@ -10,6 +10,8 @@ class AppSettings {
     required this.pricesIncludeVat,
     required this.vatNumber,
     this.appointmentGraceMinutes,
+    this.loyaltyEnabled = false,
+    this.loyaltyWashesRequired = 10,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -22,6 +24,8 @@ class AppSettings {
     pricesIncludeVat: json['prices_include_vat'] as bool,
     vatNumber: json['vat_number'] as String?,
     appointmentGraceMinutes: json['appointment_grace_minutes'] as int?,
+    loyaltyEnabled: json['loyalty_enabled'] as bool? ?? false,
+    loyaltyWashesRequired: json['loyalty_washes_required'] as int? ?? 10,
   );
 
   final String name;
@@ -40,4 +44,8 @@ class AppSettings {
   /// Minutes after its time a booked car may still come before the booking becomes a no-show; null leaves late
   /// bookings to the staff.
   final int? appointmentGraceMinutes;
+
+  /// The loyalty card: a stamp for each paid visit, and a free wash after [loyaltyWashesRequired] of them.
+  final bool loyaltyEnabled;
+  final int loyaltyWashesRequired;
 }

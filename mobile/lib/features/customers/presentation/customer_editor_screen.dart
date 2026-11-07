@@ -10,6 +10,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../catalog/data/catalog_repository.dart';
 import '../../catalog/domain/catalog.dart';
+import '../../settings/data/settings_repository.dart';
 import '../data/customers_repository.dart';
 import '../domain/customer.dart';
 
@@ -294,6 +295,28 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
               value: _marketingConsent,
               onChanged: canEdit ? (value) => setState(() => _marketingConsent = value) : null,
             ),
+            if (widget.customer case final customer?)
+              if (ref.watch(settingsProvider).value case final settings? when settings.loyaltyEnabled)
+                Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.loyalty_outlined),
+                    title: Text(l10n.loyaltyCardTitle),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          customer.loyaltyStamps >= settings.loyaltyWashesRequired
+                              ? l10n.loyaltyEarned
+                              : l10n.loyaltyProgress(customer.loyaltyStamps, settings.loyaltyWashesRequired),
+                        ),
+                        const SizedBox(height: 6),
+                        LinearProgressIndicator(
+                          value: (customer.loyaltyStamps / settings.loyaltyWashesRequired).clamp(0, 1).toDouble(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             const Divider(height: 32),
             Row(
               children: [

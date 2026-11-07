@@ -3601,6 +3601,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the count'**
   String get enterCount;
+
+  /// No description provided for @loyaltyCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loyalty card'**
+  String get loyaltyCardTitle;
+
+  /// No description provided for @loyaltyEnabledField.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on the loyalty card'**
+  String get loyaltyEnabledField;
+
+  /// No description provided for @loyaltyEnabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A registered customer earns a stamp for each paid visit, and a free wash when the card is full. Turning it off keeps their stamps.'**
+  String get loyaltyEnabledHint;
+
+  /// No description provided for @loyaltyWashesField.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits needed for a free wash'**
+  String get loyaltyWashesField;
+
+  /// No description provided for @loyaltyWashesInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'From 2 to 100'**
+  String get loyaltyWashesInvalid;
+
+  /// No description provided for @loyaltyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{stamps} of {required} visits'**
+  String loyaltyProgress(int stamps, int required);
+
+  /// No description provided for @loyaltyEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'This customer has earned a free wash'**
+  String get loyaltyEarned;
+
+  /// No description provided for @loyaltyUseFreeWash.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the free wash'**
+  String get loyaltyUseFreeWash;
+
+  /// No description provided for @loyaltyFreeWashHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Covers the cheapest wash on the order. Add-ons are still paid for, and packages are not covered.'**
+  String get loyaltyFreeWashHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

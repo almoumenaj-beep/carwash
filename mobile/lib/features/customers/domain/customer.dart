@@ -8,6 +8,7 @@ class Customer {
     required this.marketingConsent,
     required this.notes,
     required this.vehicles,
+    this.loyaltyStamps = 0,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
@@ -17,6 +18,7 @@ class Customer {
     email: json['email'] as String?,
     marketingConsent: json['marketing_consent'] as bool,
     notes: json['notes'] as String?,
+    loyaltyStamps: json['loyalty_stamps'] as int? ?? 0,
     vehicles: [
       for (final vehicle in (json['vehicles'] as List?) ?? const []) Vehicle.fromJson(vehicle as Map<String, dynamic>),
     ],
@@ -28,6 +30,9 @@ class Customer {
   final String? email;
   final bool marketingConsent;
   final String? notes;
+
+  /// Stamps on the loyalty card, shared by all branches.
+  final int loyaltyStamps;
   final List<Vehicle> vehicles;
 
   /// The name, or the phone number for customers who gave no name.

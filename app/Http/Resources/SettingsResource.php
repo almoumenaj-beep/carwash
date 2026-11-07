@@ -32,6 +32,8 @@ class SettingsResource extends JsonResource
             'prices_include_vat' => $this->prices_include_vat,
             'vat_number' => $this->vat_number,
             'appointment_grace_minutes' => $this->appointment_grace_minutes,
+            'loyalty_enabled' => $this->loyalty_enabled,
+            'loyalty_washes_required' => $this->loyalty_washes_required,
         ];
     }
 }

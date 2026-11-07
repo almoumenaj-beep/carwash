@@ -33,6 +33,7 @@ class Customer extends Model
      */
     protected $attributes = [
         'marketing_consent' => false,
+        'loyalty_stamps' => 0,
     ];
 
     /**
@@ -46,6 +47,7 @@ class Customer extends Model
             'marketing_consent' => 'boolean',
             'marketing_consent_at' => 'datetime',
             'last_visit_at' => 'datetime',
+            'loyalty_stamps' => 'integer',
         ];
     }
 

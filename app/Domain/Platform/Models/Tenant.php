@@ -17,7 +17,7 @@ use NumberFormatter;
 /**
  * A car wash business subscribed to the platform. Every operational record belongs to one tenant.
  */
-#[Fillable(['name', 'slug', 'locale', 'currency', 'timezone', 'vat_rate_bps', 'prices_include_vat', 'vat_number', 'appointment_grace_minutes'])]
+#[Fillable(['name', 'slug', 'locale', 'currency', 'timezone', 'vat_rate_bps', 'prices_include_vat', 'vat_number', 'appointment_grace_minutes', 'loyalty_enabled', 'loyalty_washes_required'])]
 #[UseFactory(TenantFactory::class)]
 class Tenant extends Model
 {
@@ -35,6 +35,8 @@ class Tenant extends Model
         'vat_rate_bps' => 1000,
         'prices_include_vat' => true,
         'appointment_grace_minutes' => 30,
+        'loyalty_enabled' => false,
+        'loyalty_washes_required' => 10,
     ];
 
     /**
@@ -49,6 +51,8 @@ class Tenant extends Model
             'vat_rate_bps' => 'integer',
             'prices_include_vat' => 'boolean',
             'appointment_grace_minutes' => 'integer',
+            'loyalty_enabled' => 'boolean',
+            'loyalty_washes_required' => 'integer',
         ];
     }
 

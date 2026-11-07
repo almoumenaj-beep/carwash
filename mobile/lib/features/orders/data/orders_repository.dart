@@ -92,6 +92,7 @@ class OrdersRepository {
     String method = 'cash',
     int? tendered,
     bool deliver = false,
+    bool useLoyaltyReward = false,
   }) async {
     final response = await sendRequest(
       () => _dio.post<Map<String, dynamic>>(
@@ -103,6 +104,7 @@ class OrdersRepository {
           'discount_reason': ?discountReason,
           'tendered': ?tendered,
           'deliver': deliver,
+          if (useLoyaltyReward) 'use_loyalty_reward': true,
         },
       ),
     );

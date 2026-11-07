@@ -39,6 +39,7 @@ class CheckoutOrderRequest extends FormRequest
             'method' => ['sometimes', Rule::enum(PaymentMethod::class)],
             'tendered' => ['nullable', 'integer', 'min:0'],
             'deliver' => ['sometimes', 'boolean'],
+            'use_loyalty_reward' => ['sometimes', 'boolean'],
         ];
     }
 }
