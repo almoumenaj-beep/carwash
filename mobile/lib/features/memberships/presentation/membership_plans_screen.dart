@@ -31,15 +31,18 @@ class MembershipPlansScreen extends ConsumerWidget {
         label: Text(l10n.addMembershipPlan),
       ),
       body: switch (ref.watch(membershipPlansProvider)) {
-        AsyncData(:final value) when value.isEmpty => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: Text(l10n.noMembershipPlans, textAlign: TextAlign.center),
-          ),
-        ),
         AsyncData(:final value) => ListView(
           padding: const EdgeInsets.only(bottom: 96),
           children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text(l10n.membershipPlansHint, style: Theme.of(context).textTheme.bodySmall),
+            ),
+            if (value.isEmpty)
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text(l10n.noMembershipPlans, textAlign: TextAlign.center),
+              ),
             for (final plan in value)
               ListTile(
                 leading: const Icon(Icons.card_membership_outlined),

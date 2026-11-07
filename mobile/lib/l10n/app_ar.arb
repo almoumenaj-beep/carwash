@@ -611,11 +611,11 @@
   "noPointsYet": "لا توجد حركات نقاط بعد",
   "membershipsTitle": "العضويات",
   "membershipsEnabledField": "تفعيل العضويات",
-  "membershipsEnabledHint": "بيع باقة غسلات أو اشتراك بالشروط التي تحددها. إيقافها يحفظ ما اشتراه العملاء.",
+  "membershipsEnabledHint": "بيع غسلات مدفوعة مقدماً أو اشتراك بالشروط التي تحددها. إيقافها يحفظ ما اشتراه العملاء.",
   "membershipPlansTitle": "خطط العضويات",
   "addMembershipPlan": "إضافة خطة",
   "noMembershipPlans": "لا توجد خطط بعد. يضيفها المالك من الإعدادات.",
-  "membershipNameHint": "مثال: باقة 10 غسلات",
+  "membershipNameHint": "مثال: عضوية 10 غسلات",
   "membershipPriceField": "السعر",
   "membershipUnlimited": "غسلات بلا حد",
   "membershipWashesField": "عدد الغسلات",
@@ -662,5 +662,6 @@
   "refundHint": "أرجع المبلغ بنفسك بنفس طريقة الدفع، والبرنامج يسجل ذلك فقط. تبقى الفاتورة مسجلة كمستردة، ويرجع الطلب غير مدفوع، وترجع النقاط أو غسلة العضوية.",
   "pointsMovementRefund": "تصحيح نقاط بعد استرداد",
   "settingsGeneralSection": "بيانات المغسلة",
-  "settingsRewardsSection": "العضويات والنقاط"
+  "settingsRewardsSection": "العضويات والنقاط",
+  "membershipPlansHint": "غسلات يدفعها العميل مقدماً ويستخدمها على عدة زيارات. أما جمع عدة خدمات في زيارة واحدة بسعر أقل، فهو «باقة» تضيفها من الخدمات والأسعار."
 }

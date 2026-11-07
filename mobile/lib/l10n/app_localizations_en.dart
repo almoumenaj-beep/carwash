@@ -2052,7 +2052,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get membershipsEnabledHint =>
-      'Sell a wash pack or a subscription, with the terms you set. Turning it off keeps what customers bought.';
+      'Sell washes paid in advance, or a subscription, with the terms you set. Turning it off keeps what customers bought.';
 
   @override
   String get membershipPlansTitle => 'Membership plans';
@@ -2064,7 +2064,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMembershipPlans => 'No plans yet. The owner adds them in settings.';
 
   @override
-  String get membershipNameHint => 'e.g. 10 washes';
+  String get membershipNameHint => 'e.g. 10-wash membership';
 
   @override
   String get membershipPriceField => 'Price';
@@ -2222,4 +2222,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsRewardsSection => 'Memberships and points';
+
+  @override
+  String get membershipPlansHint =>
+      'Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead.';
 }

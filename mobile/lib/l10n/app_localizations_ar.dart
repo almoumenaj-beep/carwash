@@ -2098,7 +2098,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get membershipsEnabledField => 'تفعيل العضويات';
 
   @override
-  String get membershipsEnabledHint => 'بيع باقة غسلات أو اشتراك بالشروط التي تحددها. إيقافها يحفظ ما اشتراه العملاء.';
+  String get membershipsEnabledHint =>
+      'بيع غسلات مدفوعة مقدماً أو اشتراك بالشروط التي تحددها. إيقافها يحفظ ما اشتراه العملاء.';
 
   @override
   String get membershipPlansTitle => 'خطط العضويات';
@@ -2110,7 +2111,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noMembershipPlans => 'لا توجد خطط بعد. يضيفها المالك من الإعدادات.';
 
   @override
-  String get membershipNameHint => 'مثال: باقة 10 غسلات';
+  String get membershipNameHint => 'مثال: عضوية 10 غسلات';
 
   @override
   String get membershipPriceField => 'السعر';
@@ -2268,4 +2269,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsRewardsSection => 'العضويات والنقاط';
+
+  @override
+  String get membershipPlansHint =>
+      'غسلات يدفعها العميل مقدماً ويستخدمها على عدة زيارات. أما جمع عدة خدمات في زيارة واحدة بسعر أقل، فهو «باقة» تضيفها من الخدمات والأسعار.';
 }

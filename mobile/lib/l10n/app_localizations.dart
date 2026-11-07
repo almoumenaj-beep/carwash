@@ -3761,7 +3761,7 @@ abstract class AppLocalizations {
   /// No description provided for @membershipsEnabledHint.
   ///
   /// In en, this message translates to:
-  /// **'Sell a wash pack or a subscription, with the terms you set. Turning it off keeps what customers bought.'**
+  /// **'Sell washes paid in advance, or a subscription, with the terms you set. Turning it off keeps what customers bought.'**
   String get membershipsEnabledHint;
 
   /// No description provided for @membershipPlansTitle.
@@ -3785,7 +3785,7 @@ abstract class AppLocalizations {
   /// No description provided for @membershipNameHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. 10 washes'**
+  /// **'e.g. 10-wash membership'**
   String get membershipNameHint;
 
   /// No description provided for @membershipPriceField.
@@ -4069,6 +4069,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Memberships and points'**
   String get settingsRewardsSection;
+
+  /// No description provided for @membershipPlansHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead.'**
+  String get membershipPlansHint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

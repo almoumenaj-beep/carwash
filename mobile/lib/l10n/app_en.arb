@@ -1152,11 +1152,11 @@
   },
   "membershipsTitle": "Memberships",
   "membershipsEnabledField": "Turn on memberships",
-  "membershipsEnabledHint": "Sell a wash pack or a subscription, with the terms you set. Turning it off keeps what customers bought.",
+  "membershipsEnabledHint": "Sell washes paid in advance, or a subscription, with the terms you set. Turning it off keeps what customers bought.",
   "membershipPlansTitle": "Membership plans",
   "addMembershipPlan": "Add a plan",
   "noMembershipPlans": "No plans yet. The owner adds them in settings.",
-  "membershipNameHint": "e.g. 10 washes",
+  "membershipNameHint": "e.g. 10-wash membership",
   "membershipPriceField": "Price",
   "membershipUnlimited": "No limit on washes",
   "membershipWashesField": "Number of washes",
@@ -1248,5 +1248,6 @@
     }
   },
   "settingsGeneralSection": "Car wash details",
-  "settingsRewardsSection": "Memberships and points"
+  "settingsRewardsSection": "Memberships and points",
+  "membershipPlansHint": "Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead."
 }
