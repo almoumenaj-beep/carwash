@@ -1947,4 +1947,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileSaved => 'تم تعديل البيانات';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get newPasswordField => 'كلمة المرور الجديدة (8 أحرف فأكثر)';
+
+  @override
+  String get confirmPasswordField => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get passwordTooShort => '8 أحرف على الأقل';
+
+  @override
+  String get passwordChanged => 'تم تغيير كلمة المرور';
 }

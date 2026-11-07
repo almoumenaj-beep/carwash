@@ -1899,4 +1899,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSaved => 'Profile updated';
+
+  @override
+  String get changePassword => 'Change password';
+
+  @override
+  String get newPasswordField => 'New password (8+ characters)';
+
+  @override
+  String get confirmPasswordField => 'Confirm new password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordTooShort => 'At least 8 characters';
+
+  @override
+  String get passwordChanged => 'Password changed';
 }

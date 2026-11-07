@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\ExpenseController;
 use App\Http\Controllers\Api\V1\FinancialReportController;
 use App\Http\Controllers\Api\V1\InventoryController;
 use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\MePasswordController;
 use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\MeProfileController;
 use App\Http\Controllers\Api\V1\OrderCheckoutController;
@@ -51,6 +52,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('me', MeController::class)->name('me');
         Route::put('me/profile', [MeProfileController::class, 'update'])->name('me.profile.update');
+        Route::put('me/password', [MePasswordController::class, 'update'])->name('me.password.update');
         Route::put('me/pin', [MePinController::class, 'update'])->name('me.pin.update');
 
         Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');

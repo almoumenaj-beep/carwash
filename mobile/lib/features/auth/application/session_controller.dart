@@ -27,6 +27,9 @@ class SessionController extends AsyncNotifier<Me?> {
     state = AsyncData(await _repository.updateProfile(email: email, phone: phone));
   }
 
+  Future<void> setPassword({required String currentPassword, required String password}) =>
+      _repository.setPassword(currentPassword: currentPassword, password: password);
+
   Future<void> signOut() async {
     await _repository.signOut();
     state = const AsyncData(null);

@@ -95,6 +95,15 @@ class AuthRepository {
     );
   }
 
+  Future<void> setPassword({required String currentPassword, required String password}) async {
+    await _send(
+      () => _dio.put<void>(
+        '/me/password',
+        data: {'current_password': currentPassword, 'password': password, 'password_confirmation': password},
+      ),
+    );
+  }
+
   /// Updates the signed-in staff member's own email or phone.
   Future<Me> updateProfile({String? email, String? phone}) async {
     final response = await _send(

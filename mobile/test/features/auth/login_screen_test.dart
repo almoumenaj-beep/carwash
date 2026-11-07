@@ -104,6 +104,9 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> setPin({required String currentPassword, required String pin}) => throw UnimplementedError();
 
   @override
+  Future<void> setPassword({required String currentPassword, required String password}) => throw UnimplementedError();
+
+  @override
   Future<Me> updateProfile({String? email, String? phone}) => throw UnimplementedError();
 
   @override

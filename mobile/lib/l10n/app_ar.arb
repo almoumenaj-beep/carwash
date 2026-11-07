@@ -567,5 +567,11 @@
   "autoClosedShiftWarning": "كاشير سابق أُقفل تلقائياً عند وقت الإغلاق. تأكد من مطابقة الدرج قبل فتح كاشير جديد.",
   "noBookingActions": "لا تتوفر إجراءات على هذا الحجز.",
   "editProfile": "تعديل البيانات الشخصية",
-  "profileSaved": "تم تعديل البيانات"
+  "profileSaved": "تم تعديل البيانات",
+  "changePassword": "تغيير كلمة المرور",
+  "newPasswordField": "كلمة المرور الجديدة (8 أحرف فأكثر)",
+  "confirmPasswordField": "تأكيد كلمة المرور الجديدة",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "passwordTooShort": "8 أحرف على الأقل",
+  "passwordChanged": "تم تغيير كلمة المرور"
 }

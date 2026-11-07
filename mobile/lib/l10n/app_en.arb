@@ -1033,5 +1033,11 @@
   "autoClosedShiftWarning": "A previous shift was closed automatically at closing time. Make sure the drawer matches before opening a new one.",
   "noBookingActions": "No actions are available on this booking.",
   "editProfile": "Edit my profile",
-  "profileSaved": "Profile updated"
+  "profileSaved": "Profile updated",
+  "changePassword": "Change password",
+  "newPasswordField": "New password (8+ characters)",
+  "confirmPasswordField": "Confirm new password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordTooShort": "At least 8 characters",
+  "passwordChanged": "Password changed"
 }

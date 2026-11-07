@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Domain\Identity\Enums\DefaultRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
 use Tests\Concerns\BuildsCarWash;
 use Tests\TestCase;
@@ -66,5 +67,25 @@ class OwnProfileTest extends TestCase
 
         Sanctum::actingAs($this->washer);
         $this->patchJson("/api/v1/users/{$other->id}", ['name' => 'Changed'])->assertForbidden();
+    }
+
+    public function test_any_staff_member_changes_their_own_password_with_the_current_one(): void
+    {
+        Sanctum::actingAs($this->washer);
+
+        $this->putJson('/api/v1/me/password', [
+            'current_password' => 'wrong',
+            'password' => 'a-new-password',
+            'password_confirmation' => 'a-new-password',
+        ])->assertUnprocessable()->assertJsonValidationErrors('current_password');
+
+        $this->putJson('/api/v1/me/password', [
+            'current_password' => 'password',
+            'password' => 'a-new-password',
+            'password_confirmation' => 'a-new-password',
+        ])->assertNoContent();
+
+        $this->assertTrue(Hash::check('a-new-password', $this->washer->fresh()->password));
+        $this->assertDatabaseHas('activity_log', ['event' => 'user.password_changed', 'subject_id' => $this->washer->id]);
     }
 }
