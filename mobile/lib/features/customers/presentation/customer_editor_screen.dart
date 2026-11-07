@@ -13,6 +13,7 @@ import '../../catalog/domain/catalog.dart';
 import '../../settings/data/settings_repository.dart';
 import '../data/customers_repository.dart';
 import '../domain/customer.dart';
+import 'points_card.dart';
 
 /// Registers a customer ([customerId] null) with their cars, or shows/edits one.
 /// Read-only for staff who may only view customers.
@@ -295,28 +296,8 @@ class _CustomerFormState extends ConsumerState<_CustomerForm> {
               value: _marketingConsent,
               onChanged: canEdit ? (value) => setState(() => _marketingConsent = value) : null,
             ),
-            if (widget.customer case final customer?)
-              if (ref.watch(settingsProvider).value case final settings? when settings.loyaltyEnabled)
-                Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.loyalty_outlined),
-                    title: Text(l10n.loyaltyCardTitle),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          customer.loyaltyStamps >= settings.loyaltyWashesRequired
-                              ? l10n.loyaltyEarned
-                              : l10n.loyaltyProgress(customer.loyaltyStamps, settings.loyaltyWashesRequired),
-                        ),
-                        const SizedBox(height: 6),
-                        LinearProgressIndicator(
-                          value: (customer.loyaltyStamps / settings.loyaltyWashesRequired).clamp(0, 1).toDouble(),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+            if (widget.customer case final customer? when ref.watch(settingsProvider).value?.pointsEnabled ?? false)
+              PointsCard(customer: customer),
             const Divider(height: 32),
             Row(
               children: [

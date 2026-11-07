@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/money/money_format.dart';
 import '../../../core/network/api_problem.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
@@ -47,8 +48,15 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
   late final _vatNumber = TextEditingController(text: widget.settings.vatNumber);
   late final _graceMinutes = TextEditingController(text: widget.settings.appointmentGraceMinutes?.toString());
   late bool _pricesIncludeVat = widget.settings.pricesIncludeVat;
-  late bool _loyaltyEnabled = widget.settings.loyaltyEnabled;
-  late final _loyaltyWashes = TextEditingController(text: '${widget.settings.loyaltyWashesRequired}');
+  late bool _pointsEnabled = widget.settings.pointsEnabled;
+  late final _pointsEarnAmount = TextEditingController(
+    text: ref.read(moneyFormatProvider).toInput(widget.settings.pointsEarnAmount),
+  );
+  late final _pointsRedeemPoints = TextEditingController(text: '${widget.settings.pointsRedeemPoints}');
+  late final _pointsRedeemValue = TextEditingController(
+    text: ref.read(moneyFormatProvider).toInput(widget.settings.pointsRedeemValue),
+  );
+  late final _pointsExpiryMonths = TextEditingController(text: widget.settings.pointsExpiryMonths?.toString() ?? '');
   late String _locale = widget.settings.locale;
   late String _timezone = widget.settings.timezone;
   bool _saving = false;
@@ -62,11 +70,15 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
     _vatRate.dispose();
     _vatNumber.dispose();
     _graceMinutes.dispose();
-    _loyaltyWashes.dispose();
+    _pointsEarnAmount.dispose();
+    _pointsRedeemPoints.dispose();
+    _pointsRedeemValue.dispose();
+    _pointsExpiryMonths.dispose();
     super.dispose();
   }
 
   Future<void> _save() async {
+    final money = ref.read(moneyFormatProvider);
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -83,8 +95,13 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
         'prices_include_vat': _pricesIncludeVat,
         'vat_number': _vatNumber.text.trim().isEmpty ? null : _vatNumber.text.trim(),
         'appointment_grace_minutes': int.tryParse(_graceMinutes.text.trim()),
-        'loyalty_enabled': _loyaltyEnabled,
-        if (_loyaltyEnabled) 'loyalty_washes_required': int.parse(_loyaltyWashes.text.trim()),
+        'points_enabled': _pointsEnabled,
+        if (_pointsEnabled) ...{
+          'points_earn_amount': money.parse(_pointsEarnAmount.text),
+          'points_redeem_points': int.parse(_pointsRedeemPoints.text.trim()),
+          'points_redeem_value': money.parse(_pointsRedeemValue.text),
+          'points_expiry_months': int.tryParse(_pointsExpiryMonths.text.trim()),
+        },
         'locale': _locale,
         'timezone': _timezone,
       });
@@ -109,6 +126,11 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final money = ref.watch(moneyFormatProvider);
+    final earnPreview = money.parse(_pointsEarnAmount.text);
+    final redeemPreview = money.parse(_pointsRedeemValue.text);
+    final redeemPointsPreview = int.tryParse(_pointsRedeemPoints.text.trim());
+    String? positiveMoney(String? value) => (money.parse(value ?? '') ?? 0) < 1 ? l10n.pointsFieldInvalid : null;
     final timezones = {..._gulfTimezones, widget.settings.timezone}.toList();
     final generalError = _problem != null && _problem!.errors.isEmpty ? problemMessage(context, _problem!) : null;
 
@@ -183,28 +205,78 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
               },
             ),
             const SizedBox(height: 24),
-            Text(l10n.loyaltyCardTitle, style: theme.textTheme.titleMedium),
+            Text(l10n.pointsTitle, style: theme.textTheme.titleMedium),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
-              title: Text(l10n.loyaltyEnabledField),
-              subtitle: Text(l10n.loyaltyEnabledHint),
-              value: _loyaltyEnabled,
-              onChanged: (value) => setState(() => _loyaltyEnabled = value),
+              title: Text(l10n.pointsEnabledField),
+              subtitle: Text(l10n.pointsEnabledHint),
+              value: _pointsEnabled,
+              onChanged: (value) => setState(() => _pointsEnabled = value),
             ),
-            if (_loyaltyEnabled)
+            if (_pointsEnabled) ...[
               TextFormField(
-                controller: _loyaltyWashes,
+                controller: _pointsEarnAmount,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: l10n.pointsEarnField,
+                  suffixText: money.currency,
+                  errorText: _problem?.fieldError('points_earn_amount'),
+                ),
+                validator: positiveMoney,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _pointsRedeemPoints,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
-                  labelText: l10n.loyaltyWashesField,
-                  errorText: _problem?.fieldError('loyalty_washes_required'),
+                  labelText: l10n.pointsRedeemPointsField,
+                  errorText: _problem?.fieldError('points_redeem_points'),
+                ),
+                validator: (value) => (int.tryParse(value?.trim() ?? '') ?? 0) < 1 ? l10n.pointsFieldInvalid : null,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _pointsRedeemValue,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: l10n.pointsRedeemValueField,
+                  suffixText: money.currency,
+                  errorText: _problem?.fieldError('points_redeem_value'),
+                ),
+                validator: positiveMoney,
+                onChanged: (_) => setState(() {}),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _pointsExpiryMonths,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                  labelText: l10n.pointsExpiryField,
+                  suffixText: l10n.pointsMonthsUnit,
+                  helperText: l10n.pointsExpiryHint,
+                  helperMaxLines: 2,
+                  errorText: _problem?.fieldError('points_expiry_months'),
                 ),
                 validator: (value) {
-                  final washes = int.tryParse(value?.trim() ?? '');
-                  return washes == null || washes < 2 || washes > 100 ? l10n.loyaltyWashesInvalid : null;
+                  final text = value?.trim() ?? '';
+                  final months = int.tryParse(text);
+                  return text.isNotEmpty && (months == null || months < 1 || months > 120)
+                      ? l10n.pointsExpiryInvalid
+                      : null;
                 },
               ),
+              if (earnPreview != null && redeemPreview != null && redeemPointsPreview != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  l10n.pointsRuleSummary(money.format(earnPreview), redeemPointsPreview, money.format(redeemPreview)),
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
+            ],
             const SizedBox(height: 24),
             DropdownButtonFormField<String>(
               initialValue: _locale,

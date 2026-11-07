@@ -30,8 +30,11 @@ class UpdateSettingsRequest extends FormRequest
             'vat_rate' => ['sometimes', 'required', 'numeric', 'between:0,100', 'decimal:0,2'],
             'prices_include_vat' => ['sometimes', 'required', 'boolean'],
             'vat_number' => ['sometimes', 'nullable', 'string', 'max:30'],
-            'loyalty_enabled' => ['sometimes', 'boolean'],
-            'loyalty_washes_required' => ['sometimes', 'integer', 'between:2,100'],
+            'points_enabled' => ['sometimes', 'boolean'],
+            'points_earn_amount' => ['sometimes', 'integer', 'between:1,100000000'],
+            'points_redeem_points' => ['sometimes', 'integer', 'between:1,1000000'],
+            'points_redeem_value' => ['sometimes', 'integer', 'between:1,100000000'],
+            'points_expiry_months' => ['sometimes', 'nullable', 'integer', 'between:1,120'],
             'appointment_grace_minutes' => ['sometimes', 'nullable', 'integer', 'between:5,720'],
         ];
     }

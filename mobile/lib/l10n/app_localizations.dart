@@ -3602,59 +3602,149 @@ abstract class AppLocalizations {
   /// **'Enter the count'**
   String get enterCount;
 
-  /// No description provided for @loyaltyCardTitle.
+  /// No description provided for @pointsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Loyalty card'**
-  String get loyaltyCardTitle;
+  /// **'Points system'**
+  String get pointsTitle;
 
-  /// No description provided for @loyaltyEnabledField.
+  /// No description provided for @pointsEnabledField.
   ///
   /// In en, this message translates to:
-  /// **'Turn on the loyalty card'**
-  String get loyaltyEnabledField;
+  /// **'Turn on points'**
+  String get pointsEnabledField;
 
-  /// No description provided for @loyaltyEnabledHint.
+  /// No description provided for @pointsEnabledHint.
   ///
   /// In en, this message translates to:
-  /// **'A registered customer earns a stamp for each paid visit, and a free wash when the card is full. Turning it off keeps their stamps.'**
-  String get loyaltyEnabledHint;
+  /// **'A registered customer earns points on what they pay and spends them for money off. Turning it off keeps their points.'**
+  String get pointsEnabledHint;
 
-  /// No description provided for @loyaltyWashesField.
+  /// No description provided for @pointsEarnField.
   ///
   /// In en, this message translates to:
-  /// **'Visits needed for a free wash'**
-  String get loyaltyWashesField;
+  /// **'Paid to earn one point'**
+  String get pointsEarnField;
 
-  /// No description provided for @loyaltyWashesInvalid.
+  /// No description provided for @pointsRedeemPointsField.
   ///
   /// In en, this message translates to:
-  /// **'From 2 to 100'**
-  String get loyaltyWashesInvalid;
+  /// **'Points to spend at a time'**
+  String get pointsRedeemPointsField;
 
-  /// No description provided for @loyaltyProgress.
+  /// No description provided for @pointsRedeemValueField.
   ///
   /// In en, this message translates to:
-  /// **'{stamps} of {required} visits'**
-  String loyaltyProgress(int stamps, int required);
+  /// **'Money off for those points'**
+  String get pointsRedeemValueField;
 
-  /// No description provided for @loyaltyEarned.
+  /// No description provided for @pointsExpiryField.
   ///
   /// In en, this message translates to:
-  /// **'This customer has earned a free wash'**
-  String get loyaltyEarned;
+  /// **'Points lapse after no activity for'**
+  String get pointsExpiryField;
 
-  /// No description provided for @loyaltyUseFreeWash.
+  /// No description provided for @pointsExpiryHint.
   ///
   /// In en, this message translates to:
-  /// **'Use the free wash'**
-  String get loyaltyUseFreeWash;
+  /// **'Leave empty so points never lapse.'**
+  String get pointsExpiryHint;
 
-  /// No description provided for @loyaltyFreeWashHint.
+  /// No description provided for @pointsMonthsUnit.
   ///
   /// In en, this message translates to:
-  /// **'Covers the cheapest wash on the order. Add-ons are still paid for, and packages are not covered.'**
-  String get loyaltyFreeWashHint;
+  /// **'months'**
+  String get pointsMonthsUnit;
+
+  /// No description provided for @pointsFieldInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter more than zero'**
+  String get pointsFieldInvalid;
+
+  /// No description provided for @pointsExpiryInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'From 1 to 120 months'**
+  String get pointsExpiryInvalid;
+
+  /// No description provided for @pointsRuleSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Every {earn} earns a point; {points} points give {value} off.'**
+  String pointsRuleSummary(String earn, int points, String value);
+
+  /// No description provided for @customerPointsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer points'**
+  String get customerPointsTitle;
+
+  /// No description provided for @pointsBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Balance: {count} points'**
+  String pointsBalance(int count);
+
+  /// No description provided for @pointsWillEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'This invoice earns {count} points'**
+  String pointsWillEarn(int count);
+
+  /// No description provided for @pointsNeedMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs {points} points to spend'**
+  String pointsNeedMore(int points);
+
+  /// No description provided for @pointsRedeemLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Spend {points} points = {value} off'**
+  String pointsRedeemLine(int points, String value);
+
+  /// No description provided for @pointsRedeemLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Spend fewer points'**
+  String get pointsRedeemLess;
+
+  /// No description provided for @pointsRedeemMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Spend more points'**
+  String get pointsRedeemMore;
+
+  /// No description provided for @pointsEarnedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Earned {earned} points; balance {balance}'**
+  String pointsEarnedNow(int earned, int balance);
+
+  /// No description provided for @pointsMovementEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Points earned'**
+  String get pointsMovementEarned;
+
+  /// No description provided for @pointsMovementRedeemed.
+  ///
+  /// In en, this message translates to:
+  /// **'Points spent'**
+  String get pointsMovementRedeemed;
+
+  /// No description provided for @pointsMovementExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Points lapsed'**
+  String get pointsMovementExpired;
+
+  /// No description provided for @noPointsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No points movements yet'**
+  String get noPointsYet;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

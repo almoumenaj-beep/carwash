@@ -13,6 +13,7 @@ import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../settings/data/settings_repository.dart';
+import '../../settings/domain/app_settings.dart';
 import '../../shifts/data/shifts_repository.dart';
 import '../data/orders_repository.dart';
 import '../domain/checkout_totals.dart';
@@ -37,7 +38,7 @@ class CheckoutScreen extends ConsumerWidget {
         order: order,
         vatRateBps: (settings.vatRate * 100).round(),
         pricesIncludeVat: settings.pricesIncludeVat,
-        loyaltyWashesRequired: settings.loyaltyEnabled ? settings.loyaltyWashesRequired : null,
+        points: settings.pointsEnabled ? settings : null,
       ),
       (AsyncError(:final error), _) || (_, AsyncError(:final error)) => Scaffold(
         appBar: AppBar(),
@@ -62,15 +63,15 @@ class _CheckoutForm extends ConsumerStatefulWidget {
     required this.order,
     required this.vatRateBps,
     required this.pricesIncludeVat,
-    required this.loyaltyWashesRequired,
+    required this.points,
   });
 
   final Order order;
   final int vatRateBps;
   final bool pricesIncludeVat;
 
-  /// Stamps needed for a free wash; null while the loyalty card is off.
-  final int? loyaltyWashesRequired;
+  /// The points rules; null while points are off.
+  final AppSettings? points;
 
   @override
   ConsumerState<_CheckoutForm> createState() => _CheckoutFormState();
@@ -82,7 +83,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
   final _tendered = TextEditingController();
   String _discountType = 'percent';
   String _method = 'cash';
-  bool _useFreeWash = false;
+  int _redeemSteps = 0;
   bool _saving = false;
   ApiProblem? _problem;
 
@@ -103,22 +104,29 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     return _discountType == 'amount' ? money.parse(text) : PercentFormat.parse(text);
   }
 
-  /// What the free wash takes off, like the server: the cheapest wash on the order. Add-ons and packages are not
-  /// covered, so an order with neither wash has nothing to take off.
-  int? get _freeWashPrice {
-    final prices = [
-      for (final item in widget.order.items)
-        if (!item.isAddon && !item.isPackage && item.unitPrice > 0) item.unitPrice,
-    ];
-    return prices.isEmpty ? null : prices.reduce((cheapest, price) => price < cheapest ? price : cheapest);
+  bool get _redeeming => _redeemSteps > 0;
+
+  /// How many steps of the points rate this customer can spend on this order: never more than they hold or the
+  /// order is worth.
+  int get _maxRedeemSteps {
+    final points = widget.points;
+    final balance = widget.order.customer?.pointsBalance;
+    if (points == null || balance == null) {
+      return 0;
+    }
+    final affordable = balance ~/ points.pointsRedeemPoints;
+    final worthwhile = widget.order.subtotal ~/ points.pointsRedeemValue;
+    return affordable < worthwhile ? affordable : worthwhile;
   }
 
   CheckoutTotals _totals(MoneyFormat money) {
     final value = _discountValue(money) ?? 0;
     return CheckoutTotals.of(
       subtotal: widget.order.subtotal,
-      discountAmount: _useFreeWash ? (_freeWashPrice ?? 0) : (_discountType == 'amount' ? value : 0),
-      discountPercentBps: !_useFreeWash && _discountType == 'percent' ? value : null,
+      discountAmount: _redeeming
+          ? _redeemSteps * widget.points!.pointsRedeemValue
+          : (_discountType == 'amount' ? value : 0),
+      discountPercentBps: !_redeeming && _discountType == 'percent' ? value : null,
       vatRateBps: widget.vatRateBps,
       pricesIncludeVat: widget.pricesIncludeVat,
     );
@@ -140,12 +148,12 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
           .read(ordersRepositoryProvider)
           .checkout(
             widget.order.id,
-            discountAmount: !_useFreeWash && totals.discount > 0 && _discountType == 'amount' ? totals.discount : null,
-            discountPercentBps: !_useFreeWash && totals.discount > 0 && _discountType == 'percent'
+            discountAmount: !_redeeming && totals.discount > 0 && _discountType == 'amount' ? totals.discount : null,
+            discountPercentBps: !_redeeming && totals.discount > 0 && _discountType == 'percent'
                 ? _discountValue(money)
                 : null,
-            discountReason: !_useFreeWash && totals.discount > 0 ? _reason.text.trim() : null,
-            useLoyaltyReward: _useFreeWash,
+            discountReason: !_redeeming && totals.discount > 0 ? _reason.text.trim() : null,
+            redeemPoints: _redeeming ? _redeemSteps * widget.points!.pointsRedeemPoints : null,
             method: _method,
             tendered: isCash ? tendered : null,
             deliver: deliver,
@@ -154,7 +162,7 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
       if (mounted) {
         await showDialog<void>(
           context: context,
-          builder: (_) => _PaidDialog(order: paid, loyaltyWashesRequired: widget.loyaltyWashesRequired),
+          builder: (_) => _PaidDialog(order: paid, pointsOn: widget.points != null),
         );
       }
       if (mounted) {
@@ -183,13 +191,13 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
     final limitBps = me?.maxDiscountBps ?? 0;
     final canDiscount = (me?.can(Permissions.posDiscount) ?? false) && limitBps > 0;
     final discountInvalid = _discountValue(money) == null;
-    final overLimit = !_useFreeWash && totals.discountBps > limitBps;
-    final reasonMissing = !_useFreeWash && totals.discount > 0 && _reason.text.trim().isEmpty;
+    final overLimit = !_redeeming && totals.discountBps > limitBps;
+    final reasonMissing = !_redeeming && totals.discount > 0 && _reason.text.trim().isEmpty;
     final tendered = _tendered.text.trim().isEmpty ? totals.total : money.parse(_tendered.text);
     final nothingToPay = totals.total == 0;
     final isCash = _method == 'cash';
-    final washesRequired = widget.loyaltyWashesRequired;
-    final stamps = order.customer?.loyaltyStamps;
+    final points = widget.points;
+    final pointsBalance = order.customer?.pointsBalance;
     final shortOfCash = isCash && (tendered == null || tendered < totals.total);
     final canDeliver = order.status == OrderStatus.ready && canMoveTo(ref, OrderStatus.delivered);
     final shift = ref.watch(currentShiftProvider(order.branchId));
@@ -254,30 +262,60 @@ class _CheckoutFormState extends ConsumerState<_CheckoutForm> {
               ),
             ),
           ),
-          if (washesRequired != null && stamps != null)
+          if (points != null && pointsBalance != null)
             Card(
               margin: const EdgeInsets.only(top: 16),
-              child: stamps >= washesRequired
-                  ? SwitchListTile(
-                      secondary: const Icon(Icons.loyalty_outlined),
-                      title: Text(l10n.loyaltyUseFreeWash),
-                      subtitle: Text(l10n.loyaltyFreeWashHint),
-                      value: _useFreeWash,
-                      onChanged: _freeWashPrice == null
-                          ? null
-                          : (value) => setState(() {
-                              _useFreeWash = value;
-                              _discount.clear();
-                              _reason.clear();
-                            }),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.stars_outlined),
+                    title: Text(l10n.pointsBalance(pointsBalance)),
+                    subtitle: Text(l10n.pointsWillEarn(totals.total ~/ points.pointsEarnAmount)),
+                  ),
+                  if (_maxRedeemSteps == 0)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(l10n.pointsNeedMore(points.pointsRedeemPoints), style: theme.textTheme.bodySmall),
+                      ),
                     )
-                  : ListTile(
-                      leading: const Icon(Icons.loyalty_outlined),
-                      title: Text(l10n.loyaltyCardTitle),
-                      subtitle: Text(l10n.loyaltyProgress(stamps, washesRequired)),
+                  else if (_discount.text.trim().isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              l10n.pointsRedeemLine(
+                                (_redeeming ? _redeemSteps : 1) * points.pointsRedeemPoints,
+                                money.format((_redeeming ? _redeemSteps : 1) * points.pointsRedeemValue),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            tooltip: l10n.pointsRedeemLess,
+                            icon: const Icon(Icons.remove_circle_outline),
+                            onPressed: _redeeming ? () => setState(() => _redeemSteps--) : null,
+                          ),
+                          Text('$_redeemSteps', style: theme.textTheme.titleMedium),
+                          IconButton(
+                            tooltip: l10n.pointsRedeemMore,
+                            icon: const Icon(Icons.add_circle_outline),
+                            onPressed: _redeemSteps < _maxRedeemSteps
+                                ? () => setState(() {
+                                    _redeemSteps++;
+                                    _reason.clear();
+                                  })
+                                : null,
+                          ),
+                        ],
+                      ),
                     ),
+                ],
+              ),
             ),
-          if (canDiscount && !_useFreeWash) ...[
+          if (canDiscount && !_redeeming) ...[
             const SizedBox(height: 16),
             Text(l10n.discountLabel, style: theme.textTheme.titleSmall),
             const SizedBox(height: 8),
@@ -440,10 +478,10 @@ List<int> _cashSuggestions(int total, MoneyFormat money) {
 }
 
 class _PaidDialog extends ConsumerWidget {
-  const _PaidDialog({required this.order, required this.loyaltyWashesRequired});
+  const _PaidDialog({required this.order, required this.pointsOn});
 
   final Order order;
-  final int? loyaltyWashesRequired;
+  final bool pointsOn;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -472,13 +510,9 @@ class _PaidDialog extends ConsumerWidget {
                   ),
                 ],
                 if (order.status == OrderStatus.delivered) ...[const SizedBox(height: 8), Text(l10n.statusDelivered)],
-                if (loyaltyWashesRequired != null && order.customer != null) ...[
+                if (pointsOn && order.customer != null) ...[
                   const SizedBox(height: 8),
-                  Text(
-                    order.customer!.loyaltyStamps >= loyaltyWashesRequired!
-                        ? l10n.loyaltyEarned
-                        : '${l10n.loyaltyCardTitle}: ${l10n.loyaltyProgress(order.customer!.loyaltyStamps, loyaltyWashesRequired!)}',
-                  ),
+                  Text(l10n.pointsEarnedNow(invoice.pointsEarned, order.customer!.pointsBalance)),
                 ],
               ],
             ),

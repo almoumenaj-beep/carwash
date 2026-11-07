@@ -46,17 +46,18 @@ class Invoice extends Model
             'prices_include_vat' => 'boolean',
             'vat_amount' => 'integer',
             'issued_at' => 'datetime',
-            'loyalty_reward' => 'boolean',
+            'points_redeemed' => 'integer',
+            'points_earned' => 'integer',
         ];
     }
 
     /**
-     * What a percentage commission is taken of: the final amount, except that a free wash is the car wash's own
-     * gift, so the washer is paid as if the customer had paid for it.
+     * What a percentage commission is taken of: the final amount, except that points are the car wash's own gift,
+     * so the washer is paid as if the customer had paid in full.
      */
     public function commissionBase(): int
     {
-        return $this->loyalty_reward
+        return $this->points_redeemed > 0
             ? Vat::of($this->subtotal, $this->vat_rate_bps, $this->prices_include_vat)['total']
             : $this->total;
     }

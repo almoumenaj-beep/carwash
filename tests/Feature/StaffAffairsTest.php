@@ -262,14 +262,14 @@ class StaffAffairsTest extends TestCase
             ->assertJsonPath('data.lines.0.net', 180);
     }
 
-    public function test_a_free_wash_pays_a_percentage_commission_as_if_the_customer_had_paid(): void
+    public function test_paying_with_points_pays_a_percentage_commission_as_if_the_customer_had_paid(): void
     {
-        $this->tenant->forceFill(['loyalty_enabled' => true, 'loyalty_washes_required' => 3])->save();
-        $this->customer->forceFill(['loyalty_stamps' => 3])->save();
+        $this->tenant->forceFill(['points_enabled' => true, 'points_redeem_points' => 10, 'points_redeem_value' => 2000])->save();
+        $this->customer->forceFill(['points_balance' => 10])->save();
         $this->setPayTerms($this->washer, ['monthly_salary' => 0, 'commission_type' => 'percent', 'commission_value' => 1000]);
 
         $orderId = $this->checkIn(['staff_ids' => [$this->washer->id]])->json('data.id');
-        $this->pay($orderId, extra: ['use_loyalty_reward' => true])->assertCreated()->assertJsonPath('data.invoice.total', 0);
+        $this->pay($orderId, extra: ['redeem_points' => 10])->assertCreated()->assertJsonPath('data.invoice.total', 0);
         $this->washAndPass($orderId, $this->washer);
         $this->moveTo($orderId, 'delivered', $this->cashier)->assertOk();
 

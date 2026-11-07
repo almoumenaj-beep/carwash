@@ -32,8 +32,11 @@ class SettingsResource extends JsonResource
             'prices_include_vat' => $this->prices_include_vat,
             'vat_number' => $this->vat_number,
             'appointment_grace_minutes' => $this->appointment_grace_minutes,
-            'loyalty_enabled' => $this->loyalty_enabled,
-            'loyalty_washes_required' => $this->loyalty_washes_required,
+            'points_enabled' => $this->points_enabled,
+            'points_earn_amount' => $this->points_earn_amount,
+            'points_redeem_points' => $this->points_redeem_points,
+            'points_redeem_value' => $this->points_redeem_value,
+            'points_expiry_months' => $this->points_expiry_months,
         ];
     }
 }

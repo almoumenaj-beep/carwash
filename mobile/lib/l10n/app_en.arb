@@ -1072,21 +1072,80 @@
       }
     }
   },
-  "loyaltyCardTitle": "Loyalty card",
-  "loyaltyEnabledField": "Turn on the loyalty card",
-  "loyaltyEnabledHint": "A registered customer earns a stamp for each paid visit, and a free wash when the card is full. Turning it off keeps their stamps.",
-  "loyaltyWashesField": "Visits needed for a free wash",
-  "loyaltyWashesInvalid": "From 2 to 100",
-  "loyaltyProgress": "{stamps} of {required} visits",
-  "loyaltyEarned": "This customer has earned a free wash",
-  "loyaltyUseFreeWash": "Use the free wash",
-  "loyaltyFreeWashHint": "Covers the cheapest wash on the order. Add-ons are still paid for, and packages are not covered.",
-  "@loyaltyProgress": {
+  "pointsTitle": "Points system",
+  "pointsEnabledField": "Turn on points",
+  "pointsEnabledHint": "A registered customer earns points on what they pay and spends them for money off. Turning it off keeps their points.",
+  "pointsEarnField": "Paid to earn one point",
+  "pointsRedeemPointsField": "Points to spend at a time",
+  "pointsRedeemValueField": "Money off for those points",
+  "pointsExpiryField": "Points lapse after no activity for",
+  "pointsExpiryHint": "Leave empty so points never lapse.",
+  "pointsMonthsUnit": "months",
+  "pointsFieldInvalid": "Enter more than zero",
+  "pointsExpiryInvalid": "From 1 to 120 months",
+  "pointsRuleSummary": "Every {earn} earns a point; {points} points give {value} off.",
+  "customerPointsTitle": "Customer points",
+  "pointsBalance": "Balance: {count} points",
+  "pointsWillEarn": "This invoice earns {count} points",
+  "pointsNeedMore": "Needs {points} points to spend",
+  "pointsRedeemLine": "Spend {points} points = {value} off",
+  "pointsRedeemLess": "Spend fewer points",
+  "pointsRedeemMore": "Spend more points",
+  "pointsEarnedNow": "Earned {earned} points; balance {balance}",
+  "pointsMovementEarned": "Points earned",
+  "pointsMovementRedeemed": "Points spent",
+  "pointsMovementExpired": "Points lapsed",
+  "noPointsYet": "No points movements yet",
+  "@pointsRuleSummary": {
     "placeholders": {
-      "stamps": {
+      "earn": {
+        "type": "String"
+      },
+      "points": {
         "type": "int"
       },
-      "required": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@pointsBalance": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pointsWillEarn": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pointsNeedMore": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      }
+    }
+  },
+  "@pointsRedeemLine": {
+    "placeholders": {
+      "points": {
+        "type": "int"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "@pointsEarnedNow": {
+    "placeholders": {
+      "earned": {
+        "type": "int"
+      },
+      "balance": {
         "type": "int"
       }
     }

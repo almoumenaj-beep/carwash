@@ -1,3 +1,31 @@
+/// One movement of a customer's points: `earned`, `redeemed` or `expired`.
+class PointMovement {
+  const PointMovement({
+    required this.type,
+    required this.points,
+    required this.branchName,
+    required this.invoiceReference,
+    required this.createdBy,
+    required this.createdAt,
+  });
+
+  factory PointMovement.fromJson(Map<String, dynamic> json) => PointMovement(
+    type: json['type'] as String,
+    points: json['points'] as int,
+    branchName: json['branch_name'] as String?,
+    invoiceReference: json['invoice_reference'] as String?,
+    createdBy: json['created_by'] as String?,
+    createdAt: DateTime.parse(json['created_at'] as String),
+  );
+
+  final String type;
+  final int points;
+  final String? branchName;
+  final String? invoiceReference;
+  final String? createdBy;
+  final DateTime createdAt;
+}
+
 /// A customer of the car wash, identified by phone number (stored as +97333334444).
 class Customer {
   const Customer({
@@ -8,7 +36,7 @@ class Customer {
     required this.marketingConsent,
     required this.notes,
     required this.vehicles,
-    this.loyaltyStamps = 0,
+    this.pointsBalance = 0,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
@@ -18,7 +46,7 @@ class Customer {
     email: json['email'] as String?,
     marketingConsent: json['marketing_consent'] as bool,
     notes: json['notes'] as String?,
-    loyaltyStamps: json['loyalty_stamps'] as int? ?? 0,
+    pointsBalance: json['points_balance'] as int? ?? 0,
     vehicles: [
       for (final vehicle in (json['vehicles'] as List?) ?? const []) Vehicle.fromJson(vehicle as Map<String, dynamic>),
     ],
@@ -31,8 +59,8 @@ class Customer {
   final bool marketingConsent;
   final String? notes;
 
-  /// Stamps on the loyalty card, shared by all branches.
-  final int loyaltyStamps;
+  /// Points to spend, shared by all branches.
+  final int pointsBalance;
   final List<Vehicle> vehicles;
 
   /// The name, or the phone number for customers who gave no name.

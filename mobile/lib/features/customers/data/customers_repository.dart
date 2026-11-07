@@ -16,6 +16,10 @@ final customerProvider = FutureProvider.autoDispose.family<Customer, String>(
   (ref, id) => ref.watch(customersRepositoryProvider).find(id),
 );
 
+final customerPointsProvider = FutureProvider.autoDispose.family<List<PointMovement>, String>(
+  (ref, id) => ref.watch(customersRepositoryProvider).points(id),
+);
+
 class CustomersRepository {
   CustomersRepository(this._dio);
 
@@ -35,6 +39,13 @@ class CustomersRepository {
   Future<Customer> find(String id) async {
     final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/customers/$id'));
     return Customer.fromJson(unwrapData(response));
+  }
+
+  Future<List<PointMovement>> points(String id) async {
+    final response = await sendRequest(() => _dio.get<Map<String, dynamic>>('/customers/$id/points'));
+    return [
+      for (final movement in unwrapData<List>(response)) PointMovement.fromJson(movement as Map<String, dynamic>),
+    ];
   }
 
   Future<Customer> create(Map<String, dynamic> data) async {

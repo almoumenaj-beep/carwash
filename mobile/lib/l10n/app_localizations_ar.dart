@@ -2008,32 +2008,86 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterCount => 'إدخال المعدود';
 
   @override
-  String get loyaltyCardTitle => 'بطاقة الولاء';
+  String get pointsTitle => 'نظام النقاط';
 
   @override
-  String get loyaltyEnabledField => 'تفعيل بطاقة الولاء';
+  String get pointsEnabledField => 'تفعيل نظام النقاط';
 
   @override
-  String get loyaltyEnabledHint =>
-      'يكسب العميل المسجّل ختماً عن كل زيارة مدفوعة، وغسلة مجانية عند اكتمال البطاقة. إيقافها يحفظ أختام العملاء.';
+  String get pointsEnabledHint => 'يكسب العميل المسجّل نقاطاً على ما يدفعه، ويستبدلها بخصم. إيقافه يحفظ نقاط العملاء.';
 
   @override
-  String get loyaltyWashesField => 'عدد الزيارات للحصول على غسلة مجانية';
+  String get pointsEarnField => 'المبلغ المدفوع مقابل نقطة واحدة';
 
   @override
-  String get loyaltyWashesInvalid => 'من 2 إلى 100';
+  String get pointsRedeemPointsField => 'عدد النقاط المطلوبة للاستبدال';
 
   @override
-  String loyaltyProgress(int stamps, int required) {
-    return '$stamps من $required زيارات';
+  String get pointsRedeemValueField => 'قيمة الخصم مقابلها';
+
+  @override
+  String get pointsExpiryField => 'تنتهي النقاط بعد عدم نشاط لمدة';
+
+  @override
+  String get pointsExpiryHint => 'اتركه فارغاً لتبقى النقاط بلا انتهاء.';
+
+  @override
+  String get pointsMonthsUnit => 'شهر';
+
+  @override
+  String get pointsFieldInvalid => 'اكتب قيمة أكبر من صفر';
+
+  @override
+  String get pointsExpiryInvalid => 'من 1 إلى 120 شهراً';
+
+  @override
+  String pointsRuleSummary(String earn, int points, String value) {
+    return 'كل $earn = نقطة واحدة، و$points نقطة = خصم $value.';
   }
 
   @override
-  String get loyaltyEarned => 'يستحق هذا العميل غسلة مجانية';
+  String get customerPointsTitle => 'نقاط العميل';
 
   @override
-  String get loyaltyUseFreeWash => 'استخدام الغسلة المجانية';
+  String pointsBalance(int count) {
+    return 'الرصيد: $count نقطة';
+  }
 
   @override
-  String get loyaltyFreeWashHint => 'تشمل أرخص غسلة في الطلب. الإضافات تبقى مدفوعة، والباقات غير مشمولة.';
+  String pointsWillEarn(int count) {
+    return 'تكسبه هذه الفاتورة $count نقطة';
+  }
+
+  @override
+  String pointsNeedMore(int points) {
+    return 'يحتاج $points نقطة للاستبدال';
+  }
+
+  @override
+  String pointsRedeemLine(int points, String value) {
+    return 'استبدال $points نقطة = خصم $value';
+  }
+
+  @override
+  String get pointsRedeemLess => 'نقاط أقل';
+
+  @override
+  String get pointsRedeemMore => 'نقاط أكثر';
+
+  @override
+  String pointsEarnedNow(int earned, int balance) {
+    return 'كسب $earned نقطة، والرصيد الآن $balance';
+  }
+
+  @override
+  String get pointsMovementEarned => 'نقاط مكتسبة';
+
+  @override
+  String get pointsMovementRedeemed => 'نقاط مستبدلة';
+
+  @override
+  String get pointsMovementExpired => 'نقاط منتهية';
+
+  @override
+  String get noPointsYet => 'لا توجد حركات نقاط بعد';
 }

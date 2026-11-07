@@ -46,6 +46,8 @@ class OrderResource extends JsonResource
                 'total' => $this->invoice->total,
                 'vat_rate_bps' => $this->invoice->vat_rate_bps,
                 'vat_amount' => $this->invoice->vat_amount,
+                'points_redeemed' => $this->invoice->points_redeemed,
+                'points_earned' => $this->invoice->points_earned,
                 'issued_at' => $this->invoice->issued_at->toIso8601String(),
                 'payments' => $this->invoice->payments->map(fn (Payment $payment) => [
                     'method' => $payment->method,
@@ -58,7 +60,7 @@ class OrderResource extends JsonResource
                 'id' => $this->customer->id,
                 'name' => $this->customer->name,
                 'phone' => $this->customer->phone,
-                'loyalty_stamps' => $this->customer->loyalty_stamps,
+                'points_balance' => $this->customer->points_balance,
             ],
             'vehicle_id' => $this->vehicle_id,
             'plate_number' => $this->plate_number,

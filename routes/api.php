@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\BranchStaffController;
 use App\Http\Controllers\Api\V1\CashShiftController;
 use App\Http\Controllers\Api\V1\CustomerController;
+use App\Http\Controllers\Api\V1\CustomerPointsController;
 use App\Http\Controllers\Api\V1\DailySalesReportController;
 use App\Http\Controllers\Api\V1\DeviceController;
 use App\Http\Controllers\Api\V1\DeviceStaffController;
@@ -137,6 +138,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('shifts/{shift}/count', [CashShiftController::class, 'count'])->name('shifts.count');
 
         Route::apiResource('customers', CustomerController::class);
+        Route::get('customers/{customer}/points', [CustomerPointsController::class, 'show'])->name('customers.points');
         Route::apiResource('customers.vehicles', VehicleController::class)->shallow()->only(['store', 'update', 'destroy']);
 
         Route::apiResource('devices', DeviceController::class)->only(['index', 'update', 'destroy']);

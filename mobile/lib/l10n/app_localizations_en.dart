@@ -1960,33 +1960,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterCount => 'Enter the count';
 
   @override
-  String get loyaltyCardTitle => 'Loyalty card';
+  String get pointsTitle => 'Points system';
 
   @override
-  String get loyaltyEnabledField => 'Turn on the loyalty card';
+  String get pointsEnabledField => 'Turn on points';
 
   @override
-  String get loyaltyEnabledHint =>
-      'A registered customer earns a stamp for each paid visit, and a free wash when the card is full. Turning it off keeps their stamps.';
+  String get pointsEnabledHint =>
+      'A registered customer earns points on what they pay and spends them for money off. Turning it off keeps their points.';
 
   @override
-  String get loyaltyWashesField => 'Visits needed for a free wash';
+  String get pointsEarnField => 'Paid to earn one point';
 
   @override
-  String get loyaltyWashesInvalid => 'From 2 to 100';
+  String get pointsRedeemPointsField => 'Points to spend at a time';
 
   @override
-  String loyaltyProgress(int stamps, int required) {
-    return '$stamps of $required visits';
+  String get pointsRedeemValueField => 'Money off for those points';
+
+  @override
+  String get pointsExpiryField => 'Points lapse after no activity for';
+
+  @override
+  String get pointsExpiryHint => 'Leave empty so points never lapse.';
+
+  @override
+  String get pointsMonthsUnit => 'months';
+
+  @override
+  String get pointsFieldInvalid => 'Enter more than zero';
+
+  @override
+  String get pointsExpiryInvalid => 'From 1 to 120 months';
+
+  @override
+  String pointsRuleSummary(String earn, int points, String value) {
+    return 'Every $earn earns a point; $points points give $value off.';
   }
 
   @override
-  String get loyaltyEarned => 'This customer has earned a free wash';
+  String get customerPointsTitle => 'Customer points';
 
   @override
-  String get loyaltyUseFreeWash => 'Use the free wash';
+  String pointsBalance(int count) {
+    return 'Balance: $count points';
+  }
 
   @override
-  String get loyaltyFreeWashHint =>
-      'Covers the cheapest wash on the order. Add-ons are still paid for, and packages are not covered.';
+  String pointsWillEarn(int count) {
+    return 'This invoice earns $count points';
+  }
+
+  @override
+  String pointsNeedMore(int points) {
+    return 'Needs $points points to spend';
+  }
+
+  @override
+  String pointsRedeemLine(int points, String value) {
+    return 'Spend $points points = $value off';
+  }
+
+  @override
+  String get pointsRedeemLess => 'Spend fewer points';
+
+  @override
+  String get pointsRedeemMore => 'Spend more points';
+
+  @override
+  String pointsEarnedNow(int earned, int balance) {
+    return 'Earned $earned points; balance $balance';
+  }
+
+  @override
+  String get pointsMovementEarned => 'Points earned';
+
+  @override
+  String get pointsMovementRedeemed => 'Points spent';
+
+  @override
+  String get pointsMovementExpired => 'Points lapsed';
+
+  @override
+  String get noPointsYet => 'No points movements yet';
 }

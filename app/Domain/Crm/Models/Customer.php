@@ -6,6 +6,7 @@ use App\Domain\Crm\Support\PhoneNumber;
 use App\Domain\Crm\Support\PlateNumber;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Tenancy\BelongsToTenant;
+use App\Domain\Sales\Models\PointTransaction;
 use Database\Factories\CustomerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -33,7 +34,7 @@ class Customer extends Model
      */
     protected $attributes = [
         'marketing_consent' => false,
-        'loyalty_stamps' => 0,
+        'points_balance' => 0,
     ];
 
     /**
@@ -47,8 +48,16 @@ class Customer extends Model
             'marketing_consent' => 'boolean',
             'marketing_consent_at' => 'datetime',
             'last_visit_at' => 'datetime',
-            'loyalty_stamps' => 'integer',
+            'points_balance' => 'integer',
         ];
+    }
+
+    /**
+     * @return HasMany<PointTransaction, $this>
+     */
+    public function pointTransactions(): HasMany
+    {
+        return $this->hasMany(PointTransaction::class);
     }
 
     /**

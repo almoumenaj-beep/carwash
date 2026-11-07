@@ -35,19 +35,19 @@ class NamedRef {
 }
 
 class OrderCustomer {
-  const OrderCustomer({required this.id, required this.name, required this.phone, this.loyaltyStamps = 0});
+  const OrderCustomer({required this.id, required this.name, required this.phone, this.pointsBalance = 0});
 
   factory OrderCustomer.fromJson(Map<String, dynamic> json) => OrderCustomer(
     id: json['id'] as String,
     name: json['name'] as String?,
     phone: json['phone'] as String,
-    loyaltyStamps: json['loyalty_stamps'] as int? ?? 0,
+    pointsBalance: json['points_balance'] as int? ?? 0,
   );
 
   final String id;
   final String? name;
   final String phone;
-  final int loyaltyStamps;
+  final int pointsBalance;
 }
 
 /// A service on an order, priced when the car was checked in.
@@ -106,6 +106,7 @@ class OrderInvoice {
     required this.tendered,
     required this.changeGiven,
     this.paymentMethod = 'cash',
+    this.pointsEarned = 0,
   });
 
   factory OrderInvoice.fromJson(Map<String, dynamic> json) {
@@ -122,6 +123,7 @@ class OrderInvoice {
       tendered: payments.fold(0, (sum, payment) => sum + ((payment['tendered'] as int?) ?? (payment['amount'] as int))),
       changeGiven: payments.fold(0, (sum, payment) => sum + (payment['change_given'] as int)),
       paymentMethod: payments.isEmpty ? 'cash' : payments.first['method'] as String? ?? 'cash',
+      pointsEarned: json['points_earned'] as int? ?? 0,
     );
   }
 
@@ -138,6 +140,7 @@ class OrderInvoice {
 
   /// How the invoice was paid (`cash`, `card` or `benefit`).
   final String paymentMethod;
+  final int pointsEarned;
 }
 
 /// One inspection at the quality check: whether each service on the order was done properly.

@@ -14,7 +14,7 @@ use Illuminate\Validation\ValidationException;
 /**
  * Works out a month's pay for every active staff member with pay terms: salary and commission on the cars
  * delivered that month (a car's commission split between its washers, a percentage taken of the final amount
- * on its invoice, or of the full price when it was a free wash). Creates the month's draft, or recalculates it; a paid month is final.
+ * on its invoice, or of the full price when it was paid with points). Creates the month's draft, or recalculates it; a paid month is final.
  */
 class CalculatePayroll
 {
@@ -54,7 +54,7 @@ class CalculatePayroll
             ->where('status', OrderStatus::Delivered)
             ->where('delivered_at', '>=', $start->utc())
             ->where('delivered_at', '<=', $end->utc())
-            ->with(['staff:id', 'invoice:id,order_id,subtotal,total,vat_rate_bps,prices_include_vat,loyalty_reward'])
+            ->with(['staff:id', 'invoice:id,order_id,subtotal,total,vat_rate_bps,prices_include_vat,points_redeemed'])
             ->get(['id', 'subtotal']);
 
         $cars = [];

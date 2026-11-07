@@ -10,8 +10,11 @@ class AppSettings {
     required this.pricesIncludeVat,
     required this.vatNumber,
     this.appointmentGraceMinutes,
-    this.loyaltyEnabled = false,
-    this.loyaltyWashesRequired = 10,
+    this.pointsEnabled = false,
+    this.pointsEarnAmount = 1000,
+    this.pointsRedeemPoints = 100,
+    this.pointsRedeemValue = 2000,
+    this.pointsExpiryMonths,
   });
 
   factory AppSettings.fromJson(Map<String, dynamic> json) => AppSettings(
@@ -24,8 +27,11 @@ class AppSettings {
     pricesIncludeVat: json['prices_include_vat'] as bool,
     vatNumber: json['vat_number'] as String?,
     appointmentGraceMinutes: json['appointment_grace_minutes'] as int?,
-    loyaltyEnabled: json['loyalty_enabled'] as bool? ?? false,
-    loyaltyWashesRequired: json['loyalty_washes_required'] as int? ?? 10,
+    pointsEnabled: json['points_enabled'] as bool? ?? false,
+    pointsEarnAmount: json['points_earn_amount'] as int? ?? 1000,
+    pointsRedeemPoints: json['points_redeem_points'] as int? ?? 100,
+    pointsRedeemValue: json['points_redeem_value'] as int? ?? 2000,
+    pointsExpiryMonths: json['points_expiry_months'] as int?,
   );
 
   final String name;
@@ -45,7 +51,11 @@ class AppSettings {
   /// bookings to the staff.
   final int? appointmentGraceMinutes;
 
-  /// The loyalty card: a stamp for each paid visit, and a free wash after [loyaltyWashesRequired] of them.
-  final bool loyaltyEnabled;
-  final int loyaltyWashesRequired;
+  /// Points: one is earned per [pointsEarnAmount] paid (minor units), [pointsRedeemPoints] of them take off
+  /// [pointsRedeemValue] (minor units), and a balance lapses after [pointsExpiryMonths] without activity, or never.
+  final bool pointsEnabled;
+  final int pointsEarnAmount;
+  final int pointsRedeemPoints;
+  final int pointsRedeemValue;
+  final int? pointsExpiryMonths;
 }

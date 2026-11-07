@@ -27,7 +27,7 @@ class CustomerResource extends JsonResource
             'marketing_consent_at' => $this->marketing_consent_at?->toIso8601String(),
             'notes' => $this->notes,
             'last_visit_at' => $this->last_visit_at?->toIso8601String(),
-            'loyalty_stamps' => $this->loyalty_stamps,
+            'points_balance' => $this->points_balance,
             'vehicles' => VehicleResource::collection($this->whenLoaded('vehicles')),
         ];
     }
