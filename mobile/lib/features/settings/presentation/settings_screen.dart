@@ -21,7 +21,8 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return switch (ref.watch(settingsProvider)) {
-      AsyncData(:final value) => _SettingsForm(settings: value),
+      // Kept while reloading, so what is being typed survives a save made elsewhere on this screen.
+      AsyncValue(hasValue: true, :final value?) => _SettingsForm(settings: value),
       AsyncError(:final error) => Scaffold(
         appBar: AppBar(),
         body: ErrorView(error: error, onRetry: () => ref.invalidate(settingsProvider)),
@@ -78,6 +79,24 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
     _pointsRedeemValue.dispose();
     _pointsExpiryMonths.dispose();
     super.dispose();
+  }
+
+  /// Saved at once: this switch opens the plans, so nothing should depend on pressing save further down. Goes back
+  /// if it could not be saved.
+  Future<void> _setMemberships(bool enabled) async {
+    setState(() => _membershipsEnabled = enabled);
+    try {
+      await ref.read(settingsRepositoryProvider).update({'memberships_enabled': enabled});
+      ref.invalidate(settingsProvider);
+    } catch (error, stackTrace) {
+      final problem = ApiProblem.from(error, stackTrace);
+      if (mounted) {
+        setState(() {
+          _membershipsEnabled = !enabled;
+          _problem = problem;
+        });
+      }
+    }
   }
 
   Future<void> _save() async {
@@ -225,7 +244,7 @@ class _SettingsFormState extends ConsumerState<_SettingsForm> {
               title: Text(l10n.membershipsEnabledField),
               subtitle: Text(l10n.membershipsEnabledHint),
               value: _membershipsEnabled,
-              onChanged: (value) => setState(() => _membershipsEnabled = value),
+              onChanged: _setMemberships,
             ),
             if (_membershipsEnabled)
               ListTile(
