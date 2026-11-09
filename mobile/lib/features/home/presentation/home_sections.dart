@@ -122,6 +122,11 @@ class HomeSectionsMenu extends ConsumerWidget {
     final theme = Theme.of(context);
     // Navy tiles with gold icons, as in the logo; gold alone is kept for what is chosen.
     final tileColor = theme.brightness == Brightness.dark ? theme.colorScheme.surfaceContainerHighest : AppTheme.navy;
+    // Headings in gold, as in the side menu; a deeper gold on the light page so it still reads.
+    final headingStyle = theme.textTheme.titleMedium?.copyWith(
+      color: theme.colorScheme.tertiary,
+      fontWeight: FontWeight.w700,
+    );
     final daily = openable(dailySections(l10n), me);
     final groups = [
       for (final group in sectionGroups(l10n))
@@ -142,7 +147,7 @@ class HomeSectionsMenu extends ConsumerWidget {
         if (daily.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 16, 4, 8),
-            child: Text(l10n.groupDaily, style: theme.textTheme.titleMedium),
+            child: Text(l10n.groupDaily, style: headingStyle),
           ),
           LayoutBuilder(
             builder: (context, constraints) {
@@ -190,7 +195,7 @@ class HomeSectionsMenu extends ConsumerWidget {
         if (groups.isNotEmpty) ...[
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
-            child: Text(l10n.groupMore, style: theme.textTheme.titleMedium),
+            child: Text(l10n.groupMore, style: headingStyle),
           ),
           Card(
             margin: EdgeInsets.zero,
