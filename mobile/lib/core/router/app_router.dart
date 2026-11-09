@@ -18,6 +18,7 @@ import '../../features/customers/presentation/customer_editor_screen.dart';
 import '../../features/customers/presentation/customers_screen.dart';
 import '../../features/devices/presentation/devices_screen.dart';
 import '../../features/expenses/presentation/expenses_screen.dart';
+import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/home_sections.dart';
 import '../../features/equipment/presentation/equipment_screen.dart';
@@ -71,119 +72,125 @@ final routerProvider = Provider<GoRouter>((ref) {
       return canOpen(state.uri.path, me) ? null : '/';
     },
     routes: [
-      GoRoute(path: '/', builder: (_, _) => const HomeScreen()),
       GoRoute(path: '/splash', builder: (_, _) => const SplashScreen()),
       GoRoute(path: '/login', builder: (_, _) => const LoginScreen()),
       GoRoute(path: '/pin', builder: (_, _) => const PinScreen()),
-      GoRoute(
-        path: '/roles',
-        builder: (_, _) => const RolesScreen(),
+      // Every signed-in screen, framed to the screen's size (a side menu on tablets and large screens).
+      ShellRoute(
+        builder: (_, state, child) => AppShell(location: state.uri.path, child: child),
         routes: [
-          GoRoute(path: 'new', builder: (_, _) => const RoleEditorScreen()),
+          GoRoute(path: '/', builder: (_, _) => const HomeScreen()),
           GoRoute(
-            path: ':roleId',
-            builder: (_, state) => RoleEditorScreen(roleId: int.parse(state.pathParameters['roleId']!)),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/staff',
-        builder: (_, _) => const StaffScreen(),
-        routes: [
-          GoRoute(path: 'new', builder: (_, _) => const StaffEditorScreen()),
-          GoRoute(
-            path: ':staffId',
-            builder: (_, state) => StaffEditorScreen(staffId: state.pathParameters['staffId']),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/queue',
-        builder: (_, _) => const QueueScreen(),
-        routes: [
-          GoRoute(
-            path: 'new',
-            builder: (_, state) => CheckInScreen(branchId: state.uri.queryParameters['branch']!),
+            path: '/roles',
+            builder: (_, _) => const RolesScreen(),
+            routes: [
+              GoRoute(path: 'new', builder: (_, _) => const RoleEditorScreen()),
+              GoRoute(
+                path: ':roleId',
+                builder: (_, state) => RoleEditorScreen(roleId: int.parse(state.pathParameters['roleId']!)),
+              ),
+            ],
           ),
           GoRoute(
-            path: ':orderId',
-            builder: (_, state) => OrderScreen(orderId: state.pathParameters['orderId']!),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/checkout/:orderId',
-        builder: (_, state) => CheckoutScreen(orderId: state.pathParameters['orderId']!),
-      ),
-      GoRoute(
-        path: '/shift',
-        builder: (_, state) => ShiftScreen(branchId: state.uri.queryParameters['branch']),
-      ),
-      GoRoute(path: '/inventory', builder: (_, _) => const InventoryScreen()),
-      GoRoute(
-        path: '/stock-issue',
-        builder: (_, state) => StockIssueScreen(branchId: state.uri.queryParameters['branch']),
-      ),
-      GoRoute(
-        path: '/equipment',
-        builder: (_, _) => const EquipmentScreen(),
-        routes: [
-          GoRoute(
-            path: ':equipmentId',
-            builder: (_, state) => EquipmentDetailScreen(equipmentId: state.pathParameters['equipmentId']!),
-          ),
-        ],
-      ),
-      GoRoute(path: '/staff-affairs', builder: (_, _) => const StaffAffairsScreen()),
-      GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
-      GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
-      GoRoute(path: '/finance', builder: (_, _) => const FinancialReportsScreen()),
-      GoRoute(path: '/appointments', builder: (_, _) => const AppointmentsScreen()),
-      GoRoute(
-        path: '/more/:groupId',
-        builder: (_, state) => SectionGroupScreen(groupId: state.pathParameters['groupId']!),
-      ),
-      GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
-      GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
-      GoRoute(path: '/account', builder: (_, _) => const AccountScreen()),
-      GoRoute(
-        path: '/customers',
-        builder: (_, _) => const CustomersScreen(),
-        routes: [
-          GoRoute(path: 'new', builder: (_, _) => const CustomerEditorScreen()),
-          GoRoute(
-            path: ':customerId',
-            builder: (_, state) => CustomerEditorScreen(customerId: state.pathParameters['customerId']),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: '/catalog',
-        builder: (_, _) => const CatalogScreen(),
-        routes: [
-          GoRoute(
-            path: 'sizes',
-            builder: (_, _) => const CatalogEntriesScreen(kind: CatalogEntryKind.vehicleSize),
+            path: '/staff',
+            builder: (_, _) => const StaffScreen(),
+            routes: [
+              GoRoute(path: 'new', builder: (_, _) => const StaffEditorScreen()),
+              GoRoute(
+                path: ':staffId',
+                builder: (_, state) => StaffEditorScreen(staffId: state.pathParameters['staffId']),
+              ),
+            ],
           ),
           GoRoute(
-            path: 'categories',
-            builder: (_, _) => const CatalogEntriesScreen(kind: CatalogEntryKind.serviceCategory),
+            path: '/queue',
+            builder: (_, _) => const QueueScreen(),
+            routes: [
+              GoRoute(
+                path: 'new',
+                builder: (_, state) => CheckInScreen(branchId: state.uri.queryParameters['branch']!),
+              ),
+              GoRoute(
+                path: ':orderId',
+                builder: (_, state) => OrderScreen(orderId: state.pathParameters['orderId']!),
+              ),
+            ],
           ),
-          GoRoute(path: 'services/new', builder: (_, _) => const ServiceEditorScreen()),
           GoRoute(
-            path: 'services/:serviceId',
-            builder: (_, state) => ServiceEditorScreen(serviceId: state.pathParameters['serviceId']),
+            path: '/checkout/:orderId',
+            builder: (_, state) => CheckoutScreen(orderId: state.pathParameters['orderId']!),
           ),
-        ],
-      ),
-      GoRoute(
-        path: '/branches',
-        builder: (_, _) => const BranchesScreen(),
-        routes: [
-          GoRoute(path: 'new', builder: (_, _) => const BranchEditorScreen()),
           GoRoute(
-            path: ':branchId',
-            builder: (_, state) => BranchEditorScreen(branchId: state.pathParameters['branchId']),
+            path: '/shift',
+            builder: (_, state) => ShiftScreen(branchId: state.uri.queryParameters['branch']),
+          ),
+          GoRoute(path: '/inventory', builder: (_, _) => const InventoryScreen()),
+          GoRoute(
+            path: '/stock-issue',
+            builder: (_, state) => StockIssueScreen(branchId: state.uri.queryParameters['branch']),
+          ),
+          GoRoute(
+            path: '/equipment',
+            builder: (_, _) => const EquipmentScreen(),
+            routes: [
+              GoRoute(
+                path: ':equipmentId',
+                builder: (_, state) => EquipmentDetailScreen(equipmentId: state.pathParameters['equipmentId']!),
+              ),
+            ],
+          ),
+          GoRoute(path: '/staff-affairs', builder: (_, _) => const StaffAffairsScreen()),
+          GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
+          GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
+          GoRoute(path: '/finance', builder: (_, _) => const FinancialReportsScreen()),
+          GoRoute(path: '/appointments', builder: (_, _) => const AppointmentsScreen()),
+          GoRoute(
+            path: '/more/:groupId',
+            builder: (_, state) => SectionGroupScreen(groupId: state.pathParameters['groupId']!),
+          ),
+          GoRoute(path: '/devices', builder: (_, _) => const DevicesScreen()),
+          GoRoute(path: '/settings', builder: (_, _) => const SettingsScreen()),
+          GoRoute(path: '/account', builder: (_, _) => const AccountScreen()),
+          GoRoute(
+            path: '/customers',
+            builder: (_, _) => const CustomersScreen(),
+            routes: [
+              GoRoute(path: 'new', builder: (_, _) => const CustomerEditorScreen()),
+              GoRoute(
+                path: ':customerId',
+                builder: (_, state) => CustomerEditorScreen(customerId: state.pathParameters['customerId']),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/catalog',
+            builder: (_, _) => const CatalogScreen(),
+            routes: [
+              GoRoute(
+                path: 'sizes',
+                builder: (_, _) => const CatalogEntriesScreen(kind: CatalogEntryKind.vehicleSize),
+              ),
+              GoRoute(
+                path: 'categories',
+                builder: (_, _) => const CatalogEntriesScreen(kind: CatalogEntryKind.serviceCategory),
+              ),
+              GoRoute(path: 'services/new', builder: (_, _) => const ServiceEditorScreen()),
+              GoRoute(
+                path: 'services/:serviceId',
+                builder: (_, state) => ServiceEditorScreen(serviceId: state.pathParameters['serviceId']),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/branches',
+            builder: (_, _) => const BranchesScreen(),
+            routes: [
+              GoRoute(path: 'new', builder: (_, _) => const BranchEditorScreen()),
+              GoRoute(
+                path: ':branchId',
+                builder: (_, state) => BranchEditorScreen(branchId: state.pathParameters['branchId']),
+              ),
+            ],
           ),
         ],
       ),

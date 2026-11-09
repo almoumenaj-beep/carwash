@@ -2273,4 +2273,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get membershipPlansHint =>
       'غسلات يدفعها العميل مقدماً ويستخدمها على عدة زيارات. أما جمع عدة خدمات في زيارة واحدة بسعر أقل، فهو «باقة» تضيفها من الخدمات والأسعار.';
+
+  @override
+  String get homeTitle => 'الرئيسية';
 }

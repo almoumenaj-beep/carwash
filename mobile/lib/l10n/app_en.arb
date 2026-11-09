@@ -1249,5 +1249,6 @@
   },
   "settingsGeneralSection": "Car wash details",
   "settingsRewardsSection": "Memberships and points",
-  "membershipPlansHint": "Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead."
+  "membershipPlansHint": "Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead.",
+  "homeTitle": "Home"
 }

@@ -4075,6 +4075,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead.'**
   String get membershipPlansHint;
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

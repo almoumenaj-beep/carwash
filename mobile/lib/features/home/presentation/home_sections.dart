@@ -143,7 +143,9 @@ class HomeSectionsMenu extends ConsumerWidget {
           ),
           LayoutBuilder(
             builder: (context, constraints) {
-              final width = (constraints.maxWidth - 8) / 2;
+              // Two tiles a row on phones, more as the screen widens.
+              final perRow = (constraints.maxWidth / 200).floor().clamp(2, 5);
+              final width = (constraints.maxWidth - 8 * (perRow - 1)) / perRow;
               return Wrap(
                 spacing: 8,
                 runSpacing: 8,

@@ -2226,4 +2226,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get membershipPlansHint =>
       'Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead.';
+
+  @override
+  String get homeTitle => 'Home';
 }
