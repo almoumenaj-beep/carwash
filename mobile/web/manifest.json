@@ -1,11 +1,13 @@
 {
-    "name": "carwash_app",
-    "short_name": "carwash_app",
+    "name": "اللمعة الذهبية",
+    "short_name": "اللمعة الذهبية",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "CarWash management app",
+    "background_color": "#142B4A",
+    "theme_color": "#2F5D9A",
+    "description": "اللمعة الذهبية - إدارة المغسلة",
+    "lang": "ar",
+    "dir": "rtl",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

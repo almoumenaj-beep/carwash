@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Material 3 theme in light and dark, from one brand seed colour: sky blue.
+/// Material 3 theme in light and dark, from the blue of the «اللمعة الذهبية» logo.
 abstract final class AppTheme {
-  static const _seed = Color(0xFF29B6F6);
+  static const _seed = Color(0xFF2F5D9A);
 
   static ThemeData get light => _build(Brightness.light);
 
