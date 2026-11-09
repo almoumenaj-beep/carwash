@@ -69,6 +69,35 @@ abstract final class AppTheme {
           side: BorderSide(color: gold.withValues(alpha: isDark ? 0.35 : 0.45)),
         ),
       ),
+      // Every tab bar sits under a navy app bar: the chosen tab in bold gold over a thick gold line, the others
+      // in faded white.
+      tabBarTheme: const TabBarThemeData(
+        labelColor: lightGold,
+        unselectedLabelColor: Colors.white60,
+        labelStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+        indicatorSize: TabBarIndicatorSize.tab,
+        indicator: UnderlineTabIndicator(
+          borderSide: BorderSide(color: gold, width: 4),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+        ),
+        dividerColor: Colors.transparent,
+      ),
+      // Chips carry their own background so they read on the navy bars as on the page: gold when chosen.
+      chipTheme: ChipThemeData(
+        color: WidgetStateProperty.resolveWith(
+          (states) =>
+              states.contains(WidgetState.selected) ? gold : (isDark ? scheme.surfaceContainerHighest : Colors.white),
+        ),
+        labelStyle: TextStyle(
+          color: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected) ? deepNavy : scheme.onSurface,
+          ),
+          fontWeight: FontWeight.w600,
+        ),
+        checkmarkColor: deepNavy,
+        side: BorderSide(color: gold.withValues(alpha: 0.6)),
+      ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(backgroundColor: gold, foregroundColor: deepNavy),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: barBackground,
