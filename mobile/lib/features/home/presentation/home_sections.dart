@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/auth/route_permissions.dart';
+import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
@@ -119,6 +120,8 @@ class HomeSectionsMenu extends ConsumerWidget {
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    // Navy tiles with gold icons, as in the logo; gold alone is kept for what is chosen.
+    final tileColor = theme.brightness == Brightness.dark ? theme.colorScheme.surfaceContainerHighest : AppTheme.navy;
     final daily = openable(dailySections(l10n), me);
     final groups = [
       for (final group in sectionGroups(l10n))
@@ -155,7 +158,7 @@ class HomeSectionsMenu extends ConsumerWidget {
                       width: width,
                       child: Card(
                         margin: EdgeInsets.zero,
-                        color: theme.colorScheme.primaryContainer,
+                        color: tileColor,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () => context.push(section.path),
@@ -163,13 +166,14 @@ class HomeSectionsMenu extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
                             child: Column(
                               children: [
-                                Icon(section.icon, size: 32, color: theme.colorScheme.onPrimaryContainer),
+                                Icon(section.icon, size: 32, color: AppTheme.lightGold),
                                 const SizedBox(height: 8),
                                 Text(
                                   section.title,
                                   textAlign: TextAlign.center,
                                   style: theme.textTheme.titleSmall?.copyWith(
-                                    color: theme.colorScheme.onPrimaryContainer,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
