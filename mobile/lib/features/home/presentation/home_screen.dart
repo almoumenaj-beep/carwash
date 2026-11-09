@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/auth/route_permissions.dart';
@@ -43,7 +44,7 @@ class HomeScreen extends ConsumerWidget {
                 child: Text(
                   me.carWashName,
                   style: Theme.of(context).textTheme.titleLarge
-                      ?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.3),
+                      ?.copyWith(color: AppTheme.lightGold, fontWeight: FontWeight.w700, letterSpacing: 0.3),
                 ),
               ),
             ),
