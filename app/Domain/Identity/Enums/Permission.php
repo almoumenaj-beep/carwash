@@ -36,9 +36,6 @@ enum Permission: string
     case InventoryAdjust = 'inventory.adjust';
     case InventoryPurchase = 'inventory.purchase';
 
-    case EquipmentView = 'equipment.view';
-    case EquipmentManage = 'equipment.manage';
-
     case ExpensesView = 'expenses.view';
     case ExpensesCreate = 'expenses.create';
     case ExpensesApprove = 'expenses.approve';

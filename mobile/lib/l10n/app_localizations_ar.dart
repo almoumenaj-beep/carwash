@@ -1306,137 +1306,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get branchField => 'الفرع';
 
   @override
-  String get equipmentTitle => 'المعدات والصيانة';
-
-  @override
-  String get equipmentSubtitle => 'الأجهزة ومواعيد صيانتها والأعطال';
-
-  @override
-  String get addEquipment => 'إضافة جهاز';
-
-  @override
-  String get editEquipment => 'تعديل الجهاز';
-
-  @override
-  String get noEquipment => 'لم تُضف أجهزة بعد. أضف مكائن الضغط والمكانس والكمبرسورات لتتابع صيانتها.';
-
-  @override
-  String get equipmentInService => 'يعمل';
-
-  @override
-  String get equipmentOutOfService => 'معطّل';
-
-  @override
-  String get equipmentRetired => 'خارج الخدمة نهائياً';
-
-  @override
-  String maintenanceOverdue(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count يوماً',
-      few: '$count أيام',
-      two: 'يومين',
-      one: 'يوم واحد',
-    );
-    return 'الصيانة متأخرة $_temp0';
-  }
-
-  @override
-  String get maintenanceDueToday => 'الصيانة مستحقة اليوم';
-
-  @override
-  String maintenanceDueIn(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count يوماً',
-      few: '$count أيام',
-      two: 'يومين',
-      one: 'يوم واحد',
-    );
-    return 'الصيانة بعد $_temp0';
-  }
-
-  @override
-  String maintenanceDueCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count جهازاً تحتاج صيانة الآن',
-      few: '$count أجهزة تحتاج صيانة الآن',
-      two: 'جهازان يحتاجان صيانة الآن',
-      one: 'جهاز واحد يحتاج صيانة الآن',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get reportBreakdown => 'الإبلاغ عن عطل';
-
-  @override
-  String get backInService => 'عاد للعمل';
-
-  @override
-  String get retireEquipment => 'إخراجه من الخدمة نهائياً';
-
-  @override
-  String get recordMaintenance => 'تسجيل صيانة';
-
-  @override
-  String get noPeriodicMaintenance => 'بدون صيانة دورية';
-
-  @override
-  String maintenanceEvery(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count يوماً',
-      few: '$count أيام',
-      two: 'يومين',
-      one: 'يوم واحد',
-    );
-    return 'صيانة كل $_temp0';
-  }
-
-  @override
-  String get nextMaintenance => 'الصيانة القادمة';
-
-  @override
   String get serialNumberField => 'الرقم التسلسلي';
 
   @override
   String get purchaseSection => 'الشراء';
 
   @override
-  String get maintenanceHistory => 'سجل الصيانة';
-
-  @override
-  String get noMaintenanceYet => 'لا توجد صيانة مسجلة';
-
-  @override
-  String get periodicMaintenance => 'صيانة دورية';
-
-  @override
-  String get repairMaintenance => 'إصلاح عطل';
-
-  @override
-  String get equipmentNameField => 'اسم الجهاز';
-
-  @override
-  String get equipmentNameHint => 'مثال: مكينة الضغط 1';
-
-  @override
-  String get maintenanceIntervalField => 'الصيانة الدورية كل';
-
-  @override
   String get daysUnit => 'يوم';
-
-  @override
-  String get maintenanceIntervalHint => 'اتركه فارغاً إذا لا يحتاج صيانة دورية';
-
-  @override
-  String get maintenanceIntervalInvalid => 'اكتب عدد أيام من 1 إلى 3650';
 
   @override
   String get purchaseDateField => 'تاريخ الشراء';
@@ -1445,22 +1321,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get purchaseCostField => 'سعر الشراء';
 
   @override
-  String get periodicMaintenanceHint => 'يبدأ العدّ للصيانة القادمة من تاريخ هذه الصيانة';
-
-  @override
-  String get repairMaintenanceHint => 'إذا كان الجهاز معطّلاً يعود «يعمل» بعد الإصلاح';
-
-  @override
-  String get maintenanceDateField => 'تاريخ الصيانة';
-
-  @override
   String get whatWasDoneField => 'ماذا تم؟';
-
-  @override
-  String get maintenanceCostField => 'التكلفة';
-
-  @override
-  String get maintenanceCostHint => 'اختياري: تُسجَّل مصروفاً على فرع الجهاز';
 
   @override
   String get financialReportsTitle => 'التقارير المالية';
@@ -1637,7 +1498,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get groupFinance => 'الشؤون المالية';
 
   @override
-  String get groupResources => 'المخزون والمعدات';
+  String get groupResources => 'المخزون';
 
   @override
   String get groupPeople => 'الموارد البشرية';
@@ -1823,9 +1684,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sourcePayroll => 'رواتب';
 
   @override
-  String get sourceMaintenance => 'صيانة';
-
-  @override
   String get materialsExpenseTitle => 'هل هذه مواد للمخزون؟';
 
   @override
@@ -1834,13 +1692,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get openInventory => 'فتح المخزون';
-
-  @override
-  String get cancelMaintenance => 'إلغاء الصيانة';
-
-  @override
-  String get cancelMaintenanceConfirm =>
-      'يُحذف مصروفها من المصروفات إن وُجد، ويرجع موعد الصيانة القادمة وحالة الجهاز كما كانا، ويبقى السطر في السجل كملغى.';
 
   @override
   String get cancelPayrollPayment => 'إلغاء دفع الرواتب';
@@ -1930,29 +1781,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get returnToService => 'إرجاعه إلى الخدمة';
 
   @override
-  String get reportBreakdownExplained =>
-      'سيظهر الجهاز «معطّل» باللون الأحمر في قائمة المعدات. يعود للعمل بزر «عاد للعمل» أو عند تسجيل إصلاح له.';
-
-  @override
-  String get retireEquipmentExplained =>
-      'لن تُطلب له صيانة بعد الآن ولن تستطيع تسجيل صيانة له. تبقى بياناته وسجله محفوظة، ويمكنك إرجاعه إلى الخدمة لاحقاً.';
-
-  @override
   String get thisWeek => 'هذا الأسبوع';
 
   @override
   String get totalHoursLabel => 'مجموع الساعات';
-
-  @override
-  String equipmentBrokenCount(int count) {
-    return 'أجهزة معطّلة: $count';
-  }
-
-  @override
-  String get breakdownReasonField => 'ما سبب العطل؟';
-
-  @override
-  String get breakdownHistory => 'سجل الأعطال';
 
   @override
   String get uncountedShiftsTitle => 'كاشير أُقفل تلقائياً ولم يُعدّ درجه بعد';

@@ -210,7 +210,6 @@ class _ExpenseTile extends ConsumerWidget {
       if (expense.isRecurring) l10n.recurringBadge,
       if (expense.source == 'purchase') l10n.sourcePurchase,
       if (expense.source == 'payroll') l10n.sourcePayroll,
-      if (expense.source == 'maintenance') l10n.sourceMaintenance,
       ?expense.description,
     ];
 
@@ -222,7 +221,7 @@ class _ExpenseTile extends ConsumerWidget {
       title: Text(expense.category.name),
       subtitle: Text(details.join(' · ')),
       trailing: Text(money.format(expense.amount), style: Theme.of(context).textTheme.titleSmall),
-      // An expense from a purchase, payroll or maintenance is managed from there.
+      // An expense from a purchase or payroll is managed from there.
       onLongPress: !canApprove || expense.source != null
           ? null
           : () async {

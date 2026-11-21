@@ -2,7 +2,6 @@
 
 namespace App\Domain\Expenses\Models;
 
-use App\Domain\Equipment\Models\EquipmentMaintenance;
 use App\Domain\Expenses\Enums\ExpensePaymentMethod;
 use App\Domain\Expenses\Policies\ExpensePolicy;
 use App\Domain\Inventory\Models\Purchase;
@@ -55,7 +54,6 @@ class Expense extends Model
         return match (true) {
             $this->purchase !== null => 'purchase',
             $this->payrollRun !== null => 'payroll',
-            $this->maintenance !== null => 'maintenance',
             default => null,
         };
     }
@@ -74,14 +72,6 @@ class Expense extends Model
     public function payrollRun(): HasOne
     {
         return $this->hasOne(PayrollRun::class);
-    }
-
-    /**
-     * @return HasOne<EquipmentMaintenance, $this>
-     */
-    public function maintenance(): HasOne
-    {
-        return $this->hasOne(EquipmentMaintenance::class);
     }
 
     public function isPaid(): bool

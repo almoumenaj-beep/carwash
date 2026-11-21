@@ -5,9 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../core/auth/route_permissions.dart';
 import '../../auth/application/session_controller.dart';
-import '../../equipment/presentation/equipment_alert_card.dart';
 import 'home_sections.dart';
 
 /// Landing screen after sign-in: who is working, and the sections they may open.
@@ -73,7 +71,6 @@ class HomeScreen extends ConsumerWidget {
                 onTap: () => context.push('/account'),
               ),
             ),
-            if (me.can(Permissions.equipmentView)) const EquipmentAlertCard(),
             const HomeSectionsMenu(),
           ],
         ),

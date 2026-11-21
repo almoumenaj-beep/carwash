@@ -2402,120 +2402,6 @@ abstract class AppLocalizations {
   /// **'Branch'**
   String get branchField;
 
-  /// No description provided for @equipmentTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Equipment and maintenance'**
-  String get equipmentTitle;
-
-  /// No description provided for @equipmentSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Machines, maintenance due and breakdowns'**
-  String get equipmentSubtitle;
-
-  /// No description provided for @addEquipment.
-  ///
-  /// In en, this message translates to:
-  /// **'Add equipment'**
-  String get addEquipment;
-
-  /// No description provided for @editEquipment.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit equipment'**
-  String get editEquipment;
-
-  /// No description provided for @noEquipment.
-  ///
-  /// In en, this message translates to:
-  /// **'No equipment yet. Add pressure washers, vacuums and compressors to keep track of their maintenance.'**
-  String get noEquipment;
-
-  /// No description provided for @equipmentInService.
-  ///
-  /// In en, this message translates to:
-  /// **'In service'**
-  String get equipmentInService;
-
-  /// No description provided for @equipmentOutOfService.
-  ///
-  /// In en, this message translates to:
-  /// **'Broken'**
-  String get equipmentOutOfService;
-
-  /// No description provided for @equipmentRetired.
-  ///
-  /// In en, this message translates to:
-  /// **'Retired'**
-  String get equipmentRetired;
-
-  /// No description provided for @maintenanceOverdue.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance overdue by {count, plural, =1{1 day} other{{count} days}}'**
-  String maintenanceOverdue(int count);
-
-  /// No description provided for @maintenanceDueToday.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance due today'**
-  String get maintenanceDueToday;
-
-  /// No description provided for @maintenanceDueIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance in {count, plural, =1{1 day} other{{count} days}}'**
-  String maintenanceDueIn(int count);
-
-  /// No description provided for @maintenanceDueCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, =1{1 machine needs maintenance now} other{{count} machines need maintenance now}}'**
-  String maintenanceDueCount(int count);
-
-  /// No description provided for @reportBreakdown.
-  ///
-  /// In en, this message translates to:
-  /// **'Report a breakdown'**
-  String get reportBreakdown;
-
-  /// No description provided for @backInService.
-  ///
-  /// In en, this message translates to:
-  /// **'Back in service'**
-  String get backInService;
-
-  /// No description provided for @retireEquipment.
-  ///
-  /// In en, this message translates to:
-  /// **'Retire'**
-  String get retireEquipment;
-
-  /// No description provided for @recordMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'Record maintenance'**
-  String get recordMaintenance;
-
-  /// No description provided for @noPeriodicMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'No periodic maintenance'**
-  String get noPeriodicMaintenance;
-
-  /// No description provided for @maintenanceEvery.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance every {count, plural, =1{day} other{{count} days}}'**
-  String maintenanceEvery(int count);
-
-  /// No description provided for @nextMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'Next maintenance'**
-  String get nextMaintenance;
-
   /// No description provided for @serialNumberField.
   ///
   /// In en, this message translates to:
@@ -2528,65 +2414,11 @@ abstract class AppLocalizations {
   /// **'Purchase'**
   String get purchaseSection;
 
-  /// No description provided for @maintenanceHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance history'**
-  String get maintenanceHistory;
-
-  /// No description provided for @noMaintenanceYet.
-  ///
-  /// In en, this message translates to:
-  /// **'No maintenance recorded'**
-  String get noMaintenanceYet;
-
-  /// No description provided for @periodicMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'Periodic'**
-  String get periodicMaintenance;
-
-  /// No description provided for @repairMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'Repair'**
-  String get repairMaintenance;
-
-  /// No description provided for @equipmentNameField.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get equipmentNameField;
-
-  /// No description provided for @equipmentNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. Pressure washer 1'**
-  String get equipmentNameHint;
-
-  /// No description provided for @maintenanceIntervalField.
-  ///
-  /// In en, this message translates to:
-  /// **'Periodic maintenance every'**
-  String get maintenanceIntervalField;
-
   /// No description provided for @daysUnit.
   ///
   /// In en, this message translates to:
   /// **'days'**
   String get daysUnit;
-
-  /// No description provided for @maintenanceIntervalHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Leave empty if it needs no periodic maintenance'**
-  String get maintenanceIntervalHint;
-
-  /// No description provided for @maintenanceIntervalInvalid.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter 1 to 3650 days'**
-  String get maintenanceIntervalInvalid;
 
   /// No description provided for @purchaseDateField.
   ///
@@ -2600,41 +2432,11 @@ abstract class AppLocalizations {
   /// **'Purchase price'**
   String get purchaseCostField;
 
-  /// No description provided for @periodicMaintenanceHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The next maintenance is counted from this one'**
-  String get periodicMaintenanceHint;
-
-  /// No description provided for @repairMaintenanceHint.
-  ///
-  /// In en, this message translates to:
-  /// **'A broken machine goes back in service'**
-  String get repairMaintenanceHint;
-
-  /// No description provided for @maintenanceDateField.
-  ///
-  /// In en, this message translates to:
-  /// **'Date'**
-  String get maintenanceDateField;
-
   /// No description provided for @whatWasDoneField.
   ///
   /// In en, this message translates to:
   /// **'What was done?'**
   String get whatWasDoneField;
-
-  /// No description provided for @maintenanceCostField.
-  ///
-  /// In en, this message translates to:
-  /// **'Cost'**
-  String get maintenanceCostField;
-
-  /// No description provided for @maintenanceCostHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Optional: recorded as an expense of the branch'**
-  String get maintenanceCostHint;
 
   /// No description provided for @financialReportsTitle.
   ///
@@ -2951,7 +2753,7 @@ abstract class AppLocalizations {
   /// No description provided for @groupResources.
   ///
   /// In en, this message translates to:
-  /// **'Stock and equipment'**
+  /// **'Stock'**
   String get groupResources;
 
   /// No description provided for @groupPeople.
@@ -3272,12 +3074,6 @@ abstract class AppLocalizations {
   /// **'Payroll'**
   String get sourcePayroll;
 
-  /// No description provided for @sourceMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'Maintenance'**
-  String get sourceMaintenance;
-
   /// No description provided for @materialsExpenseTitle.
   ///
   /// In en, this message translates to:
@@ -3295,18 +3091,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open inventory'**
   String get openInventory;
-
-  /// No description provided for @cancelMaintenance.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel maintenance'**
-  String get cancelMaintenance;
-
-  /// No description provided for @cancelMaintenanceConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Its expense, if any, is removed, the next maintenance date and the machine\'s status go back as they were, and the line stays on record as cancelled.'**
-  String get cancelMaintenanceConfirm;
 
   /// No description provided for @cancelPayrollPayment.
   ///
@@ -3470,18 +3254,6 @@ abstract class AppLocalizations {
   /// **'Return to service'**
   String get returnToService;
 
-  /// No description provided for @reportBreakdownExplained.
-  ///
-  /// In en, this message translates to:
-  /// **'The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.'**
-  String get reportBreakdownExplained;
-
-  /// No description provided for @retireEquipmentExplained.
-  ///
-  /// In en, this message translates to:
-  /// **'No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.'**
-  String get retireEquipmentExplained;
-
   /// No description provided for @thisWeek.
   ///
   /// In en, this message translates to:
@@ -3493,24 +3265,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total hours'**
   String get totalHoursLabel;
-
-  /// No description provided for @equipmentBrokenCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Broken equipment: {count}'**
-  String equipmentBrokenCount(int count);
-
-  /// No description provided for @breakdownReasonField.
-  ///
-  /// In en, this message translates to:
-  /// **'What is wrong?'**
-  String get breakdownReasonField;
-
-  /// No description provided for @breakdownHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'Breakdowns'**
-  String get breakdownHistory;
 
   /// No description provided for @uncountedShiftsTitle.
   ///

@@ -10,8 +10,8 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Deletes an expense recorded by mistake. Cash taken from a drawer whose shift is closed stays, since
- * the shift's count already relies on it. An expense that is the money side of a purchase, payroll or
- * maintenance is managed from there, or the two would disagree.
+ * the shift's count already relies on it. An expense that is the money side of a purchase or payroll
+ * is managed from there, or the two would disagree.
  */
 class DeleteExpense
 {
@@ -26,7 +26,6 @@ class DeleteExpense
             throw ValidationException::withMessages(['expense' => __(match ($expense->source()) {
                 'purchase' => 'This expense came from an inventory purchase. Cancel the purchase from the inventory.',
                 'payroll' => 'This expense came from payroll. Cancel the payment from the payroll.',
-                default => 'This expense came from equipment maintenance. Cancel it from the equipment.',
             })]);
         }
 

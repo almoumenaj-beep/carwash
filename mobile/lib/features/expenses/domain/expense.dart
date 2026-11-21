@@ -91,7 +91,7 @@ class Expense {
   final NamedRef category;
   final NamedRef? supplier;
 
-  /// Where it was recorded from (`purchase`, `payroll`, `maintenance`), and so managed; null when recorded by itself.
+  /// Where it was recorded from (`purchase`, `payroll`), and so managed; null when recorded by itself.
   final String? source;
   final int amount;
   final DateTime spentOn;

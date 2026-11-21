@@ -21,7 +21,6 @@ import '../../features/expenses/presentation/expenses_screen.dart';
 import '../../features/home/presentation/app_shell.dart';
 import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/home_sections.dart';
-import '../../features/equipment/presentation/equipment_screen.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/inventory/presentation/stock_issue_screen.dart';
 import '../../features/staff_affairs/presentation/staff_affairs_screen.dart';
@@ -128,16 +127,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/stock-issue',
             builder: (_, state) => StockIssueScreen(branchId: state.uri.queryParameters['branch']),
-          ),
-          GoRoute(
-            path: '/equipment',
-            builder: (_, _) => const EquipmentScreen(),
-            routes: [
-              GoRoute(
-                path: ':equipmentId',
-                builder: (_, state) => EquipmentDetailScreen(equipmentId: state.pathParameters['equipmentId']!),
-              ),
-            ],
           ),
           GoRoute(path: '/staff-affairs', builder: (_, _) => const StaffAffairsScreen()),
           GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),

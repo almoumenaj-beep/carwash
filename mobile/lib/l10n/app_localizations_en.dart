@@ -1282,115 +1282,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get branchField => 'Branch';
 
   @override
-  String get equipmentTitle => 'Equipment and maintenance';
-
-  @override
-  String get equipmentSubtitle => 'Machines, maintenance due and breakdowns';
-
-  @override
-  String get addEquipment => 'Add equipment';
-
-  @override
-  String get editEquipment => 'Edit equipment';
-
-  @override
-  String get noEquipment =>
-      'No equipment yet. Add pressure washers, vacuums and compressors to keep track of their maintenance.';
-
-  @override
-  String get equipmentInService => 'In service';
-
-  @override
-  String get equipmentOutOfService => 'Broken';
-
-  @override
-  String get equipmentRetired => 'Retired';
-
-  @override
-  String maintenanceOverdue(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days', one: '1 day');
-    return 'Maintenance overdue by $_temp0';
-  }
-
-  @override
-  String get maintenanceDueToday => 'Maintenance due today';
-
-  @override
-  String maintenanceDueIn(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days', one: '1 day');
-    return 'Maintenance in $_temp0';
-  }
-
-  @override
-  String maintenanceDueCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count machines need maintenance now',
-      one: '1 machine needs maintenance now',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get reportBreakdown => 'Report a breakdown';
-
-  @override
-  String get backInService => 'Back in service';
-
-  @override
-  String get retireEquipment => 'Retire';
-
-  @override
-  String get recordMaintenance => 'Record maintenance';
-
-  @override
-  String get noPeriodicMaintenance => 'No periodic maintenance';
-
-  @override
-  String maintenanceEvery(int count) {
-    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count days', one: 'day');
-    return 'Maintenance every $_temp0';
-  }
-
-  @override
-  String get nextMaintenance => 'Next maintenance';
-
-  @override
   String get serialNumberField => 'Serial number';
 
   @override
   String get purchaseSection => 'Purchase';
 
   @override
-  String get maintenanceHistory => 'Maintenance history';
-
-  @override
-  String get noMaintenanceYet => 'No maintenance recorded';
-
-  @override
-  String get periodicMaintenance => 'Periodic';
-
-  @override
-  String get repairMaintenance => 'Repair';
-
-  @override
-  String get equipmentNameField => 'Name';
-
-  @override
-  String get equipmentNameHint => 'e.g. Pressure washer 1';
-
-  @override
-  String get maintenanceIntervalField => 'Periodic maintenance every';
-
-  @override
   String get daysUnit => 'days';
-
-  @override
-  String get maintenanceIntervalHint => 'Leave empty if it needs no periodic maintenance';
-
-  @override
-  String get maintenanceIntervalInvalid => 'Enter 1 to 3650 days';
 
   @override
   String get purchaseDateField => 'Purchase date';
@@ -1399,22 +1297,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get purchaseCostField => 'Purchase price';
 
   @override
-  String get periodicMaintenanceHint => 'The next maintenance is counted from this one';
-
-  @override
-  String get repairMaintenanceHint => 'A broken machine goes back in service';
-
-  @override
-  String get maintenanceDateField => 'Date';
-
-  @override
   String get whatWasDoneField => 'What was done?';
-
-  @override
-  String get maintenanceCostField => 'Cost';
-
-  @override
-  String get maintenanceCostHint => 'Optional: recorded as an expense of the branch';
 
   @override
   String get financialReportsTitle => 'Financial reports';
@@ -1589,7 +1472,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groupFinance => 'Finance';
 
   @override
-  String get groupResources => 'Stock and equipment';
+  String get groupResources => 'Stock';
 
   @override
   String get groupPeople => 'Human resources';
@@ -1775,9 +1658,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sourcePayroll => 'Payroll';
 
   @override
-  String get sourceMaintenance => 'Maintenance';
-
-  @override
   String get materialsExpenseTitle => 'Are these materials for the stock?';
 
   @override
@@ -1786,13 +1666,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openInventory => 'Open inventory';
-
-  @override
-  String get cancelMaintenance => 'Cancel maintenance';
-
-  @override
-  String get cancelMaintenanceConfirm =>
-      'Its expense, if any, is removed, the next maintenance date and the machine\'s status go back as they were, and the line stays on record as cancelled.';
 
   @override
   String get cancelPayrollPayment => 'Cancel payroll payment';
@@ -1882,29 +1755,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get returnToService => 'Return to service';
 
   @override
-  String get reportBreakdownExplained =>
-      'The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.';
-
-  @override
-  String get retireEquipmentExplained =>
-      'No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.';
-
-  @override
   String get thisWeek => 'This week';
 
   @override
   String get totalHoursLabel => 'Total hours';
-
-  @override
-  String equipmentBrokenCount(int count) {
-    return 'Broken equipment: $count';
-  }
-
-  @override
-  String get breakdownReasonField => 'What is wrong?';
-
-  @override
-  String get breakdownHistory => 'Breakdowns';
 
   @override
   String get uncountedShiftsTitle => 'Cashiers closed automatically, not counted yet';

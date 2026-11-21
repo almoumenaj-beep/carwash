@@ -66,12 +66,6 @@ List<HomeGroup> sectionGroups(AppLocalizations l10n) => [
         title: l10n.inventoryTitle,
         subtitle: l10n.inventorySubtitle,
       ),
-      (
-        path: '/equipment',
-        icon: Icons.precision_manufacturing_outlined,
-        title: l10n.equipmentTitle,
-        subtitle: l10n.equipmentSubtitle,
-      ),
     ],
   ),
   (

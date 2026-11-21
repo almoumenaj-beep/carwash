@@ -688,73 +688,12 @@
   "edit": "Edit",
   "notSet": "Not set",
   "branchField": "Branch",
-  "equipmentTitle": "Equipment and maintenance",
-  "equipmentSubtitle": "Machines, maintenance due and breakdowns",
-  "addEquipment": "Add equipment",
-  "editEquipment": "Edit equipment",
-  "noEquipment": "No equipment yet. Add pressure washers, vacuums and compressors to keep track of their maintenance.",
-  "equipmentInService": "In service",
-  "equipmentOutOfService": "Broken",
-  "equipmentRetired": "Retired",
-  "maintenanceOverdue": "Maintenance overdue by {count, plural, =1{1 day} other{{count} days}}",
-  "@maintenanceOverdue": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "maintenanceDueToday": "Maintenance due today",
-  "maintenanceDueIn": "Maintenance in {count, plural, =1{1 day} other{{count} days}}",
-  "@maintenanceDueIn": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "maintenanceDueCount": "{count, plural, =1{1 machine needs maintenance now} other{{count} machines need maintenance now}}",
-  "@maintenanceDueCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "reportBreakdown": "Report a breakdown",
-  "backInService": "Back in service",
-  "retireEquipment": "Retire",
-  "recordMaintenance": "Record maintenance",
-  "noPeriodicMaintenance": "No periodic maintenance",
-  "maintenanceEvery": "Maintenance every {count, plural, =1{day} other{{count} days}}",
-  "@maintenanceEvery": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "nextMaintenance": "Next maintenance",
   "serialNumberField": "Serial number",
   "purchaseSection": "Purchase",
-  "maintenanceHistory": "Maintenance history",
-  "noMaintenanceYet": "No maintenance recorded",
-  "periodicMaintenance": "Periodic",
-  "repairMaintenance": "Repair",
-  "equipmentNameField": "Name",
-  "equipmentNameHint": "e.g. Pressure washer 1",
-  "maintenanceIntervalField": "Periodic maintenance every",
   "daysUnit": "days",
-  "maintenanceIntervalHint": "Leave empty if it needs no periodic maintenance",
-  "maintenanceIntervalInvalid": "Enter 1 to 3650 days",
   "purchaseDateField": "Purchase date",
   "purchaseCostField": "Purchase price",
-  "periodicMaintenanceHint": "The next maintenance is counted from this one",
-  "repairMaintenanceHint": "A broken machine goes back in service",
-  "maintenanceDateField": "Date",
   "whatWasDoneField": "What was done?",
-  "maintenanceCostField": "Cost",
-  "maintenanceCostHint": "Optional: recorded as an expense of the branch",
   "financialReportsTitle": "Financial reports",
   "financialReportsSubtitle": "Profit and loss, cash flow and profitability",
   "thisYear": "This year",
@@ -828,7 +767,7 @@
   "groupDaily": "Every day",
   "groupMore": "Management",
   "groupFinance": "Finance",
-  "groupResources": "Stock and equipment",
+  "groupResources": "Stock",
   "groupPeople": "Human resources",
   "groupSetup": "Setup",
   "manageCategories": "Expense categories",
@@ -968,12 +907,9 @@
   "newSupplierButton": "New supplier",
   "sourcePurchase": "Inventory purchase",
   "sourcePayroll": "Payroll",
-  "sourceMaintenance": "Maintenance",
   "materialsExpenseTitle": "Are these materials for the stock?",
   "materialsExpenseHint": "Record them from Inventory → New purchase: the stock goes up and the expense is recorded for you. Recording them here does not raise the stock, and recording them in both counts them twice.",
   "openInventory": "Open inventory",
-  "cancelMaintenance": "Cancel maintenance",
-  "cancelMaintenanceConfirm": "Its expense, if any, is removed, the next maintenance date and the machine's status go back as they were, and the line stays on record as cancelled.",
   "cancelPayrollPayment": "Cancel payroll payment",
   "cancelPayrollPaymentConfirm": "This month's expense is removed and the payroll is a draft again, to review and pay again. If the money already reached the staff, this does not get it back.",
   "newMaterialOption": "+ New material…",
@@ -1015,22 +951,10 @@
   "passwordChanged": "Password changed",
   "confirmAction": "Confirm",
   "returnToService": "Return to service",
-  "reportBreakdownExplained": "The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.",
-  "retireEquipmentExplained": "No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.",
   "thisWeek": "This week",
   "totalHoursLabel": "Total hours",
-  "equipmentBrokenCount": "Broken equipment: {count}",
-  "breakdownReasonField": "What is wrong?",
-  "breakdownHistory": "Breakdowns",
   "uncountedShiftsTitle": "Cashiers closed automatically, not counted yet",
   "enterCount": "Enter the count",
-  "@equipmentBrokenCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "pointsTitle": "Points system",
   "pointsEnabledField": "Turn on points",
   "pointsEnabledHint": "A registered customer earns points on what they pay and spends them for money off. Turning it off keeps their points.",
