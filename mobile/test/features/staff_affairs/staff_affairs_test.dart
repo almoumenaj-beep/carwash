@@ -4,20 +4,38 @@ import 'package:carwash_app/features/staff_affairs/presentation/staff_affairs_sc
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('reads an employee with pay terms and attendance', () {
+  test('reads an employee with monthly pay terms', () {
     final employee = Employee.fromJson({
       'id': 'u1',
       'name': 'Mahmood',
       'roles': ['Washer'],
       'monthly_salary': 150000,
+      'salary_type': 'monthly',
       'commission_type': 'per_car',
       'commission_value': 500,
-      'clocked_in_at': '2026-11-03T08:00:00+03:00',
+      'daily_wages_this_month': 0,
     });
 
     expect(employee.commissionType, CommissionType.perCar);
     expect(employee.commissionValue, 500);
-    expect(employee.clockedInAt, isNotNull);
+    expect(employee.salaryType, SalaryType.monthly);
+    expect(employee.dailyWagesThisMonth, 0);
+  });
+
+  test('reads a daily-paid employee with this month\'s wages', () {
+    final employee = Employee.fromJson({
+      'id': 'u1',
+      'name': 'Mahmood',
+      'roles': ['Washer'],
+      'monthly_salary': 0,
+      'salary_type': 'daily',
+      'commission_type': 'none',
+      'commission_value': 0,
+      'daily_wages_this_month': 30000,
+    });
+
+    expect(employee.salaryType, SalaryType.daily);
+    expect(employee.dailyWagesThisMonth, 30000);
   });
 
   test('reads a payroll run with its lines', () {

@@ -63,17 +63,6 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Whether the user must clock in before working: any of their roles asks for it, and they have a branch
-     * to clock in at. The owner never does.
-     */
-    public function requiresAttendance(): bool
-    {
-        return ! $this->isOwner()
-            && $this->roles->contains(fn ($role) => $role->requires_attendance)
-            && $this->accessibleBranches()->isNotEmpty();
-    }
-
     public function hasPin(): bool
     {
         return $this->pin_hash !== null;

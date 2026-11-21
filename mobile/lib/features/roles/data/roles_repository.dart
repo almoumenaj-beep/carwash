@@ -51,12 +51,12 @@ class RolesRepository {
     return Role.fromJson(unwrapData(response));
   }
 
-  /// Renames the role, or changes the largest discount it may give or whether its staff must clock in.
-  Future<void> update(int id, {String? name, int? maxDiscountBps, bool? requiresAttendance}) async {
+  /// Renames the role or changes the largest discount it may give.
+  Future<void> update(int id, {String? name, int? maxDiscountBps}) async {
     await sendRequest(
       () => _dio.patch<Map<String, dynamic>>(
         '/roles/$id',
-        data: {'name': ?name, 'max_discount_bps': ?maxDiscountBps, 'requires_attendance': ?requiresAttendance},
+        data: {'name': ?name, 'max_discount_bps': ?maxDiscountBps},
       ),
     );
   }

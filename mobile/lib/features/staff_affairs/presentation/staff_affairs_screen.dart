@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
-import '../../../core/widgets/branch_chips.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -15,8 +14,8 @@ import '../../expenses/presentation/expense_widgets.dart';
 import '../data/staff_affairs_repository.dart';
 import '../domain/staff_affairs.dart';
 
-/// Staff affairs: pay terms, a branch's attendance for a day or a period, and monthly payroll. Each tab shows
-/// only to staff with the permission behind it.
+/// Staff affairs: pay terms, ad-hoc daily wages and monthly payroll. Each tab shows only to staff
+/// with the permission behind it.
 class StaffAffairsScreen extends ConsumerWidget {
   const StaffAffairsScreen({super.key});
 
@@ -28,7 +27,6 @@ class StaffAffairsScreen extends ConsumerWidget {
     final canPayroll = me?.can(Permissions.payrollView) ?? false;
     final tabs = [
       if (canView) (Tab(text: l10n.employeesTab), const _Employees()),
-      if (canView) (Tab(text: l10n.attendanceTab), const _Attendance()),
       if (canPayroll) (Tab(text: l10n.payrollTab), const _Payroll()),
     ];
 
@@ -52,6 +50,12 @@ String commissionLabel(AppLocalizations l10n, MoneyFormat money, Employee employ
       CommissionType.percent => l10n.commissionPercent(PercentFormat.format(employee.commissionValue)),
     };
 
+/// The pay line under an employee's name: the monthly salary, or this month's daily wages.
+String payLabel(AppLocalizations l10n, MoneyFormat money, Employee employee) => switch (employee.salaryType) {
+  SalaryType.monthly => employee.monthlySalary > 0 ? l10n.salaryLabel(money.format(employee.monthlySalary)) : '',
+  SalaryType.daily => l10n.dailyWagesThisMonth(money.format(employee.dailyWagesThisMonth)),
+};
+
 class _Employees extends ConsumerWidget {
   const _Employees();
 
@@ -70,20 +74,11 @@ class _Employees extends ConsumerWidget {
             for (final employee in value)
               ListTile(
                 leading: CircleAvatar(child: Text(employee.name.characters.first)),
-                title: Row(
-                  children: [
-                    Flexible(child: Text(employee.name)),
-                    if (employee.clockedInAt != null) ...[
-                      const SizedBox(width: 6),
-                      Icon(Icons.circle, size: 10, color: Theme.of(context).colorScheme.primary),
-                    ],
-                  ],
-                ),
+                title: Text(employee.name),
                 subtitle: Text(
-                  [
-                    if (employee.monthlySalary > 0) l10n.salaryLabel(money.format(employee.monthlySalary)),
-                    commissionLabel(l10n, money, employee),
-                  ].join(' · '),
+                  [payLabel(l10n, money, employee), commissionLabel(l10n, money, employee)]
+                      .where((line) => line.isNotEmpty)
+                      .join(' · '),
                 ),
                 onTap: canManage
                     ? () => showDialog<void>(
@@ -114,6 +109,7 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
   late final _salary = TextEditingController(
     text: ref.read(moneyFormatProvider).toInput(widget.employee.monthlySalary),
   );
+  late SalaryType _salaryType = widget.employee.salaryType;
   late CommissionType _type = widget.employee.commissionType;
   late final _value = TextEditingController(
     text: switch (widget.employee.commissionType) {
@@ -122,12 +118,15 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
       CommissionType.percent => PercentFormat.format(widget.employee.commissionValue),
     },
   );
+  late final _dailyWage = TextEditingController();
+  bool _recording = false;
   String? _error;
 
   @override
   void dispose() {
     _salary.dispose();
     _value.dispose();
+    _dailyWage.dispose();
     super.dispose();
   }
 
@@ -147,7 +146,7 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
     try {
       await ref
           .read(staffAffairsRepositoryProvider)
-          .savePayTerms(widget.employee.id, salary: salary, type: _type, value: value);
+          .savePayTerms(widget.employee.id, salary: salary, salaryType: _salaryType, type: _type, value: value);
       ref.invalidate(employeesProvider);
       if (mounted) {
         Navigator.of(context).pop();
@@ -155,6 +154,45 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
     } catch (error, stackTrace) {
       if (mounted) {
         setState(() => _error = changeError(context, error, stackTrace));
+      }
+    }
+  }
+
+  /// Pays a day's wage for a daily-paid employee: asks how it was paid, then records it as a wages expense.
+  Future<void> _recordDailyWage() async {
+    final l10n = AppLocalizations.of(context);
+    final money = ref.read(moneyFormatProvider);
+    final amount = money.parse(_dailyWage.text);
+    if (amount == null) {
+      setState(() => _error = l10n.amountInvalid(money.toInput(10)));
+      return;
+    }
+    final method = await askPaymentMethod(context);
+    if (method == null || !mounted) {
+      return;
+    }
+    final branches = ref.read(sessionProvider).value?.branches ?? const <BranchSummary>[];
+    if (branches.isEmpty) {
+      setState(() => _error = l10n.noBranchAssigned);
+      return;
+    }
+    setState(() => _recording = true);
+    try {
+      await ref
+          .read(staffAffairsRepositoryProvider)
+          .recordDailyWage(widget.employee.id, amount: amount, branchId: branches.first.id, paymentMethod: method.apiValue);
+      ref.invalidate(employeesProvider);
+      _dailyWage.clear();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.dailyWageRecorded)));
+      }
+    } catch (error, stackTrace) {
+      if (mounted) {
+        setState(() => _error = changeError(context, error, stackTrace));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _recording = false);
       }
     }
   }
@@ -171,12 +209,45 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SegmentedButton<SalaryType>(
+              segments: [
+                ButtonSegment(value: SalaryType.monthly, label: Text(l10n.salaryTypeMonthly)),
+                ButtonSegment(value: SalaryType.daily, label: Text(l10n.salaryTypeDaily)),
+              ],
+              selected: {_salaryType},
+              onSelectionChanged: (selection) => setState(() => _salaryType = selection.single),
+            ),
+            const SizedBox(height: 12),
             TextField(
               controller: _salary,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(labelText: l10n.monthlySalaryField, suffixText: money.currency),
+              decoration: InputDecoration(
+                labelText: _salaryType == SalaryType.monthly ? l10n.monthlySalaryField : l10n.dailyRateField,
+                suffixText: money.currency,
+              ),
             ),
-            const SizedBox(height: 16),
+            if (_salaryType == SalaryType.daily) ...[
+              const SizedBox(height: 16),
+              Text(l10n.dailyWageRecordTitle, style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _dailyWage,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: InputDecoration(labelText: l10n.dailyWageAmountField, suffixText: money.currency),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton.icon(
+                    onPressed: _recording ? null : _recordDailyWage,
+                    icon: const Icon(Icons.payments_outlined),
+                    label: Text(l10n.recordDailyWage),
+                  ),
+                ],
+              ),
+            ],
             Text(l10n.commissionField, style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             SegmentedButton<CommissionType>(
@@ -222,272 +293,6 @@ ExpenseCategory? wagesCategory(List<ExpenseCategory> categories) {
           .where((category) => category.name.contains('رواتب') || category.name.toLowerCase().contains('wage'))
           .firstOrNull ??
       active.firstOrNull;
-}
-
-/// The quick periods offered above the attendance.
-enum _AttendancePeriod { today, thisWeek, thisMonth, lastMonth, custom }
-
-class _Attendance extends ConsumerStatefulWidget {
-  const _Attendance();
-
-  @override
-  ConsumerState<_Attendance> createState() => _AttendanceState();
-}
-
-class _AttendanceState extends ConsumerState<_Attendance> {
-  String? _branchId;
-  DateTime _day = DateUtils.dateOnly(DateTime.now());
-  _AttendancePeriod _period = _AttendancePeriod.today;
-  DateTimeRange? _range;
-
-  Future<void> _choose(_AttendancePeriod period) async {
-    final today = DateUtils.dateOnly(DateTime.now());
-    if (period == _AttendancePeriod.custom) {
-      final picked = await showDateRangePicker(
-        context: context,
-        initialDateRange: _range,
-        firstDate: DateTime(2024),
-        lastDate: today,
-      );
-      if (picked != null) {
-        setState(() {
-          _period = period;
-          _range = picked;
-        });
-      }
-      return;
-    }
-
-    setState(() {
-      _period = period;
-      _day = today;
-      _range = switch (period) {
-        // The week starts on Sunday in Bahrain.
-        _AttendancePeriod.thisWeek => DateTimeRange(
-          start: DateTime(today.year, today.month, today.day - today.weekday % 7),
-          end: today,
-        ),
-        _AttendancePeriod.thisMonth => DateTimeRange(start: DateTime(today.year, today.month), end: today),
-        _AttendancePeriod.lastMonth => DateTimeRange(
-          start: DateTime(today.year, today.month - 1),
-          end: DateTime(today.year, today.month, 0),
-        ),
-        _ => null,
-      };
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final branches = ref.watch(sessionProvider).value?.branches ?? const <BranchSummary>[];
-    final branch = branches.where((branch) => branch.id == _branchId).firstOrNull ?? branches.firstOrNull;
-    if (branch == null) {
-      return Center(child: Text(l10n.noBranchAssigned));
-    }
-
-    final periodChips = SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        children: [
-          for (final (option, label) in [
-            (_AttendancePeriod.today, l10n.today),
-            (_AttendancePeriod.thisWeek, l10n.thisWeek),
-            (_AttendancePeriod.thisMonth, l10n.thisMonth),
-            (_AttendancePeriod.lastMonth, l10n.lastMonth),
-            (_AttendancePeriod.custom, l10n.customPeriod),
-          ])
-            Padding(
-              padding: const EdgeInsetsDirectional.only(end: 8),
-              child: ChoiceChip(label: Text(label), selected: _period == option, onSelected: (_) => _choose(option)),
-            ),
-        ],
-      ),
-    );
-
-    final range = _range;
-    if (_period != _AttendancePeriod.today && range != null) {
-      return ListView(
-        padding: const EdgeInsets.only(bottom: 32),
-        children: [
-          BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
-          periodChips,
-          _AttendancePeriodView(branchId: branch.id, range: range),
-        ],
-      );
-    }
-
-    final records = ref.watch(branchAttendanceProvider((branchId: branch.id, date: apiDate(_day))));
-    String time(DateTime at) => MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(at.toLocal()));
-
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 32),
-      children: [
-        BranchChips(selected: branch.id, includeAll: false, onChanged: (id) => setState(() => _branchId = id)),
-        periodChips,
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.chevron_left),
-              onPressed: () => setState(() => _day = _day.subtract(const Duration(days: 1))),
-            ),
-            Expanded(
-              child: Text(
-                MaterialLocalizations.of(context).formatMediumDate(_day),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.chevron_right),
-              onPressed: DateUtils.isSameDay(_day, DateTime.now())
-                  ? null
-                  : () => setState(() => _day = _day.add(const Duration(days: 1))),
-            ),
-          ],
-        ),
-        switch (records) {
-          AsyncData(:final value) when value.isEmpty => Padding(
-            padding: const EdgeInsets.all(32),
-            child: Text(l10n.noAttendance, textAlign: TextAlign.center),
-          ),
-          AsyncData(:final value) => Column(
-            children: [
-              for (final record in value)
-                ListTile(
-                  leading: Icon(
-                    record.clockOutAt == null
-                        ? Icons.timer_outlined
-                        : (record.autoClockedOut ? Icons.schedule_outlined : Icons.check_circle_outline),
-                    color: record.autoClockedOut ? Theme.of(context).colorScheme.error : null,
-                  ),
-                  title: Text(record.userName),
-                  subtitle: Text(
-                    record.clockOutAt == null
-                        ? l10n.stillAtWork(time(record.clockInAt))
-                        : '${time(record.clockInAt)} → ${time(record.clockOutAt!)}'
-                              '${record.autoClockedOut ? ' · ${l10n.autoClockedOut}' : ''}',
-                  ),
-                  trailing: Text(l10n.hoursWorked((record.minutes / 60).toStringAsFixed(1))),
-                ),
-            ],
-          ),
-          AsyncError(:final error) => ErrorView(
-            error: error,
-            onRetry: () => ref.invalidate(branchAttendanceProvider((branchId: branch.id, date: apiDate(_day)))),
-          ),
-          _ => const Padding(
-            padding: EdgeInsets.all(32),
-            child: Center(child: CircularProgressIndicator()),
-          ),
-        },
-      ],
-    );
-  }
-}
-
-/// A period's attendance: the total hours, then a line per employee that opens their days.
-class _AttendancePeriodView extends ConsumerWidget {
-  const _AttendancePeriodView({required this.branchId, required this.range});
-
-  final String branchId;
-  final DateTimeRange range;
-
-  void _showDays(BuildContext context, AttendanceStaffSummary member) {
-    final l10n = AppLocalizations.of(context);
-    final material = MaterialLocalizations.of(context);
-    String time(DateTime at) => material.formatTimeOfDay(TimeOfDay.fromDateTime(at.toLocal()));
-
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (sheet) => DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.6,
-        maxChildSize: 0.9,
-        builder: (sheet, controller) => ListView(
-          controller: controller,
-          padding: const EdgeInsets.only(bottom: 24),
-          children: [
-            ListTile(
-              title: Text(member.userName, style: Theme.of(sheet).textTheme.titleMedium),
-              trailing: Text(l10n.hoursWorked((member.minutes / 60).toStringAsFixed(1))),
-            ),
-            const Divider(height: 1),
-            for (final record in member.records)
-              ListTile(
-                title: Text(material.formatMediumDate(record.clockInAt.toLocal())),
-                subtitle: Text(
-                  record.clockOutAt == null
-                      ? l10n.stillAtWork(time(record.clockInAt))
-                      : '${time(record.clockInAt)} → ${time(record.clockOutAt!)}'
-                            '${record.autoClockedOut ? ' · ${l10n.autoClockedOut}' : ''}',
-                ),
-                trailing: Text(l10n.hoursWorked((record.minutes / 60).toStringAsFixed(1))),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
-    final date = MaterialLocalizations.of(context).formatMediumDate;
-    final query = (branchId: branchId, from: apiDate(range.start), to: apiDate(range.end));
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text('${date(range.start)} – ${date(range.end)}', style: Theme.of(context).textTheme.bodySmall),
-        ),
-        switch (ref.watch(attendanceSummaryProvider(query))) {
-          AsyncData(:final value) when value.staff.isEmpty => Padding(
-            padding: const EdgeInsets.all(32),
-            child: Text(l10n.noAttendanceInPeriod, textAlign: TextAlign.center),
-          ),
-          AsyncData(:final value) => Column(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.schedule_outlined),
-                title: Text(l10n.totalHoursLabel),
-                trailing: Text(
-                  l10n.hoursWorked((value.totalMinutes / 60).toStringAsFixed(1)),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
-              const Divider(height: 1),
-              for (final member in value.staff)
-                ListTile(
-                  leading: CircleAvatar(child: Text(member.userName.characters.first)),
-                  title: Text(member.userName),
-                  subtitle: Text(
-                    [
-                      l10n.attendanceDays(member.days),
-                      if (member.autoClockedOutCount > 0) l10n.autoClockedOutCount(member.autoClockedOutCount),
-                    ].join(' · '),
-                  ),
-                  trailing: Text(l10n.hoursWorked((member.minutes / 60).toStringAsFixed(1))),
-                  onTap: () => _showDays(context, member),
-                ),
-            ],
-          ),
-          AsyncError(:final error) => ErrorView(
-            error: error,
-            onRetry: () => ref.invalidate(attendanceSummaryProvider(query)),
-          ),
-          _ => const Padding(
-            padding: EdgeInsets.all(32),
-            child: Center(child: CircularProgressIndicator()),
-          ),
-        },
-      ],
-    );
-  }
 }
 
 class _Payroll extends ConsumerStatefulWidget {

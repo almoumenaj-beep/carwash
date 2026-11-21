@@ -9,7 +9,6 @@ class Role {
     required this.permissions,
     required this.usersCount,
     this.maxDiscountBps = 0,
-    this.requiresAttendance = true,
   });
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
@@ -21,7 +20,6 @@ class Role {
     permissions: {for (final permission in (json['permissions'] as List?) ?? const []) permission as String},
     usersCount: json['users_count'] as int? ?? 0,
     maxDiscountBps: json['max_discount_bps'] as int? ?? 0,
-    requiresAttendance: json['requires_attendance'] as bool? ?? true,
   );
 
   final int id;
@@ -38,9 +36,6 @@ class Role {
 
   /// The largest discount staff holding the role may give, in basis points (1000 = 10%).
   final int maxDiscountBps;
-
-  /// Whether the role's staff must clock in before working.
-  final bool requiresAttendance;
 }
 
 /// One module of the permission catalog with its translated permissions.

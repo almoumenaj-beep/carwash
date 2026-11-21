@@ -114,6 +114,16 @@ class Expense extends Model
     }
 
     /**
+     * The staff member a daily wage was paid to, when this expense is a daily wage.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'employee_id');
+    }
+
+    /**
      * @return BelongsTo<CashShift, $this>
      */
     public function cashShift(): BelongsTo

@@ -20,7 +20,7 @@ class RecordExpense
     public function __construct(private AuditTrail $auditTrail) {}
 
     /**
-     * @param  array{branch_id: string, expense_category_id: string, supplier_id?: ?string, amount: int, spent_on?: ?string, description?: ?string, payment_method?: ?string}  $data
+     * @param  array{branch_id: string, expense_category_id: string, supplier_id?: ?string, employee_id?: ?string, amount: int, spent_on?: ?string, description?: ?string, payment_method?: ?string}  $data
      *
      * @throws ValidationException
      */
@@ -36,6 +36,7 @@ class RecordExpense
             'branch_id' => $branch->id,
             'expense_category_id' => $data['expense_category_id'],
             'supplier_id' => $data['supplier_id'] ?? null,
+            'employee_id' => $data['employee_id'] ?? null,
             'amount' => $data['amount'],
             'spent_on' => $shift !== null ? $today : ($data['spent_on'] ?? $today),
             'description' => $data['description'] ?? null,

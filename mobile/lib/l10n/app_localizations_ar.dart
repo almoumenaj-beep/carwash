@@ -1197,33 +1197,13 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get clockInAt => 'سجّل الحضور في';
-
-  @override
-  String get notClockedIn => 'لم تسجّل حضورك اليوم';
-
-  @override
-  String clockedInSince(String time) {
-    return 'في الدوام منذ $time';
-  }
-
-  @override
-  String get clockIn => 'حضور';
-
-  @override
-  String get clockOut => 'انصراف';
-
-  @override
   String get staffAffairsTitle => 'شؤون الموظفين';
 
   @override
-  String get staffAffairsSubtitle => 'الرواتب والعمولات والحضور';
+  String get staffAffairsSubtitle => 'الرواتب والعمولات';
 
   @override
   String get employeesTab => 'الأجور والعمولات';
-
-  @override
-  String get attendanceTab => 'الحضور';
 
   @override
   String get payrollTab => 'الرواتب';
@@ -1247,7 +1227,33 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get monthlySalaryField => 'الراتب الشهري';
+  String get salaryTypeMonthly => 'شهري';
+
+  @override
+  String get salaryTypeDaily => 'يومي';
+
+  @override
+  String get dailyRateField => 'اليومية المعتادة';
+
+  @override
+  String dailyWagesThisMonth(String amount) {
+    return 'يوميات هذا الشهر: $amount';
+  }
+
+  @override
+  String get dailyWageRecordTitle => 'دفع يومية';
+
+  @override
+  String get dailyWageAmountField => 'المبلغ';
+
+  @override
+  String get recordDailyWage => 'تسجيل';
+
+  @override
+  String get dailyWageRecorded => 'تم تسجيل اليومية';
+
+  @override
+  String get monthlySalaryField => 'الراتب';
 
   @override
   String get commissionField => 'العمولة';
@@ -1266,19 +1272,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get commissionSplitHint => 'إذا غسل السيارة أكثر من عامل تُقسم العمولة بينهم';
-
-  @override
-  String get noAttendance => 'لا يوجد حضور في هذا اليوم';
-
-  @override
-  String stillAtWork(String time) {
-    return 'منذ $time – ما زال في الدوام';
-  }
-
-  @override
-  String hoursWorked(String hours) {
-    return '$hours س';
-  }
 
   @override
   String get calculateThisMonth => 'احسب رواتب هذا الشهر';
@@ -1635,9 +1628,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseSizeFirst => 'اختر حجم السيارة أولاً';
 
   @override
-  String get autoClockedOut => 'انصراف تلقائي عند الإغلاق';
-
-  @override
   String get groupDaily => 'العمل اليومي';
 
   @override
@@ -1690,30 +1680,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get manageVehicleSizesHint => 'الأحجام التي تختلف الأسعار حسبها، مثل صالون ودفع رباعي';
-
-  @override
-  String get clockInToStart => 'سجّل حضورك لتبدأ العمل';
-
-  @override
-  String get clockInToStartHint => 'تظهر أقسام التطبيق بعد الضغط على «حضور» في الأعلى.';
-
-  @override
-  String get endOfDayQuestion => 'هل انتهى دوامك؟';
-
-  @override
-  String get endOfDayHint => 'ما زلت مسجّلاً في الدوام. الخروج من التطبيق وحده لا يسجّل انصرافك.';
-
-  @override
-  String get signOutOnly => 'خروج فقط';
-
-  @override
-  String get clockOutAndSignOut => 'انصراف وخروج';
-
-  @override
-  String get requiresAttendanceField => 'يلزم تسجيل الحضور قبل العمل';
-
-  @override
-  String get requiresAttendanceHint => 'لا تظهر أقسام التطبيق لهذا الدور قبل تسجيل الحضور';
 
   @override
   String get sharedDeviceField => 'جهاز مشترك';
@@ -1975,20 +1941,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get thisWeek => 'هذا الأسبوع';
 
   @override
-  String get noAttendanceInPeriod => 'لا يوجد حضور في هذه الفترة';
-
-  @override
   String get totalHoursLabel => 'مجموع الساعات';
-
-  @override
-  String attendanceDays(int count) {
-    return 'أيام الحضور: $count';
-  }
-
-  @override
-  String autoClockedOutCount(int count) {
-    return 'انصراف تلقائي: $count';
-  }
 
   @override
   String equipmentBrokenCount(int count) {

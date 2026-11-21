@@ -24,7 +24,6 @@ class ProvisionDefaultRoles
                         'name' => $defaultRole->displayName(),
                         'guard_name' => Role::GUARD_NAME,
                         'max_discount_bps' => $defaultRole->maxDiscountBps(),
-                        'requires_attendance' => $defaultRole->requiresAttendance(),
                     ],
                 );
 

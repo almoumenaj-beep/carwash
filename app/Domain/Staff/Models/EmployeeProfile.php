@@ -4,6 +4,7 @@ namespace App\Domain\Staff\Models;
 
 use App\Domain\Platform\Tenancy\BelongsToTenant;
 use App\Domain\Staff\Enums\CommissionType;
+use App\Domain\Staff\Enums\SalaryType;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -11,9 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * A staff member's pay terms: monthly salary and commission on the cars they wash.
+ * A staff member's pay terms: a monthly salary or daily-paid terms, and commission on the cars they wash.
+ * Daily-paid staff are paid ad-hoc wages (each a linked expense), so `monthly_salary` is their base only
+ * when the salary type is monthly.
  */
-#[Fillable(['user_id', 'monthly_salary', 'commission_type', 'commission_value'])]
+#[Fillable(['user_id', 'monthly_salary', 'salary_type', 'commission_type', 'commission_value'])]
 class EmployeeProfile extends Model
 {
     use BelongsToTenant, HasUuids;
@@ -25,6 +28,7 @@ class EmployeeProfile extends Model
      */
     protected $attributes = [
         'monthly_salary' => 0,
+        'salary_type' => 'monthly',
         'commission_type' => 'none',
         'commission_value' => 0,
     ];
@@ -38,6 +42,7 @@ class EmployeeProfile extends Model
     {
         return [
             'monthly_salary' => 'integer',
+            'salary_type' => SalaryType::class,
             'commission_type' => CommissionType::class,
             'commission_value' => 'integer',
         ];

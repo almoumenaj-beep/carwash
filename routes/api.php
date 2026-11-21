@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AppointmentController;
-use App\Http\Controllers\Api\V1\AttendanceController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BayController;
 use App\Http\Controllers\Api\V1\BranchController;
@@ -119,11 +118,7 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::post('equipment/{equipment}/maintenances/{maintenance}/cancel', [EquipmentController::class, 'cancelMaintenance'])->name('equipment.maintenances.cancel');
         Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
         Route::put('employees/{user}/pay-terms', [EmployeeController::class, 'updateProfile'])->name('employees.pay-terms.update');
-        Route::get('attendance', [AttendanceController::class, 'index'])->name('attendance.index');
-        Route::get('attendance/summary', [AttendanceController::class, 'summary'])->name('attendance.summary');
-        Route::get('attendance/me', [AttendanceController::class, 'me'])->name('attendance.me');
-        Route::post('attendance/clock-in', [AttendanceController::class, 'clockIn'])->name('attendance.clock-in');
-        Route::post('attendance/clock-out', [AttendanceController::class, 'clockOut'])->name('attendance.clock-out');
+        Route::post('employees/{user}/daily-wages', [EmployeeController::class, 'recordDailyWage'])->name('employees.daily-wages.store');
         Route::get('payroll-runs', [PayrollController::class, 'index'])->name('payroll-runs.index');
         Route::post('payroll-runs', [PayrollController::class, 'store'])->name('payroll-runs.store');
         Route::post('payroll-runs/{payrollRun}/pay', [PayrollController::class, 'pay'])->name('payroll-runs.pay');

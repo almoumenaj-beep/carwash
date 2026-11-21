@@ -2204,36 +2204,6 @@ abstract class AppLocalizations {
   /// **'Cancelled: {reason}'**
   String cancelledBecause(String reason);
 
-  /// No description provided for @clockInAt.
-  ///
-  /// In en, this message translates to:
-  /// **'Clock in at'**
-  String get clockInAt;
-
-  /// No description provided for @notClockedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'You have not clocked in'**
-  String get notClockedIn;
-
-  /// No description provided for @clockedInSince.
-  ///
-  /// In en, this message translates to:
-  /// **'At work since {time}'**
-  String clockedInSince(String time);
-
-  /// No description provided for @clockIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Clock in'**
-  String get clockIn;
-
-  /// No description provided for @clockOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Clock out'**
-  String get clockOut;
-
   /// No description provided for @staffAffairsTitle.
   ///
   /// In en, this message translates to:
@@ -2243,7 +2213,7 @@ abstract class AppLocalizations {
   /// No description provided for @staffAffairsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Pay, commission, attendance and payroll'**
+  /// **'Pay, commission and payroll'**
   String get staffAffairsSubtitle;
 
   /// No description provided for @employeesTab.
@@ -2251,12 +2221,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pay and commission'**
   String get employeesTab;
-
-  /// No description provided for @attendanceTab.
-  ///
-  /// In en, this message translates to:
-  /// **'Attendance'**
-  String get attendanceTab;
 
   /// No description provided for @payrollTab.
   ///
@@ -2287,6 +2251,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Salary {amount}'**
   String salaryLabel(String amount);
+
+  /// No description provided for @salaryTypeMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get salaryTypeMonthly;
+
+  /// No description provided for @salaryTypeDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get salaryTypeDaily;
+
+  /// No description provided for @dailyRateField.
+  ///
+  /// In en, this message translates to:
+  /// **'Usual day rate'**
+  String get dailyRateField;
+
+  /// No description provided for @dailyWagesThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily wages this month: {amount}'**
+  String dailyWagesThisMonth(String amount);
+
+  /// No description provided for @dailyWageRecordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay a day\'s wage'**
+  String get dailyWageRecordTitle;
+
+  /// No description provided for @dailyWageAmountField.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get dailyWageAmountField;
+
+  /// No description provided for @recordDailyWage.
+  ///
+  /// In en, this message translates to:
+  /// **'Record'**
+  String get recordDailyWage;
+
+  /// No description provided for @dailyWageRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily wage recorded'**
+  String get dailyWageRecorded;
 
   /// No description provided for @monthlySalaryField.
   ///
@@ -2329,24 +2341,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Split equally when several washers share a car'**
   String get commissionSplitHint;
-
-  /// No description provided for @noAttendance.
-  ///
-  /// In en, this message translates to:
-  /// **'No one clocked in on this day'**
-  String get noAttendance;
-
-  /// No description provided for @stillAtWork.
-  ///
-  /// In en, this message translates to:
-  /// **'Since {time}, still at work'**
-  String stillAtWork(String time);
-
-  /// No description provided for @hoursWorked.
-  ///
-  /// In en, this message translates to:
-  /// **'{hours} h'**
-  String hoursWorked(String hours);
 
   /// No description provided for @calculateThisMonth.
   ///
@@ -2936,12 +2930,6 @@ abstract class AppLocalizations {
   /// **'Choose the vehicle size first'**
   String get chooseSizeFirst;
 
-  /// No description provided for @autoClockedOut.
-  ///
-  /// In en, this message translates to:
-  /// **'clocked out automatically at closing'**
-  String get autoClockedOut;
-
   /// No description provided for @groupDaily.
   ///
   /// In en, this message translates to:
@@ -3043,54 +3031,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The sizes prices depend on, such as sedan and SUV'**
   String get manageVehicleSizesHint;
-
-  /// No description provided for @clockInToStart.
-  ///
-  /// In en, this message translates to:
-  /// **'Clock in to start work'**
-  String get clockInToStart;
-
-  /// No description provided for @clockInToStartHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The sections appear once you press «Clock in» above.'**
-  String get clockInToStartHint;
-
-  /// No description provided for @endOfDayQuestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Has your day ended?'**
-  String get endOfDayQuestion;
-
-  /// No description provided for @endOfDayHint.
-  ///
-  /// In en, this message translates to:
-  /// **'You are still clocked in. Signing out alone does not clock you out.'**
-  String get endOfDayHint;
-
-  /// No description provided for @signOutOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign out only'**
-  String get signOutOnly;
-
-  /// No description provided for @clockOutAndSignOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Clock out and sign out'**
-  String get clockOutAndSignOut;
-
-  /// No description provided for @requiresAttendanceField.
-  ///
-  /// In en, this message translates to:
-  /// **'Must clock in before working'**
-  String get requiresAttendanceField;
-
-  /// No description provided for @requiresAttendanceHint.
-  ///
-  /// In en, this message translates to:
-  /// **'This role sees the app sections only after clocking in'**
-  String get requiresAttendanceHint;
 
   /// No description provided for @sharedDeviceField.
   ///
@@ -3548,29 +3488,11 @@ abstract class AppLocalizations {
   /// **'This week'**
   String get thisWeek;
 
-  /// No description provided for @noAttendanceInPeriod.
-  ///
-  /// In en, this message translates to:
-  /// **'No attendance in this period'**
-  String get noAttendanceInPeriod;
-
   /// No description provided for @totalHoursLabel.
   ///
   /// In en, this message translates to:
   /// **'Total hours'**
   String get totalHoursLabel;
-
-  /// No description provided for @attendanceDays.
-  ///
-  /// In en, this message translates to:
-  /// **'Days present: {count}'**
-  String attendanceDays(int count);
-
-  /// No description provided for @autoClockedOutCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Automatic clock-outs: {count}'**
-  String autoClockedOutCount(int count);
 
   /// No description provided for @equipmentBrokenCount.
   ///

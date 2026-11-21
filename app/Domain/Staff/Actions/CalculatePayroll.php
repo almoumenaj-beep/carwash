@@ -5,6 +5,7 @@ namespace App\Domain\Staff\Actions;
 use App\Domain\Orders\Enums\OrderStatus;
 use App\Domain\Orders\Models\Order;
 use App\Domain\Platform\Models\Tenant;
+use App\Domain\Staff\Enums\SalaryType;
 use App\Domain\Staff\Models\EmployeeProfile;
 use App\Domain\Staff\Models\PayrollRun;
 use App\Models\User;
@@ -12,9 +13,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Works out a month's pay for every active staff member with pay terms: salary and commission on the cars
- * delivered that month (a car's commission split between its washers, a percentage taken of the final amount
- * on its invoice, or of the full price when it was paid with points or a membership). Creates the month's draft, or recalculates it; a paid month is final.
+ * Works out a month's pay for every active staff member with pay terms: the month's salary for monthly-paid
+ * staff and commission on the cars delivered that month (a car's commission split between its washers, a
+ * percentage taken of the final amount on its invoice, or of the full price when it was paid with points or
+ * a membership). Daily-paid staff get no base salary here — their wages are recorded ad-hoc as expenses.
+ * Creates the month's draft, or recalculates it; a paid month is final.
  */
 class CalculatePayroll
 {
@@ -79,7 +82,9 @@ class CalculatePayroll
         $total = 0;
 
         foreach ($staff as $member) {
-            $salary = $profiles->get($member->id)?->monthly_salary ?? 0;
+            $profile = $profiles->get($member->id);
+            // Daily-paid staff are paid ad-hoc wages instead, so the month's payroll carries no base salary for them.
+            $salary = $profile?->salary_type === SalaryType::Monthly ? $profile->monthly_salary : 0;
             $earned = $commission[$member->id] ?? 0;
             $net = $salary + $earned;
 

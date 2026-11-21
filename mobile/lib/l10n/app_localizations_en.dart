@@ -1173,33 +1173,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get clockInAt => 'Clock in at';
-
-  @override
-  String get notClockedIn => 'You have not clocked in';
-
-  @override
-  String clockedInSince(String time) {
-    return 'At work since $time';
-  }
-
-  @override
-  String get clockIn => 'Clock in';
-
-  @override
-  String get clockOut => 'Clock out';
-
-  @override
   String get staffAffairsTitle => 'Staff affairs';
 
   @override
-  String get staffAffairsSubtitle => 'Pay, commission, attendance and payroll';
+  String get staffAffairsSubtitle => 'Pay, commission and payroll';
 
   @override
   String get employeesTab => 'Pay and commission';
-
-  @override
-  String get attendanceTab => 'Attendance';
 
   @override
   String get payrollTab => 'Payroll';
@@ -1223,6 +1203,32 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get salaryTypeMonthly => 'Monthly';
+
+  @override
+  String get salaryTypeDaily => 'Daily';
+
+  @override
+  String get dailyRateField => 'Usual day rate';
+
+  @override
+  String dailyWagesThisMonth(String amount) {
+    return 'Daily wages this month: $amount';
+  }
+
+  @override
+  String get dailyWageRecordTitle => 'Pay a day\'s wage';
+
+  @override
+  String get dailyWageAmountField => 'Amount';
+
+  @override
+  String get recordDailyWage => 'Record';
+
+  @override
+  String get dailyWageRecorded => 'Daily wage recorded';
+
+  @override
   String get monthlySalaryField => 'Monthly salary';
 
   @override
@@ -1242,19 +1248,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commissionSplitHint => 'Split equally when several washers share a car';
-
-  @override
-  String get noAttendance => 'No one clocked in on this day';
-
-  @override
-  String stillAtWork(String time) {
-    return 'Since $time, still at work';
-  }
-
-  @override
-  String hoursWorked(String hours) {
-    return '$hours h';
-  }
 
   @override
   String get calculateThisMonth => 'Calculate this month';
@@ -1587,9 +1580,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseSizeFirst => 'Choose the vehicle size first';
 
   @override
-  String get autoClockedOut => 'clocked out automatically at closing';
-
-  @override
   String get groupDaily => 'Every day';
 
   @override
@@ -1642,30 +1632,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manageVehicleSizesHint => 'The sizes prices depend on, such as sedan and SUV';
-
-  @override
-  String get clockInToStart => 'Clock in to start work';
-
-  @override
-  String get clockInToStartHint => 'The sections appear once you press «Clock in» above.';
-
-  @override
-  String get endOfDayQuestion => 'Has your day ended?';
-
-  @override
-  String get endOfDayHint => 'You are still clocked in. Signing out alone does not clock you out.';
-
-  @override
-  String get signOutOnly => 'Sign out only';
-
-  @override
-  String get clockOutAndSignOut => 'Clock out and sign out';
-
-  @override
-  String get requiresAttendanceField => 'Must clock in before working';
-
-  @override
-  String get requiresAttendanceHint => 'This role sees the app sections only after clocking in';
 
   @override
   String get sharedDeviceField => 'Shared device';
@@ -1927,20 +1893,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thisWeek => 'This week';
 
   @override
-  String get noAttendanceInPeriod => 'No attendance in this period';
-
-  @override
   String get totalHoursLabel => 'Total hours';
-
-  @override
-  String attendanceDays(int count) {
-    return 'Days present: $count';
-  }
-
-  @override
-  String autoClockedOutCount(int count) {
-    return 'Automatic clock-outs: $count';
-  }
 
   @override
   String equipmentBrokenCount(int count) {

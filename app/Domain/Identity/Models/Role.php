@@ -31,7 +31,6 @@ class Role extends SpatieRole
      */
     protected $attributes = [
         'max_discount_bps' => 0,
-        'requires_attendance' => true,
     ];
 
     /**
@@ -43,7 +42,6 @@ class Role extends SpatieRole
     {
         return [
             'max_discount_bps' => 'integer',
-            'requires_attendance' => 'boolean',
         ];
     }
 

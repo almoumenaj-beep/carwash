@@ -39,7 +39,6 @@ class MeResource extends JsonResource
             'roles' => RoleResource::collection($this->roles),
             'permissions' => $this->permissionNames(),
             'max_discount_bps' => $this->maxDiscountBps(),
-            'requires_attendance' => $this->requiresAttendance(),
             'device_is_shared' => $this->deviceIsShared(),
             'branches' => BranchResource::collection($this->accessibleBranches()),
         ];

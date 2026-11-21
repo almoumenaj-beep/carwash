@@ -620,22 +620,9 @@
       }
     }
   },
-  "clockInAt": "Clock in at",
-  "notClockedIn": "You have not clocked in",
-  "clockedInSince": "At work since {time}",
-  "@clockedInSince": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "clockIn": "Clock in",
-  "clockOut": "Clock out",
   "staffAffairsTitle": "Staff affairs",
-  "staffAffairsSubtitle": "Pay, commission, attendance and payroll",
+  "staffAffairsSubtitle": "Pay, commission and payroll",
   "employeesTab": "Pay and commission",
-  "attendanceTab": "Attendance",
   "payrollTab": "Payroll",
   "noCommission": "No commission",
   "commissionPerCar": "{amount} per car",
@@ -662,6 +649,21 @@
       }
     }
   },
+  "salaryTypeMonthly": "Monthly",
+  "salaryTypeDaily": "Daily",
+  "dailyRateField": "Usual day rate",
+  "dailyWagesThisMonth": "Daily wages this month: {amount}",
+  "@dailyWagesThisMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyWageRecordTitle": "Pay a day's wage",
+  "dailyWageAmountField": "Amount",
+  "recordDailyWage": "Record",
+  "dailyWageRecorded": "Daily wage recorded",
   "monthlySalaryField": "Monthly salary",
   "commissionField": "Commission",
   "noCommissionShort": "None",
@@ -669,23 +671,6 @@
   "perCarField": "Amount per car",
   "percentOfCarField": "Share of the final invoice amount",
   "commissionSplitHint": "Split equally when several washers share a car",
-  "noAttendance": "No one clocked in on this day",
-  "stillAtWork": "Since {time}, still at work",
-  "@stillAtWork": {
-    "placeholders": {
-      "time": {
-        "type": "String"
-      }
-    }
-  },
-  "hoursWorked": "{hours} h",
-  "@hoursWorked": {
-    "placeholders": {
-      "hours": {
-        "type": "String"
-      }
-    }
-  },
   "calculateThisMonth": "Calculate this month",
   "calculateLastMonth": "Last month",
   "noPayroll": "No payroll yet",
@@ -840,7 +825,6 @@
   "openOrder": "Open the order",
   "back": "Back",
   "chooseSizeFirst": "Choose the vehicle size first",
-  "autoClockedOut": "clocked out automatically at closing",
   "groupDaily": "Every day",
   "groupMore": "Management",
   "groupFinance": "Finance",
@@ -868,14 +852,6 @@
   },
   "manageServiceCategoriesHint": "Add, rename or switch off service categories",
   "manageVehicleSizesHint": "The sizes prices depend on, such as sedan and SUV",
-  "clockInToStart": "Clock in to start work",
-  "clockInToStartHint": "The sections appear once you press «Clock in» above.",
-  "endOfDayQuestion": "Has your day ended?",
-  "endOfDayHint": "You are still clocked in. Signing out alone does not clock you out.",
-  "signOutOnly": "Sign out only",
-  "clockOutAndSignOut": "Clock out and sign out",
-  "requiresAttendanceField": "Must clock in before working",
-  "requiresAttendanceHint": "This role sees the app sections only after clocking in",
   "sharedDeviceField": "Shared device",
   "sharedDeviceHint": "Turn on for a device several staff use, to switch users on it by PIN",
   "sharedDeviceAllBranches": "Switching users is on for staff of every branch",
@@ -1042,24 +1018,7 @@
   "reportBreakdownExplained": "The equipment will show as broken, in red, in the equipment list. It returns to work with «Back in service» or when a repair is recorded.",
   "retireEquipmentExplained": "No more maintenance will fall due for it and none can be recorded. Its details and history stay saved, and you can return it to service later.",
   "thisWeek": "This week",
-  "noAttendanceInPeriod": "No attendance in this period",
   "totalHoursLabel": "Total hours",
-  "attendanceDays": "Days present: {count}",
-  "autoClockedOutCount": "Automatic clock-outs: {count}",
-  "@attendanceDays": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "@autoClockedOutCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "equipmentBrokenCount": "Broken equipment: {count}",
   "breakdownReasonField": "What is wrong?",
   "breakdownHistory": "Breakdowns",

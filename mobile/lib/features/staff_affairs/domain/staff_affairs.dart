@@ -11,16 +11,30 @@ enum CommissionType {
   static CommissionType fromApi(String value) => values.firstWhere((type) => type.apiValue == value);
 }
 
-/// A staff member as an employee: pay terms and whether they are at work now.
+/// How a staff member's pay works out: a monthly salary goes into the month's payroll; a daily-paid
+/// staff member is paid ad-hoc wages, each recorded as an expense.
+enum SalaryType {
+  monthly('monthly'),
+  daily('daily');
+
+  const SalaryType(this.apiValue);
+
+  final String apiValue;
+
+  static SalaryType fromApi(String value) => values.firstWhere((type) => type.apiValue == value);
+}
+
+/// A staff member as an employee: pay terms and what they were paid this month.
 class Employee {
   const Employee({
     required this.id,
     required this.name,
     required this.roles,
     required this.monthlySalary,
+    required this.salaryType,
     required this.commissionType,
     required this.commissionValue,
-    required this.clockedInAt,
+    required this.dailyWagesThisMonth,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
@@ -28,9 +42,10 @@ class Employee {
     name: json['name'] as String,
     roles: [for (final role in json['roles'] as List) role as String],
     monthlySalary: json['monthly_salary'] as int,
+    salaryType: SalaryType.fromApi(json['salary_type'] as String? ?? 'monthly'),
     commissionType: CommissionType.fromApi(json['commission_type'] as String),
     commissionValue: json['commission_value'] as int,
-    clockedInAt: json['clocked_in_at'] == null ? null : DateTime.parse(json['clocked_in_at'] as String),
+    dailyWagesThisMonth: json['daily_wages_this_month'] as int? ?? 0,
   );
 
   final String id;
@@ -39,90 +54,14 @@ class Employee {
 
   /// Minor units.
   final int monthlySalary;
+  final SalaryType salaryType;
   final CommissionType commissionType;
 
   /// Minor units per car, or basis points of the car's value.
   final int commissionValue;
 
-  /// Set while they are clocked in.
-  final DateTime? clockedInAt;
-}
-
-/// A staff member's time at a branch.
-class AttendanceRecord {
-  const AttendanceRecord({
-    required this.userName,
-    required this.branchId,
-    required this.branchName,
-    required this.clockInAt,
-    required this.clockOutAt,
-    required this.minutes,
-    this.autoClockedOut = false,
-  });
-
-  factory AttendanceRecord.fromJson(Map<String, dynamic> json) => AttendanceRecord(
-    userName: (json['user'] as Map<String, dynamic>)['name'] as String,
-    branchId: (json['branch'] as Map<String, dynamic>)['id'] as String,
-    branchName: (json['branch'] as Map<String, dynamic>)['name'] as String,
-    clockInAt: DateTime.parse(json['clock_in_at'] as String),
-    clockOutAt: json['clock_out_at'] == null ? null : DateTime.parse(json['clock_out_at'] as String),
-    minutes: json['minutes'] as int,
-    autoClockedOut: json['auto_clocked_out'] as bool? ?? false,
-  );
-
-  final String userName;
-  final String branchId;
-  final String branchName;
-  final DateTime clockInAt;
-  final DateTime? clockOutAt;
-  final int minutes;
-
-  /// Clocked out by the system at the branch's closing time because they forgot.
-  final bool autoClockedOut;
-}
-
-/// A branch's attendance over a period, per staff member. Does not affect pay.
-class AttendanceSummary {
-  const AttendanceSummary({required this.from, required this.to, required this.totalMinutes, required this.staff});
-
-  factory AttendanceSummary.fromJson(Map<String, dynamic> json) => AttendanceSummary(
-    from: DateTime.parse(json['from'] as String),
-    to: DateTime.parse(json['to'] as String),
-    totalMinutes: json['total_minutes'] as int,
-    staff: [
-      for (final member in json['staff'] as List) AttendanceStaffSummary.fromJson(member as Map<String, dynamic>),
-    ],
-  );
-
-  final DateTime from;
-  final DateTime to;
-  final int totalMinutes;
-  final List<AttendanceStaffSummary> staff;
-}
-
-/// One staff member's days, hours and records at a branch over a period.
-class AttendanceStaffSummary {
-  const AttendanceStaffSummary({
-    required this.userName,
-    required this.days,
-    required this.minutes,
-    required this.autoClockedOutCount,
-    required this.records,
-  });
-
-  factory AttendanceStaffSummary.fromJson(Map<String, dynamic> json) => AttendanceStaffSummary(
-    userName: (json['user'] as Map<String, dynamic>)['name'] as String,
-    days: json['days'] as int,
-    minutes: json['minutes'] as int,
-    autoClockedOutCount: json['auto_clocked_out'] as int,
-    records: [for (final record in json['records'] as List) AttendanceRecord.fromJson(record as Map<String, dynamic>)],
-  );
-
-  final String userName;
-  final int days;
-  final int minutes;
-  final int autoClockedOutCount;
-  final List<AttendanceRecord> records;
+  /// What daily wages were recorded for them this month; minor units.
+  final int dailyWagesThisMonth;
 }
 
 /// A month's pay, drafted until paid.

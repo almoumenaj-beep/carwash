@@ -12,7 +12,6 @@ class Me {
     required this.permissions,
     required this.branches,
     this.maxDiscountBps = 0,
-    this.requiresAttendance = false,
     this.deviceIsShared = false,
   });
 
@@ -31,7 +30,6 @@ class Me {
       permissions: {for (final permission in json['permissions'] as List) permission as String},
       branches: [for (final branch in json['branches'] as List) BranchSummary.fromJson(branch as Map<String, dynamic>)],
       maxDiscountBps: json['max_discount_bps'] as int? ?? 0,
-      requiresAttendance: json['requires_attendance'] as bool? ?? false,
       deviceIsShared: json['device_is_shared'] as bool? ?? false,
     );
   }
@@ -49,9 +47,6 @@ class Me {
 
   /// The largest discount the user may give at the till, in basis points (1000 = 10%).
   final int maxDiscountBps;
-
-  /// Whether they must clock in before working.
-  final bool requiresAttendance;
 
   /// Whether this device is marked as shared, so staff switch users on it by PIN.
   final bool deviceIsShared;

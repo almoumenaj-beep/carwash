@@ -8,11 +8,8 @@ import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
 import '../../auth/presentation/set_pin_dialog.dart';
-import '../../expenses/presentation/expense_widgets.dart';
 import '../../shifts/data/shifts_repository.dart';
 import '../../shifts/domain/cash_shift.dart';
-import '../../staff_affairs/data/staff_affairs_repository.dart';
-import '../../staff_affairs/domain/staff_affairs.dart';
 import 'edit_profile_dialog.dart';
 
 /// The signed-in staff member's own account, kept to one line per item.
@@ -20,7 +17,7 @@ class AccountScreen extends ConsumerWidget {
   const AccountScreen({super.key});
 
   /// Signs out. Blocked while a cashier is open anywhere, since nobody will be there to count its
-  /// drawer afterwards; someone still clocked in is then asked whether their day has ended.
+  /// drawer afterwards.
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
     final session = ref.read(sessionProvider.notifier);
     List<CashShift> openShifts = const [];
@@ -51,43 +48,6 @@ class AccountScreen extends ConsumerWidget {
         ),
       );
       return;
-    }
-
-    AttendanceRecord? open;
-    try {
-      open = await ref.read(myAttendanceProvider.future);
-    } catch (_) {
-      // Attendance could not be read: signing out must still work.
-    }
-
-    if (open != null && context.mounted) {
-      final l10n = AppLocalizations.of(context);
-      final clockOut = await showDialog<bool>(
-        context: context,
-        builder: (dialog) => AlertDialog(
-          title: Text(l10n.endOfDayQuestion),
-          content: Text(l10n.endOfDayHint),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(dialog).pop(), child: Text(l10n.back)),
-            OutlinedButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.signOutOnly)),
-            FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.clockOutAndSignOut)),
-          ],
-        ),
-      );
-      if (clockOut == null) {
-        return;
-      }
-      if (clockOut) {
-        try {
-          await ref.read(staffAffairsRepositoryProvider).clockOut();
-        } catch (error, stackTrace) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
-          }
-          return;
-        }
-      }
     }
 
     await session.signOut();

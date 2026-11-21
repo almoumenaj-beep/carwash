@@ -25,6 +25,7 @@ class ExpenseResource extends JsonResource
             'branch_id' => $this->branch_id,
             'category' => ['id' => $this->category->id, 'name' => $this->category->name],
             'supplier' => $this->supplier === null ? null : ['id' => $this->supplier->id, 'name' => $this->supplier->name],
+            'employee' => $this->employee === null ? null : ['id' => $this->employee->id, 'name' => $this->employee->name],
             'amount' => $this->amount,
             'spent_on' => $this->spent_on->toDateString(),
             'description' => $this->description,

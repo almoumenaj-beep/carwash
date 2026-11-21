@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Domain\Identity\Actions\CreateRole;
 use App\Domain\Identity\Actions\DeleteRole;
 use App\Domain\Identity\Actions\RenameRole;
-use App\Domain\Identity\Actions\SetRoleAttendanceRequirement;
 use App\Domain\Identity\Actions\SetRoleDiscountLimit;
 use App\Domain\Identity\Models\Role;
 use App\Http\Controllers\Controller;
@@ -59,19 +58,14 @@ class RoleController extends Controller
         Role $role,
         RenameRole $renameRole,
         SetRoleDiscountLimit $setRoleDiscountLimit,
-        SetRoleAttendanceRequirement $setRoleAttendanceRequirement,
     ): RoleResource {
-        DB::transaction(function () use ($request, $role, $renameRole, $setRoleDiscountLimit, $setRoleAttendanceRequirement): void {
+        DB::transaction(function () use ($request, $role, $renameRole, $setRoleDiscountLimit): void {
             if ($request->has('name')) {
                 $renameRole->handle($request->user(), $role, $request->validated('name'));
             }
 
             if ($request->has('max_discount_bps')) {
                 $setRoleDiscountLimit->handle($request->user(), $role, $request->integer('max_discount_bps'));
-            }
-
-            if ($request->has('requires_attendance')) {
-                $setRoleAttendanceRequirement->handle($request->user(), $role, $request->boolean('requires_attendance'));
             }
         });
 
