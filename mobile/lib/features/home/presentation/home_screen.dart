@@ -28,7 +28,7 @@ class HomeScreen extends ConsumerWidget {
         // The car wash's name beside the logo, shrunk to fit rather than cut off.
         title: Row(
           children: [
-            const AppLogo(size: 36),
+            const AppLogo(size: 36, maxWidth: 130),
             const SizedBox(width: 10),
             Flexible(
               child: FittedBox(

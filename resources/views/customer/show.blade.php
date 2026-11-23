@@ -75,7 +75,7 @@
         }
         .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 1.15rem; color: var(--navy); text-decoration: none; }
         .brand b { color: var(--gold-d); }
-        .top-logo { width: 42px; height: 42px; border-radius: 50%; box-shadow: 0 2px 8px rgba(22, 35, 61, .18); }
+        .top-logo { height: 44px; width: auto; border-radius: 10px; box-shadow: 0 2px 8px rgba(22, 35, 61, .18); }
         .top-nav { display: flex; gap: 4px; margin-inline-start: auto; overflow-x: auto; scrollbar-width: none; }
         .top-nav::-webkit-scrollbar { display: none; }
         .top-nav a { padding: 8px 16px; border-radius: 999px; font-weight: 700; color: var(--muted); text-decoration: none; white-space: nowrap; }
@@ -96,7 +96,7 @@
         .brand-hero h1 { margin: 0; font-size: clamp(2rem, 6vw, 3.2rem); color: var(--navy); }
         .brand-hero p { margin: 0; color: var(--muted); font-size: 1.05rem; font-weight: 600; }
         .hero-logo {
-            width: clamp(140px, 32vw, 190px); height: auto; border-radius: 50%;
+            width: clamp(240px, 62vw, 420px); height: auto; border-radius: 16px;
             box-shadow: 0 10px 30px rgba(22, 35, 61, .22), 0 0 0 6px var(--paper), 0 0 0 8px var(--gold);
         }
 

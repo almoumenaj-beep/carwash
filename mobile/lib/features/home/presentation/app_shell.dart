@@ -96,7 +96,7 @@ class _SideMenu extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: compact ? 12 : 20),
               child: Column(
                 children: [
-                  AppLogo(size: compact ? 52 : 96),
+                  AppLogo(size: compact ? 40 : 64, maxWidth: compact ? 76 : 238),
                   if (!compact && me != null) ...[
                     const SizedBox(height: 10),
                     Text(
