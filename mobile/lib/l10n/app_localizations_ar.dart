@@ -1027,6 +1027,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get today => 'اليوم';
 
   @override
+  String get tomorrow => 'غداً';
+
+  @override
+  String get dayView => 'يوم';
+
+  @override
+  String get weekView => 'أسبوع';
+
+  @override
+  String weekRange(String date) {
+    return 'الأسبوع من $date';
+  }
+
+  @override
+  String get remindTomorrowTooltip => 'تذكير حجوزات الغد';
+
+  @override
+  String remindTomorrowTitle(int count) {
+    return 'تذكير $count من حجوزات الغد';
+  }
+
+  @override
+  String get remindTomorrowConfirm => 'سيفتح واتساب لكل زبون برسالة التذكير، واحداً تلو الآخر.';
+
+  @override
+  String get noBookingsToRemind => 'لا توجد حجوزات مفتوحة لها جوال في الغد';
+
+  @override
+  String get send => 'إرسال';
+
+  @override
   String get noSalesThatDay => 'لا مبيعات ولا سيارات في هذا اليوم.';
 
   @override

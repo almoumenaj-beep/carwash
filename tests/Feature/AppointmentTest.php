@@ -87,6 +87,18 @@ class AppointmentTest extends TestCase
         $this->assertDatabaseHas('appointments', ['id' => $id, 'status' => 'booked']);
     }
 
+    public function test_a_week_of_bookings_comes_grouped_by_day(): void
+    {
+        $this->book(['starts_at' => '2026-11-04T10:00']);
+        $this->book(['starts_at' => '2026-11-06T12:00']);
+
+        $response = $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}&date=2026-11-04&days=7");
+
+        $response->assertOk()->assertJsonCount(2, 'data');
+        $this->assertSame('2026-11-04', $response->json('data.0.date'));
+        $this->assertSame('2026-11-06', $response->json('data.1.date'));
+    }
+
     public function test_the_day_list_comes_with_an_hourly_capacity_overview(): void
     {
         $this->book();

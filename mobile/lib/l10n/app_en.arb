@@ -518,6 +518,25 @@
   "previousDay": "Previous day",
   "nextDay": "Next day",
   "today": "Today",
+  "tomorrow": "Tomorrow",
+  "dayView": "Day",
+  "weekView": "Week",
+  "weekRange": "Week from {date}",
+  "@weekRange": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "remindTomorrowTooltip": "Remind tomorrow's bookings",
+  "remindTomorrowTitle": "Remind {count} of tomorrow's bookings",
+  "@remindTomorrowTitle": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "remindTomorrowConfirm": "WhatsApp will open for each customer with the reminder message, one after another.",
+  "noBookingsToRemind": "No open bookings with a phone tomorrow",
+  "send": "Send",
   "noSalesThatDay": "No sales or cars on this day.",
   "salesTotal": "Sales",
   "averageTicket": "Average invoice",

@@ -1017,6 +1017,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
+  String get tomorrow => 'Tomorrow';
+
+  @override
+  String get dayView => 'Day';
+
+  @override
+  String get weekView => 'Week';
+
+  @override
+  String weekRange(String date) {
+    return 'Week from $date';
+  }
+
+  @override
+  String get remindTomorrowTooltip => 'Remind tomorrow\'s bookings';
+
+  @override
+  String remindTomorrowTitle(int count) {
+    return 'Remind $count of tomorrow\'s bookings';
+  }
+
+  @override
+  String get remindTomorrowConfirm =>
+      'WhatsApp will open for each customer with the reminder message, one after another.';
+
+  @override
+  String get noBookingsToRemind => 'No open bookings with a phone tomorrow';
+
+  @override
+  String get send => 'Send';
+
+  @override
   String get noSalesThatDay => 'No sales or cars on this day.';
 
   @override

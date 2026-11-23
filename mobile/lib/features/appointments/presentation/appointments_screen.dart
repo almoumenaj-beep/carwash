@@ -59,6 +59,7 @@ class AppointmentsScreen extends ConsumerStatefulWidget {
 class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
   String? _branchId;
   DateTime _day = DateUtils.dateOnly(DateTime.now());
+  bool _week = false;
   _Filter _filter = _noFilter;
 
   Future<void> _open(Widget screen) async {
@@ -86,11 +87,72 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
       );
     }
 
-    final query = (branchId: branch.id, date: apiDate(_day));
+    final query = (branchId: branch.id, date: apiDate(_day), days: _week ? 7 : 1);
     final today = DateUtils.dateOnly(DateTime.now());
 
+    /// Opens WhatsApp with the reminder template for every open booking tomorrow that has a phone.
+    Future<void> remindTomorrow() async {
+      final tomorrow = apiDate(today.add(const Duration(days: 1)));
+      final day = await ref.read(appointmentsRepositoryProvider).list(branch.id, tomorrow);
+      final open = day.appointments.where((appointment) => appointment.isOpen && appointment.customerPhone != null);
+      if (open.isEmpty) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.noBookingsToRemind)));
+        }
+        return;
+      }
+      if (!context.mounted) {
+        return;
+      }
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (dialog) => AlertDialog(
+          title: Text(l10n.remindTomorrowTitle(open.length)),
+          content: Text(l10n.remindTomorrowConfirm),
+          actions: [
+            TextButton(onPressed: () => Navigator.of(dialog).pop(false), child: Text(l10n.back)),
+            FilledButton(onPressed: () => Navigator.of(dialog).pop(true), child: Text(l10n.send)),
+          ],
+        ),
+      );
+      if (confirmed != true || !context.mounted) {
+        return;
+      }
+      final templates = (ref.read(settingsProvider).value?.messageTemplates ?? const MessageTemplates());
+      final material = MaterialLocalizations.of(context);
+      for (final appointment in open) {
+        if (!context.mounted) {
+          return;
+        }
+        final startsAt = appointment.startsAt.toLocal();
+        openWhatsApp(
+          context,
+          appointment.customerPhone!,
+          templates.render(MessageTemplateKind.reminder, {
+            MessageToken.name: appointment.customerName ?? '',
+            MessageToken.plate: appointment.plateNumber ?? '',
+            MessageToken.date: material.formatMediumDate(startsAt),
+            MessageToken.time: material.formatTimeOfDay(TimeOfDay.fromDateTime(startsAt)),
+            MessageToken.carWash: me?.carWashName ?? '',
+          }),
+        );
+        // Give the launcher a beat so each chat opens in turn rather than all at once.
+        await Future<void>.delayed(const Duration(milliseconds: 700));
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appointmentsTitle)),
+      appBar: AppBar(
+        title: Text(l10n.appointmentsTitle),
+        actions: [
+          if (me?.can(Permissions.appointmentsManage) ?? false)
+            IconButton(
+              tooltip: l10n.remindTomorrowTooltip,
+              icon: const Icon(Icons.notifications_active_outlined),
+              onPressed: remindTomorrow,
+            ),
+        ],
+      ),
       floatingActionButton: (me?.can(Permissions.appointmentsManage) ?? false)
           ? FloatingActionButton.extended(
               onPressed: () => _open(CheckInScreen(branchId: branch.id, booking: true)),
@@ -116,15 +178,17 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
                 IconButton(
                   tooltip: l10n.previousDay,
                   icon: const Icon(Icons.chevron_left),
-                  onPressed: () => _moveTo(_day.subtract(const Duration(days: 1))),
+                  onPressed: _week ? () => _moveTo(_day.subtract(const Duration(days: 7))) : () => _moveTo(_day.subtract(const Duration(days: 1))),
                 ),
                 Expanded(
                   child: TextButton.icon(
                     icon: const Icon(Icons.calendar_today_outlined),
                     label: Text(
-                      DateUtils.isSameDay(_day, today)
-                          ? l10n.today
-                          : MaterialLocalizations.of(context).formatMediumDate(_day),
+                      _week
+                          ? l10n.weekRange(MaterialLocalizations.of(context).formatMediumDate(_day))
+                          : DateUtils.isSameDay(_day, today)
+                              ? l10n.today
+                              : MaterialLocalizations.of(context).formatMediumDate(_day),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     onPressed: () async {
@@ -143,9 +207,20 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
                 IconButton(
                   tooltip: l10n.nextDay,
                   icon: const Icon(Icons.chevron_right),
-                  onPressed: () => _moveTo(_day.add(const Duration(days: 1))),
+                  onPressed: _week ? () => _moveTo(_day.add(const Duration(days: 7))) : () => _moveTo(_day.add(const Duration(days: 1))),
                 ),
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+              child: SegmentedButton<bool>(
+                segments: [
+                  ButtonSegment(value: false, label: Text(l10n.dayView)),
+                  ButtonSegment(value: true, label: Text(l10n.weekView)),
+                ],
+                selected: {_week},
+                onSelectionChanged: (selection) => setState(() => _week = selection.single),
+              ),
             ),
             switch (ref.watch(appointmentsProvider(query))) {
               AsyncData(:final value) when value.appointments.isEmpty => Padding(
@@ -155,6 +230,7 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
               AsyncData(:final value) => _DayList(
                 bookings: value,
                 day: _day,
+                groupedByDay: _week,
                 filter: _filter,
                 onFilter: (filter) => setState(() => _filter = filter),
                 onCheckIn: (appointment) => _open(CheckInScreen(branchId: branch.id, appointment: appointment)),
@@ -183,6 +259,7 @@ class _DayList extends StatelessWidget {
   const _DayList({
     required this.bookings,
     required this.day,
+    required this.groupedByDay,
     required this.filter,
     required this.onFilter,
     required this.onCheckIn,
@@ -191,6 +268,9 @@ class _DayList extends StatelessWidget {
 
   final DayBookings bookings;
   final DateTime day;
+
+  /// Week view: the bookings are grouped under their day's name instead of one long list.
+  final bool groupedByDay;
   final _Filter filter;
   final ValueChanged<_Filter> onFilter;
   final ValueChanged<Appointment> onCheckIn;
@@ -253,7 +333,7 @@ class _DayList extends StatelessWidget {
           ),
         ),
         // How loaded each opening hour is: green room, amber nearly full, red full; past hours are muted.
-        if (bookings.hours.isNotEmpty)
+        if (!groupedByDay && bookings.hours.isNotEmpty)
           SizedBox(
             height: 44,
             child: ListView.separated(
@@ -321,14 +401,51 @@ class _DayList extends StatelessWidget {
             ],
           ),
         ),
-        for (final appointment in shown)
-          _AppointmentTile(
-            appointment: appointment,
-            onCheckIn: () => onCheckIn(appointment),
-            onChange: () => onChange(appointment),
-          ),
+        if (groupedByDay) ...[
+          for (final group in _groupedByDay(context, shown.toList())) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Text(group.$1, style: Theme.of(context).textTheme.titleSmall),
+            ),
+            for (final appointment in group.$2)
+              _AppointmentTile(
+                appointment: appointment,
+                onCheckIn: () => onCheckIn(appointment),
+                onChange: () => onChange(appointment),
+              ),
+          ],
+        ] else
+          for (final appointment in shown)
+            _AppointmentTile(
+              appointment: appointment,
+              onCheckIn: () => onCheckIn(appointment),
+              onChange: () => onChange(appointment),
+            ),
       ],
     );
+  }
+
+  /// The shown bookings under a heading for each day: its name when it is today or tomorrow, else the date.
+  List<(String, List<Appointment>)> _groupedByDay(BuildContext context, List<Appointment> appointments) {
+    final l10n = AppLocalizations.of(context);
+    final material = MaterialLocalizations.of(context);
+    final today = DateUtils.dateOnly(DateTime.now());
+    final groups = <String, List<Appointment>>{};
+    for (final appointment in appointments) {
+      groups.putIfAbsent(appointment.date, () => []).add(appointment);
+    }
+    return [
+      for (final entry in groups.entries)
+        (
+          switch (DateTime.tryParse(entry.key)) {
+            final date? when DateUtils.isSameDay(date, today) => l10n.today,
+            final date? when DateUtils.isSameDay(date, today.add(const Duration(days: 1))) => l10n.tomorrow,
+            final date? => material.formatMediumDate(date),
+            null => entry.key,
+          },
+          entry.value,
+        ),
+    ];
   }
 }
 
@@ -552,7 +669,78 @@ class _AppointmentTile extends ConsumerWidget {
         ),
         isThreeLine: true,
         onTap: () => _actions(context, ref),
+        trailing: _QuickActions(appointment: appointment, onCheckIn: onCheckIn),
       ),
+    );
+  }
+}
+
+/// The one-tap actions a booking offers on its card: confirm a pending one, remind on WhatsApp, check in.
+class _QuickActions extends ConsumerWidget {
+  const _QuickActions({required this.appointment, required this.onCheckIn});
+
+  final Appointment appointment;
+  final VoidCallback onCheckIn;
+
+  Future<void> _run(BuildContext context, WidgetRef ref, Future<void> Function() change) async {
+    try {
+      await change();
+      ref.invalidate(appointmentsProvider);
+    } catch (error, stackTrace) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(changeError(context, error, stackTrace))));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
+    final me = ref.watch(sessionProvider).value;
+    final canManage = me?.can(Permissions.appointmentsManage) ?? false;
+    final canCheckIn = me?.can(Permissions.ordersCreate) ?? false;
+    // Loads the message templates ahead of the WhatsApp reminder.
+    ref.watch(settingsProvider);
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (appointment.isPending && canManage)
+          IconButton(
+            tooltip: l10n.confirmBooking,
+            icon: const Icon(Icons.verified_outlined),
+            onPressed: () => _run(context, ref, () => ref.read(appointmentsRepositoryProvider).confirm(appointment.id)),
+          ),
+        if (appointment.isOpen && appointment.customerPhone != null)
+          IconButton(
+            tooltip: l10n.whatsAppRemind,
+            icon: const Icon(Icons.chat_outlined),
+            onPressed: () {
+              final startsAt = appointment.startsAt.toLocal();
+              final material = MaterialLocalizations.of(context);
+              openWhatsApp(
+                context,
+                appointment.customerPhone!,
+                (ref.read(settingsProvider).value?.messageTemplates ?? const MessageTemplates()).render(
+                  MessageTemplateKind.reminder,
+                  {
+                    MessageToken.name: appointment.customerName ?? '',
+                    MessageToken.plate: appointment.plateNumber ?? '',
+                    MessageToken.date: material.formatMediumDate(startsAt),
+                    MessageToken.time: material.formatTimeOfDay(TimeOfDay.fromDateTime(startsAt)),
+                    MessageToken.carWash: me?.carWashName ?? '',
+                  },
+                ),
+              );
+            },
+          ),
+        if (appointment.isOpen && canCheckIn)
+          IconButton(
+            tooltip: l10n.checkInBooking,
+            icon: const Icon(Icons.login),
+            onPressed: onCheckIn,
+          ),
+      ],
     );
   }
 }

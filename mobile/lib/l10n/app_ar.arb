@@ -306,6 +306,25 @@
   "previousDay": "اليوم السابق",
   "nextDay": "اليوم التالي",
   "today": "اليوم",
+  "tomorrow": "غداً",
+  "dayView": "يوم",
+  "weekView": "أسبوع",
+  "weekRange": "الأسبوع من {date}",
+  "@weekRange": {
+    "placeholders": {
+      "date": {"type": "String"}
+    }
+  },
+  "remindTomorrowTooltip": "تذكير حجوزات الغد",
+  "remindTomorrowTitle": "تذكير {count} من حجوزات الغد",
+  "@remindTomorrowTitle": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "remindTomorrowConfirm": "سيفتح واتساب لكل زبون برسالة التذكير، واحداً تلو الآخر.",
+  "noBookingsToRemind": "لا توجد حجوزات مفتوحة لها جوال في الغد",
+  "send": "إرسال",
   "noSalesThatDay": "لا مبيعات ولا سيارات في هذا اليوم.",
   "salesTotal": "المبيعات",
   "averageTicket": "متوسط الفاتورة",

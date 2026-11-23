@@ -1928,6 +1928,60 @@ abstract class AppLocalizations {
   /// **'Today'**
   String get today;
 
+  /// No description provided for @tomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get tomorrow;
+
+  /// No description provided for @dayView.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get dayView;
+
+  /// No description provided for @weekView.
+  ///
+  /// In en, this message translates to:
+  /// **'Week'**
+  String get weekView;
+
+  /// No description provided for @weekRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Week from {date}'**
+  String weekRange(String date);
+
+  /// No description provided for @remindTomorrowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind tomorrow\'s bookings'**
+  String get remindTomorrowTooltip;
+
+  /// No description provided for @remindTomorrowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind {count} of tomorrow\'s bookings'**
+  String remindTomorrowTitle(int count);
+
+  /// No description provided for @remindTomorrowConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp will open for each customer with the reminder message, one after another.'**
+  String get remindTomorrowConfirm;
+
+  /// No description provided for @noBookingsToRemind.
+  ///
+  /// In en, this message translates to:
+  /// **'No open bookings with a phone tomorrow'**
+  String get noBookingsToRemind;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
   /// No description provided for @noSalesThatDay.
   ///
   /// In en, this message translates to:

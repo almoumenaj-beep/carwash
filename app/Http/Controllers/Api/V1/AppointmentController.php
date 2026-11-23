@@ -35,22 +35,24 @@ class AppointmentController extends Controller
     public function __construct(private AuditTrail $auditTrail) {}
 
     /**
-     * A branch's bookings on a day (`date`, default today), earliest first, with how loaded each opening
-     * hour is for the day overview.
+     * A branch's bookings, earliest first: one day (`date`, default today) or a run of `days` (up to a
+     * week) for the week view, with how loaded each opening hour is of the first day.
      */
     public function index(Request $request, AppointmentSchedule $schedule): JsonResponse
     {
         $request->validate([
             'branch_id' => ['required', 'uuid'],
             'date' => ['sometimes', 'nullable', 'date_format:Y-m-d'],
+            'days' => ['sometimes', 'integer', 'between:1,7'],
         ]);
         $branch = $this->viewableBranch($request);
         $day = $this->day($request);
+        $days = max(1, (int) $request->input('days', 1));
 
         $appointments = Appointment::query()
             ->where('branch_id', $branch->id)
             ->where('starts_at', '>=', $day->utc())
-            ->where('starts_at', '<', $day->addDay()->utc())
+            ->where('starts_at', '<', $day->addDays($days)->utc())
             ->with(self::RELATIONS)
             ->orderBy('starts_at')
             ->get();
@@ -205,6 +207,7 @@ class AppointmentController extends Controller
         return $appointments->map(fn (Appointment $appointment) => [
             'id' => $appointment->id,
             'branch_id' => $appointment->branch_id,
+            'date' => $appointment->starts_at->setTimezone($timezone)->toDateString(),
             'starts_at' => $appointment->starts_at->setTimezone($timezone)->toIso8601String(),
             'ends_at' => $appointment->ends_at->setTimezone($timezone)->toIso8601String(),
             'status' => $appointment->status,

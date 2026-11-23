@@ -10,15 +10,15 @@ final appointmentsRepositoryProvider = Provider<AppointmentsRepository>(
   (ref) => AppointmentsRepository(ref.watch(dioProvider)),
 );
 
-/// A branch's bookings on a day with the day's capacity and how loaded each opening hour is.
+/// A branch's bookings with the day's capacity and how loaded each opening hour is.
 typedef DayBookings = ({List<Appointment> appointments, int capacity, List<({String hour, int used})> hours});
 
+/// A booking list query: from [date] (`YYYY-MM-DD`) for [days] days (one by default, up to a week).
+typedef AppointmentQuery = ({String branchId, String date, int days});
 
-/// A branch's bookings on a day (`YYYY-MM-DD`), earliest first, with the day's hourly capacity overview.
-final appointmentsProvider = FutureProvider.autoDispose
-    .family<DayBookings, ({String branchId, String date})>(
-      (ref, query) => ref.watch(appointmentsRepositoryProvider).list(query.branchId, query.date),
-    );
+final appointmentsProvider = FutureProvider.autoDispose.family<DayBookings, AppointmentQuery>(
+  (ref, query) => ref.watch(appointmentsRepositoryProvider).list(query.branchId, query.date, days: query.days),
+);
 
 /// The times a visit of [minutes] can still be booked on a day; [appointmentId] frees that booking's own place.
 final appointmentSlotsProvider = FutureProvider.autoDispose
@@ -31,9 +31,12 @@ class AppointmentsRepository {
 
   final Dio _dio;
 
-  Future<DayBookings> list(String branchId, String date) async {
+  Future<DayBookings> list(String branchId, String date, {int days = 1}) async {
     final response = await sendRequest(
-      () => _dio.get<Map<String, dynamic>>('/appointments', queryParameters: {'branch_id': branchId, 'date': date}),
+      () => _dio.get<Map<String, dynamic>>(
+        '/appointments',
+        queryParameters: {'branch_id': branchId, 'date': date, 'days': days},
+      ),
     );
     final meta = response.data?['meta'] as Map<String, dynamic>?;
     return (

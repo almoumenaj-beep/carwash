@@ -1,3 +1,5 @@
+import '../../expenses/domain/expense.dart';
+
 /// Where a booking stands; while booked (or awaiting confirmation) it can still be changed, checked in,
 /// cancelled or marked a no-show.
 enum AppointmentStatus {
@@ -19,6 +21,7 @@ class Appointment {
   const Appointment({
     required this.id,
     required this.branchId,
+    required this.date,
     required this.startsAt,
     required this.endsAt,
     required this.status,
@@ -43,11 +46,13 @@ class Appointment {
     final size = json['vehicle_size'] as Map<String, dynamic>?;
     final order = json['order'] as Map<String, dynamic>?;
     final creator = json['created_by'] as Map<String, dynamic>?;
+    final startsAt = DateTime.parse(json['starts_at'] as String);
 
     return Appointment(
       id: json['id'] as String,
       branchId: json['branch_id'] as String,
-      startsAt: DateTime.parse(json['starts_at'] as String),
+      date: json['date'] as String? ?? apiDate(startsAt),
+      startsAt: startsAt,
       endsAt: DateTime.parse(json['ends_at'] as String),
       status: AppointmentStatus.fromApi(json['status'] as String),
       customerId: customer?['id'] as String?,
@@ -76,6 +81,9 @@ class Appointment {
 
   final String id;
   final String branchId;
+
+  /// The booked day, local `YYYY-MM-DD`; handy to group a multi-day fetch.
+  final String date;
   final DateTime startsAt;
   final DateTime endsAt;
   final AppointmentStatus status;
