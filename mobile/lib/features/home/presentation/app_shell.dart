@@ -94,20 +94,7 @@ class _SideMenu extends ConsumerWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: compact ? 12 : 20),
-              child: Column(
-                children: [
-                  AppLogo(size: compact ? 40 : 64, maxWidth: compact ? 76 : 238),
-                  if (!compact && me != null) ...[
-                    const SizedBox(height: 10),
-                    Text(
-                      me.carWashName,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium
-                          ?.copyWith(color: AppTheme.lightGold, fontWeight: FontWeight.w700),
-                    ),
-                  ],
-                ],
-              ),
+              child: AppLogo(size: compact ? 40 : 64, maxWidth: compact ? 76 : 238),
             ),
             const Divider(color: Colors.white24, height: 1),
             Expanded(

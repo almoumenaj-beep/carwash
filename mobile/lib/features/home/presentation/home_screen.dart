@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
@@ -25,23 +24,10 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 12,
-        // The car wash's name beside the logo, shrunk to fit rather than cut off.
-        title: Row(
-          children: [
-            const AppLogo(size: 36, maxWidth: 130),
-            const SizedBox(width: 10),
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: AlignmentDirectional.centerStart,
-                child: Text(
-                  me.carWashName,
-                  style: Theme.of(context).textTheme.titleLarge
-                      ?.copyWith(color: AppTheme.lightGold, fontWeight: FontWeight.w700, letterSpacing: 0.3),
-                ),
-              ),
-            ),
-          ],
+        // The logo carries the car wash's name, so the header shows nothing else.
+        title: const Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: AppLogo(size: 40, maxWidth: 170),
         ),
         actions: [
           if (me.deviceIsShared)
