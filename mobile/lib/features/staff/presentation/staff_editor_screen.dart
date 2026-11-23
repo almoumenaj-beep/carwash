@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/network/api_problem.dart';
+import '../../../core/money/money_format.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/problem_message.dart';
 import '../../../l10n/app_localizations.dart';
@@ -10,6 +11,7 @@ import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
 import '../../roles/data/roles_repository.dart';
 import '../../roles/domain/role.dart';
+import '../../staff_affairs/domain/staff_affairs.dart';
 import '../data/staff_repository.dart';
 import '../domain/staff_member.dart';
 
@@ -71,6 +73,8 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
   late final _phone = TextEditingController(text: widget.staff?.phone);
   final _password = TextEditingController();
   final _pin = TextEditingController();
+  final _salary = TextEditingController();
+  SalaryType _salaryType = SalaryType.monthly;
   late final Set<int> _roleIds = {for (final role in widget.staff?.roles ?? const <RoleSummary>[]) role.id};
   late final Set<String> _branchIds = {
     for (final branch in widget.staff?.branches ?? const <BranchSummary>[]) branch.id,
@@ -100,6 +104,7 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
     _phone.dispose();
     _password.dispose();
     _pin.dispose();
+    _salary.dispose();
     super.dispose();
   }
 
@@ -118,6 +123,8 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
       _problem = null;
     });
 
+    final salary = _salary.text.trim().isEmpty ? null : ref.read(moneyFormatProvider).parse(_salary.text);
+
     final draft = StaffDraft(
       name: _name.text.trim(),
       email: _optional(_email),
@@ -129,6 +136,9 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
       branchIds: _branchIds,
       includeBranches: _isNew || _branchesChanged,
       isActive: _isNew ? null : _isActive,
+      // Opening pay terms are set only when creating; they stay editable in staff affairs.
+      salaryType: _isNew && (salary != null || _salaryType == SalaryType.daily) ? _salaryType : null,
+      salary: salary,
     );
 
     final repository = ref.read(staffRepositoryProvider);
@@ -231,6 +241,29 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
               validator: (value) =>
                   value == null || value.isEmpty || RegExp(r'^\d{4,6}$').hasMatch(value) ? null : l10n.pinMustBeDigits,
             ),
+            if (_isNew) ...[
+              const SizedBox(height: 24),
+              Text(l10n.paySection, style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              SegmentedButton<SalaryType>(
+                segments: [
+                  ButtonSegment(value: SalaryType.monthly, label: Text(l10n.salaryTypeMonthly)),
+                  ButtonSegment(value: SalaryType.daily, label: Text(l10n.salaryTypeDaily)),
+                ],
+                selected: {_salaryType},
+                onSelectionChanged: (selection) => setState(() => _salaryType = selection.single),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _salary,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  labelText: _salaryType == SalaryType.monthly ? l10n.monthlySalaryField : l10n.dailyRateField,
+                  suffixText: ref.watch(moneyFormatProvider).currency,
+                  helperText: _salaryType == SalaryType.daily ? l10n.dailyPayHint : null,
+                ),
+              ),
+            ],
             const SizedBox(height: 24),
             Text(l10n.rolesSection, style: theme.textTheme.titleMedium),
             const SizedBox(height: 8),

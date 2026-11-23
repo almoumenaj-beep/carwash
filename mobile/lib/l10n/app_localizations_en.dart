@@ -1209,6 +1209,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get salaryTypeDaily => 'Daily';
 
   @override
+  String get paySection => 'Pay';
+
+  @override
+  String get dailyPayHint => 'Their day wages are recorded in Staff Affairs each day when paid';
+
+  @override
   String get dailyRateField => 'Usual day rate';
 
   @override

@@ -2264,6 +2264,18 @@ abstract class AppLocalizations {
   /// **'Daily'**
   String get salaryTypeDaily;
 
+  /// No description provided for @paySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get paySection;
+
+  /// No description provided for @dailyPayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Their day wages are recorded in Staff Affairs each day when paid'**
+  String get dailyPayHint;
+
   /// No description provided for @dailyRateField.
   ///
   /// In en, this message translates to:

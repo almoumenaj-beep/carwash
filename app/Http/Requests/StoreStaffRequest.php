@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Domain\Staff\Enums\SalaryType;
 use App\Models\User;
 use App\Rules\SafePin;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -42,6 +43,8 @@ class StoreStaffRequest extends FormRequest
                 'uuid', 'distinct',
                 Rule::exists('branches', 'id')->where('tenant_id', $tenantId)->whereNull('deleted_at'),
             ],
+            'salary_type' => ['sometimes', Rule::enum(SalaryType::class)],
+            'monthly_salary' => ['nullable', 'required_with:salary_type', 'integer', 'between:0,100000000'],
         ];
     }
 }

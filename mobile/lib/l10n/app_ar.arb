@@ -362,6 +362,8 @@
   "salaryLabel": "راتب {amount}",
   "salaryTypeMonthly": "شهري",
   "salaryTypeDaily": "يومي",
+  "paySection": "الراتب",
+  "dailyPayHint": "تُسجَّل يومياته من شؤون الموظفين كل يوم عند الدفع",
   "dailyRateField": "اليومية المعتادة",
   "dailyWagesThisMonth": "يوميات هذا الشهر: {amount}",
   "dailyWageRecordTitle": "دفع يومية",

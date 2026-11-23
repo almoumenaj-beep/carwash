@@ -1233,6 +1233,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get salaryTypeDaily => 'يومي';
 
   @override
+  String get paySection => 'الراتب';
+
+  @override
+  String get dailyPayHint => 'تُسجَّل يومياته من شؤون الموظفين كل يوم عند الدفع';
+
+  @override
   String get dailyRateField => 'اليومية المعتادة';
 
   @override

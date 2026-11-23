@@ -651,6 +651,8 @@
   },
   "salaryTypeMonthly": "Monthly",
   "salaryTypeDaily": "Daily",
+  "paySection": "Pay",
+  "dailyPayHint": "Their day wages are recorded in Staff Affairs each day when paid",
   "dailyRateField": "Usual day rate",
   "dailyWagesThisMonth": "Daily wages this month: {amount}",
   "@dailyWagesThisMonth": {

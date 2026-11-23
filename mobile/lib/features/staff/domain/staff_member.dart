@@ -1,4 +1,5 @@
 import '../../auth/domain/me.dart';
+import '../../staff_affairs/domain/staff_affairs.dart';
 
 /// A staff account as managers see it, from `/users`.
 class StaffMember {
@@ -58,6 +59,8 @@ class StaffDraft {
     required this.branchIds,
     this.includeBranches = true,
     this.isActive,
+    this.salaryType,
+    this.salary,
   });
 
   final String name;
@@ -73,6 +76,12 @@ class StaffDraft {
   final bool includeBranches;
   final bool? isActive;
 
+  /// Opening pay terms for a new staff member; null leaves them unset until staff affairs.
+  final SalaryType? salaryType;
+
+  /// Minor units: the monthly salary, or the daily rate.
+  final int? salary;
+
   Map<String, dynamic> toJson() => {
     'name': name,
     'email': email,
@@ -81,5 +90,6 @@ class StaffDraft {
     if (pin != null && pin!.isNotEmpty) 'pin': pin,
     if (includeBranches) ...{'all_branches': allBranches, 'branch_ids': allBranches ? <String>[] : branchIds.toList()},
     if (isActive != null) 'is_active': isActive,
+    if (salaryType != null) ...{'salary_type': salaryType!.apiValue, 'monthly_salary': salary ?? 0},
   };
 }

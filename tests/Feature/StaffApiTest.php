@@ -182,6 +182,42 @@ class StaffApiTest extends TestCase
         ])->assertCreated()->assertJsonPath('data.has_pin', true);
     }
 
+    public function test_a_new_staff_member_can_start_with_daily_pay_terms(): void
+    {
+        Sanctum::actingAs($this->owner);
+
+        $response = $this->postJson('/api/v1/users', [
+            'name' => 'Daily Washer',
+            'phone' => '0555555557',
+            'password' => 'secret-password',
+            'roles' => [$this->defaultRoleOf($this->tenant, DefaultRole::Washer)->id],
+            'salary_type' => 'daily',
+            'monthly_salary' => 5000,
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('employee_profiles', [
+            'user_id' => $response->json('data.id'),
+            'salary_type' => 'daily',
+            'monthly_salary' => 5000,
+        ]);
+    }
+
+    public function test_salary_terms_are_optional_when_adding_staff(): void
+    {
+        Sanctum::actingAs($this->owner);
+
+        $response = $this->postJson('/api/v1/users', [
+            'name' => 'Plain Washer',
+            'phone' => '0555555558',
+            'password' => 'secret-password',
+            'roles' => [],
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseMissing('employee_profiles', ['user_id' => $response->json('data.id')]);
+    }
+
     public function test_deactivating_a_staff_member_ends_their_sessions(): void
     {
         $cashier = $this->createStaff($this->tenant, DefaultRole::Cashier, [$this->branchA]);

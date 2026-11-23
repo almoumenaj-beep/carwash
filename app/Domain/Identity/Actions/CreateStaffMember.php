@@ -4,6 +4,8 @@ namespace App\Domain\Identity\Actions;
 
 use App\Domain\Identity\Support\BranchAccessGuard;
 use App\Domain\Platform\Audit\AuditTrail;
+use App\Domain\Staff\Enums\CommissionType;
+use App\Domain\Staff\Models\EmployeeProfile;
 use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +24,7 @@ class CreateStaffMember
     ) {}
 
     /**
-     * @param  array{name: string, email?: ?string, phone?: ?string, password: string, pin?: ?string, roles: list<int>, all_branches?: bool, branch_ids?: list<string>}  $data
+     * @param  array{name: string, email?: ?string, phone?: ?string, password: string, pin?: ?string, roles: list<int>, all_branches?: bool, branch_ids?: list<string>, salary_type?: SalaryType, monthly_salary?: int}  $data
      *
      * @throws AuthorizationException
      * @throws ValidationException
@@ -49,6 +51,18 @@ class CreateStaffMember
             $staff->branches()->sync($branchIds);
 
             $this->syncUserRoles->handle($actor, $staff, $data['roles']);
+
+            // Optional pay terms chosen on the form: without them the employee keeps the
+            // default profile (monthly, zero salary) until set in staff affairs.
+            if (isset($data['salary_type'])) {
+                EmployeeProfile::query()->create([
+                    'user_id' => $staff->id,
+                    'monthly_salary' => (int) ($data['monthly_salary'] ?? 0),
+                    'salary_type' => $data['salary_type'],
+                    'commission_type' => CommissionType::None,
+                    'commission_value' => 0,
+                ]);
+            }
 
             $this->auditTrail->record('user.created', $staff, $actor, 'Staff member added', [
                 'name' => $staff->name,
