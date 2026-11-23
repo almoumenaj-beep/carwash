@@ -18,7 +18,7 @@ class SaveVehicle
     /**
      * @param  array{plate_number: string, vehicle_size_id?: ?string, make?: ?string, model?: ?string, color?: ?string, notes?: ?string}  $data
      */
-    public function create(User $actor, Customer $customer, array $data): Vehicle
+    public function create(?User $actor, Customer $customer, array $data): Vehicle
     {
         $vehicle = $customer->vehicles()->create($data);
 
@@ -33,7 +33,7 @@ class SaveVehicle
     /**
      * @param  array{customer_id?: string, plate_number?: string, vehicle_size_id?: ?string, make?: ?string, model?: ?string, color?: ?string, notes?: ?string}  $data
      */
-    public function update(User $actor, Vehicle $vehicle, array $data): Vehicle
+    public function update(?User $actor, Vehicle $vehicle, array $data): Vehicle
     {
         $previousOwner = $vehicle->customer_id;
         $vehicle->fill($data);

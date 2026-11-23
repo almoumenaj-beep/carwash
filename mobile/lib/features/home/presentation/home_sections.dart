@@ -90,6 +90,7 @@ List<HomeGroup> sectionGroups(AppLocalizations l10n) => [
     sections: [
       (path: '/catalog', icon: Icons.sell_outlined, title: l10n.catalogTitle, subtitle: l10n.catalogSubtitle),
       (path: '/branches', icon: Icons.store_outlined, title: l10n.branchesTitle, subtitle: l10n.branchesSubtitle),
+      (path: '/offers', icon: Icons.local_offer_outlined, title: l10n.offersTitle, subtitle: l10n.offersSubtitle),
       (path: '/devices', icon: Icons.devices_other_outlined, title: l10n.devicesTitle, subtitle: l10n.devicesSubtitle),
       (path: '/settings', icon: Icons.tune_outlined, title: l10n.settingsTitle, subtitle: l10n.settingsSubtitle),
     ],

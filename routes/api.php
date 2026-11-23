@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\MembershipController;
 use App\Http\Controllers\Api\V1\MePasswordController;
 use App\Http\Controllers\Api\V1\MePinController;
 use App\Http\Controllers\Api\V1\MeProfileController;
+use App\Http\Controllers\Api\V1\OfferController;
 use App\Http\Controllers\Api\V1\OrderCheckoutController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\OrderStatusController;
@@ -110,6 +111,10 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::get('employees', [EmployeeController::class, 'index'])->name('employees.index');
         Route::put('employees/{user}/pay-terms', [EmployeeController::class, 'updateProfile'])->name('employees.pay-terms.update');
         Route::post('employees/{user}/daily-wages', [EmployeeController::class, 'recordDailyWage'])->name('employees.daily-wages.store');
+        Route::get('offers', [OfferController::class, 'index'])->name('offers.index');
+        Route::post('offers', [OfferController::class, 'store'])->name('offers.store');
+        Route::patch('offers/{offer}', [OfferController::class, 'update'])->name('offers.update');
+        Route::delete('offers/{offer}', [OfferController::class, 'destroy'])->name('offers.destroy');
         Route::get('payroll-runs', [PayrollController::class, 'index'])->name('payroll-runs.index');
         Route::post('payroll-runs', [PayrollController::class, 'store'])->name('payroll-runs.store');
         Route::post('payroll-runs/{payrollRun}/pay', [PayrollController::class, 'pay'])->name('payroll-runs.pay');

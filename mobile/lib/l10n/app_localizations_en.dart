@@ -2036,4 +2036,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeTitle => 'Home';
+
+  @override
+  String get offersTitle => 'Offers';
+
+  @override
+  String get offersSubtitle => 'What the customer page shows, with the prices';
+
+  @override
+  String get addOffer => 'Add offer';
+
+  @override
+  String get editOffer => 'Edit offer';
+
+  @override
+  String get offersPageHint => 'Customers see the active offers on your public page (add your site address before it):';
+
+  @override
+  String get noOffersYet => 'No offers yet. Add one to show it to your customers.';
+
+  @override
+  String get offerTitleField => 'Title';
+
+  @override
+  String get offerTitleMissing => 'Enter the offer\'s title';
+
+  @override
+  String get offerDescriptionField => 'Description (optional)';
+
+  @override
+  String get offerPriceField => 'Price (optional)';
+
+  @override
+  String get offerNoExpiry => 'No end date';
+
+  @override
+  String get offerPickExpiry => 'End date';
+
+  @override
+  String get offerExpires => 'Until';
+
+  @override
+  String get offerActiveField => 'Shown on the customer page';
+
+  @override
+  String get deleteOfferTitle => 'Delete the offer?';
+
+  @override
+  String get deleteOfferConfirm => 'It disappears from the customer page right away.';
 }

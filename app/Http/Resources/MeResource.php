@@ -30,6 +30,7 @@ class MeResource extends JsonResource
             'tenant' => [
                 'id' => $this->tenant->id,
                 'name' => $this->tenant->name,
+                'slug' => $this->tenant->slug,
                 'locale' => $this->tenant->locale,
                 'currency' => $this->tenant->currency,
                 'timezone' => $this->tenant->timezone,

@@ -53,6 +53,7 @@ const routePermissions = <String, List<String>>{
   '/devices': [Permissions.usersManage],
   '/settings': [Permissions.settingsManage],
   '/branches': [Permissions.settingsManage],
+  '/offers': [Permissions.settingsManage],
   '/catalog': [Permissions.servicesManage],
   '/customers': [Permissions.customersView],
 };

@@ -6,6 +6,7 @@ class Me {
     required this.email,
     this.phone,
     required this.carWashName,
+    required this.slug,
     required this.isOwner,
     required this.allBranches,
     required this.roles,
@@ -24,6 +25,7 @@ class Me {
       email: json['email'] as String?,
       phone: json['phone'] as String?,
       carWashName: tenant['name'] as String,
+      slug: tenant['slug'] as String,
       isOwner: json['is_owner'] as bool,
       allBranches: json['all_branches'] as bool,
       roles: [for (final role in json['roles'] as List) RoleSummary.fromJson(role as Map<String, dynamic>)],
@@ -39,6 +41,9 @@ class Me {
   final String? email;
   final String? phone;
   final String carWashName;
+
+  /// The car wash's public page address is /w/{slug} on the server's site.
+  final String slug;
   final bool isOwner;
   final bool allBranches;
   final List<RoleSummary> roles;

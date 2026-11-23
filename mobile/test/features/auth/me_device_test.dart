@@ -5,7 +5,7 @@ Map<String, dynamic> _json([Map<String, dynamic> extra = const {}]) => {
   'id': 'u1',
   'name': 'Mahmood',
   'email': null,
-  'tenant': {'name': 'Blue Line'},
+  'tenant': {'name': 'Blue Line', 'slug': 'blue-line'},
   'is_owner': false,
   'all_branches': false,
   'roles': <Object>[],

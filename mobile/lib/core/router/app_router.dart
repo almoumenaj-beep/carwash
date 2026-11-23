@@ -23,6 +23,7 @@ import '../../features/home/presentation/home_screen.dart';
 import '../../features/home/presentation/home_sections.dart';
 import '../../features/inventory/presentation/inventory_screen.dart';
 import '../../features/inventory/presentation/stock_issue_screen.dart';
+import '../../features/offers/presentation/offers_screen.dart';
 import '../../features/staff_affairs/presentation/staff_affairs_screen.dart';
 import '../../features/orders/presentation/check_in_screen.dart';
 import '../../features/orders/presentation/checkout_screen.dart';
@@ -129,6 +130,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (_, state) => StockIssueScreen(branchId: state.uri.queryParameters['branch']),
           ),
           GoRoute(path: '/staff-affairs', builder: (_, _) => const StaffAffairsScreen()),
+          GoRoute(path: '/offers', builder: (_, _) => const OffersScreen()),
           GoRoute(path: '/expenses', builder: (_, _) => const ExpensesScreen()),
           GoRoute(path: '/reports', builder: (_, _) => const DailySalesScreen()),
           GoRoute(path: '/finance', builder: (_, _) => const FinancialReportsScreen()),

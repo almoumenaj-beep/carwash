@@ -1133,5 +1133,21 @@
   "settingsGeneralSection": "Car wash details",
   "settingsRewardsSection": "Memberships and points",
   "membershipPlansHint": "Washes the customer pays for in advance and uses over several visits. To group services into one visit at a lower price, add a package in services and prices instead.",
-  "homeTitle": "Home"
+  "homeTitle": "Home",
+  "offersTitle": "Offers",
+  "offersSubtitle": "What the customer page shows, with the prices",
+  "addOffer": "Add offer",
+  "editOffer": "Edit offer",
+  "offersPageHint": "Customers see the active offers on your public page (add your site address before it):",
+  "noOffersYet": "No offers yet. Add one to show it to your customers.",
+  "offerTitleField": "Title",
+  "offerTitleMissing": "Enter the offer's title",
+  "offerDescriptionField": "Description (optional)",
+  "offerPriceField": "Price (optional)",
+  "offerNoExpiry": "No end date",
+  "offerPickExpiry": "End date",
+  "offerExpires": "Until",
+  "offerActiveField": "Shown on the customer page",
+  "deleteOfferTitle": "Delete the offer?",
+  "deleteOfferConfirm": "It disappears from the customer page right away."
 }

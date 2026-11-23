@@ -34,6 +34,7 @@ Me editor(Set<String> permissions) => Me(
   name: 'Editor',
   email: null,
   carWashName: 'Demo',
+  slug: 'demo',
   isOwner: false,
   allBranches: true,
   roles: const [],

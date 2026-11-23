@@ -2061,4 +2061,52 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeTitle => 'الرئيسية';
+
+  @override
+  String get offersTitle => 'العروض';
+
+  @override
+  String get offersSubtitle => 'ما يظهر لعملائك في صفحتك مع الأسعار';
+
+  @override
+  String get addOffer => 'إضافة عرض';
+
+  @override
+  String get editOffer => 'تعديل العرض';
+
+  @override
+  String get offersPageHint => 'يظهر العرض النشط لعملائك في صفحتك العامة (أضف عنوان موقعك قبلها):';
+
+  @override
+  String get noOffersYet => 'لا عروض بعد. أضف عرضاً ليظهر لعملائك.';
+
+  @override
+  String get offerTitleField => 'العنوان';
+
+  @override
+  String get offerTitleMissing => 'اكتب عنوان العرض';
+
+  @override
+  String get offerDescriptionField => 'الوصف (اختياري)';
+
+  @override
+  String get offerPriceField => 'السعر (اختياري)';
+
+  @override
+  String get offerNoExpiry => 'بلا تاريخ انتهاء';
+
+  @override
+  String get offerPickExpiry => 'تاريخ الانتهاء';
+
+  @override
+  String get offerExpires => 'حتى';
+
+  @override
+  String get offerActiveField => 'يظهر في صفحة العملاء';
+
+  @override
+  String get deleteOfferTitle => 'حذف العرض؟';
+
+  @override
+  String get deleteOfferConfirm => 'سيختفي من صفحة العملاء فوراً.';
 }

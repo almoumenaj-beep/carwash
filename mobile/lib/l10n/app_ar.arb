@@ -610,5 +610,21 @@
   "settingsGeneralSection": "بيانات المغسلة",
   "settingsRewardsSection": "العضويات والنقاط",
   "membershipPlansHint": "غسلات يدفعها العميل مقدماً ويستخدمها على عدة زيارات. أما جمع عدة خدمات في زيارة واحدة بسعر أقل، فهو «باقة» تضيفها من الخدمات والأسعار.",
-  "homeTitle": "الرئيسية"
+  "homeTitle": "الرئيسية",
+  "offersTitle": "العروض",
+  "offersSubtitle": "ما يظهر لعملائك في صفحتك مع الأسعار",
+  "addOffer": "إضافة عرض",
+  "editOffer": "تعديل العرض",
+  "offersPageHint": "يظهر العرض النشط لعملائك في صفحتك العامة (أضف عنوان موقعك قبلها):",
+  "noOffersYet": "لا عروض بعد. أضف عرضاً ليظهر لعملائك.",
+  "offerTitleField": "العنوان",
+  "offerTitleMissing": "اكتب عنوان العرض",
+  "offerDescriptionField": "الوصف (اختياري)",
+  "offerPriceField": "السعر (اختياري)",
+  "offerNoExpiry": "بلا تاريخ انتهاء",
+  "offerPickExpiry": "تاريخ الانتهاء",
+  "offerExpires": "حتى",
+  "offerActiveField": "يظهر في صفحة العملاء",
+  "deleteOfferTitle": "حذف العرض؟",
+  "deleteOfferConfirm": "سيختفي من صفحة العملاء فوراً."
 }

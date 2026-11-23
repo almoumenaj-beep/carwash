@@ -18,6 +18,7 @@ class FixedSession extends SessionController {
     name: 'Keeper',
     email: null,
     carWashName: 'Demo',
+    slug: 'demo',
     isOwner: false,
     allBranches: false,
     roles: [],

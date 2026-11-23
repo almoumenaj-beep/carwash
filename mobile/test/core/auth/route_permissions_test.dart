@@ -7,6 +7,7 @@ Me meWith(Set<String> permissions) => Me(
   name: 'Staff',
   email: null,
   carWashName: 'Demo',
+  slug: 'demo',
   isOwner: false,
   allBranches: false,
   roles: const [],

@@ -44,7 +44,7 @@ class BookAppointment
      *
      * @throws ValidationException
      */
-    public function handle(User $actor, array $data, ?Appointment $appointment = null): Appointment
+    public function handle(?User $actor, array $data, ?Appointment $appointment = null): Appointment
     {
         $branch = Branch::query()->findOrFail($data['branch_id']);
         $vehicle = match (true) {
@@ -59,7 +59,7 @@ class BookAppointment
         $size = $sizeId === null ? null : VehicleSize::query()->find($sizeId);
         $priced = $this->pricing->price($branch, $size, $data['items']);
 
-        $start = CarbonImmutable::createFromFormat('Y-m-d\TH:i', $data['starts_at'], $actor->tenant->timezone)->startOfMinute();
+        $start = CarbonImmutable::createFromFormat('Y-m-d\TH:i', $data['starts_at'], $branch->tenant->timezone)->startOfMinute();
         $end = $start->addMinutes(max($priced['minutes'], self::MINIMUM_MINUTES));
 
         return DB::transaction(function () use ($actor, $data, $appointment, $branch, $vehicle, $customer, $size, $priced, $start, $end): Appointment {
@@ -93,7 +93,7 @@ class BookAppointment
                 'starts_at' => $start->utc(),
                 'ends_at' => $end->utc(),
                 'notes' => $data['notes'] ?? null,
-                'created_by' => $appointment->created_by ?? $actor->id,
+                'created_by' => $appointment->created_by ?? $actor?->id,
             ])->save();
 
             $this->auditTrail->record($isNew ? 'appointment.booked' : 'appointment.changed', $appointment, $actor, $isNew ? 'Appointment booked' : 'Appointment changed', [

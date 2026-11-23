@@ -18,7 +18,7 @@ class SaveCustomer
     /**
      * @param  array{phone: string, name?: ?string, email?: ?string, notes?: ?string, marketing_consent?: bool, vehicles?: list<array<string, mixed>>}  $data
      */
-    public function create(User $actor, array $data): Customer
+    public function create(?User $actor, array $data): Customer
     {
         return DB::transaction(function () use ($actor, $data): Customer {
             $customer = new Customer($data);
@@ -41,7 +41,7 @@ class SaveCustomer
     /**
      * @param  array{phone?: string, name?: ?string, email?: ?string, notes?: ?string, marketing_consent?: bool}  $data
      */
-    public function update(User $actor, Customer $customer, array $data): Customer
+    public function update(?User $actor, Customer $customer, array $data): Customer
     {
         $customer->fill($data);
 

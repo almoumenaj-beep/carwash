@@ -3757,6 +3757,102 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Home'**
   String get homeTitle;
+
+  /// No description provided for @offersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers'**
+  String get offersTitle;
+
+  /// No description provided for @offersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What the customer page shows, with the prices'**
+  String get offersSubtitle;
+
+  /// No description provided for @addOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add offer'**
+  String get addOffer;
+
+  /// No description provided for @editOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit offer'**
+  String get editOffer;
+
+  /// No description provided for @offersPageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers see the active offers on your public page (add your site address before it):'**
+  String get offersPageHint;
+
+  /// No description provided for @noOffersYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No offers yet. Add one to show it to your customers.'**
+  String get noOffersYet;
+
+  /// No description provided for @offerTitleField.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get offerTitleField;
+
+  /// No description provided for @offerTitleMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the offer\'s title'**
+  String get offerTitleMissing;
+
+  /// No description provided for @offerDescriptionField.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get offerDescriptionField;
+
+  /// No description provided for @offerPriceField.
+  ///
+  /// In en, this message translates to:
+  /// **'Price (optional)'**
+  String get offerPriceField;
+
+  /// No description provided for @offerNoExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'No end date'**
+  String get offerNoExpiry;
+
+  /// No description provided for @offerPickExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get offerPickExpiry;
+
+  /// No description provided for @offerExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Until'**
+  String get offerExpires;
+
+  /// No description provided for @offerActiveField.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on the customer page'**
+  String get offerActiveField;
+
+  /// No description provided for @deleteOfferTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the offer?'**
+  String get deleteOfferTitle;
+
+  /// No description provided for @deleteOfferConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'It disappears from the customer page right away.'**
+  String get deleteOfferConfirm;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
