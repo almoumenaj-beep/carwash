@@ -1433,6 +1433,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appointmentsTitle => 'الحجوزات';
 
   @override
+  String get bookedOnline => 'محجوز من الموقع';
+
+  @override
   String get appointmentsSubtitle => 'مواعيد السيارات واستقبالها عند الوصول';
 
   @override

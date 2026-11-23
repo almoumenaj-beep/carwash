@@ -76,6 +76,18 @@ class AppointmentTest extends TestCase
         $this->assertDatabaseHas('activity_log', ['event' => 'customer.created', 'tenant_id' => $this->tenant->id]);
     }
 
+    public function test_a_booking_made_on_the_customer_page_lists_without_a_creator(): void
+    {
+        // The public page books with no actor, so the API must not assume a creator exists.
+        $this->book(['customer_phone' => '3999 1111']);
+        Appointment::query()->update(['created_by' => null]);
+
+        $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}&date=2026-11-04")
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.created_by', null);
+    }
+
     public function test_booking_the_same_new_phone_twice_registers_the_customer_only_once(): void
     {
         $this->book()->assertCreated();

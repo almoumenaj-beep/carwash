@@ -739,6 +739,7 @@
   "payLabel": "Pay",
   "washerProfitNote": "Each car's value is split between its washers; pay is salary and commission in the period's payrolls.",
   "appointmentsTitle": "Bookings",
+  "bookedOnline": "Booked on the website",
   "appointmentsSubtitle": "Booked cars, checked in when they arrive",
   "newBooking": "New booking",
   "changeBooking": "Change booking",

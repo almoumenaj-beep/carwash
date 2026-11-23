@@ -2624,6 +2624,12 @@ abstract class AppLocalizations {
   /// **'Bookings'**
   String get appointmentsTitle;
 
+  /// No description provided for @bookedOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked on the website'**
+  String get bookedOnline;
+
   /// No description provided for @appointmentsSubtitle.
   ///
   /// In en, this message translates to:

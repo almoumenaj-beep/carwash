@@ -201,7 +201,7 @@ class AppointmentController extends Controller
             'notes' => $appointment->notes,
             'cancel_reason' => $appointment->cancel_reason,
             'order' => $appointment->order === null ? null : ['id' => $appointment->order->id, 'number' => $appointment->order->number],
-            'created_by' => ['id' => $appointment->creator->id, 'name' => $appointment->creator->name],
+            'created_by' => $appointment->creator === null ? null : ['id' => $appointment->creator->id, 'name' => $appointment->creator->name],
         ])->values()->all();
     }
 }

@@ -33,12 +33,14 @@ class Appointment {
     required this.cancelReason,
     required this.orderId,
     required this.orderNumber,
+    required this.createdBy,
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
     final customer = json['customer'] as Map<String, dynamic>?;
     final size = json['vehicle_size'] as Map<String, dynamic>?;
     final order = json['order'] as Map<String, dynamic>?;
+    final creator = json['created_by'] as Map<String, dynamic>?;
 
     return Appointment(
       id: json['id'] as String,
@@ -66,6 +68,7 @@ class Appointment {
       cancelReason: json['cancel_reason'] as String?,
       orderId: order?['id'] as String?,
       orderNumber: order?['number'] as int?,
+      createdBy: creator?['name'] as String?,
     );
   }
 
@@ -93,6 +96,9 @@ class Appointment {
   /// The order opened when the car was checked in.
   final String? orderId;
   final int? orderNumber;
+
+  /// Who booked it; null when the customer booked themselves on the website.
+  final String? createdBy;
 
   /// Still waiting for the car.
   bool get isOpen => status == AppointmentStatus.booked;

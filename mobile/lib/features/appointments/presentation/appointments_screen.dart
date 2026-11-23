@@ -444,6 +444,11 @@ class _AppointmentTile extends ConsumerWidget {
                 style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
               ),
               TextSpan(text: ' · ${details.join(' · ')}'),
+              if (appointment.createdBy == null)
+                TextSpan(
+                  text: '\n${l10n.bookedOnline}',
+                  style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.w600),
+                ),
               if (appointment.notes != null) TextSpan(text: '\n${appointment.notes}'),
             ],
           ),

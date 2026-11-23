@@ -1407,6 +1407,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentsTitle => 'Bookings';
 
   @override
+  String get bookedOnline => 'Booked on the website';
+
+  @override
   String get appointmentsSubtitle => 'Booked cars, checked in when they arrive';
 
   @override
