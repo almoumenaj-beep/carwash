@@ -133,7 +133,10 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
   Future<void> _save() async {
     final l10n = AppLocalizations.of(context);
     final money = ref.read(moneyFormatProvider);
-    final salary = _salary.text.trim().isEmpty ? 0 : money.parse(_salary.text);
+    // Daily-paid wages are recorded ad-hoc, so the only standing amount is a monthly salary.
+    final salary = _salaryType == SalaryType.daily
+        ? 0
+        : (_salary.text.trim().isEmpty ? 0 : money.parse(_salary.text));
     final value = switch (_type) {
       CommissionType.none => 0,
       CommissionType.perCar => money.parse(_value.text),
@@ -218,14 +221,12 @@ class _PayTermsDialogState extends ConsumerState<_PayTermsDialog> {
               onSelectionChanged: (selection) => setState(() => _salaryType = selection.single),
             ),
             const SizedBox(height: 12),
-            TextField(
-              controller: _salary,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                labelText: _salaryType == SalaryType.monthly ? l10n.monthlySalaryField : l10n.dailyRateField,
-                suffixText: money.currency,
+            if (_salaryType == SalaryType.monthly)
+              TextField(
+                controller: _salary,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(labelText: l10n.monthlySalaryField, suffixText: money.currency),
               ),
-            ),
             if (_salaryType == SalaryType.daily) ...[
               const SizedBox(height: 16),
               Text(l10n.dailyWageRecordTitle, style: Theme.of(context).textTheme.titleSmall),

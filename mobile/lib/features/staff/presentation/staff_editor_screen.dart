@@ -254,15 +254,12 @@ class _StaffFormState extends ConsumerState<_StaffForm> {
                 onSelectionChanged: (selection) => setState(() => _salaryType = selection.single),
               ),
               const SizedBox(height: 12),
-              TextFormField(
-                controller: _salary,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(
-                  labelText: _salaryType == SalaryType.monthly ? l10n.monthlySalaryField : l10n.dailyRateField,
-                  suffixText: ref.watch(moneyFormatProvider).currency,
-                  helperText: _salaryType == SalaryType.daily ? l10n.dailyPayHint : null,
+              if (_salaryType == SalaryType.monthly)
+                TextFormField(
+                  controller: _salary,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(labelText: l10n.monthlySalaryField, suffixText: ref.watch(moneyFormatProvider).currency),
                 ),
-              ),
             ],
             const SizedBox(height: 24),
             Text(l10n.rolesSection, style: theme.textTheme.titleMedium),

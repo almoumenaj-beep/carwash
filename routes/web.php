@@ -19,9 +19,6 @@ Route::post('/w/{tenant:slug}/bookings', [CustomerPageController::class, 'book']
     ->name('customer.book');
 
 // The web app, built from mobile/ into public/app; its files are served directly, and its own routes live
-// after the # in the address.
-Route::get('/app', function () {
-    abort_unless(is_file(public_path('app/index.html')), 404);
-
-    return response()->file(public_path('app/index.html'), ['Cache-Control' => 'no-cache']);
-});
+// after the # in the address. Redirect to the trailing slash: the app's asset paths are relative, and
+// without the slash the browser would resolve them one directory up.
+Route::redirect('/app', '/app/');

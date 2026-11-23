@@ -4,13 +4,21 @@ import 'package:flutter/foundation.dart';
 abstract final class AppConfig {
   static const _configuredApiBaseUrl = String.fromEnvironment('API_BASE_URL');
 
-  /// Base URL of the CarWash API. On the web it is the server the page came from, so the same build works
-  /// whichever address the page is opened by. Otherwise it defaults to the local Laravel server, which a phone
-  /// reaches over USB after `adb reverse tcp:8000 tcp:8000`; `run-on-wifi` sets the PC's Wi-Fi address instead.
+  /// Base URL of the CarWash API. On the web the API sits next to the app one level up from
+  /// `/app/`, so the same build works served both at the server's root (artisan serve) and from
+  /// a subfolder (`/carwash/public/app/`). Otherwise it defaults to the local Laravel server,
+  /// which a phone reaches over USB after `adb reverse tcp:8000 tcp:8000`; `run-on-wifi` sets
+  /// the PC's Wi-Fi address instead.
   static String get apiBaseUrl {
     if (_configuredApiBaseUrl.isNotEmpty) {
       return _configuredApiBaseUrl;
     }
-    return kIsWeb ? '${Uri.base.origin}/api/v1' : 'http://127.0.0.1:8000/api/v1';
+    if (kIsWeb) {
+      final base = Uri.base;
+      final cut = base.path.lastIndexOf('/app/');
+      final root = cut >= 0 ? base.path.substring(0, cut + 1) : '/';
+      return '${base.origin}$root/api/v1';
+    }
+    return 'http://127.0.0.1:8000/api/v1';
   }
 }
