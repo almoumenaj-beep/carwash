@@ -35,9 +35,10 @@ class AppointmentController extends Controller
     public function __construct(private AuditTrail $auditTrail) {}
 
     /**
-     * A branch's bookings on a day (`date`, default today), earliest first.
+     * A branch's bookings on a day (`date`, default today), earliest first, with how loaded each opening
+     * hour is for the day overview.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, AppointmentSchedule $schedule): JsonResponse
     {
         $request->validate([
             'branch_id' => ['required', 'uuid'],
@@ -54,7 +55,13 @@ class AppointmentController extends Controller
             ->orderBy('starts_at')
             ->get();
 
-        return response()->json(['data' => $this->presentAll($appointments, $request)]);
+        return response()->json([
+            'data' => $this->presentAll($appointments, $request),
+            'meta' => [
+                'capacity' => $schedule->capacity($branch),
+                'hours' => $schedule->hours($branch, $day),
+            ],
+        ]);
     }
 
     /**
@@ -100,6 +107,21 @@ class AppointmentController extends Controller
 
         $appointment->forceFill(['status' => AppointmentStatus::Cancelled, 'cancel_reason' => $request->input('reason')])->save();
         $this->auditTrail->record('appointment.cancelled', $appointment, $request->user(), 'Appointment cancelled', ['reason' => $request->input('reason')]);
+
+        return response()->json(['data' => $this->presentAll(collect([$appointment->load(self::RELATIONS)]), $request)[0]]);
+    }
+
+    /**
+     * Reception confirms a booking made on the customer page; it is now firm like any counter booking.
+     */
+    public function confirm(Request $request, Appointment $appointment): JsonResponse
+    {
+        $this->authorizeManaging($request, $appointment);
+        $this->ensureOpen($appointment);
+        abort_unless($appointment->status === AppointmentStatus::Pending, Response::HTTP_CONFLICT);
+
+        $appointment->forceFill(['status' => AppointmentStatus::Booked])->save();
+        $this->auditTrail->record('appointment.confirmed', $appointment, $request->user(), 'Website booking confirmed');
 
         return response()->json(['data' => $this->presentAll(collect([$appointment->load(self::RELATIONS)]), $request)[0]]);
     }

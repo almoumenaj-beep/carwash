@@ -434,9 +434,21 @@
   "chooseServicesForTimes": "اختر الخدمات لتظهر الأوقات المتاحة.",
   "noFreeTimes": "لا توجد أوقات متاحة في هذا اليوم.",
   "appointmentBooked": "محجوز",
+  "appointmentPending": "بانتظار التأكيد",
   "appointmentCheckedIn": "وصل",
   "appointmentCancelled": "ملغى",
   "appointmentNoShow": "لم يحضر",
+  "confirmBooking": "تأكيد الحجز",
+  "searchBookingsHint": "ابحث بالاسم أو اللوحة أو الجوال",
+  "onlineFilter": "الموقع",
+  "counterFilter": "الاستقبال",
+  "hourLoad": "{used} من {capacity} محجوزة",
+  "@hourLoad": {
+    "placeholders": {
+      "used": {"type": "int"},
+      "capacity": {"type": "int"}
+    }
+  },
   "noBookingsThatDay": "لا توجد حجوزات في هذا اليوم",
   "cancelBooking": "إلغاء الحجز",
   "markNoShow": "لم يحضر",

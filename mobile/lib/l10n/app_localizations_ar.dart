@@ -1471,6 +1471,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appointmentBooked => 'محجوز';
 
   @override
+  String get appointmentPending => 'بانتظار التأكيد';
+
+  @override
   String get appointmentCheckedIn => 'وصل';
 
   @override
@@ -1478,6 +1481,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appointmentNoShow => 'لم يحضر';
+
+  @override
+  String get confirmBooking => 'تأكيد الحجز';
+
+  @override
+  String get searchBookingsHint => 'ابحث بالاسم أو اللوحة أو الجوال';
+
+  @override
+  String get onlineFilter => 'الموقع';
+
+  @override
+  String get counterFilter => 'الاستقبال';
+
+  @override
+  String hourLoad(int used, int capacity) {
+    return '$used من $capacity محجوزة';
+  }
 
   @override
   String get noBookingsThatDay => 'لا توجد حجوزات في هذا اليوم';

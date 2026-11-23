@@ -2696,6 +2696,12 @@ abstract class AppLocalizations {
   /// **'Booked'**
   String get appointmentBooked;
 
+  /// No description provided for @appointmentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Awaiting confirmation'**
+  String get appointmentPending;
+
   /// No description provided for @appointmentCheckedIn.
   ///
   /// In en, this message translates to:
@@ -2713,6 +2719,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No-show'**
   String get appointmentNoShow;
+
+  /// No description provided for @confirmBooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm booking'**
+  String get confirmBooking;
+
+  /// No description provided for @searchBookingsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, plate or phone'**
+  String get searchBookingsHint;
+
+  /// No description provided for @onlineFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get onlineFilter;
+
+  /// No description provided for @counterFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Counter'**
+  String get counterFilter;
+
+  /// No description provided for @hourLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {capacity} booked'**
+  String hourLoad(int used, int capacity);
 
   /// No description provided for @noBookingsThatDay.
   ///

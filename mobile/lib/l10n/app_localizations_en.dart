@@ -1445,6 +1445,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appointmentBooked => 'Booked';
 
   @override
+  String get appointmentPending => 'Awaiting confirmation';
+
+  @override
   String get appointmentCheckedIn => 'Arrived';
 
   @override
@@ -1452,6 +1455,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appointmentNoShow => 'No-show';
+
+  @override
+  String get confirmBooking => 'Confirm booking';
+
+  @override
+  String get searchBookingsHint => 'Search by name, plate or phone';
+
+  @override
+  String get onlineFilter => 'Website';
+
+  @override
+  String get counterFilter => 'Counter';
+
+  @override
+  String hourLoad(int used, int capacity) {
+    return '$used of $capacity booked';
+  }
 
   @override
   String get noBookingsThatDay => 'No bookings on this day';

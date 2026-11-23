@@ -103,4 +103,26 @@ class AppointmentSchedule
 
         return $slots;
     }
+
+    /**
+     * How loaded each opening hour of [$date] is, for the day overview: the most cars booked at once
+     * during that hour. Hours before now are still reported (muted by the client).
+     *
+     * @return list<array{hour: string, used: int}>
+     */
+    public function hours(Branch $branch, CarbonImmutable $date): array
+    {
+        $window = $branch->openingWindow($date);
+        if ($window === null) {
+            return [];
+        }
+
+        $hours = [];
+        for ($start = $window[0]; $start->lt($window[1]); $start = $start->addHour()) {
+            $end = $start->addHour()->min($window[1]);
+            $hours[] = ['hour' => $start->format('H:i'), 'used' => $this->busiest($branch, $start, $end)];
+        }
+
+        return $hours;
+    }
 }

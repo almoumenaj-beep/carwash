@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/auth/route_permissions.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../appointments/application/booking_alerts.dart';
 import '../../auth/application/session_controller.dart';
 import '../../auth/domain/me.dart';
 
@@ -123,6 +124,8 @@ class HomeSectionsMenu extends ConsumerWidget {
       fontWeight: FontWeight.w700,
     );
     final daily = openable(dailySections(l10n), me);
+    // Website bookings awaiting confirmation, for the badge on the appointments tile.
+    final pendingBookings = ref.watch(pendingBookingsCountProvider);
     final groups = [
       for (final group in sectionGroups(l10n))
         if (openable(group.sections, me) case final sections when sections.isNotEmpty)
@@ -166,7 +169,11 @@ class HomeSectionsMenu extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
                             child: Column(
                               children: [
-                                Icon(section.icon, size: 32, color: AppTheme.lightGold),
+                                Badge(
+                                  isLabelVisible: section.path == '/appointments' && pendingBookings > 0,
+                                  label: Text('$pendingBookings'),
+                                  child: Icon(section.icon, size: 32, color: AppTheme.lightGold),
+                                ),
                                 const SizedBox(height: 8),
                                 Text(
                                   section.title,

@@ -80,7 +80,8 @@ class CustomerPageTest extends TestCase
             ->assertSessionHas('booked');
 
         $appointment = $this->inTenant(fn () => Appointment::query()->sole());
-        $this->assertSame('booked', $appointment->status->value);
+        // A customer booking themselves waits as pending until reception confirms it.
+        $this->assertSame('pending', $appointment->status->value);
         $this->assertSame('Sara', $appointment->customer_name);
         $this->assertSame('+97339992222', $appointment->customer_phone);
         $this->assertSame($this->branch->id, $appointment->branch_id);

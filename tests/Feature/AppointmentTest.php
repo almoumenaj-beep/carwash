@@ -76,6 +76,28 @@ class AppointmentTest extends TestCase
         $this->assertDatabaseHas('activity_log', ['event' => 'customer.created', 'tenant_id' => $this->tenant->id]);
     }
 
+    public function test_a_pending_online_booking_is_confirmed_by_reception(): void
+    {
+        $id = $this->book()->assertCreated()->json('data.id');
+        Appointment::query()->whereKey($id)->update(['status' => 'pending']);
+
+        $this->postJson("/api/v1/appointments/{$id}/confirm")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'booked');
+        $this->assertDatabaseHas('appointments', ['id' => $id, 'status' => 'booked']);
+    }
+
+    public function test_the_day_list_comes_with_an_hourly_capacity_overview(): void
+    {
+        $this->book();
+
+        $response = $this->getJson("/api/v1/appointments?branch_id={$this->branch->id}&date=2026-11-04")->assertOk();
+
+        $this->assertSame(1, $response->json('meta.capacity'));
+        $hour = collect($response->json('meta.hours'))->firstWhere('hour', '10:00');
+        $this->assertSame(1, $hour['used']);
+    }
+
     public function test_a_booking_made_on_the_customer_page_lists_without_a_creator(): void
     {
         // The public page books with no actor, so the API must not assume a creator exists.

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Appointments\Actions;
 
+use App\Domain\Appointments\Enums\AppointmentStatus;
 use App\Domain\Appointments\Models\Appointment;
 use App\Domain\Appointments\Support\AppointmentSchedule;
 use App\Domain\Catalog\Models\VehicleSize;
@@ -41,10 +42,12 @@ class BookAppointment
 
     /**
      * @param  array{branch_id: string, starts_at: string, vehicle_id?: ?string, plate_number?: ?string, vehicle_size_id?: ?string, customer_phone?: ?string, customer_name?: ?string, items: list<array{service_id: string, quantity?: int}>, notes?: ?string}  $data
+     * @param  bool  $confirmed  false for bookings made by customers themselves on the public page: they wait
+     *                           as pending until reception confirms them.
      *
      * @throws ValidationException
      */
-    public function handle(?User $actor, array $data, ?Appointment $appointment = null): Appointment
+    public function handle(?User $actor, array $data, ?Appointment $appointment = null, bool $confirmed = true): Appointment
     {
         $branch = Branch::query()->findOrFail($data['branch_id']);
         $vehicle = match (true) {
@@ -62,7 +65,7 @@ class BookAppointment
         $start = CarbonImmutable::createFromFormat('Y-m-d\TH:i', $data['starts_at'], $branch->tenant->timezone)->startOfMinute();
         $end = $start->addMinutes(max($priced['minutes'], self::MINIMUM_MINUTES));
 
-        return DB::transaction(function () use ($actor, $data, $appointment, $branch, $vehicle, $customer, $size, $priced, $start, $end): Appointment {
+        return DB::transaction(function () use ($actor, $data, $appointment, $branch, $vehicle, $customer, $size, $priced, $start, $end, $confirmed): Appointment {
             Branch::query()->whereKey($branch->id)->lockForUpdate()->first();
             $this->schedule->ensureBookable($branch, $start, $end, $appointment?->id);
 
@@ -93,6 +96,8 @@ class BookAppointment
                 'starts_at' => $start->utc(),
                 'ends_at' => $end->utc(),
                 'notes' => $data['notes'] ?? null,
+                // Changing a booking keeps its status; a new one starts confirmed at the counter, pending online.
+                'status' => $appointment->exists ? $appointment->status : ($confirmed ? AppointmentStatus::Booked : AppointmentStatus::Pending),
                 'created_by' => $appointment->created_by ?? $actor?->id,
             ])->save();
 

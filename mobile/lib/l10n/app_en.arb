@@ -758,9 +758,21 @@
   "chooseServicesForTimes": "Choose the services to see the free times.",
   "noFreeTimes": "No free times on this day.",
   "appointmentBooked": "Booked",
+  "appointmentPending": "Awaiting confirmation",
   "appointmentCheckedIn": "Arrived",
   "appointmentCancelled": "Cancelled",
   "appointmentNoShow": "No-show",
+  "confirmBooking": "Confirm booking",
+  "searchBookingsHint": "Search by name, plate or phone",
+  "onlineFilter": "Website",
+  "counterFilter": "Counter",
+  "hourLoad": "{used} of {capacity} booked",
+  "@hourLoad": {
+    "placeholders": {
+      "used": {"type": "int"},
+      "capacity": {"type": "int"}
+    }
+  },
   "noBookingsThatDay": "No bookings on this day",
   "cancelBooking": "Cancel booking",
   "markNoShow": "Did not come",

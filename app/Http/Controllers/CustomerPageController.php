@@ -95,12 +95,13 @@ class CustomerPageController extends Controller
         ];
 
         try {
-            $this->tenancy->run($tenant, fn () => $bookAppointment->handle(null, $data));
+            // A customer booking themselves waits as pending until reception confirms it.
+            $this->tenancy->run($tenant, fn () => $bookAppointment->handle(null, $data, confirmed: false));
         } catch (ValidationException $exception) {
             return redirect()->route('customer.page', $tenant)->withErrors($exception->errors())->withInput();
         }
 
-        return redirect()->route('customer.page', $tenant)->with('booked', __('Your appointment is booked. We will see you then!'));
+        return redirect()->route('customer.page', $tenant)->with('booked', __('Your appointment is booked and awaits our confirmation — we will contact you shortly.'));
     }
 
     /**

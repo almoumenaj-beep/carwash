@@ -10,10 +10,15 @@ final appointmentsRepositoryProvider = Provider<AppointmentsRepository>(
   (ref) => AppointmentsRepository(ref.watch(dioProvider)),
 );
 
-/// A branch's bookings on a day (`YYYY-MM-DD`), earliest first.
-final appointmentsProvider = FutureProvider.autoDispose.family<List<Appointment>, ({String branchId, String date})>(
-  (ref, query) => ref.watch(appointmentsRepositoryProvider).list(query.branchId, query.date),
-);
+/// A branch's bookings on a day with the day's capacity and how loaded each opening hour is.
+typedef DayBookings = ({List<Appointment> appointments, int capacity, List<({String hour, int used})> hours});
+
+
+/// A branch's bookings on a day (`YYYY-MM-DD`), earliest first, with the day's hourly capacity overview.
+final appointmentsProvider = FutureProvider.autoDispose
+    .family<DayBookings, ({String branchId, String date})>(
+      (ref, query) => ref.watch(appointmentsRepositoryProvider).list(query.branchId, query.date),
+    );
 
 /// The times a visit of [minutes] can still be booked on a day; [appointmentId] frees that booking's own place.
 final appointmentSlotsProvider = FutureProvider.autoDispose
@@ -26,11 +31,28 @@ class AppointmentsRepository {
 
   final Dio _dio;
 
-  Future<List<Appointment>> list(String branchId, String date) async {
+  Future<DayBookings> list(String branchId, String date) async {
     final response = await sendRequest(
       () => _dio.get<Map<String, dynamic>>('/appointments', queryParameters: {'branch_id': branchId, 'date': date}),
     );
-    return [for (final item in unwrapData<List>(response)) Appointment.fromJson(item as Map<String, dynamic>)];
+    final meta = response.data?['meta'] as Map<String, dynamic>?;
+    return (
+      appointments: [
+        for (final item in unwrapData<List>(response)) Appointment.fromJson(item as Map<String, dynamic>),
+      ],
+      capacity: (meta?['capacity'] as int?) ?? 1,
+      hours: [
+        for (final hour in (meta?['hours'] as List?) ?? const [])
+          (
+            hour: (hour as Map<String, dynamic>)['hour'] as String,
+            used: hour['used'] as int,
+          ),
+      ],
+    );
+  }
+
+  Future<void> confirm(String id) async {
+    await sendRequest(() => _dio.post<Map<String, dynamic>>('/appointments/$id/confirm'));
   }
 
   Future<List<AppointmentSlot>> slots(

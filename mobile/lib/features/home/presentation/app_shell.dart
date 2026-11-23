@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../appointments/application/booking_alerts.dart';
 import '../../auth/application/session_controller.dart';
 import 'home_sections.dart';
 
@@ -27,6 +28,9 @@ class AppShell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Polls today's bookings for website bookings, wherever the user is in the app.
+    ref.watch(bookingAlertsWatcherProvider);
+
     final width = MediaQuery.sizeOf(context).width;
     if (width < Breakpoints.tablet) {
       return child;

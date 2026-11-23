@@ -20,6 +20,7 @@ import '../data/appointments_repository.dart';
 import '../domain/appointment.dart';
 
 String appointmentStatusLabel(AppLocalizations l10n, AppointmentStatus status) => switch (status) {
+  AppointmentStatus.pending => l10n.appointmentPending,
   AppointmentStatus.booked => l10n.appointmentBooked,
   AppointmentStatus.checkedIn => l10n.appointmentCheckedIn,
   AppointmentStatus.cancelled => l10n.appointmentCancelled,
@@ -32,6 +33,7 @@ Color appointmentStatusColor(BuildContext context, AppointmentStatus status, {bo
   final MaterialColor color = late
       ? Colors.orange
       : switch (status) {
+          AppointmentStatus.pending => Colors.deepOrange,
           AppointmentStatus.booked => Colors.blue,
           AppointmentStatus.checkedIn => Colors.green,
           AppointmentStatus.cancelled => Colors.grey,
@@ -40,8 +42,10 @@ Color appointmentStatusColor(BuildContext context, AppointmentStatus status, {bo
   return dark ? color.shade300 : color.shade700;
 }
 
-/// What the list is narrowed to: every booking, one status, or those running late.
-typedef _Filter = ({AppointmentStatus? status, bool late});
+/// What the list is narrowed to: every booking, one status, those running late, a booking source
+/// (website or counter), and a search term matched against name, phone and plate.
+typedef _Filter = ({AppointmentStatus? status, bool late, bool? online, String term});
+const _noFilter = (status: null, late: false, online: null, term: '');
 
 /// A branch's bookings day by day: book a car in, confirm, change or cancel a booking, and check the car in
 /// when it arrives. The day's bookings can be narrowed to one status.
@@ -55,7 +59,7 @@ class AppointmentsScreen extends ConsumerStatefulWidget {
 class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
   String? _branchId;
   DateTime _day = DateUtils.dateOnly(DateTime.now());
-  _Filter _filter = (status: null, late: false);
+  _Filter _filter = _noFilter;
 
   Future<void> _open(Widget screen) async {
     final changed = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => screen));
@@ -66,7 +70,7 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
 
   void _moveTo(DateTime day) => setState(() {
     _day = day;
-    _filter = (status: null, late: false);
+    _filter = _noFilter;
   });
 
   @override
@@ -104,7 +108,7 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
               includeAll: false,
               onChanged: (id) => setState(() {
                 _branchId = id;
-                _filter = (status: null, late: false);
+                _filter = _noFilter;
               }),
             ),
             Row(
@@ -144,12 +148,13 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
               ],
             ),
             switch (ref.watch(appointmentsProvider(query))) {
-              AsyncData(:final value) when value.isEmpty => Padding(
+              AsyncData(:final value) when value.appointments.isEmpty => Padding(
                 padding: const EdgeInsets.all(48),
                 child: Text(l10n.noBookingsThatDay, textAlign: TextAlign.center),
               ),
               AsyncData(:final value) => _DayList(
-                appointments: value,
+                bookings: value,
+                day: _day,
                 filter: _filter,
                 onFilter: (filter) => setState(() => _filter = filter),
                 onCheckIn: (appointment) => _open(CheckInScreen(branchId: branch.id, appointment: appointment)),
@@ -172,30 +177,47 @@ class _AppointmentsScreenState extends ConsumerState<AppointmentsScreen> {
   }
 }
 
-/// The day's bookings under chips counting each status (and those running late), which narrow the list.
+/// The day's bookings under an hourly capacity strip and chips counting each status, source and the
+/// late ones, which narrow the list; a search field matches name, phone and plate.
 class _DayList extends StatelessWidget {
   const _DayList({
-    required this.appointments,
+    required this.bookings,
+    required this.day,
     required this.filter,
     required this.onFilter,
     required this.onCheckIn,
     required this.onChange,
   });
 
-  final List<Appointment> appointments;
+  final DayBookings bookings;
+  final DateTime day;
   final _Filter filter;
   final ValueChanged<_Filter> onFilter;
   final ValueChanged<Appointment> onCheckIn;
   final ValueChanged<Appointment> onChange;
 
+  bool _matches(Appointment appointment, String term) {
+    if (term.isEmpty) {
+      return true;
+    }
+    final needle = term.toLowerCase();
+    return (appointment.customerName ?? '').toLowerCase().contains(needle) ||
+        (appointment.customerPhone ?? '').toLowerCase().contains(needle) ||
+        (appointment.plateNumber ?? '').toLowerCase().contains(needle);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final now = DateTime.now();
+    final appointments = bookings.appointments;
     final late = appointments.where((appointment) => appointment.isLateAt(now)).length;
+    final online = appointments.where((appointment) => appointment.createdBy == null).length;
     final shown = appointments.where(
       (appointment) =>
-          filter.late ? appointment.isLateAt(now) : filter.status == null || appointment.status == filter.status,
+          (filter.late ? appointment.isLateAt(now) : filter.status == null || appointment.status == filter.status) &&
+          (filter.online == null || (filter.online! ? appointment.createdBy == null : appointment.createdBy != null)) &&
+          _matches(appointment, filter.term.trim()),
     );
 
     Widget chip(String label, int count, _Filter value, Color? color) => Padding(
@@ -209,16 +231,70 @@ class _DayList extends StatelessWidget {
       ),
     );
 
+    _Filter withTerm(String term) => (status: null, late: false, online: filter.online, term: term);
+
     return Column(
       children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
+          child: TextField(
+            decoration: InputDecoration(
+              isDense: true,
+              prefixIcon: const Icon(Icons.search),
+              hintText: l10n.searchBookingsHint,
+              suffixIcon: filter.term.isEmpty
+                  ? null
+                  : IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => onFilter(withTerm('')),
+                    ),
+            ),
+            onChanged: (term) => onFilter(withTerm(term)),
+          ),
+        ),
+        // How loaded each opening hour is: green room, amber nearly full, red full; past hours are muted.
+        if (bookings.hours.isNotEmpty)
+          SizedBox(
+            height: 44,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              itemCount: bookings.hours.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 6),
+              itemBuilder: (context, index) {
+                final (:hour, :used) = bookings.hours[index];
+                final sameDay = DateUtils.isSameDay(day, now);
+                final past = sameDay &&
+                    DateTime(day.year, day.month, day.day, int.parse(hour.substring(0, 2)))
+                        .isBefore(DateTime(now.year, now.month, now.day, now.hour));
+                final free = bookings.capacity - used;
+                final color = past
+                    ? Theme.of(context).disabledColor
+                    : free <= 0
+                        ? Colors.red
+                        : free == 1
+                            ? Colors.amber.shade700
+                            : Colors.green;
+                return Tooltip(
+                  message: l10n.hourLoad(used, bookings.capacity),
+                  child: Chip(
+                    visualDensity: VisualDensity.compact,
+                    side: BorderSide(color: color),
+                    label: Text(hour, style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+                  ),
+                );
+              },
+            ),
+          ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             children: [
-              chip(l10n.allFilter, appointments.length, (status: null, late: false), null),
-              // In the order a booking moves through: booked, late, arrived, then the two ways it ends early.
+              chip(l10n.allFilter, shown.length, _noFilter, null),
+              // In the order a booking moves through: awaiting confirmation, booked, late, arrived, then the two ways it ends early.
               for (final (status, isLate) in [
+                (AppointmentStatus.pending, false),
                 (AppointmentStatus.booked, false),
                 (null, true),
                 (AppointmentStatus.checkedIn, false),
@@ -230,7 +306,18 @@ class _DayList extends StatelessWidget {
                   chip(isLate ? l10n.appointmentLate : appointmentStatusLabel(l10n, status!), count, (
                     status: status,
                     late: isLate,
+                    online: filter.online,
+                    term: filter.term,
                   ), appointmentStatusColor(context, status ?? AppointmentStatus.booked, late: isLate)),
+              if (online > 0) ...[
+                chip(l10n.onlineFilter, online, (status: null, late: false, online: true, term: filter.term), null),
+                chip(
+                  l10n.counterFilter,
+                  appointments.length - online,
+                  (status: null, late: false, online: false, term: filter.term),
+                  null,
+                ),
+              ],
             ],
           ),
         ),
@@ -301,6 +388,7 @@ class _AppointmentTile extends ConsumerWidget {
     final orderId = appointment.orderId;
     final hasActions =
         (appointment.isOpen && canCheckIn) ||
+        (appointment.isPending && canManage) ||
         (appointment.isOpen && canManage) ||
         (appointment.isOpen && appointment.customerPhone != null) ||
         (appointment.isLateAt(DateTime.now()) && canManage) ||
@@ -325,6 +413,15 @@ class _AppointmentTile extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(sheet).pop();
                   onCheckIn();
+                },
+              ),
+            if (appointment.isPending && canManage)
+              ListTile(
+                leading: const Icon(Icons.verified_outlined),
+                title: Text(l10n.confirmBooking),
+                onTap: () {
+                  Navigator.of(sheet).pop();
+                  _run(context, ref, () => ref.read(appointmentsRepositoryProvider).confirm(appointment.id));
                 },
               ),
             if (appointment.isOpen && appointment.customerPhone != null)
