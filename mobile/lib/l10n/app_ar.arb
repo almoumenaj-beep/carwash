@@ -306,6 +306,7 @@
   "previousDay": "اليوم السابق",
   "nextDay": "اليوم التالي",
   "today": "اليوم",
+  "menuTooltip": "القائمة",
   "tomorrow": "غداً",
   "dayView": "يوم",
   "weekView": "أسبوع",

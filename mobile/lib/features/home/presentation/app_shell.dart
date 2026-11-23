@@ -32,18 +32,57 @@ class AppShell extends ConsumerWidget {
     ref.watch(bookingAlertsWatcherProvider);
 
     final width = MediaQuery.sizeOf(context).width;
-    if (width < Breakpoints.tablet) {
-      return child;
-    }
-
-    final compact = width < Breakpoints.desktop;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final menuBackground = isDark ? AppTheme.deepNavy : AppTheme.navy;
+
+    // Below the desktop width the menu lives behind a hamburger: a slim rail with the button opens it
+    // as a drawer, up to phone size in either orientation.
+    if (width < Breakpoints.desktop) {
+      return Scaffold(
+        drawer: Drawer(
+          width: 280,
+          child: _SideMenu(location: location, background: menuBackground),
+        ),
+        body: Material(
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                decoration: const BoxDecoration(
+                  color: AppTheme.navy,
+                  border: BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
+                ),
+                child: SafeArea(
+                  child: Builder(
+                    builder: (context) => IconButton(
+                      tooltip: AppLocalizations.of(context).menuTooltip,
+                      icon: const Icon(Icons.menu, color: AppTheme.lightGold),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: Breakpoints.contentMaxWidth),
+                    child: child,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return Material(
       color: Theme.of(context).colorScheme.surfaceContainerLowest,
       child: Row(
         children: [
-          _SideMenu(location: location, compact: compact, background: isDark ? AppTheme.deepNavy : AppTheme.navy),
+          _SideMenu(location: location, background: menuBackground),
           Expanded(
             child: Align(
               alignment: Alignment.topCenter,
@@ -60,10 +99,9 @@ class AppShell extends ConsumerWidget {
 }
 
 class _SideMenu extends ConsumerWidget {
-  const _SideMenu({required this.location, required this.compact, required this.background});
+  const _SideMenu({required this.location, required this.background});
 
   final String location;
-  final bool compact;
   final Color background;
 
   bool _isCurrent(String path) => path == '/' ? location == '/' : location == path || location.startsWith('$path/');
@@ -84,7 +122,7 @@ class _SideMenu extends ConsumerWidget {
     final account = (path: '/account', icon: Icons.account_circle_outlined, title: l10n.accountTitle, subtitle: '');
 
     return Container(
-      width: compact ? 88 : 270,
+      width: 270,
       decoration: BoxDecoration(
         color: background,
         border: const BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
@@ -92,9 +130,9 @@ class _SideMenu extends ConsumerWidget {
       child: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: compact ? 12 : 20),
-              child: AppLogo(size: compact ? 40 : 64, maxWidth: compact ? 76 : 238),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: AppLogo(size: 64, maxWidth: 238),
             ),
             const Divider(color: Colors.white24, height: 1),
             Expanded(
@@ -104,16 +142,13 @@ class _SideMenu extends ConsumerWidget {
                   _item(context, home),
                   for (final section in daily) _item(context, section),
                   for (final group in groups) ...[
-                    if (compact)
-                      const Divider(color: Colors.white24, indent: 16, endIndent: 16)
-                    else
-                      Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 6),
-                        child: Text(
-                          group.title,
-                          style: const TextStyle(color: AppTheme.gold, fontSize: 12, fontWeight: FontWeight.w600),
-                        ),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 6),
+                      child: Text(
+                        group.title,
+                        style: const TextStyle(color: AppTheme.gold, fontSize: 12, fontWeight: FontWeight.w600),
                       ),
+                    ),
                     for (final section in group.sections) _item(context, section),
                   ],
                 ],
@@ -137,29 +172,24 @@ class _SideMenu extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         onTap: () => context.go(section.path),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: compact ? 0 : 14, vertical: 11),
-          child: compact
-              ? Icon(section.icon, color: foreground)
-              : Row(
-                  children: [
-                    Icon(section.icon, color: foreground, size: 22),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        section.title,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: foreground, fontWeight: current ? FontWeight.w700 : FontWeight.w500),
-                      ),
-                    ),
-                  ],
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          child: Row(
+            children: [
+              Icon(section.icon, color: foreground, size: 22),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  section.title,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: foreground, fontWeight: current ? FontWeight.w700 : FontWeight.w500),
                 ),
+              ),
+            ],
+          ),
         ),
       ),
     );
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-      child: compact ? Tooltip(message: section.title, child: tile) : tile,
-    );
+    return Padding(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2), child: tile);
   }
 }

@@ -1928,6 +1928,12 @@ abstract class AppLocalizations {
   /// **'Today'**
   String get today;
 
+  /// No description provided for @menuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menuTooltip;
+
   /// No description provided for @tomorrow.
   ///
   /// In en, this message translates to:

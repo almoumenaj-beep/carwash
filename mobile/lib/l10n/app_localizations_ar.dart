@@ -1027,6 +1027,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get today => 'اليوم';
 
   @override
+  String get menuTooltip => 'القائمة';
+
+  @override
   String get tomorrow => 'غداً';
 
   @override

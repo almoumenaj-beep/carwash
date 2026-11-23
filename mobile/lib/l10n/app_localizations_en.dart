@@ -1017,6 +1017,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
+  String get menuTooltip => 'Menu';
+
+  @override
   String get tomorrow => 'Tomorrow';
 
   @override

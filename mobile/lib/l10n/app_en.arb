@@ -518,6 +518,7 @@
   "previousDay": "Previous day",
   "nextDay": "Next day",
   "today": "Today",
+  "menuTooltip": "Menu",
   "tomorrow": "Tomorrow",
   "dayView": "Day",
   "weekView": "Week",
