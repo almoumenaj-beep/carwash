@@ -43,6 +43,7 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   intl: ^0.20.3
   url_launcher: ^6.3.3
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:

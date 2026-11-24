@@ -72,6 +72,7 @@ class CatalogService {
     required this.isAddon,
     required this.isActive,
     required this.prices,
+    this.imageUrl,
     this.isPackage = false,
     this.packageDiscountType,
     this.packageDiscountValue = 0,
@@ -86,6 +87,7 @@ class CatalogService {
     durationMinutes: json['duration_minutes'] as int,
     isAddon: json['is_addon'] as bool,
     isActive: json['is_active'] as bool,
+    imageUrl: json['image_url'] as String?,
     prices: [
       for (final price in (json['prices'] as List?) ?? const []) ServicePrice.fromJson(price as Map<String, dynamic>),
     ],
@@ -105,6 +107,7 @@ class CatalogService {
   final bool isAddon;
   final bool isActive;
   final List<ServicePrice> prices;
+  final String? imageUrl;
 
   /// A package bundles [packageItemIds] and costs their prices less its discount: [packageDiscountValue] in minor
   /// units when [packageDiscountType] is `amount`, or in basis points (1500 = 15%) when it is `percent`.

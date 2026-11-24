@@ -4,8 +4,7 @@
     $dir = $ar ? 'rtl' : 'ltr';
     $t = [
         'services' => $ar ? 'خدماتنا' : 'Our services',
-        'offers' => $ar ? 'العروض' : 'Offers',
-        'noOffers' => $ar ? 'لا عروض حالياً' : 'No offers at the moment',
+        'packages' => $ar ? 'الباقات' : 'Packages',
         'book' => $ar ? 'احجز موعدك' : 'Book your visit',
         'bookHint' => $ar ? 'اختر الوقت المناسب ونستقبل سيارتك' : 'Pick a time and we will take it from there',
         'name' => $ar ? 'الاسم' : 'Your name',
@@ -182,7 +181,7 @@
     </a>
     <nav class="top-nav">
         <a href="#services">{{ $t['services'] }}</a>
-        @if($offers->isNotEmpty())<a href="#offers">{{ $t['offers'] }}</a>@endif
+        @if($packages !== [])<a href="#packages">{{ $t['packages'] }}</a>@endif
         <a href="#contact">{{ $t['contact'] }}</a>
         <a href="#book" class="cta">{{ $t['book'] }}</a>
     </nav>
@@ -205,19 +204,26 @@
         </div>
     @endif
 
-    @if($offers->isNotEmpty())
-        <section class="block" id="offers">
-            <div class="block-head"><h2>{{ $t['offers'] }}</h2></div>
+    @if($packages !== [])
+        <section class="block" id="packages">
+            <div class="block-head"><h2>{{ $t['packages'] }}</h2></div>
             <div class="rail" data-rail>
-                @foreach($offers as $offer)
+                @foreach($packages as $package)
                     <article class="rail-card">
                         <span class="card-photo">
-                            <span class="card-ico">⭐</span>
-                            @if($offer->expires_on)<span class="offer-ends-tag">{{ $t['expires'] }} {{ $offer->expires_on->toDateString() }}</span>@endif
+                            @if($package['image_url'])
+                                <img src="{{ $package['image_url'] }}" alt="{{ $package['name'] }}" style="width:100%;height:100%;object-fit:cover">
+                            @else
+                                <span class="card-ico">📦</span>
+                            @endif
                         </span>
-                        <span class="card-name">{{ $offer->title }}</span>
-                        @if($offer->description)<span class="card-hint">{{ $offer->description }}</span>@endif
-                        @if($offer->price !== null)<span class="card-price">{{ $money($offer->price) }}</span>@endif
+                        <span class="card-name">{{ $package['name'] }}</span>
+                        @if($package['description'])<span class="card-hint">{{ $package['description'] }}</span>@endif
+                        <span class="card-price">
+                            @foreach($package['prices'] as $price)
+                                <div class="price-line"><small>{{ $price['size'] }}</small>{{ $money($price['price']) }}</div>
+                            @endforeach
+                        </span>
                     </article>
                 @endforeach
             </div>
@@ -234,7 +240,13 @@
             <div class="rail" data-rail>
                 @foreach($group['services'] as $index => $service)
                     <article class="rail-card">
-                        <span class="card-photo"><span class="card-ico">{{ ['🚗', '💧', '🧽', '✨', '🛞', '🚿', '🫧', '🌟'][$index % 8] }}</span></span>
+                        <span class="card-photo">
+                            @if($service['image_url'])
+                                <img src="{{ $service['image_url'] }}" alt="{{ $service['name'] }}" style="width:100%;height:100%;object-fit:cover">
+                            @else
+                                <span class="card-ico">{{ ['🚗', '💧', '🧽', '✨', '🛞', '🚿', '🫧', '🌟'][$index % 8] }}</span>
+                            @endif
+                        </span>
                         <span class="card-name">{{ $service['name'] }}</span>
                         <span class="card-price">
                             @foreach($service['prices'] as $price)
@@ -279,6 +291,9 @@
                             @foreach($group['services'] as $service)
                                 <option value="{{ $service['id'] }}" @selected(old('service_id') === $service['id'])>{{ $service['name'] }}</option>
                             @endforeach
+                        @endforeach
+                        @foreach($packages as $package)
+                            <option value="{{ $package['id'] }}" @selected(old('service_id') === $package['id'])>{{ $package['name'] }}</option>
                         @endforeach
                     </select>
                 </label>

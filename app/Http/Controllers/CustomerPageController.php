@@ -11,6 +11,7 @@ use App\Domain\Crm\Support\PhoneNumber;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
 use App\Domain\Platform\Tenancy\TenantContext;
+use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -114,7 +115,8 @@ class CustomerPageController extends Controller
         $services = Service::query()
             ->where('is_active', true)
             ->where('is_addon', false)
-            ->with(['category', 'prices', 'packageItems.prices'])
+            ->where('is_package', false)
+            ->with(['category', 'media', 'prices'])
             ->orderBy('sort_order')
             ->get();
 
@@ -135,10 +137,51 @@ class CustomerPageController extends Controller
                 'name' => $service->name,
                 'description' => $service->description,
                 'duration_minutes' => $service->duration_minutes,
+                'image_url' => $service->getFirstMediaUrl('image') ?: null,
                 'prices' => $prices,
             ];
         }
 
         return array_values($groups);
+    }
+
+    /**
+     * The active packages with their calculated price for every vehicle size.
+     *
+     * @return list<array{id: string, name: string, description: ?string, duration_minutes: int, image_url: ?string, prices: list<array{size: string, price: int}>}>
+     */
+    private function packages(Tenant $tenant): array
+    {
+        $branch = Branch::query()->where('is_active', true)->orderBy('name')->first();
+        $sizes = VehicleSize::query()->where('is_active', true)->orderBy('sort_order')->get();
+
+        return Service::query()
+            ->where('is_active', true)
+            ->where('is_package', true)
+            ->with(['media', 'prices', 'packageItems.prices'])
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(function (Service $package) use ($sizes, $branch): array {
+                $prices = [];
+
+                foreach ($sizes as $size) {
+                    $price = $package->priceFor($size, $branch);
+                    if ($price !== null) {
+                        $prices[] = ['size' => $size->name, 'price' => $price];
+                    }
+                }
+
+                return [
+                    'id' => $package->id,
+                    'name' => $package->name,
+                    'description' => $package->description,
+                    'duration_minutes' => $package->duration_minutes,
+                    'image_url' => $package->getFirstMediaUrl('image') ?: null,
+                    'prices' => $prices,
+                ];
+            })
+            ->values()
+            ->all();
     }
 }

@@ -890,6 +890,24 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get descriptionField;
 
+  /// No description provided for @serviceImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer page image'**
+  String get serviceImage;
+
+  /// No description provided for @chooseServiceImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose image'**
+  String get chooseServiceImage;
+
+  /// No description provided for @removeServiceImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove image'**
+  String get removeServiceImage;
+
   /// No description provided for @isAddon.
   ///
   /// In en, this message translates to:

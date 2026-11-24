@@ -84,4 +84,21 @@ class CatalogRepository {
   Future<void> deleteService(String id) async {
     await sendRequest(() => _dio.delete<void>('/services/$id'));
   }
+
+  Future<CatalogService> uploadServiceImage(String id, MultipartFile image) async {
+    final response = await sendRequest(
+      () => _dio.post<Map<String, dynamic>>(
+        '/services/$id/image',
+        data: FormData.fromMap({'image': image}),
+      ),
+    );
+    return CatalogService.fromJson(unwrapData(response));
+  }
+
+  Future<CatalogService> deleteServiceImage(String id) async {
+    final response = await sendRequest(
+      () => _dio.delete<Map<String, dynamic>>('/services/$id/image'),
+    );
+    return CatalogService.fromJson(unwrapData(response));
+  }
 }

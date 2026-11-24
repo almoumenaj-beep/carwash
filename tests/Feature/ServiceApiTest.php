@@ -12,6 +12,8 @@ use App\Domain\Platform\Models\Tenant;
 use App\Domain\Platform\Tenancy\TenantContext;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Tests\Concerns\InteractsWithTenants;
 use Tests\TestCase;
@@ -132,6 +134,28 @@ class ServiceApiTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.is_active', false)
             ->assertJsonPath('data.prices.0.price', 2000);
+    }
+
+    public function test_owner_uploads_and_removes_a_service_image(): void
+    {
+        Storage::fake('public');
+        $service = $this->serviceWithPrice(2000);
+        Sanctum::actingAs($this->owner);
+
+        $this->post(
+            "/api/v1/services/{$service->id}/image",
+            ['image' => UploadedFile::fake()->image('service.jpg', 800, 600)],
+            ['Accept' => 'application/json'],
+        )->assertOk()->assertJsonPath('data.image_url', fn (string $url) => str_contains($url, '/storage/'));
+
+        $service->refresh();
+        $this->assertCount(1, $service->getMedia('image'));
+
+        $this->deleteJson("/api/v1/services/{$service->id}/image")
+            ->assertOk()
+            ->assertJsonPath('data.image_url', null);
+
+        $this->assertCount(0, $service->refresh()->getMedia('image'));
     }
 
     public function test_every_staff_member_reads_the_menu_but_only_managers_change_it(): void

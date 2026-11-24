@@ -455,6 +455,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get descriptionField => 'الوصف';
 
   @override
+  String get serviceImage => 'صورة صفحة الزبون';
+
+  @override
+  String get chooseServiceImage => 'اختيار صورة';
+
+  @override
+  String get removeServiceImage => 'حذف الصورة';
+
+  @override
   String get isAddon => 'إضافة (تُباع مع خدمة أساسية)';
 
   @override

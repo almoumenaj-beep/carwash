@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/money/money_format.dart';
 import '../../../core/money/percent_format.dart';
@@ -96,6 +97,8 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
   late bool _isAddon = widget.service?.isAddon ?? false;
   late bool _isActive = widget.service?.isActive ?? true;
   late bool _samePriceForAllSizes;
+  late String? _imageUrl = widget.service?.imageUrl;
+  bool _imageUploading = false;
 
   /// A package is priced from [_packageItemIds] less its discount, so it has no price fields.
   late bool _isPackage = widget.service?.isPackage ?? false;
@@ -231,6 +234,69 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
     } finally {
       if (mounted) {
         setState(() => _saving = false);
+      }
+    }
+  }
+
+  Future<void> _pickAndUploadImage() async {
+    if (_isNew) {
+      return;
+    }
+
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85, maxWidth: 1600);
+    if (image == null || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _imageUploading = true;
+      _problem = null;
+    });
+
+    try {
+      final bytes = await image.readAsBytes();
+      final multipart = MultipartFile.fromBytes(bytes, filename: image.name);
+      final updated = await ref.read(catalogRepositoryProvider).uploadServiceImage(widget.service!.id, multipart);
+      ref.invalidate(serviceProvider(widget.service!.id));
+      ref.invalidate(servicesProvider);
+      if (mounted) {
+        setState(() => _imageUrl = updated.imageUrl);
+      }
+    } catch (error, stackTrace) {
+      if (mounted) {
+        setState(() => _problem = ApiProblem.from(error, stackTrace));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _imageUploading = false);
+      }
+    }
+  }
+
+  Future<void> _removeImage() async {
+    if (_isNew || _imageUrl == null) {
+      return;
+    }
+
+    setState(() {
+      _imageUploading = true;
+      _problem = null;
+    });
+
+    try {
+      await ref.read(catalogRepositoryProvider).deleteServiceImage(widget.service!.id);
+      ref.invalidate(serviceProvider(widget.service!.id));
+      ref.invalidate(servicesProvider);
+      if (mounted) {
+        setState(() => _imageUrl = null);
+      }
+    } catch (error, stackTrace) {
+      if (mounted) {
+        setState(() => _problem = ApiProblem.from(error, stackTrace));
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _imageUploading = false);
       }
     }
   }
@@ -423,6 +489,52 @@ class _ServiceFormState extends ConsumerState<_ServiceForm> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
           children: [
+            if (!_isNew) ...[
+              Text(l10n.serviceImage, style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: _imageUrl == null
+                      ? ColoredBox(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          child: const Center(child: Icon(Icons.image_outlined, size: 48)),
+                        )
+                      : Image.network(
+                          _imageUrl!,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => ColoredBox(
+                            color: theme.colorScheme.surfaceContainerHighest,
+                            child: const Center(child: Icon(Icons.broken_image_outlined, size: 48)),
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _imageUploading ? null : _pickAndUploadImage,
+                      icon: _imageUploading
+                          ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.upload_outlined),
+                      label: Text(l10n.chooseServiceImage),
+                    ),
+                  ),
+                  if (_imageUrl != null) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      tooltip: l10n.removeServiceImage,
+                      onPressed: _imageUploading ? null : _removeImage,
+                      icon: const Icon(Icons.delete_outline),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
             TextFormField(
               controller: _name,
               decoration: InputDecoration(labelText: l10n.serviceName, errorText: _problem?.fieldError('name')),

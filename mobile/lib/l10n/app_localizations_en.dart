@@ -447,6 +447,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get descriptionField => 'Description';
 
   @override
+  String get serviceImage => 'Customer page image';
+
+  @override
+  String get chooseServiceImage => 'Choose image';
+
+  @override
+  String get removeServiceImage => 'Remove image';
+
+  @override
   String get isAddon => 'Add-on (sold with a main service)';
 
   @override

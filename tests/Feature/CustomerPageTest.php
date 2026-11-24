@@ -3,8 +3,8 @@
 namespace Tests\Feature;
 
 use App\Domain\Appointments\Models\Appointment;
+use App\Domain\Catalog\Models\Service;
 use App\Domain\Crm\Models\Customer;
-use App\Domain\Offers\Models\Offer;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\BuildsCarWash;
@@ -42,21 +42,23 @@ class CustomerPageTest extends TestCase
         return [$day, $start->format('Y-m-d\TH:i')];
     }
 
-    public function test_the_page_shows_the_services_their_prices_and_the_active_offers(): void
+    public function test_the_page_shows_services_their_prices_and_active_packages_instead_of_offers(): void
     {
         $this->inTenant(function (): void {
-            (new Offer(['title' => 'Wax package deal', 'description' => 'This week only', 'price' => 5000]))->save();
-            (new Offer(['title' => 'Expired offer', 'expires_on' => now($this->tenant->timezone)->subDay()->toDateString()]))->save();
-            (new Offer(['title' => 'Switched off offer', 'is_active' => false]))->save();
+            $package = Service::factory()->create([
+                'name' => 'Full care package',
+                'description' => 'Wash and wax',
+                'is_package' => true,
+            ]);
+            $package->packageItems()->attach([$this->wash->id => ['sort_order' => 0]]);
         });
 
         $this->get("/w/{$this->slug}")
             ->assertOk()
             ->assertSee($this->tenant->name)
             ->assertSee('Exterior wash')
-            ->assertSee('Wax package deal')
-            ->assertDontSee('Expired offer')
-            ->assertDontSee('Switched off offer');
+            ->assertSee('Full care package')
+            ->assertDontSee('Offers');
     }
 
     public function test_an_unknown_slug_is_not_found(): void
