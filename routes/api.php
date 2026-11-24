@@ -75,6 +75,8 @@ Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('vehicle-sizes', VehicleSizeController::class)->except('show');
         Route::apiResource('service-categories', ServiceCategoryController::class)->except('show');
         Route::apiResource('services', ServiceController::class);
+        Route::post('services/{service}/image', [ServiceController::class, 'uploadImage'])->name('services.image.store');
+        Route::delete('services/{service}/image', [ServiceController::class, 'deleteImage'])->name('services.image.destroy');
 
         Route::apiResource('orders', OrderController::class)->only(['index', 'store', 'show', 'update']);
         Route::post('orders/{order}/status', [OrderStatusController::class, 'store'])->name('orders.status.store');

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معاينة ألوان صفحة الزبون</title>
+<style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0d0d0d; color: #eee; padding: 24px; display: grid; gap: 32px; }
+    h1 { color: #E2C27A; font-size: 1.3rem; }
+    .option { display: grid; gap: 10px; }
+    .option > h2 { font-size: 1.05rem; }
+    .option > p { color: #aaa; font-size: .85rem; line-height: 1.6; }
+    .frame { border-radius: 14px; overflow: hidden; border: 1px solid #333; }
+
+    .hero { text-align: center; padding: 26px 16px 20px; display: grid; gap: 8px; justify-items: center; }
+    .hero img { width: 240px; }
+    .hero .slogan { font-weight: 600; font-size: .92rem; }
+    .sec { padding: 14px 16px; display: grid; gap: 10px; }
+    .sec h3 { font-size: .95rem; display: flex; align-items: center; gap: 8px; }
+    .sec h3::before { content: ''; width: 14px; height: 14px; border-radius: 4px; }
+    .cards { display: flex; gap: 10px; }
+    .scard { flex: 1; border-radius: 14px; padding: 12px; display: grid; gap: 6px; text-align: center; }
+    .scard .ico { width: 44px; height: 44px; margin: 0 auto; border-radius: 50%; display: grid; place-items: center; font-size: 22px; }
+    .scard b { font-size: .82rem; }
+    .scard .pr { font-weight: 900; font-size: .82rem; }
+    form.mock { border-radius: 14px; padding: 14px; display: grid; gap: 8px; }
+    .fld { border-radius: 10px; padding: 9px 12px; font-size: .8rem; }
+    .btn { border: none; border-radius: 12px; padding: 11px; font: inherit; font-weight: 800; font-size: .88rem; }
+
+    /* 1) عاجي ذهبي */
+    .ivory-hero { background: radial-gradient(75% 95% at 50% 0%, #F4EAD2 0, rgba(244,234,210,.35) 55%, transparent 78%), #FAF7F0; }
+    .ivory-hero .slogan { color: #6B7280; }
+    .ivory-sec { background: #FAF7F0; }
+    .ivory-sec h3 { color: #16294A; }
+    .ivory-sec h3::before { background: linear-gradient(135deg, #C9A24B 50%, #16294A 50%); }
+    .ivory-card { background: #fff; border: 1px solid #E7E0D2; box-shadow: 0 4px 14px rgba(22,35,61,.06); color: #16294A; }
+    .ivory-card .ico { background: #FBF6EA; border: 2px solid #EBDDB9; }
+    .ivory-card .pr { color: #B8862E; }
+    .ivory-fld { background: #FAF7F0; border: 1px solid #E7E0D2; color: #9CA3AF; }
+    .ivory-btn { background: linear-gradient(135deg, #1B3A66, #24497E); color: #fff; }
+    .ivory-form { background: #fff; border: 1px solid #E7E0D2; border-bottom: 4px solid #C9A24B; }
+
+    /* 2) أزرق مائي */
+    .aqua-hero { background: radial-gradient(75% 95% at 50% 0%, #CFE7F4 0, rgba(207,231,244,.35) 55%, transparent 78%), #F2F8FB; }
+    .aqua-hero .slogan { color: #5B7B90; }
+    .aqua-sec { background: #F2F8FB; }
+    .aqua-sec h3 { color: #173F5F; }
+    .aqua-sec h3::before { background: linear-gradient(135deg, #4A90C2 50%, #173F5F 50%); }
+    .aqua-card { background: #fff; border: 1px solid #D4E2EC; box-shadow: 0 4px 14px rgba(23,63,95,.06); color: #173F5F; }
+    .aqua-card .ico { background: #EAF4FA; border: 2px solid #C2DCEC; }
+    .aqua-card .pr { color: #2E6DA4; }
+    .aqua-fld { background: #F2F8FB; border: 1px solid #D4E2EC; color: #8AA5B5; }
+    .aqua-btn { background: linear-gradient(135deg, #2E6DA4, #4A90C2); color: #fff; }
+    .aqua-form { background: #fff; border: 1px solid #D4E2EC; border-bottom: 4px solid #4A90C2; }
+
+    /* 3) كحلي ليلي فاخر */
+    .dark-hero { background: radial-gradient(75% 95% at 50% 0%, rgba(201,162,75,.22) 0, rgba(201,162,75,.07) 55%, transparent 78%), #0E1B30; }
+    .dark-hero .slogan { color: #B8C2D4; }
+    .dark-sec { background: #0E1B30; }
+    .dark-sec h3 { color: #E9EDF4; }
+    .dark-sec h3::before { background: linear-gradient(135deg, #C9A24B 50%, #E2C27A 50%); }
+    .dark-card { background: #172A48; border: 1px solid #C9A24B44; color: #E9EDF4; }
+    .dark-card .ico { background: #0F1D33; border: 2px solid #C9A24B55; }
+    .dark-card .pr { color: #E2C27A; }
+    .dark-fld { background: #0F1D33; border: 1px solid #2F4669; color: #7E8BA3; }
+    .dark-btn { background: linear-gradient(135deg, #C9A24B, #E2C27A); color: #0E1B30; }
+    .dark-form { background: #172A48; border: 1px solid #C9A24B44; border-bottom: 4px solid #C9A24B; }
+</style>
+</head>
+<body>
+
+<h1>معاينة ألوان صفحة الزبون — اختر ما يعجبك</h1>
+
+<!-- 1 -->
+<div class="option">
+    <h2>1) عاجي + ذهبي — نسخة محسّنة من الحالي</h2>
+    <p>نفس أجواء صفحتك الحالية لكن بتباين أعمق: كحلي أغمق للعناوين، ذهبي أغنى للأسعار، وتوهّج ذهبي خفيف في الواجهة. الأقرب للوقو (السحابة العاجية + الذهب).</p>
+    <div class="frame">
+        <div class="hero ivory-hero"><img src="brand-logo.png" alt=""><span class="slogan">غسيل احترافي وعناية كاملة بسيارتك</span></div>
+        <div class="sec ivory-sec">
+            <h3>خدماتنا</h3>
+            <div class="cards">
+                <div class="scard ivory-card"><span class="ico">🚗</span><b>غسيل خارجي</b><span class="pr">BHD 1.5</span></div>
+                <div class="scard ivory-card"><span class="ico">✨</span><b>غسيل داخلي وخارجي</b><span class="pr">BHD 3</span></div>
+                <div class="scard ivory-card"><span class="ico">🧽</span><b>عند المنزل</b><span class="pr">BHD 2</span></div>
+            </div>
+            <form class="mock ivory-form"><span class="fld ivory-fld">الاسم</span><span class="fld ivory-fld">رقم الجوال</span><button class="btn ivory-btn" type="button">تأكيد الحجز</button></form>
+        </div>
+    </div>
+</div>
+
+<!-- 2 -->
+<div class="option">
+    <h2>2) أزرق مائي — إحساس الماء والنظافة</h2>
+    <p>أبيض مائي وثلجي مع أزرق السيارة في الشعار. مظهر منعش ونظيف جداً، واللوقو يظهر بوضوح تام. ممتاز إذا تبغى صفحة «تنبّه النظافة».</p>
+    <div class="frame">
+        <div class="hero aqua-hero"><img src="brand-logo.png" alt=""><span class="slogan">غسيل احترافي وعناية كاملة بسيارتك</span></div>
+        <div class="sec aqua-sec">
+            <h3>خدماتنا</h3>
+            <div class="cards">
+                <div class="scard aqua-card"><span class="ico">🚗</span><b>غسيل خارجي</b><span class="pr">BHD 1.5</span></div>
+                <div class="scard aqua-card"><span class="ico">✨</span><b>غسيل داخلي وخارجي</b><span class="pr">BHD 3</span></div>
+                <div class="scard aqua-card"><span class="ico">🧽</span><b>عند المنزل</b><span class="pr">BHD 2</span></div>
+            </div>
+            <form class="mock aqua-form"><span class="fld aqua-fld">الاسم</span><span class="fld aqua-fld">رقم الجوال</span><button class="btn aqua-btn" type="button">تأكيد الحجز</button></form>
+        </div>
+    </div>
+</div>
+
+<!-- 3 -->
+<div class="option">
+    <h2>3) كحلي ليلي فاخر — نفس هوية تطبيق الإدارة</h2>
+    <p>صفحة داكنة بذهبي — فخمة ومميزة، وتوحّد الهوية بين التطبيق والصفحة العامة. لاحظ أن اللوقو يحتاج نسخته الليلية هنا (جاهزة عندنا).</p>
+    <div class="frame">
+        <div class="hero dark-hero"><img src="logo-night.png" alt="" style="width:220px"><span class="slogan">غسيل احترافي وعناية كاملة بسيارتك</span></div>
+        <div class="sec dark-sec">
+            <h3>خدماتنا</h3>
+            <div class="cards">
+                <div class="scard dark-card"><span class="ico">🚗</span><b>غسيل خارجي</b><span class="pr">BHD 1.5</span></div>
+                <div class="scard dark-card"><span class="ico">✨</span><b>غسيل داخلي وخارجي</b><span class="pr">BHD 3</span></div>
+                <div class="scard dark-card"><span class="ico">🧽</span><b>عند المنزل</b><span class="pr">BHD 2</span></div>
+            </div>
+            <form class="mock dark-form"><span class="fld dark-fld">الاسم</span><span class="fld dark-fld">رقم الجوال</span><button class="btn dark-btn" type="button">تأكيد الحجز</button></form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

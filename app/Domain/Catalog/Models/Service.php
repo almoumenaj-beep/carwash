@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * A sellable service, an add-on (is_addon) sold together with one, or a package (is_package)
@@ -24,10 +26,18 @@ use Illuminate\Support\Facades\DB;
  */
 #[Fillable(['service_category_id', 'name', 'description', 'duration_minutes', 'is_addon', 'is_package', 'package_discount_type', 'package_discount_value', 'sort_order', 'is_active'])]
 #[UseFactory(ServiceFactory::class)]
-class Service extends Model
+class Service extends Model implements HasMedia
 {
     /** @use HasFactory<ServiceFactory> */
-    use BelongsToTenant, HasFactory, HasUuids;
+    use BelongsToTenant, HasFactory, HasUuids, InteractsWithMedia;
+
+    /**
+     * One image per service, shown on its card in the public customer page instead of the default icon.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('image')->singleFile();
+    }
 
     /**
      * Mirrors the database defaults so a freshly created service is complete before it is refreshed.

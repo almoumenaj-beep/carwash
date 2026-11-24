@@ -23,7 +23,7 @@ class ServiceController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return ServiceResource::collection(
-            Service::query()->with(['prices', 'packageItems.prices'])->orderByDesc('is_package')->orderBy('is_addon')->orderBy('sort_order')->orderBy('name')->get(),
+            Service::query()->with(['media', 'prices', 'packageItems.prices'])->orderByDesc('is_package')->orderBy('is_addon')->orderBy('sort_order')->orderBy('name')->get(),
         );
     }
 
@@ -42,6 +42,33 @@ class ServiceController extends Controller
     public function update(SaveServiceRequest $request, Service $service, SaveService $saveService): ServiceResource
     {
         return ServiceResource::make($saveService->update($request->user(), $service, $request->validated())->load(['prices', 'packageItems.prices']));
+    }
+
+    /**
+     * Attach the service's card image, replacing the previous one.
+     */
+    public function uploadImage(Request $request, Service $service): ServiceResource
+    {
+        Gate::authorize(Permission::ServicesManage->value);
+
+        $request->validate(['image' => ['required', 'image', 'max:3072']]);
+
+        $service->clearMediaCollection('image');
+        $service->addMediaFromRequest('image')->toMediaCollection('image');
+
+        return ServiceResource::make($service->load(['media', 'prices', 'packageItems.prices']));
+    }
+
+    /**
+     * Remove the service's card image, falling back to the default icon on the customer page.
+     */
+    public function deleteImage(Request $request, Service $service): ServiceResource
+    {
+        Gate::authorize(Permission::ServicesManage->value);
+
+        $service->clearMediaCollection('image');
+
+        return ServiceResource::make($service->load(['media', 'prices', 'packageItems.prices']));
     }
 
     /**

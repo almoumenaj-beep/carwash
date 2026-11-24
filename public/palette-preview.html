@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معاينة الألوان — اللمعة الذهبية</title>
+<style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #0d0d0d; color: #eee; padding: 24px; display: grid; gap: 32px; }
+    h1 { color: #E2C27A; font-size: 1.35rem; }
+    .option { display: grid; gap: 10px; }
+    .option > h2 { font-size: 1.1rem; }
+    .option > p { color: #aaa; font-size: .88rem; line-height: 1.6; }
+    .frame { border-radius: 14px; overflow: hidden; border: 1px solid #333; }
+
+    .bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; }
+    .bar img { height: 44px; width: auto; display: block; }
+    .bar .menu { font-size: 22px; }
+    .bar .title { font-weight: 700; font-size: 1.1rem; }
+    .bar .spacer { flex: 1; }
+    .bar .ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; }
+    .badge { background: #FBF6EA; border-radius: 14px; padding: 5px 14px; }
+
+    .content { padding: 16px; display: grid; gap: 12px; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .card { border-radius: 14px; padding: 14px 16px; display: grid; gap: 6px; }
+    .card b { font-size: .95rem; }
+    .card span { font-size: .8rem; opacity: .75; }
+    .btn { border: none; border-radius: 12px; padding: 10px 22px; font: inherit; font-weight: 800; font-size: .9rem; cursor: pointer; }
+
+    /* 1: فحمي دافئ + ذهبي */
+    .charcoal-bar { background: #221C14; border-bottom: 3px solid #C9A24B; }
+    .charcoal-bar .menu, .charcoal-bar .title { color: #E2C27A; }
+    .charcoal-bar .ico { background: rgba(226,194,122,.12); color: #E2C27A; }
+    .charcoal-page { background: #17130E; }
+    .charcoal-card { background: #2B241A; border: 1px solid #C9A24B55; color: #F2EDE4; }
+    .charcoal-btn { background: linear-gradient(135deg, #C9A24B, #E2C27A); color: #221C14; }
+    .charcoal-chip { background: #2B241A; color: #E2C27A; border: 1px solid #C9A24B66; border-radius: 999px; padding: 5px 14px; font-size: .78rem; font-weight: 700; }
+
+    /* 2: مائي فاتح */
+    .aqua-bar { background: #2E6DA4; border-bottom: 3px solid #C9A24B; }
+    .aqua-bar .menu, .aqua-bar .title, .aqua-bar .ico { color: #fff; }
+    .aqua-bar .ico { background: rgba(255,255,255,.15); }
+    .aqua-page { background: #F4F8FA; }
+    .aqua-card { background: #fff; border: 1px solid #D4E2EC; color: #1F2A37; }
+    .aqua-card span { color: #5B6B7B; }
+    .aqua-btn { background: linear-gradient(135deg, #2E6DA4, #4A90C2); color: #fff; }
+    .aqua-chip { background: #E8F1F7; color: #2E6DA4; border: 1px solid #BBD4E6; border-radius: 999px; padding: 5px 14px; font-size: .78rem; font-weight: 700; }
+
+    /* 3: كحلي ليلي + شعار ليلي */
+    .navy-bar { background: #0E1B30; border-bottom: 3px solid #C9A24B; }
+    .navy-bar .menu, .navy-bar .title { color: #E2C27A; }
+    .navy-bar .ico { background: rgba(255,255,255,.08); color: #fff; }
+    .navy-page { background: #0F1D33; }
+    .navy-card { background: #172A48; border: 1px solid #C9A24B44; color: #E9EDF4; }
+    .navy-btn { background: linear-gradient(135deg, #C9A24B, #E2C27A); color: #0E1B30; }
+    .navy-chip { background: #172A48; color: #E2C27A; border: 1px solid #C9A24B55; border-radius: 999px; padding: 5px 14px; font-size: .78rem; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<h1>معاينة لوحات الألوان — اختر ما يعجبك</h1>
+
+<!-- الخيار 1 -->
+<div class="option">
+    <h2>1) فحمي دافئ + ذهبي — فخم ومناسب لبريميوم</h2>
+    <p>خلفيات فحمية دافئة، بطاقات بنية غامقة، والذهبي للّمسات. اللوقو على شارته الكريمية يتناسق تماماً مع هذا الجو.</p>
+    <div class="frame">
+        <div class="bar charcoal-bar">
+            <span class="menu">☰</span>
+            <span class="badge"><img src="brand-logo.png" alt="اللوقو"></span>
+            <span class="title">الرئيسية</span>
+            <span class="spacer"></span>
+            <span class="ico">🔔</span><span class="ico">👤</span>
+        </div>
+        <div class="content charcoal-page">
+            <div class="row">
+                <span class="charcoal-chip">الكل</span><span class="charcoal-chip">اليوم</span><span class="charcoal-chip">الحجوزات</span>
+            </div>
+            <div class="card charcoal-card"><b>حجز جديد — غسيل شامل</b><span>العميل: أحمد • الساعة 4:30 عصراً</span></div>
+            <div><button class="btn charcoal-btn">تأكيد الحجز</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- الخيار 2 -->
+<div class="option">
+    <h2>2) أزرق مائي فاتح — انتعاش ونظافة</h2>
+    <p>أساس أبيض مائي وهلدر بأزرق السيارة في الشعار. اللوقو يظهر بدون شارة نهائياً في كل الأوقات، والإحساس نظيف ومنعش.</p>
+    <div class="frame">
+        <div class="bar aqua-bar">
+            <span class="menu">☰</span>
+            <img src="brand-logo.png" alt="اللوقو">
+            <span class="title">الرئيسية</span>
+            <span class="spacer"></span>
+            <span class="ico">🔔</span><span class="ico">👤</span>
+        </div>
+        <div class="content aqua-page">
+            <div class="row">
+                <span class="aqua-chip">الكل</span><span class="aqua-chip">اليوم</span><span class="aqua-chip">الحجوزات</span>
+            </div>
+            <div class="card aqua-card"><b>حجز جديد — غسيل شامل</b><span>العميل: أحمد • الساعة 4:30 عصراً</span></div>
+            <div><button class="btn aqua-btn">تأكيد الحجز</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- الخيار 3 -->
+<div class="option">
+    <h2>3) كحلي ليلي + نسخة الشعار الليلية — نفس هويتك الحالية بدون شارات</h2>
+    <p>نفس ألوانك الحالية (كحلي + ذهبي) لكن مع نسخة ثانية من الشعار بحبر فاتح للوضع الليلي — اللوقو يظهر طبيعي في كل مكان، نهاري وليلي، بدون أي شارة.</p>
+    <div class="frame">
+        <div class="bar navy-bar">
+            <span class="menu">☰</span>
+            <img src="logo-night.png" alt="اللوقو الليلي" style="height:40px">
+            <span class="title">الرئيسية</span>
+            <span class="spacer"></span>
+            <span class="ico">🔔</span><span class="ico">👤</span>
+        </div>
+        <div class="content navy-page">
+            <div class="row">
+                <span class="navy-chip">الكل</span><span class="navy-chip">اليوم</span><span class="navy-chip">الحجوزات</span>
+            </div>
+            <div class="card navy-card"><b>حجز جديد — غسيل شامل</b><span>العميل: أحمد • الساعة 4:30 عصراً</span></div>
+            <div><button class="btn navy-btn">تأكيد الحجز</button></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

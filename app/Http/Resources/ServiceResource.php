@@ -38,6 +38,7 @@ class ServiceResource extends JsonResource
             ])->values()),
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
+            'image_url' => $this->getFirstMediaUrl('image') ?: null,
             'prices' => $this->whenLoaded('prices', fn () => $this->prices->map(fn (ServicePrice $price) => [
                 'vehicle_size_id' => $price->vehicle_size_id,
                 'branch_id' => $price->branch_id,

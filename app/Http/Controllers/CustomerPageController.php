@@ -8,11 +8,9 @@ use App\Domain\Appointments\Support\AppointmentSchedule;
 use App\Domain\Catalog\Models\Service;
 use App\Domain\Catalog\Models\VehicleSize;
 use App\Domain\Crm\Support\PhoneNumber;
-use App\Domain\Offers\Models\Offer;
 use App\Domain\Platform\Models\Branch;
 use App\Domain\Platform\Models\Tenant;
 use App\Domain\Platform\Tenancy\TenantContext;
-use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 /**
- * The car wash's public customer page at /w/{slug}: the services with their prices, the current offers,
+ * The car wash's public customer page at /w/{slug}: the services with their prices, the packages,
  * and a booking form that books a real appointment, exactly as if reception had typed it. No sign-in:
  * the tenant comes from the address, and a TenantContext is opened around every query.
  */
@@ -37,7 +35,7 @@ class CustomerPageController extends Controller
             'branches' => Branch::query()->where('is_active', true)->orderBy('name')->get(),
             'sizes' => VehicleSize::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'services' => $this->services($tenant),
-            'offers' => Offer::query()->visible(CarbonImmutable::today($tenant->timezone))->orderByDesc('created_at')->get(),
+            'packages' => $this->packages($tenant),
         ]));
     }
 

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مقارنة الهيدر — اللمعة الذهبية</title>
+<style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #111; color: #eee; padding: 24px; display: grid; gap: 28px; }
+    h1 { font-size: 1.3rem; color: #E2C27A; }
+    .option { display: grid; gap: 8px; }
+    .option > p { color: #aaa; font-size: .9rem; }
+    .frame { border-radius: 14px; overflow: hidden; border: 1px solid #333; }
+    .page { height: 120px; padding: 16px; font-size: .85rem; color: #888; }
+    .page.dark { background: #0F1D33; }
+    .page.light { background: #FBF9F5; color: #999; }
+
+    /* الهيدر العام */
+    .bar { display: flex; align-items: center; gap: 12px; padding: 10px 16px; }
+    .bar .menu { font-size: 22px; opacity: .9; }
+    .bar img { height: 44px; width: auto; display: block; }
+    .bar .title { font-weight: 700; font-size: 1.1rem; }
+    .bar .spacer { flex: 1; }
+    .bar .ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 16px; }
+
+    /* الخيار 1: هيدر ذهبي */
+    .gold { background: linear-gradient(135deg, #C9A24B, #E2C27A); border-bottom: 3px solid #0E1B30; }
+    .gold .menu, .gold .title, .gold .ico { color: #0E1B30; }
+    .gold .ico { background: rgba(14,27,48,.12); }
+
+    /* الخيار 2: كحلي + شارة كريمية بحد ذهبي */
+    .navy { background: #0E1B30; border-bottom: 3px solid #C9A24B; }
+    .navy .menu, .navy .title { color: #E2C27A; }
+    .navy .ico { background: rgba(255,255,255,.08); color: #fff; }
+    .navy .badge { background: #FBF6EA; border: 2px solid #C9A24B; border-radius: 14px; padding: 5px 14px; }
+
+    /* الخيار 3: هيدر فاتح دافئ (بدون شارة) */
+    .dim { background: #EFE9DC; border-bottom: 3px solid #C9A24B; }
+    .dim .menu, .dim .title, .dim .ico { color: #1B3A66; }
+    .dim .ico { background: rgba(27,58,102,.08); }
+</style>
+</head>
+<body>
+
+<h1>مقارنة تصاميم الهيدر — اختر ما يعجبك</h1>
+
+<div class="option">
+    <h2>الخيار 1: هيدر ذهبي</h2>
+    <p>الشريط العلوي والقائمة الجانبية ذهبيان، والنصوص والأيقونات كحلية. حبر اللوقو الكحلي يظهر طبيعياً بدون أي شارة.</p>
+    <div class="frame">
+        <div class="bar gold">
+            <span class="menu">☰</span>
+            <img src="brand-logo.png" alt="اللوقو">
+            <span class="title">الرئيسية</span>
+            <span class="spacer"></span>
+            <span class="ico">🔔</span>
+            <span class="ico">👤</span>
+        </div>
+        <div class="page dark">محتوى الصفحة في الوضع الليلي يبقى كحلي غامق كما هو…</div>
+    </div>
+</div>
+
+<div class="option">
+    <h2>الخيار 2: كحلي + شارة كريمية بحد ذهبي</h2>
+    <p>يبقى الكحلي كما هو، واللوقو يجلس على بطاقة كريمية دافئة بإطار ذهبي رفيع — أنعم من الأبيض الصارخ.</p>
+    <div class="frame">
+        <div class="bar navy">
+            <span class="menu">☰</span>
+            <span class="badge"><img src="brand-logo.png" alt="اللوقو"></span>
+            <span class="title">الرئيسية</span>
+            <span class="spacer"></span>
+            <span class="ico">🔔</span>
+            <span class="ico">👤</span>
+        </div>
+        <div class="page dark">محتوى الصفحة في الوضع الليلي يبقى كحلي غامق كما هو…</div>
+    </div>
+</div>
+
+<div class="option">
+    <h2>الخيار 3: هيدر فاتح دافئ</h2>
+    <p>الهيدر بلون بيج فاتح بدل الكحلي الغامق — اللوقو يظهر بدون شارة نهائياً، والتباين مريح في الليل.</p>
+    <div class="frame">
+        <div class="bar dim">
+            <span class="menu">☰</span>
+            <img src="brand-logo.png" alt="اللوقو">
+            <span class="title">الرئيسية</span>
+            <span class="spacer"></span>
+            <span class="ico">🔔</span>
+            <span class="ico">👤</span>
+        </div>
+        <div class="page dark">محتوى الصفحة في الوضع الليلي يبقى كحلي غامق كما هو…</div>
+    </div>
+</div>
+
+</body>
+</html>
