@@ -8,10 +8,6 @@ abstract final class AppTheme {
   static const gold = Color(0xFFC9A24B);
   static const lightGold = Color(0xFFE2C27A);
 
-  /// The light-warm surface the bars (app bar, side menu, navigation bar) take in the dark theme,
-  /// so the logo's dark ink stays readable on them.
-  static const warmBar = Color(0xFFEFE9DC);
-
   static ThemeData get light => _build(Brightness.light);
 
   static ThemeData get dark => _build(Brightness.dark);
@@ -52,12 +48,7 @@ abstract final class AppTheme {
             onTertiaryContainer: const Color(0xFF3B2C00),
             surface: const Color(0xFFFBF9F5),
           );
-    // In the dark theme the bars turn light-warm so the dark-inked logo reads on them; the light
-    // theme keeps the brand navy with gold titles.
-    final barBackground = isDark ? warmBar : navy;
-    final barForeground = isDark ? navy : Colors.white;
-    final barAccent = isDark ? navy : lightGold;
-    final onBarMuted = isDark ? const Color(0xB31B3A66) : Colors.white70;
+    final barBackground = isDark ? deepNavy : navy;
 
     return ThemeData(
       colorScheme: scheme,
@@ -65,9 +56,9 @@ abstract final class AppTheme {
       inputDecorationTheme: const InputDecorationTheme(border: OutlineInputBorder()),
       appBarTheme: AppBarTheme(
         backgroundColor: barBackground,
-        foregroundColor: barForeground,
+        foregroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
-        titleTextStyle: TextStyle(color: barAccent, fontSize: 20, fontWeight: FontWeight.w600),
+        titleTextStyle: const TextStyle(color: lightGold, fontSize: 20, fontWeight: FontWeight.w600),
         shape: const Border(bottom: BorderSide(color: gold, width: 2)),
       ),
       cardTheme: CardThemeData(
@@ -78,10 +69,11 @@ abstract final class AppTheme {
           side: BorderSide(color: gold.withValues(alpha: isDark ? 0.35 : 0.45)),
         ),
       ),
-      // Every tab bar sits under a bar: the chosen tab in bold on a thick gold line, the others faded.
-      tabBarTheme: TabBarThemeData(
-        labelColor: isDark ? deepNavy : lightGold,
-        unselectedLabelColor: onBarMuted,
+      // Every tab bar sits under a navy app bar: the chosen tab in bold gold over a thick gold line, the others
+      // in faded white.
+      tabBarTheme: const TabBarThemeData(
+        labelColor: lightGold,
+        unselectedLabelColor: Colors.white60,
         labelStyle: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
         indicatorSize: TabBarIndicatorSize.tab,
@@ -111,10 +103,11 @@ abstract final class AppTheme {
         backgroundColor: barBackground,
         indicatorColor: gold,
         iconTheme: WidgetStateProperty.resolveWith(
-          (states) => IconThemeData(color: states.contains(WidgetState.selected) ? deepNavy : onBarMuted),
+          (states) => IconThemeData(color: states.contains(WidgetState.selected) ? deepNavy : Colors.white70),
         ),
         labelTextStyle: WidgetStateProperty.resolveWith(
-          (states) => TextStyle(fontSize: 12, color: states.contains(WidgetState.selected) ? deepNavy : onBarMuted),
+          (states) =>
+              TextStyle(fontSize: 12, color: states.contains(WidgetState.selected) ? lightGold : Colors.white70),
         ),
       ),
     );
