@@ -45,20 +45,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gold: #c8a24b;
-            --gold-d: #a5842f;
-            --gold-l: #f4ead2;
-            --navy: #16233d;
-            --navy-2: #3d5273;
-            --cream: #f8f5ef;
-            --sand: #efe7d8;
+            --gold: #4a90c2;
+            --gold-d: #2e6da4;
+            --gold-l: #d6e8f3;
+            --navy: #173f5f;
+            --navy-2: #2e6da4;
+            --cream: #f2f8fb;
+            --sand: #e7f2f9;
             --paper: #fff;
-            --ink: #1a1f2b;
-            --muted: #7d8494;
-            --line: #e8e2d4;
+            --ink: #22303c;
+            --muted: #6b8598;
+            --line: #d4e2ec;
             --danger: #b3261e;
             --radius: 20px;
-            --shadow: 0 4px 14px rgba(22, 35, 61, .08);
+            --shadow: 0 4px 14px rgba(23, 63, 95, .08);
             --display: 'Reem Kufi', 'Cairo', sans-serif;
         }
         * { box-sizing: border-box; }
@@ -85,7 +85,7 @@
 
         /* الواجهة الرئيسية */
         .brand-hero { position: relative; overflow: hidden; color: var(--ink); background:
-            radial-gradient(75% 95% at 50% 0%, var(--gold-l) 0, rgba(244, 234, 210, .35) 55%, transparent 78%),
+            radial-gradient(75% 95% at 50% 0%, var(--gold-l) 0, rgba(214, 232, 243, .35) 55%, transparent 78%),
             var(--cream);
         }
         .brand-hero-inner {
