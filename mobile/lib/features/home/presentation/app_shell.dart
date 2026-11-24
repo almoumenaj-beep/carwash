@@ -138,7 +138,7 @@ class _SideMenu extends ConsumerWidget {
           children: [
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 20),
-              child: AppLogo(size: 64, maxWidth: 238, lightBadge: true),
+              child: AppLogo(size: 64, maxWidth: 238, onNavy: true),
             ),
             const Divider(color: Colors.white24, height: 1),
             Expanded(
