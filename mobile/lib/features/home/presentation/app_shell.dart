@@ -9,17 +9,19 @@ import '../../appointments/application/booking_alerts.dart';
 import '../../auth/application/session_controller.dart';
 import 'home_sections.dart';
 
-/// Widths at which the layout changes: below [tablet] the phone layout, from [desktop] the full side menu.
+/// Widths at which the layout changes: below [desktop] the hamburger rail, from [desktop] the full side menu.
 abstract final class Breakpoints {
-  static const tablet = 720.0;
-  static const desktop = 1180.0;
+  /// The full side menu needs this much width; anything narrower (phones in any orientation,
+  /// portrait tablets) gets the hamburger rail instead.
+  static const desktop = 1200.0;
 
   /// The widest a page's content grows to, so lists and forms stay readable on large screens.
   static const contentMaxWidth = 1100.0;
 }
 
-/// Frames every signed-in screen to the screen's size: phones keep the plain screen, tablets get a narrow bar of
-/// section icons, and large screens a full side menu with the sections by group; the page itself sits beside it.
+/// Frames every signed-in screen to the screen's size: below the desktop width a slim rail whose
+/// hamburger opens the full side menu as a drawer, from the desktop width the menu stays visible;
+/// the page itself sits beside it.
 class AppShell extends ConsumerWidget {
   const AppShell({super.key, required this.location, required this.child});
 
@@ -54,12 +56,16 @@ class AppShell extends ConsumerWidget {
                   border: BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
                 ),
                 child: SafeArea(
-                  child: Builder(
-                    builder: (context) => IconButton(
-                      tooltip: AppLocalizations.of(context).menuTooltip,
-                      icon: const Icon(Icons.menu, color: AppTheme.lightGold),
-                      onPressed: () => Scaffold.of(context).openDrawer(),
-                    ),
+                  child: Column(
+                    children: [
+                      Builder(
+                        builder: (context) => IconButton(
+                          tooltip: AppLocalizations.of(context).menuTooltip,
+                          icon: const Icon(Icons.menu, color: AppTheme.lightGold),
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
