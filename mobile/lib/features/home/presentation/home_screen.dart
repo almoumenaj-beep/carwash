@@ -27,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
         // The logo carries the car wash's name, so the header shows nothing else.
         title: const Align(
           alignment: AlignmentDirectional.centerStart,
-          child: AppLogo(size: 40, maxWidth: 170),
+          child: AppLogo(size: 40, maxWidth: 170, lightBadge: true),
         ),
         actions: [
           if (me.deviceIsShared)
