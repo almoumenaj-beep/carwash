@@ -177,7 +177,7 @@
 
 <header class="top">
     <a class="brand" href="#top">
-        <img src="{{ url('brand-logo.png') }}" alt="{{ $tenant->name }}" class="top-logo">
+        <img src="{{ url('logo.png') }}" alt="{{ $tenant->name }}" class="top-logo">
     </a>
     <nav class="top-nav">
         <a href="#services">{{ $t['services'] }}</a>
@@ -189,7 +189,7 @@
 
 <section class="brand-hero" id="top">
     <div class="brand-hero-inner">
-        <img class="hero-logo" src="{{ url('brand-logo.png') }}" alt="{{ $tenant->name }}">
+        <img class="hero-logo" src="{{ url('logo.png') }}" alt="{{ $tenant->name }}">
         <h1 class="sr-only">{{ $tenant->name }}</h1>
         <p>{{ $t['slogan'] }}</p>
     </div>
