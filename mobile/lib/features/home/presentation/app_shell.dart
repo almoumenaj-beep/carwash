@@ -35,7 +35,7 @@ class AppShell extends ConsumerWidget {
 
     final width = MediaQuery.sizeOf(context).width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final menuBackground = isDark ? AppTheme.deepNavy : AppTheme.navy;
+    final menuBackground = isDark ? AppTheme.warmBar : AppTheme.navy;
 
     // Below the desktop width the menu lives behind a hamburger: a slim rail with the button opens it
     // as a drawer, up to phone size in either orientation.
@@ -43,7 +43,7 @@ class AppShell extends ConsumerWidget {
       return Scaffold(
         drawer: Drawer(
           width: 280,
-          child: _SideMenu(location: location, background: menuBackground),
+          child: _SideMenu(location: location, background: menuBackground, darkSurface: isDark),
         ),
         body: Material(
           color: Theme.of(context).colorScheme.surfaceContainerLowest,
@@ -51,9 +51,9 @@ class AppShell extends ConsumerWidget {
             children: [
               Container(
                 width: 48,
-                decoration: const BoxDecoration(
-                  color: AppTheme.navy,
-                  border: BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
+                decoration: BoxDecoration(
+                  color: menuBackground,
+                  border: const BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
                 ),
                 child: SafeArea(
                   child: Column(
@@ -61,7 +61,7 @@ class AppShell extends ConsumerWidget {
                       Builder(
                         builder: (context) => IconButton(
                           tooltip: AppLocalizations.of(context).menuTooltip,
-                          icon: const Icon(Icons.menu, color: AppTheme.lightGold),
+                          icon: Icon(Icons.menu, color: isDark ? AppTheme.navy : AppTheme.lightGold),
                           onPressed: () => Scaffold.of(context).openDrawer(),
                         ),
                       ),
@@ -88,7 +88,7 @@ class AppShell extends ConsumerWidget {
       color: Theme.of(context).colorScheme.surfaceContainerLowest,
       child: Row(
         children: [
-          _SideMenu(location: location, background: menuBackground),
+          _SideMenu(location: location, background: menuBackground, darkSurface: isDark),
           Expanded(
             child: Align(
               alignment: Alignment.topCenter,
@@ -105,10 +105,13 @@ class AppShell extends ConsumerWidget {
 }
 
 class _SideMenu extends ConsumerWidget {
-  const _SideMenu({required this.location, required this.background});
+  const _SideMenu({required this.location, required this.background, required this.darkSurface});
 
   final String location;
   final Color background;
+
+  /// The menu sits on the light-warm bar color instead of navy.
+  final bool darkSurface;
 
   bool _isCurrent(String path) => path == '/' ? location == '/' : location == path || location.startsWith('$path/');
 
@@ -140,7 +143,7 @@ class _SideMenu extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 20),
               child: AppLogo(size: 64, maxWidth: 238, lightBadge: true),
             ),
-            const Divider(color: Colors.white24, height: 1),
+            Divider(color: darkSurface ? const Color(0x331B3A66) : Colors.white24, height: 1),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(vertical: 8),
@@ -152,7 +155,11 @@ class _SideMenu extends ConsumerWidget {
                       padding: const EdgeInsetsDirectional.fromSTEB(20, 16, 20, 6),
                       child: Text(
                         group.title,
-                        style: const TextStyle(color: AppTheme.gold, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                          color: darkSurface ? const Color(0xFF8A6A1F) : AppTheme.gold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     for (final section in group.sections) _item(context, section),
@@ -160,7 +167,7 @@ class _SideMenu extends ConsumerWidget {
                 ],
               ),
             ),
-            const Divider(color: Colors.white24, height: 1),
+            Divider(color: darkSurface ? const Color(0x331B3A66) : Colors.white24, height: 1),
             Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: _item(context, account)),
           ],
         ),
@@ -170,7 +177,7 @@ class _SideMenu extends ConsumerWidget {
 
   Widget _item(BuildContext context, HomeSection section) {
     final current = _isCurrent(section.path);
-    final foreground = current ? AppTheme.deepNavy : Colors.white;
+    final foreground = current ? AppTheme.deepNavy : (darkSurface ? AppTheme.navy : Colors.white);
     final tile = Material(
       color: current ? AppTheme.gold : Colors.transparent,
       borderRadius: BorderRadius.circular(12),
