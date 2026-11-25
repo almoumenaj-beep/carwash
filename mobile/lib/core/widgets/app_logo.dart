@@ -21,14 +21,20 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nightInk = onNavy || Theme.of(context).brightness == Brightness.dark;
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: size, maxWidth: maxWidth ?? size * 3.6),
-      child: Image.asset(
-        nightInk ? 'assets/branding/logo_night.png' : 'assets/branding/logo.png',
-        height: size,
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.medium,
-        semanticLabel: AppLocalizations.of(context).appTitle,
+    final width = maxWidth ?? size * 3.6;
+    return SizedBox(
+      width: width,
+      height: size,
+      child: ClipRect(
+        child: Image.asset(
+          nightInk ? 'assets/branding/logo_night.png' : 'assets/branding/logo.png',
+          width: width,
+          height: size,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          filterQuality: FilterQuality.medium,
+          semanticLabel: AppLocalizations.of(context).appTitle,
+        ),
       ),
     );
   }

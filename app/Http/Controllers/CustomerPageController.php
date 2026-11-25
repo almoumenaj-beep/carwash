@@ -148,7 +148,7 @@ class CustomerPageController extends Controller
     /**
      * The active packages with their calculated price for every vehicle size.
      *
-     * @return list<array{id: string, name: string, description: ?string, duration_minutes: int, image_url: ?string, prices: list<array{size: string, price: int}>}>
+     * @return list<array{id: string, name: string, description: ?string, duration_minutes: int, image_url: ?string, prices: list<array{size: string, original_price: int, price: int, savings: int}>}>
      */
     private function packages(Tenant $tenant): array
     {
@@ -166,9 +166,16 @@ class CustomerPageController extends Controller
                 $prices = [];
 
                 foreach ($sizes as $size) {
+                    $originalPrice = $package->separatePriceFor($size, $branch);
                     $price = $package->priceFor($size, $branch);
-                    if ($price !== null) {
-                        $prices[] = ['size' => $size->name, 'price' => $price];
+
+                    if ($originalPrice !== null && $price !== null) {
+                        $prices[] = [
+                            'size' => $size->name,
+                            'original_price' => $originalPrice,
+                            'price' => $price,
+                            'savings' => $originalPrice - $price,
+                        ];
                     }
                 }
 

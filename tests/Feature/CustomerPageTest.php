@@ -49,8 +49,18 @@ class CustomerPageTest extends TestCase
                 'name' => 'Full care package',
                 'description' => 'Wash and wax',
                 'is_package' => true,
+                'package_discount_type' => 'percent',
+                'package_discount_value' => 2000,
             ]);
             $package->packageItems()->attach([$this->wash->id => ['sort_order' => 0]]);
+
+            $amountDiscountPackage = Service::factory()->create([
+                'name' => 'Fixed discount package',
+                'is_package' => true,
+                'package_discount_type' => 'amount',
+                'package_discount_value' => 500,
+            ]);
+            $amountDiscountPackage->packageItems()->attach([$this->wash->id => ['sort_order' => 0]]);
         });
 
         $this->get("/w/{$this->slug}")
@@ -58,6 +68,11 @@ class CustomerPageTest extends TestCase
             ->assertSee($this->tenant->name)
             ->assertSee('Exterior wash')
             ->assertSee('Full care package')
+            ->assertSee('<del class="price-before">2 BHD</del>', false)
+            ->assertSee('<span class="price-current">1.6 BHD</span>', false)
+            ->assertSee('وفر 0.4 BHD')
+            ->assertSee('<span class="price-current">1.5 BHD</span>', false)
+            ->assertSee('وفر 0.5 BHD')
             ->assertDontSee('Offers');
     }
 

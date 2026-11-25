@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/application/session_controller.dart';
+import 'app_shell.dart';
 import 'home_sections.dart';
 
 /// Landing screen after sign-in: who is working, and the sections they may open.
@@ -20,6 +21,7 @@ class HomeScreen extends ConsumerWidget {
     }
 
     final l10n = AppLocalizations.of(context);
+    final isMobile = MediaQuery.sizeOf(context).width < Breakpoints.desktop;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,11 +38,18 @@ class HomeScreen extends ConsumerWidget {
               icon: const Icon(Icons.switch_account_outlined),
               onPressed: () => context.push('/pin'),
             ),
-          IconButton(
-            tooltip: l10n.accountTitle,
-            icon: const Icon(Icons.account_circle_outlined),
-            onPressed: () => context.push('/account'),
-          ),
+          if (isMobile)
+            IconButton(
+              tooltip: l10n.menuTooltip,
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            )
+          else
+            IconButton(
+              tooltip: l10n.accountTitle,
+              icon: const Icon(Icons.account_circle_outlined),
+              onPressed: () => context.push('/account'),
+            ),
         ],
       ),
       body: RefreshIndicator(

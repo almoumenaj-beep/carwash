@@ -4,7 +4,8 @@
     $dir = $ar ? 'rtl' : 'ltr';
     $t = [
         'services' => $ar ? 'خدماتنا' : 'Our services',
-        'packages' => $ar ? 'الباقات' : 'Packages',
+        'packages' => $ar ? 'العروض' : 'Packages',
+        'save' => $ar ? 'وفر' : 'Save',
         'book' => $ar ? 'احجز موعدك' : 'Book your visit',
         'bookHint' => $ar ? 'اختر الوقت المناسب ونستقبل سيارتك' : 'Pick a time and we will take it from there',
         'name' => $ar ? 'الاسم' : 'Your name',
@@ -132,6 +133,10 @@
         .card-price { padding: 4px 12px 12px; color: var(--gold-d); font-weight: 900; margin-top: auto; }
         .card-price small { color: var(--muted); font-weight: 600; }
         .price-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 1px 0; }
+        .price-values { display: inline-flex; align-items: baseline; gap: 6px; white-space: nowrap; }
+        .price-before { color: var(--muted); font-size: .78rem; font-weight: 600; }
+        .price-current { font-weight: 900; }
+        .price-savings { display: block; color: var(--gold-d); font-size: .72rem; font-weight: 700; text-align: end; }
         .offer-ends-tag {
             position: absolute; bottom: 8px; inset-inline-start: 8px; max-width: calc(100% - 16px);
             font-size: .72rem; font-weight: 800; line-height: 1.3; padding: 2px 8px; border-radius: 999px;
@@ -221,7 +226,16 @@
                         @if($package['description'])<span class="card-hint">{{ $package['description'] }}</span>@endif
                         <span class="card-price">
                             @foreach($package['prices'] as $price)
-                                <div class="price-line"><small>{{ $price['size'] }}</small>{{ $money($price['price']) }}</div>
+                                <div class="price-line">
+                                    <small>{{ $price['size'] }}</small>
+                                    <span class="price-values">
+                                        <del class="price-before">{{ $money($price['original_price']) }}</del>
+                                        <span class="price-current">{{ $money($price['price']) }}</span>
+                                    </span>
+                                </div>
+                                @if($price['savings'] > 0)
+                                    <span class="price-savings">{{ $t['save'] }} {{ $money($price['savings']) }}</span>
+                                @endif
                             @endforeach
                         </span>
                     </article>

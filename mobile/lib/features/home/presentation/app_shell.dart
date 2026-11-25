@@ -36,6 +36,7 @@ class AppShell extends ConsumerWidget {
     final width = MediaQuery.sizeOf(context).width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final menuBackground = isDark ? AppTheme.deepNavy : AppTheme.navy;
+    final isHome = location == '/';
 
     // Below the desktop width the menu lives behind a hamburger: a slim rail with the button opens it
     // as a drawer, up to phone size in either orientation.
@@ -49,26 +50,27 @@ class AppShell extends ConsumerWidget {
           color: Theme.of(context).colorScheme.surfaceContainerLowest,
           child: Row(
             children: [
-              Container(
-                width: 48,
-                decoration: const BoxDecoration(
-                  color: AppTheme.navy,
-                  border: BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
-                ),
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      Builder(
-                        builder: (context) => IconButton(
-                          tooltip: AppLocalizations.of(context).menuTooltip,
-                          icon: const Icon(Icons.menu, color: AppTheme.lightGold),
-                          onPressed: () => Scaffold.of(context).openDrawer(),
+              if (!isHome)
+                Container(
+                  width: 48,
+                  decoration: const BoxDecoration(
+                    color: AppTheme.navy,
+                    border: BorderDirectional(end: BorderSide(color: AppTheme.gold, width: 2)),
+                  ),
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        Builder(
+                          builder: (context) => IconButton(
+                            tooltip: AppLocalizations.of(context).menuTooltip,
+                            icon: const Icon(Icons.menu, color: AppTheme.lightGold),
+                            onPressed: () => Scaffold.of(context).openDrawer(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
               Expanded(
                 child: Align(
                   alignment: Alignment.topCenter,
