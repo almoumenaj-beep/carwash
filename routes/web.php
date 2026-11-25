@@ -18,7 +18,5 @@ Route::post('/w/{tenant:slug}/bookings', [CustomerPageController::class, 'book']
     ->middleware('throttle:12,1')
     ->name('customer.book');
 
-// The web app, built from mobile/ into public/app; its files are served directly, and its own routes live
-// after the # in the address. Redirect to the trailing slash: the app's asset paths are relative, and
-// without the slash the browser would resolve them one directory up.
-Route::redirect('/app', '/app/');
+// The web app is built from mobile/ into public/app, and its routes live after the # in the address.
+Route::redirect('/app', '/app/index.html');
